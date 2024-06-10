@@ -11,6 +11,23 @@ For simplicity and to do it in a more stepwise manner, we are going to first cre
 
 ## Generating the synthetic data
 
+### ATM
+
+- ATM_id: string
+- loc_latitude: float
+- loc_longitude: float
+- city: string
+- country: string
+
+Note: had to replace Emohua by Emuoha 
+
+Idea: explained in the code...
+
+TODO: Take into account that for each ATM location we have x number of atms... have this into account for the density distribution 
+from which we drawn the city location of the new generated ATM??
+
+TODO: Describe
+
 ### Bank
 
 - name: string
@@ -31,11 +48,3 @@ For simplicity and to do it in a more stepwise manner, we are going to first cre
 - loc_longitude: float *
 
 expiration and CVC -> not relevant: could be empty fields indeed or for all the Cards the same values.
-
-### ATM
-
-- ATM_id: string
-- loc_latitude: float
-- loc_longitude: float
-- city: string
-- country: string
