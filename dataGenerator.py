@@ -1,8 +1,48 @@
 import pandas as pd
+import random
+# https://nominatim.org/ -> open-source geocoding with OpenStreetMap data
+# - search API 
+from geopy.geocoders import Nominatim 
 
 def bank_generator():
     print("Bank generator")
     # 1. generate random coordinates
+
+# Function to generate a random geolocation (latitude, longitude) of a given
+# city and country
+#
+# Approaches:
+# - Easy and less accurate -> obtain a rectangular bounding box of the city  
+# - Hard and more accurate -> obtain the exact bounding box of the city - open street maps (like in CSN project)
+# 
+# then, in any case, drawn a random geolocation from the bounding box
+
+def get_city_bbox(city, country):
+    # Rectangular bbox 
+    geolocator = Nominatim(user_agent="canfranero")
+    location = geolocator.geocode(f"{city}, {country}")
+    if not location:
+        raise ValueError(f"Could not geocode the city: {city} in country: {country}")
+    
+    bbox = location.raw['boundingbox']
+    return bbox
+
+def generate_random_geolocation_city(city, country):
+    # Rectangular bbox 
+    geolocator = Nominatim(user_agent="canfranero")
+    location = geolocator.geocode(f"{city}, {country}")
+    if not location:
+        raise ValueError(f"Could not geocode the city: {city} in country: {country}")
+    
+    bbox = location.raw['boundingbox']
+    # Generate random geolocation inside this bbox
+    print(bbox)
+    min_latitude, max_latitude, min_longitude, max_longitude = map(float, bbox)
+    print(min_latitude, max_latitude, min_longitude, max_longitude)
+    random_latitude = random.uniform(min_latitude, max_latitude)
+    random_longitude = random.uniform(min_longitude, max_longitude)
+
+    print(random_latitude, random_longitude)
 
 
 """
@@ -28,28 +68,44 @@ def atms_generator(n):
     atm_file = 'wisabi/atm_location lookup.csv'
     atm_df_wisabi = pd.read_csv(atm_file)
     print(atm_df_wisabi.head())
-    print(len(atm_df_wisabi))
+    
+    num_atms_wisabi = len(atm_df_wisabi)
 
-    """
+    # Create a dictionary of the geolocation of the ATMs in the wisabi df
+    # - city, country, bbox (bounding box)
+    # so that the bbox of each city does not need to be retrieved for each
+    # of the new ATMs generated
+    #atm_bbox_dictionary = create_bbox_dictionary(atm_df_wisabi)
+
+
     for i in range(n):
-        print(i)
+        print("_____________________________________")
         ATM_id = i
-        # Select random wisabi ATM to assign the location
-        city = 
+        # Select random wisabi ATM to assign the location - 
+        # discrete value drawn from uniform distribution in range (0,num_atms_wisabi) 
+        rand_index = random.randint(0, num_atms_wisabi-1) # randint [a,b]
+        print("rand index --> ", rand_index)
+        rand_atm = atm_df_wisabi.iloc[rand_index]
+        city = rand_atm['City']
+        country = rand_atm['Country']
+
+        generate_random_geolocation_city("Barcelona", "Spain")
+
         loc_latitude = 0
         loc_longitude = 0
 
         new_atm = {
-            'ATM_id':, 
-            'loc_latitude':, 
-            'loc_longitude':, 
-            'city':, 
-            'country':}
-        """
-
+            'ATM_id': ATM_id, 
+            'loc_latitude': loc_latitude, 
+            'loc_longitude': loc_longitude, 
+            'city': city, 
+            'country': country
+        }
+    
+        print(new_atm)
 
 def main():
-    atms_generator(2)
+    atms_generator(1)
 
 if __name__ == "__main__":
     main()
