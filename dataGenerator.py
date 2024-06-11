@@ -49,20 +49,27 @@ def create_atm_dictionary(atm_df_wisabi):
                 }
             }
         print(i)
+    
+    return atm_dict
 
-
-
+# Generate a random geolocation inside the bbox of the given city,country
 def generate_random_geolocation_city(city, country, atm_dictionary):
 
     # obtain the bbox from the atm_dictionary
     print(atm_dictionary[city])
-    min_latitude, max_latitude, min_longitude, max_longitude = 0,0,0,0
+
+    min_latitude = atm_dictionary[city]['bbox']['min_latitude']
+    max_latitude = atm_dictionary[city]['bbox']['max_latitude']
+    min_longitude = atm_dictionary[city]['bbox']['min_longitude']
+    max_longitude = atm_dictionary[city]['bbox']['max_longitude']
+
+    print(min_latitude, max_latitude, min_longitude, max_longitude)
+
     random_latitude = random.uniform(min_latitude, max_latitude)
     random_longitude = random.uniform(min_longitude, max_longitude)
 
     print(random_latitude, random_longitude)
     return random_latitude, random_longitude
-
 
 """
 ATM: 
@@ -101,7 +108,8 @@ def atms_generator(n):
     # so that the bbox of each city does not need to be retrieved for each
     # of the new ATMs generated
     atm_dictionary = create_atm_dictionary(atm_df_wisabi)
-    """
+
+    # Generate the n synthetic ATMs
     for i in range(n):
         print("_____________________________________")
         ATM_id = i
@@ -111,6 +119,8 @@ def atms_generator(n):
         rand_atm = atm_df_wisabi.iloc[rand_index]
         city = rand_atm['City']
         country = rand_atm['Country']
+
+        print(city)
 
         loc_latitude, loc_longitude = generate_random_geolocation_city(city, country, atm_dictionary)
 
@@ -123,10 +133,9 @@ def atms_generator(n):
         }
     
         print(new_atm)
-    """
 
 def main():
-    atms_generator(1)
+    atms_generator(2)
 
 if __name__ == "__main__":
     main()
