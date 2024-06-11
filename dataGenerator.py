@@ -133,6 +133,10 @@ def atms_generator(n):
         }
     
         print(new_atm)
+        atm_df.loc[i] = new_atm
+    
+    print(atm_df)
+    atm_df.to_csv('atms.csv', index=False)
 
 def main():
     atms_generator(2)
