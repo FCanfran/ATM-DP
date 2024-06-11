@@ -13,9 +13,11 @@ def bank_generator():
 #
 # Approaches:
 # - Easy and less accurate -> obtain a rectangular bounding box of the city  
-# - Hard and more accurate -> obtain the exact bounding box of the city - open street maps (like in CSN project)
+# - Hard and more accurate -> obtain the exact bounding box (exact polygon box) of the city - 
+#   open street maps (like in CSN project)
 # 
 # then, in any case, drawn a random geolocation from the bounding box
+
 
 def get_city_bbox(city, country):
     # Rectangular bbox 
@@ -53,17 +55,24 @@ def create_atm_dictionary(atm_df_wisabi):
     return atm_dict
 
 # Generate a random geolocation inside the bbox of the given city,country
+# - option: using the atm_dictionary of the atms of the cities in the wisabi dataset
 def generate_random_geolocation_city(city, country, atm_dictionary):
 
-    # obtain the bbox from the atm_dictionary
-    print(atm_dictionary[city])
-
-    min_latitude = atm_dictionary[city]['bbox']['min_latitude']
-    max_latitude = atm_dictionary[city]['bbox']['max_latitude']
-    min_longitude = atm_dictionary[city]['bbox']['min_longitude']
-    max_longitude = atm_dictionary[city]['bbox']['max_longitude']
+    if atm_dictionary == None:
+        # obtain the bbox of the city
+        min_latitude, max_latitude, min_longitude, max_longitude = get_city_bbox(city, country)
+    else:
+        # obtain the bbox from the atm_dictionary
+        print(atm_dictionary[city])
+        min_latitude = atm_dictionary[city]['bbox']['min_latitude']
+        max_latitude = atm_dictionary[city]['bbox']['max_latitude']
+        min_longitude = atm_dictionary[city]['bbox']['min_longitude']
+        max_longitude = atm_dictionary[city]['bbox']['max_longitude']
 
     print(min_latitude, max_latitude, min_longitude, max_longitude)
+
+    print("(%f, %f, %f, %f)" % (min_longitude, min_latitude, max_longitude, max_latitude))
+
 
     random_latitude = random.uniform(min_latitude, max_latitude)
     random_longitude = random.uniform(min_longitude, max_longitude)
@@ -77,6 +86,7 @@ ATM:
 - location (loc_latitude, loc_longitude)
 - city 
 - country
+
 ------------------------------------------------------
 For each, we take a random ATM of the wisabi dataset and keep the same 
 city and country, so that we keep the same location distribution of the
@@ -90,16 +100,11 @@ TODO: Take into account that for each ATM location we have x number of atms... h
 from which we drawn the city location of the new generated ATM??  
 FOR THE MOMENT IT IS NOT TAKEN INTO ACCOUNT!
 """
-def atms_generator(n):
+def atm_generator(atm_df_wisabi, n):
 
     # create the ATM dataframe
     cols = ['ATM_id', 'loc_latitude', 'loc_longitude', 'city', 'country']
     atm_df = pd.DataFrame(columns=cols)
-
-    # read the csv of wisabi atms 
-    atm_file = 'wisabi/atm_location lookup.csv'
-    atm_df_wisabi = pd.read_csv(atm_file)
-    print(atm_df_wisabi.head())
     
     num_atms_wisabi = len(atm_df_wisabi)
 
@@ -138,8 +143,59 @@ def atms_generator(n):
     print(atm_df)
     atm_df.to_csv('atms.csv', index=False)
 
+def card_generator(customers_df_wisabi, atm_df_wisabi, n):
+    
+    # create the card dataframe
+    cols = ['number_id', 'client_id', 'expiration', 'CVC', 'extract_limit', 'loc_latitude', 'loc_longitude']
+    card_df = pd.DataFrame(columns=cols)
+
+    num_customers_wisabi = len(customers_df_wisabi)
+
+    # Generate the n synthetic cards
+    for i in range(n):
+        print("_____________________________________")
+        
+        # Select random wisabi customer 
+        # discrete value drawn from uniform distribution in range (0,num_customers_wisabi) 
+        rand_index = random.randint(0, num_customers_wisabi-1) # randint [a,b]
+        rand_customer = customers_df_wisabi.iloc[rand_index]
+        print(rand_customer)
+
+        # get its usual ATM to assign the location address to this card/client
+        atmid = rand_customer['ATMID']
+        print(atmid)
+        # find the city of this atm 
+        atm = atm_df_wisabi[atm_df_wisabi['LocationID'] == atmid]
+
+        if not atm.empty:
+            city = atm['City'].iloc[0]
+            country = atm['Country'].iloc[0]
+        else: 
+            print("No matching ATM with LocationID found in ATMs table")
+
+        print(city, country)
+        # optional -> use the previously constructed atm_dictionary of wisabi, so that it is faster
+        loc_latitude, loc_longitude = generate_random_geolocation_city(city, country, atm_dictionary=None)
+        print(loc_latitude, loc_longitude)
+
+
+
 def main():
-    atms_generator(2)
+
+
+    # read the csv of wisabi atms 
+    atm_file = 'wisabi/atm_location lookup.csv'
+    atm_df_wisabi = pd.read_csv(atm_file)
+    print(atm_df_wisabi.head())
+    # read the csv of wisabi customers 
+    customers_file = 'wisabi/customers_lookup.csv'
+    customers_df_wisabi = pd.read_csv(customers_file)
+    print(customers_df_wisabi.head())
+
+
+
+    #atm_generator(atm_df_wisabi, 2)
+    card_generator(customers_df_wisabi, atm_df_wisabi, 1)
 
 if __name__ == "__main__":
     main()
