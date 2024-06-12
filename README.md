@@ -20,6 +20,9 @@ Approaches:
  
 then, in any case, drawn a random geolocation from the bounding box.
 
+It was seen that the first approach is not really good/accurate and that it can be improved
+possibly by the second one.
+
 Useful links:
 
 - https://nominatim.openstreetmap.org/ui/search.html

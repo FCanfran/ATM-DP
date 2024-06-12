@@ -3,6 +3,10 @@ import random
 # https://nominatim.org/ -> open-source geocoding with OpenStreetMap data
 # - search API 
 from geopy.geocoders import Nominatim 
+from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
+
+import datetime
+
 
 def bank_generator():
     print("Bank generator")
@@ -21,14 +25,28 @@ def bank_generator():
 
 def get_city_bbox(city, country):
     # Rectangular bbox 
-    geolocator = Nominatim(user_agent="canfranero")
-    location = geolocator.geocode(f"{city}, {country}")
-    if not location:
-        raise ValueError(f"Could not geocode the city: {city} in country: {country}")
-    
-    bbox = location.raw['boundingbox']
-    min_latitude, max_latitude, min_longitude, max_longitude = map(float, bbox)
-    return min_latitude, max_latitude, min_longitude, max_longitude
+    geolocator = Nominatim(user_agent="canfranero99")
+
+    try:
+        location = geolocator.geocode(f"{city}, {country}", timeout=10)
+        if not location:
+            raise ValueError(f"Could not geocode the city: {city} in country: {country}")
+        
+        bbox = location.raw['boundingbox']
+        min_latitude, max_latitude, min_longitude, max_longitude = map(float, bbox)
+        return min_latitude, max_latitude, min_longitude, max_longitude
+
+    except GeocoderTimedOut:
+        print(f"Geocoding timed out for city: {city} in country: {country}")
+        raise
+
+    except GeocoderUnavailable:
+        print(f"Geocoding service is unavailable for city: {city} in country: {country}")
+        raise
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        raise
 
 def create_atm_dictionary(atm_df_wisabi): 
     atm_dict = {}
@@ -63,22 +81,17 @@ def generate_random_geolocation_city(city, country, atm_dictionary):
         min_latitude, max_latitude, min_longitude, max_longitude = get_city_bbox(city, country)
     else:
         # obtain the bbox from the atm_dictionary
-        print(atm_dictionary[city])
         min_latitude = atm_dictionary[city]['bbox']['min_latitude']
         max_latitude = atm_dictionary[city]['bbox']['max_latitude']
         min_longitude = atm_dictionary[city]['bbox']['min_longitude']
         max_longitude = atm_dictionary[city]['bbox']['max_longitude']
 
-    print(min_latitude, max_latitude, min_longitude, max_longitude)
-
     print("(%f, %f, %f, %f)" % (min_longitude, min_latitude, max_longitude, max_latitude))
-
 
     random_latitude = random.uniform(min_latitude, max_latitude)
     random_longitude = random.uniform(min_longitude, max_longitude)
-
-    print(random_latitude, random_longitude)
-    return random_latitude, random_longitude
+    # limit the values to have only 6 decimals - enough
+    return round(random_latitude,6), round(random_longitude,6)
 
 """
 ATM: 
@@ -140,10 +153,9 @@ def atm_generator(atm_df_wisabi, n):
         print(new_atm)
         atm_df.loc[i] = new_atm
     
-    print(atm_df)
-    atm_df.to_csv('atms.csv', index=False)
+    return atm_df
 
-def card_generator(customers_df_wisabi, atm_df_wisabi, n):
+def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, n):
     
     # create the card dataframe
     cols = ['number_id', 'client_id', 'expiration', 'CVC', 'extract_limit', 'loc_latitude', 'loc_longitude']
@@ -161,28 +173,46 @@ def card_generator(customers_df_wisabi, atm_df_wisabi, n):
         rand_customer = customers_df_wisabi.iloc[rand_index]
         print(rand_customer)
 
-        # get its usual ATM to assign the location address to this card/client
-        atmid = rand_customer['ATMID']
-        print(atmid)
-        # find the city of this atm 
-        atm = atm_df_wisabi[atm_df_wisabi['LocationID'] == atmid]
+        # Option 1: assign a random location of the usual ATM of the selected wisabi customer
+        if loc_from_wisabi:
+            atmid = rand_customer['ATMID']
+            print(atmid)
+            # find the city of this atm 
+            atm = atm_df_wisabi[atm_df_wisabi['LocationID'] == atmid]
+            if not atm.empty:
+                city = atm['City'].iloc[0]
+                country = atm['Country'].iloc[0]
+            else: 
+                print("No matching ATM with LocationID found in ATMs table")
 
-        if not atm.empty:
-            city = atm['City'].iloc[0]
-            country = atm['Country'].iloc[0]
+        # Option 2: assign a random location of the city of a random ATM of the newly generated ATMs
         else: 
-            print("No matching ATM with LocationID found in ATMs table")
+            # Get a random ATM from the new ATM table
+            rand_atm_index = random.randint(0, len(atm_df)-1)
+            city = atm_df.iloc[rand_atm_index]['city']
+            country = atm_df.iloc[rand_atm_index]['country']
 
-        print(city, country)
+        print(city)
         # optional -> use the previously constructed atm_dictionary of wisabi, so that it is faster
         loc_latitude, loc_longitude = generate_random_geolocation_city(city, country, atm_dictionary=None)
-        print(loc_latitude, loc_longitude)
+
+        new_card = {
+            'number_id': i,
+            'client_id': i,
+            'expiration': datetime.date.today(),
+            'CVC': 999,
+            'extract_limit': 10000,
+            'loc_latitude': loc_latitude, 
+            'loc_longitude': loc_longitude
+        }
+    
+        card_df.loc[i] = new_card
+    
+    return card_df
 
 
 
 def main():
-
-
     # read the csv of wisabi atms 
     atm_file = 'wisabi/atm_location lookup.csv'
     atm_df_wisabi = pd.read_csv(atm_file)
@@ -192,10 +222,13 @@ def main():
     customers_df_wisabi = pd.read_csv(customers_file)
     print(customers_df_wisabi.head())
 
+    atm_df = atm_generator(atm_df_wisabi, 2)
+    print(atm_df)
+    atm_df.to_csv('atm.csv', index=False)
 
-
-    #atm_generator(atm_df_wisabi, 2)
-    card_generator(customers_df_wisabi, atm_df_wisabi, 1)
+    card_df = card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi=False, n=2)
+    print(card_df)
+    card_df.to_csv('card.csv', index=False)
 
 if __name__ == "__main__":
     main()
