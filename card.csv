@@ -1,1 +1,4 @@
-number_id,client_id,expiration,CVC,extract_limit,loc_latitude,loc_longitude
+number_id,client_id,expiration,CVC,loc_latitude,loc_longitude,extract_limit,amount_avg,amount_std,transacc_day
+0,0,2024-06-12,999,9.122333,7.558809,98547.95,19709.59,24433.65,1.0
+1,1,2024-06-12,999,6.399129,3.444027,89973.70000000001,17994.74,20865.02,0.5205
+2,2,2024-06-12,999,8.955095,7.641615,84822.35,16964.47,19239.99,0.5397

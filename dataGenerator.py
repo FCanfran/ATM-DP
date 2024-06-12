@@ -24,7 +24,7 @@ def bank_generator():
 
 def get_city_bbox(city, country):
     # Rectangular bbox 
-    geolocator = Nominatim(user_agent="canfranero99")
+    geolocator = Nominatim(user_agent="canfranero")
 
     try:
         location = geolocator.geocode(f"{city}, {country}", timeout=10)
@@ -154,11 +154,6 @@ def atm_generator(atm_df_wisabi, n):
     
     return atm_df
 
-
-"""
-- transaction_amount: avg and std
-- # of transactions per day
-"""
 """
 EN - enugu_transactions.csv
 FC - fct_transactions.csv
@@ -166,14 +161,22 @@ KN - kano_transactions.csv
 LA - lagos_transactions.csv
 RI - rivers_transactions.csv
 """
-def get_expense_behavior_wisabi(customer):
+"""
+- transaction_amount: avg and std
+- # of transactions per day
+"""
+# TODO: Consider the different types of transactions:
+# - 1: Withdrawal       (Retirada de dinero)
+# - 2: Deposit          (Ingreso)
+# - 3: Balance Inquiry  (Consulta de saldo/balance)
+# - 4: Transfer         (Transferencia)
+def get_client_behavior_wisabi(customer):
     # CardholderID to locate the transactions of the customer in the wisabi dataset
-    # TODO: check if for a customer all the transactions take place in the same atm (in the wisabi dataset)
-
+    # for a customer, all the transactions take place in the same atm (in the wisabi dataset)
     # CardholderID -> to gather the transactions of this client
     # -> also indicates in which transaction csv we have to look into
+    behavior = {}
     cardholderid = customer['CardholderID']
-    print(cardholderid)
     csv_code = cardholderid.split('-')[0] # to read the transactions from the corresponding CSV
 
     if csv_code == "EN":
@@ -190,40 +193,56 @@ def get_expense_behavior_wisabi(customer):
         print("No matching transaction file, csv code was:", csv_code)
         return
     
-    transactions_df = pd.read_csv("wisabi/" + csv_file)
+    all_transactions_df = pd.read_csv("wisabi/" + csv_file)
 
     # obtain all the transactions of the customer by the cardholderid
-    transactions = transactions_df[transactions_df['CardholderID'] == cardholderid]
+    transactions = all_transactions_df[all_transactions_df['CardholderID'] == cardholderid]
     if not transactions.empty:
-        #city = atm['City'].iloc[0]
-        print(len(transactions))
+        amount_avg = round(transactions['TransactionAmount'].mean(),2)
+        amount_std = round(transactions['TransactionAmount'].std(),2)
+        # Number of transactions per day - we have transactions of the year 2022 - 365 days
+        num_transacc_per_day = round(len(transactions) / 365, 4)
+        behavior['amount_avg'] = amount_avg
+        behavior['amount_std'] = amount_std
+        behavior['transacc_day'] = num_transacc_per_day
+        # TODO: Optional -> calculate the average times on which transactions are performed?
     else: 
         print("No matching transactions with CardholderID found in transactions table")
 
-
+    return behavior
 
 def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, n):
     
     # create the card dataframe
-    cols = ['number_id', 'client_id', 'expiration', 'CVC', 'extract_limit', 'loc_latitude', 'loc_longitude']
+    cols = ['number_id', 
+            'client_id', 
+            'expiration', 
+            'CVC', 
+            'loc_latitude', 
+            'loc_longitude', 
+            'extract_limit',
+            'amount_avg',
+            'amount_std',
+            'transacc_day'
+            ]
     card_df = pd.DataFrame(columns=cols)
-
     num_customers_wisabi = len(customers_df_wisabi)
 
     # Generate the n synthetic cards
     for i in range(n):
-    
         # Select random wisabi customer 
         # discrete value drawn from uniform distribution in range (0,num_customers_wisabi) 
         rand_index = random.randint(0, num_customers_wisabi-1) # randint [a,b]
         rand_customer = customers_df_wisabi.iloc[rand_index]
         print(rand_customer)
 
-        # Get expense_behaviour of this customer so that we also assign them to the new card/client generated
+        # 1. Behavior 
+        # Get behaviour of this customer so that we also assign them to the new card/client generated
         # --> behavior obtained from its transactions in the wisabi dataset
-        get_expense_behavior_wisabi(rand_customer)
+        behavior = get_client_behavior_wisabi(rand_customer)
 
-        """
+        # 2. Location
+
         # Option 1: assign a random location of the usual ATM of the selected wisabi customer
         if loc_from_wisabi:
             atmid = rand_customer['ATMID']
@@ -254,13 +273,18 @@ def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, 
             'client_id': i,
             'expiration': datetime.date.today(),
             'CVC': 999,
-            'extract_limit': 10000,
             'loc_latitude': loc_latitude, 
-            'loc_longitude': loc_longitude
+            'loc_longitude': loc_longitude,
+            'extract_limit': behavior['amount_avg'] * 5, # Temporary approach
+            # optional -> for the generation of the transactions based on the behavior
+            # of the clients of the wisabi dataset
+            'amount_avg': behavior['amount_avg'],
+            'amount_std': behavior['amount_std'],
+            'transacc_day': behavior['transacc_day']
         }
 
         card_df.loc[i] = new_card
-        """
+        
     return card_df
 
 
@@ -275,12 +299,16 @@ def main():
     customers_df_wisabi = pd.read_csv(customers_file)
     print(customers_df_wisabi.head())
 
-    """
     atm_df = atm_generator(atm_df_wisabi, 2)
     print(atm_df)
     atm_df.to_csv('atm.csv', index=False)
-    """
-    card_df = card_generator(customers_df_wisabi, atm_df_wisabi, atm_df=None, loc_from_wisabi=False, n=1)
+
+    # loc_from_wisabi:
+    # true -> random location is taken from the random selected customer from wisabi from which the card 
+    # info is going to be generated (the lcoation of his usual ATM)
+    # false -> random location is taken from one of the locations of the ATMs of the newly generated
+    # ATMs dataset
+    card_df = card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi=False, n=3)
     print(card_df)
     card_df.to_csv('card.csv', index=False)
 
