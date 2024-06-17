@@ -117,16 +117,18 @@ First we are generating not fraud kinds of transactions. Therefore the transacti
 - For each day generate `num_tx` transactions, random number drawn from a Poisson distribution
 of `lambda` = `withdrawal_day` (= avg number of withdrawals per day).
 
+- transaction_start & transaction_end:
 
 
 **Process**:
 For each client:
 
-- ATM: get an ordered list of all the ATMs ordered by distance to the client and select randomly
-
 - transaction_start & transaction_end:
-Generate x transactions per month: in particular for each client -> `withdrawal_day` 
+
 - transaction_amount:
 
+- transaction_id: 
+
+- ATM: get an ordered list of all the ATMs ordered by distance to the client and select randomly
 
 

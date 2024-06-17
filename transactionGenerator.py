@@ -4,10 +4,18 @@ import random
 import datetime
 
 # months: number of months for which we generate transactions
-def transaction_generator(card, atm_df):
+def transaction_generator(card, atm_df, start_date, tx_id):
 
-    # Define the start date
-    start_date = "2018-04-01"
+    # create transaction dataframe
+    cols = ['transaction_id', 
+            'number_id', 
+            'ATM_id', 
+            'transaction_start', 
+            'transaction_end', 
+            'transaction_amount'
+            ]
+    transaction_df = pd.DataFrame(columns=cols)
+
     start_datetime = datetime.datetime.strptime(start_date, "%Y-%m-%d")
 
     # fix a constant seed so that experiments are reproducible
@@ -49,12 +57,39 @@ def transaction_generator(card, atm_df):
                     diff_end = int(np.random.normal(300,120))
                     if (diff_end < 0): diff_end = 300 # if negative -> then it is = to the mean
 
-                    print(f"diff_end = {diff_end}")
                     end_time_tx = start_time_tx + diff_end
                     end_time_delta = datetime.timedelta(seconds=end_time_tx)
                     # Add the timedelta to the start date
                     transaction_end = start_datetime + end_time_delta
                     print(transaction_end)
+
+                    # -----------------------------------------------------------
+                    # transaction_amount 
+                    # based on card behavior params: amount_avg & amount_std
+                    # normal distribution: mean = amount_avg, std = amount_std
+                    print(f"amount_avg: {card['amount_avg']}")
+                    print(f"amount_avg: {card['amount_std']}")
+                    transaction_amount = np.random.normal(card['amount_avg'], card['amount_std'])
+                    # If negative amount, draw from a uniform distribution
+                    if transaction_amount < 0:
+                        transaction_amount = np.random.uniform(0,card['amount_avg']*2)
+                    
+                    transaction_amount = np.round(transaction_amount,decimals=2)
+                    print(transaction_amount)
+                    new_tx = {
+                        'transaction_id': tx_id,
+                        'number_id': card['number_id'], # card id
+                        'ATM_id': 1, # TODO 
+                        'transaction_start': transaction_start, 
+                        'transaction_end': transaction_end, 
+                        'transaction_amount': transaction_amount
+                    }
+
+                    new_tx_df = pd.DataFrame([new_tx])
+                    transaction_df = pd.concat([transaction_df, new_tx_df], ignore_index=True)
+                    tx_id += 1 
+
+    return transaction_df, tx_id
 
 def main():
     # Read the card and atm datasets
@@ -64,8 +99,23 @@ def main():
     print(atm_df)
     print(card_df)
 
+    # create the transaction dataframe
+    cols = ['transaction_id', 
+            'number_id', 
+            'ATM_id', 
+            'transaction_start', 
+            'transaction_end', 
+            'transaction_amount'
+            ]
+    transaction_df = pd.DataFrame(columns=cols)
+
+    # TODO: Define the start date
+    start_date = "2018-04-01"
+    tx_id = 0
     # 1st card
-    transaction_generator(card_df.iloc[0], atm_df)
+    tx_card, tx_id = transaction_generator(card_df.iloc[0], atm_df, start_date, tx_id)
+    print(tx_card)
+    print(tx_id) # to continue the next transaction_id on this value
 
     
 
