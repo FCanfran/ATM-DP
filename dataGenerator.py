@@ -7,10 +7,6 @@ from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 
 import datetime
 
-def bank_generator():
-    print("Bank generator")
-    # 1. generate random coordinates
-
 # Function to generate a random geolocation (latitude, longitude) of a given
 # city and country
 #
@@ -91,6 +87,11 @@ def generate_random_geolocation_city(city, country, atm_dictionary):
     random_longitude = random.uniform(min_longitude, max_longitude)
     # limit the values to have only 6 decimals - enough
     return round(random_latitude,6), round(random_longitude,6)
+
+
+def bank_generator():
+    print("Bank generator")
+    # 1. generate random coordinates
 
 """
 ATM: 
@@ -273,8 +274,6 @@ def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, 
         print(city)
         # optional -> use the previously constructed atm_dictionary of wisabi, so that it is faster
         loc_latitude, loc_longitude = generate_random_geolocation_city(city, country, atm_dictionary=None)
-
-
 
         new_card = {
             'number_id': i,

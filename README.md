@@ -97,3 +97,32 @@ Note that:
 
 
 TODO: Poner aqui la explicación de lo que he hecho (en el cuadernillo...)
+
+
+### Transaction
+
++ number_id (card id)
++ ATM_id    (atm id)
+- transaction_id: string
+- transaction_start: datetime
+- transaction_end: datetime
+- transaction_amount: float
+
+#### Remarks:
+
+First we are generating not fraud kinds of transactions. Therefore the transactions generated for each client have to be generated in such a way that they wont produce any fraud pattern alert. Later in the process we will poison our system by generating those transactions to produce fraud pattern alerts.
+
+- months: number of months for which we generate transactions (default = 1)
+
+**Process**:
+For each client:
+
+- ATM: get an ordered list of all the ATMs ordered by distance to the client and select randomly
+
+
+- transaction_start & transaction_end:
+Generate x transactions per month: in particular for each client -> `withdrawal_day` 
+- transaction_amount:
+
+
+
