@@ -79,11 +79,21 @@ Note that:
 
 expiration and CVC -> not relevant: could be empty fields indeed or for all the Cards the same values.
 
+#### Some remarks
 
 Initially:
 - 1 card per client --> TODO: Later we can modify
 
+- For the moment, for gathering the behavior of the wisabi clients we only consider the withdrawal type of transaction.
+
+- In the generation of each card/client we gather information about their
+transactional behavior (amount avg, amount std, number of transactions per day...) based on the clients of the wisabi dataset: this will be useful for the generation of the syntethic trasactions.
+
+Note that:
+  - This behavior is gathered from 1 random client at a time of the wisabi dataset, so that we have more variability. But it could be that we assign the same behavior to all the clients, and this behavior be like a summary of all the wisabi dataset clients behavior. 
+  Also the behavior could be assigned drawning it from taylored distributions selected by us ("homemade").
+
 #### Approach 1: 1 client at-a-time
 
 
-
+TODO: Poner aqui la explicación de lo que he hecho (en el cuadernillo...)

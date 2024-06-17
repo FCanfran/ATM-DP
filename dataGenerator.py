@@ -165,11 +165,12 @@ RI - rivers_transactions.csv
 - transaction_amount: avg and std
 - # of transactions per day
 """
-# TODO: Consider the different types of transactions:
+# Different types of transactions:
 # - 1: Withdrawal       (Retirada de dinero)
 # - 2: Deposit          (Ingreso)
 # - 3: Balance Inquiry  (Consulta de saldo/balance)
 # - 4: Transfer         (Transferencia)
+# NOTE: For the moment we only consider the withdrawal (1) type of transaction in the behavior
 def get_client_behavior_wisabi(customer):
     # CardholderID to locate the transactions of the customer in the wisabi dataset
     # for a customer, all the transactions take place in the same atm (in the wisabi dataset)
@@ -196,7 +197,13 @@ def get_client_behavior_wisabi(customer):
     all_transactions_df = pd.read_csv("wisabi/" + csv_file)
 
     # obtain all the transactions of the customer by the cardholderid
-    transactions = all_transactions_df[all_transactions_df['CardholderID'] == cardholderid]
+    # & that are of the type withdrawal (1)
+    transactions = all_transactions_df[(all_transactions_df['CardholderID'] == cardholderid)]
+    print(f"# of transactions: {len(transactions)}")
+    # withdrawals only
+    transactions = transactions[(transactions['TransactionTypeID'] == 1)]
+    print(f"# of withdrawals: {len(transactions)}")
+
     if not transactions.empty:
         amount_avg = round(transactions['TransactionAmount'].mean(),2)
         amount_std = round(transactions['TransactionAmount'].std(),2)
@@ -223,7 +230,7 @@ def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, 
             'extract_limit',
             'amount_avg',
             'amount_std',
-            'transacc_day'
+            'withdrawal_day'
             ]
     card_df = pd.DataFrame(columns=cols)
     num_customers_wisabi = len(customers_df_wisabi)
@@ -239,6 +246,7 @@ def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, 
         # 1. Behavior 
         # Get behaviour of this customer so that we also assign them to the new card/client generated
         # --> behavior obtained from its transactions in the wisabi dataset
+        # NOTE: For the moment we only consider the withdrawal (1) type of transaction in the behavior
         behavior = get_client_behavior_wisabi(rand_customer)
 
         # 2. Location
@@ -280,7 +288,7 @@ def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, 
             # of the clients of the wisabi dataset
             'amount_avg': behavior['amount_avg'],
             'amount_std': behavior['amount_std'],
-            'transacc_day': behavior['transacc_day']
+            'withdrawal_day': behavior['transacc_day']
         }
 
         card_df.loc[i] = new_card
