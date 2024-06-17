@@ -101,9 +101,9 @@ TODO: Poner aqui la explicación de lo que he hecho (en el cuadernillo...)
 
 ### Transaction
 
+- transaction_id: string
 + number_id (card id)
 + ATM_id    (atm id)
-- transaction_id: string
 - transaction_start: datetime
 - transaction_end: datetime
 - transaction_amount: float
@@ -119,16 +119,21 @@ of `lambda` = `withdrawal_day` (= avg number of withdrawals per day).
 
 - transaction_start & transaction_end:
 
+  - transaction_start: draw the time in seconds in that particular day from a normal distribution of mean = 86400/2 and std = 20000
+  This choice aims at simulating the fact that most transactions occur during the day, around noon (12h). 24h x 60 min x 60 s = 86400s in a day and half day (noon) = 86400s / 2.
 
-**Process**:
-For each client:
+  - transaction_end: increment some diff/delta time based on the normal duration of a transaction.
+  TODO: Define this better
+  For the moment the difference is drawn from a normal distribution of mean = 5min (300s), std = 2min (120s), whenever the difference is negative then it is assigned the mean (300s).
 
-- transaction_start & transaction_end:
+- transaction_amount: based on card behavior params `amount_avg` and `amount_std`
+  it is drawn from a normal distribution of mean = amount_avg, std = amount_std.
+  If negative amount, drawn from a uniform distribution(0,amount_avg*2)
 
-- transaction_amount:
+- transaction_id: based on an initial id and then increment it whenever a new transaction is created.
 
-- transaction_id: 
 
-- ATM: get an ordered list of all the ATMs ordered by distance to the client and select randomly
+TODO: 
+- ATM: get an ordered list of all the ATMs ordered by distance to the client and select randomly with more probability (most of it) among the closest ones!.
 
 
