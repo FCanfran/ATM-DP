@@ -13,13 +13,14 @@ def distribute_tx(n):
     # in seconds of a day: (86400s in a day) -> [tmin/2, 86400-(tmin/2)]
     lower_bound = TMIN/2
     upper_bound = 86400 - (TMIN/2)
+    print(lower_bound, upper_bound)
 
     if (upper_bound - lower_bound) < (n-1) * TMIN:
         raise ValueError(f"Impossible to distribute {n} transactions over a day with tmin = {TMIN}")
 
     moments = []
     while len(moments) < n:
-        candidate = random.uniform(lower_bound, upper_bound)
+        candidate = int(random.uniform(lower_bound, upper_bound))
         # to add this new moment of transaction, it is required that it respects 
         # the time distance constraint wrt all the other added moments
         if (all(abs(candidate - second) >= TMIN for second in moments)):
@@ -27,6 +28,17 @@ def distribute_tx(n):
     
     moments.sort()
     print(moments)
+    start_date = "2018-04-01"
+    start_datetime = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+    day = 0
+    for moment in moments:
+        # shift based on the number of day
+        start_time_tx = (86400 * day) + moment 
+        start_time_delta = datetime.timedelta(seconds=start_time_tx)
+        # Add the timedelta to the start date
+        transaction_start = start_datetime + start_time_delta
+        print(transaction_start)
+
 
 def calculate_distance(atm_row, point):
     atm_loc = (atm_row['loc_latitude'], atm_row['loc_longitude'])
