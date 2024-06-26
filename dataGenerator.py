@@ -67,7 +67,8 @@ def create_atm_dictionary(atm_df_wisabi):
     
     return atm_dict
 
-# Generate a random geolocation inside the bbox of the given city,country
+# Generate a random geolocation in decimal degrees format inside the bbox of the given 
+# city,country
 # - option: using the atm_dictionary of the atms of the cities in the wisabi dataset
 def generate_random_geolocation_city(city, country, atm_dictionary):
 

@@ -135,5 +135,22 @@ of `lambda` = `withdrawal_day` (= avg number of withdrawals per day).
 
 TODO: 
 - ATM: get an ordered list of all the ATMs ordered by distance to the client and select randomly with more probability (most of it) among the closest ones!.
+- Note that: we also need to take into account the time wrt to the previous transaction to allow less or more distance... -> IDEA: do a simple approximate calculation for this that is 
+encoded by the value of the THRESHOLD distance at each moment.
+
+Option 1: Not taking into account the previous generated transaction
+--> (*) Option 2: Taking into account the previous generated transaction: both for the linked ATM of the new transaction and its transaction time (to avoid transactions that are overlapped or that come one directly after the other --> this may be fraudulent - AVOID!) 
 
 
+
+Useful links:
+- Explanation of geodesic distance: https://michaelminn.net/tutorials/gis-distance/
+- Used lirbary for the calculation of the geodesic distance: https://pypi.org/project/geopy/ 
+
+Optional: limit to the ones that lie inside a specific distance threshold
+2 approaches for the distance:
+- Haversine: (great-circle distance) Earth as a sphere. Less accurate. Less expensive computation.
+- Vicenty: Earth as a ellipsoid (oblate spheroid). More accurate. More expensive computation.
+NOTE that: Earth is neither perfectly spherical nor ellipse hence calculating the distance on its surface is a challenging task.
+
+https://www.neovasolutions.com/2019/10/04/haversine-vs-vincenty-which-is-the-best/

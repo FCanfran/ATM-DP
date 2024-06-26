@@ -2,8 +2,27 @@ import pandas as pd
 import numpy as np
 import random
 import datetime
+from geopy.distance import geodesic, great_circle
 
-# months: number of months for which we generate transactions
+# get ordered ascending list by distance of the atms wrt card location coordinates
+# Optional: limit to the ones that lie inside a specific distance threshold
+# 2 approaches for the distance:
+# - Haversine: (great-circle distance) Earth as a sphere. Less accurate. Less expensive computation.
+# - Vicenty: Earth as a ellipsoid (oblate spheroid). More accurate. More expensive computation.
+# NOTE that: Earth is neither perfectly spherical nor ellipse hence calculating the distance on its surface is a challenging task.
+# https://www.neovasolutions.com/2019/10/04/haversine-vs-vincenty-which-is-the-best/
+def get_ordered_atms(card_loc_latitude, card_loc_longitude, atm_df, threshold=None):
+    print(f"card_loc_latitude: {card_loc_latitude}, card_loc_longitude: {card_loc_longitude}")
+    
+    card_loc = (card_loc_latitude, card_loc_longitude)
+    atm = atm_df.loc[0]
+    print(atm)
+    # haversine - great-circle distance
+    atm_loc = (atm['loc_latitude'], atm['loc_longitude'])
+    print(atm_loc)
+    print(great_circle(atm_loc, card_loc))
+    # vicenty
+
 def transaction_generator(card, atm_df, start_date, tx_id):
 
     # create transaction dataframe
@@ -22,6 +41,10 @@ def transaction_generator(card, atm_df, start_date, tx_id):
     key = int(str(card['number_id']) + str(card['client_id']))
     random.seed(int(key))
     np.random.seed(int(key))
+
+    # ordered list of terminals by ascending distance to the client card location
+    get_ordered_atms(card['loc_latitude'], card['loc_longitude'], atm_df)
+    """
     num_days = 10
     for day in range(num_days):
         
@@ -90,6 +113,7 @@ def transaction_generator(card, atm_df, start_date, tx_id):
                     tx_id += 1 
 
     return transaction_df, tx_id
+    """
 
 def main():
     # Read the card and atm datasets
