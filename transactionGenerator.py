@@ -4,6 +4,11 @@ import random
 import datetime
 from geopy.distance import geodesic, great_circle
 
+def calculate_distance(atm_row, point):
+    atm_loc = (atm_row['loc_latitude'], atm_row['loc_longitude'])
+    distance = great_circle(atm_loc, point).kilometers
+    return round(distance,3) # limit to 3 decimals only, km and meters
+
 # get ordered ascending list by distance of the atms wrt card location coordinates
 # Optional: limit to the ones that lie inside a specific distance threshold
 # 2 approaches for the distance:
@@ -12,16 +17,15 @@ from geopy.distance import geodesic, great_circle
 # NOTE that: Earth is neither perfectly spherical nor ellipse hence calculating the distance on its surface is a challenging task.
 # https://www.neovasolutions.com/2019/10/04/haversine-vs-vincenty-which-is-the-best/
 def get_ordered_atms(card_loc_latitude, card_loc_longitude, atm_df, threshold=None):
-    print(f"card_loc_latitude: {card_loc_latitude}, card_loc_longitude: {card_loc_longitude}")
-    
+    # Create a copy of the original DataFrame to avoid modifying it - dataframes are mutable objects!
+    atm_df_ordered = atm_df.copy()
     card_loc = (card_loc_latitude, card_loc_longitude)
-    atm = atm_df.loc[0]
-    print(atm)
-    # haversine - great-circle distance
-    atm_loc = (atm['loc_latitude'], atm['loc_longitude'])
-    print(atm_loc)
-    print(great_circle(atm_loc, card_loc))
-    # vicenty
+    print(card_loc)
+    # Calculate distances and add as a new column
+    atm_df_ordered['distance'] = atm_df_ordered.apply(calculate_distance, point=card_loc, axis=1)
+    # Sort DataFrame based on distance
+    atm_df_ordered = atm_df_ordered.sort_values(by='distance', ascending=True).reset_index(drop=True)
+    return atm_df_ordered
 
 def transaction_generator(card, atm_df, start_date, tx_id):
 
@@ -42,8 +46,14 @@ def transaction_generator(card, atm_df, start_date, tx_id):
     random.seed(int(key))
     np.random.seed(int(key))
 
-    # ordered list of terminals by ascending distance to the client card location
-    get_ordered_atms(card['loc_latitude'], card['loc_longitude'], atm_df)
+    # 1. Ordered list of terminals by ascending distance to the client card location
+    atm_df_ordered = get_ordered_atms(card['loc_latitude'], card['loc_longitude'], atm_df)
+    # 2. ATMs subset - select a maximum of MAX_SIZE_ATM_SUBSET of ATMs that are at a distance
+    # inferior or equal to MAX_DISTANCE to the residence of the client
+    # TODO: Improve this - values are "testing" values
+    MAX_SIZE_ATM_SUBSET = 10
+    MAX_DISTANCE = 30 # km
+    
     """
     num_days = 10
     for day in range(num_days):

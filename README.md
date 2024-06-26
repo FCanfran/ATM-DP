@@ -141,7 +141,9 @@ encoded by the value of the THRESHOLD distance at each moment.
 Option 1: Not taking into account the previous generated transaction
 --> (*) Option 2: Taking into account the previous generated transaction: both for the linked ATM of the new transaction and its transaction time (to avoid transactions that are overlapped or that come one directly after the other --> this may be fraudulent - AVOID!) 
 
+https://stackoverflow.com/questions/51918580/python-random-list-of-numbers-in-a-range-keeping-with-a-minimum-distance
 
+DISTANCE...
 
 Useful links:
 - Explanation of geodesic distance: https://michaelminn.net/tutorials/gis-distance/
@@ -154,3 +156,6 @@ Optional: limit to the ones that lie inside a specific distance threshold
 NOTE that: Earth is neither perfectly spherical nor ellipse hence calculating the distance on its surface is a challenging task.
 
 https://www.neovasolutions.com/2019/10/04/haversine-vs-vincenty-which-is-the-best/
+
+
+
