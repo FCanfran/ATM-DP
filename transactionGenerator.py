@@ -16,15 +16,23 @@ def calculate_distance(atm_row, point):
 # - Vicenty: Earth as a ellipsoid (oblate spheroid). More accurate. More expensive computation.
 # NOTE that: Earth is neither perfectly spherical nor ellipse hence calculating the distance on its surface is a challenging task.
 # https://www.neovasolutions.com/2019/10/04/haversine-vs-vincenty-which-is-the-best/
-def get_ordered_atms(card_loc_latitude, card_loc_longitude, atm_df, threshold=None):
+def get_ordered_atms(card_loc_latitude, card_loc_longitude, atm_df, max_size_subset, max_distance):
     # Create a copy of the original DataFrame to avoid modifying it - dataframes are mutable objects!
     atm_df_ordered = atm_df.copy()
     card_loc = (card_loc_latitude, card_loc_longitude)
     print(card_loc)
     # Calculate distances and add as a new column
     atm_df_ordered['distance'] = atm_df_ordered.apply(calculate_distance, point=card_loc, axis=1)
+
+    # Subset that has distnace <= max_distance
+    atm_df_ordered = atm_df_ordered[atm_df_ordered['distance'] <= max_distance]
+
     # Sort DataFrame based on distance
     atm_df_ordered = atm_df_ordered.sort_values(by='distance', ascending=True).reset_index(drop=True)
+   
+    # Subset of max size of max_size_subset
+    atm_df_ordered = atm_df_ordered.head(max_size_subset)
+
     return atm_df_ordered
 
 def transaction_generator(card, atm_df, start_date, tx_id):
@@ -47,12 +55,14 @@ def transaction_generator(card, atm_df, start_date, tx_id):
     np.random.seed(int(key))
 
     # 1. Ordered list of terminals by ascending distance to the client card location
-    atm_df_ordered = get_ordered_atms(card['loc_latitude'], card['loc_longitude'], atm_df)
     # 2. ATMs subset - select a maximum of MAX_SIZE_ATM_SUBSET of ATMs that are at a distance
     # inferior or equal to MAX_DISTANCE to the residence of the client
     # TODO: Improve this - values are "testing" values
     MAX_SIZE_ATM_SUBSET = 10
     MAX_DISTANCE = 30 # km
+    atm_df_ordered = get_ordered_atms(card['loc_latitude'], card['loc_longitude'], atm_df, MAX_SIZE_ATM_SUBSET, MAX_DISTANCE)
+
+    print(atm_df_ordered)
     
     """
     num_days = 10
