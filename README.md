@@ -93,12 +93,6 @@ Note that:
   - This behavior is gathered from 1 random client at a time of the wisabi dataset, so that we have more variability. But it could be that we assign the same behavior to all the clients, and this behavior be like a summary of all the wisabi dataset clients behavior. 
   Also the behavior could be assigned drawning it from taylored distributions selected by us ("homemade").
 
-#### Approach 1: 1 client at-a-time
-
-
-TODO: Poner aqui la explicación de lo que he hecho (en el cuadernillo...)
-
-
 ### Transaction
 
 - transaction_id: string

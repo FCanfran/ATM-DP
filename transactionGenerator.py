@@ -37,18 +37,15 @@ def get_ordered_atms(card_loc_latitude, card_loc_longitude, atm_df, max_size_sub
     return atm_df_ordered
 
 # Distribute n transactions on a day [tmin/2, 86400-(tmin/2)]
-# Returns a ordered list of start moments in seconds, respecting all the constraints
-# NOTE: duration of a transaction will be strictly lower than the TMIN
-# what it is more, it should be insignificant wrt to TMIN so that we do not
-# interfere to the assumptions on the distribution of the transactions on a day...
-def distribute_tx(n):
+# Returns a ordered list of start moments in seconds, respecting that all of the moments
+# are at a minimum time distance of TMIN
+# NOTE: max duration of a transaction defined by max_duration
+def distribute_tx(n, max_duration):
     # TODO: pass by param 
     TMIN = 3600 # assume is 1h 
     # in seconds of a day: (86400s in a day) -> [tmin/2, 86400-(tmin/2)]
-    # TODO: SUMAR ALGO MÁS TENIENDO EN CUENTA EL TIEMPO DE DURACIÓN MÁXIMO DE UNA TRANSACCIÓN (FIXED TO 10mins for example -> DEFINE
-    # AS PARAMETER SO THAT IT CAN BE MODIFIED LATER)
     lower_bound = TMIN/2
-    upper_bound = 86400 - (TMIN/2)
+    upper_bound = 86400 - (TMIN/2) - max_duration
 
     if (upper_bound - lower_bound) < (n-1) * TMIN:
         raise ValueError(f"Impossible to distribute {n} transactions over a day with tmin = {TMIN}")
@@ -99,6 +96,9 @@ def transaction_generator(card, atm_df, start_date, tx_id):
     # NOTE: Approx -> 2 x MAX_DISTANCE kms is the upper bound on this max distance btw 2 atms of the subset list
     # Therefore we set the t_min approx to be the time needed to traverse that distance at 50km/h
     T_MIN = ((MAX_DISTANCE * 2) / 50) * 60 * 60 # in seconds
+
+    # max_duration of a transaction
+    max_duration = 600 # 600s - 10min
     
     # 3. Generation of transactions
     num_days = 10 # NOTE
@@ -109,7 +109,7 @@ def transaction_generator(card, atm_df, start_date, tx_id):
 
         if num_tx > 0:
             # distributed transaction start moments on a day (in seconds)
-            moments = distribute_tx(num_tx)
+            moments = distribute_tx(num_tx, max_duration)
             for moment in moments:
                 # 0. ATM id
                 # randomly among the subset of ATMs -> all of them satisfy the constraints
@@ -130,7 +130,7 @@ def transaction_generator(card, atm_df, start_date, tx_id):
                 # upper bound to 10min -> 600
                 diff_end = int(np.random.normal(300,120))
                 if (diff_end < 0): diff_end = 300 # if negative -> then it is = to the mean
-                if (diff_end > 600): diff_end = 600 # if above 10 mins -> then 10 min
+                if (diff_end > max_duration): diff_end = max_duration # if above 10 mins -> then 10 min
 
                 end_time_tx = start_time_tx + diff_end
                 end_time_delta = datetime.timedelta(seconds=end_time_tx)
