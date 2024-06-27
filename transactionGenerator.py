@@ -55,7 +55,7 @@ def distribute_tx(n, max_duration):
         candidate = int(random.uniform(lower_bound, upper_bound))
         # to add this new moment of transaction, it is required that it respects 
         # the time distance constraint wrt all the other added moments
-        if (all(abs(candidate - second) >= TMIN for second in moments)):
+        if (all(abs(candidate - second) >= (TMIN + max_duration) for second in moments)):
             moments.append(candidate)
     
     moments.sort()
