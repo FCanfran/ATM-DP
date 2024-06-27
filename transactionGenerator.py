@@ -45,6 +45,8 @@ def distribute_tx(n):
     # TODO: pass by param 
     TMIN = 3600 # assume is 1h 
     # in seconds of a day: (86400s in a day) -> [tmin/2, 86400-(tmin/2)]
+    # TODO: SUMAR ALGO MÁS TENIENDO EN CUENTA EL TIEMPO DE DURACIÓN MÁXIMO DE UNA TRANSACCIÓN (FIXED TO 10mins for example -> DEFINE
+    # AS PARAMETER SO THAT IT CAN BE MODIFIED LATER)
     lower_bound = TMIN/2
     upper_bound = 86400 - (TMIN/2)
 
@@ -85,6 +87,7 @@ def transaction_generator(card, atm_df, start_date, tx_id):
     # & ATMs subset - select a maximum of MAX_SIZE_ATM_SUBSET of ATMs that are at a distance
     # inferior or equal to MAX_DISTANCE to the residence of the client
     # TODO: Improve this - values are "testing" values
+    # NOTE
     MAX_SIZE_ATM_SUBSET = 10
     MAX_DISTANCE = 30 # km
     atm_df_ordered = get_ordered_atms(card['loc_latitude'], card['loc_longitude'], atm_df, MAX_SIZE_ATM_SUBSET, MAX_DISTANCE)
@@ -98,7 +101,7 @@ def transaction_generator(card, atm_df, start_date, tx_id):
     T_MIN = ((MAX_DISTANCE * 2) / 50) * 60 * 60 # in seconds
     
     # 3. Generation of transactions
-    num_days = 10
+    num_days = 10 # NOTE
     for day in range(num_days):
         # random number of transactions on this day:
         # poisson of lambda = withdrawal_day (= avg number of withdrawals per day)
