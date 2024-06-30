@@ -283,6 +283,7 @@ def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, 
             'CVC': 999,
             'loc_latitude': loc_latitude, 
             'loc_longitude': loc_longitude,
+            # TODO: round to 2 decimals only!
             'extract_limit': behavior['amount_avg'] * 5, # Temporary approach
             # optional -> for the generation of the transactions based on the behavior
             # of the clients of the wisabi dataset
