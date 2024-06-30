@@ -8,7 +8,7 @@ import datetime
 
 # Parameters
 # --------------------------------------------------------------------------
-num_ATMs = 10  # number of ATMs to be generated
+num_ATMs = 10  # number of ATMs
 # .............
 num_cards = 10  # number of cards
 # - true -> random location is taken from the random selected customer from wisabi from which the card
@@ -306,11 +306,6 @@ def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, 
     return card_df
 
 
-def bank_generator():
-    print("Bank generator")
-    # 1. generate random coordinates
-
-
 def main():
     # Pre: read wisabi dataset info
     # read the csv of wisabi atms
@@ -319,6 +314,11 @@ def main():
     # read the csv of wisabi customers
     customers_file = "wisabi/customers_lookup.csv"
     customers_df_wisabi = pd.read_csv(customers_file)
+
+    # Bank generator
+    bank_df = atm_generator(atm_df_wisabi, num_banks)
+    print(bank_df)
+    bank_df.to_csv("csv/bank.csv", index=False)
 
     # ATM generator
     atm_df = atm_generator(atm_df_wisabi, num_ATMs)
