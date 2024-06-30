@@ -1,6 +1,11 @@
 ATM_id,loc_latitude,loc_longitude,city,country
-0,6.560632,3.411841,Lagos,Nigeria
-1,9.068368,7.592237,Abuja,Nigeria
-2,6.359189,3.400752,Lagos,Nigeria
-3,11.818648,8.189113,Kano,Nigeria
-4,6.520375,3.254371,Lagos,Nigeria
+0,10.873981,9.253135,Kano,Nigeria
+1,6.298785,6.956371,Enugu,Nigeria
+2,6.436893,3.465739,Lagos,Nigeria
+3,6.412521,3.482414,Lagos,Nigeria
+4,6.298897,3.247619,Lagos,Nigeria
+5,6.308971,3.412901,Lagos,Nigeria
+6,9.030543,7.55805,Abuja,Nigeria
+7,11.118372,7.781067,Kano,Nigeria
+8,6.601047,3.345905,Lagos,Nigeria
+9,9.131678,7.519986,Abuja,Nigeria

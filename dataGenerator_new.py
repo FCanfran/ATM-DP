@@ -8,11 +8,11 @@ import datetime
 
 # Parameters
 # --------------------------------------------------------------------------
-num_ATMs = 5  # number of ATMs to be generated
+num_ATMs = 10  # number of ATMs to be generated
 # .............
 num_cards = 10  # number of cards
 # - true -> random location is taken from the random selected customer from wisabi from which the card
-# info is going to be generated (the lcoation of his usual ATM)
+# info is going to be generated (the location of his usual ATM)
 # - false -> random location is taken from one of the locations of the ATMs of the newly generated ATMs dataset
 loc_from_wisabi = False
 # --------------------------------------------------------------------------
