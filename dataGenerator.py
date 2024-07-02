@@ -315,11 +315,6 @@ def main():
     customers_file = "wisabi/customers_lookup.csv"
     customers_df_wisabi = pd.read_csv(customers_file)
 
-    # Bank generator
-    bank_df = atm_generator(atm_df_wisabi, num_banks)
-    print(bank_df)
-    bank_df.to_csv("csv/bank.csv", index=False)
-
     # ATM generator
     atm_df = atm_generator(atm_df_wisabi, num_ATMs)
     print(atm_df)
