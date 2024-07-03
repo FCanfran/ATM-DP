@@ -104,11 +104,6 @@ def transaction_generator(card, atm_df, start_date, tx_id):
 
     start_datetime = datetime.datetime.strptime(start_date, "%Y-%m-%d")
 
-    # fix a constant seed so that experiments are reproducible
-    key = int(str(card["number_id"]) + str(card["client_id"]))
-    random.seed(int(key))
-    np.random.seed(int(key))
-
     # 1. Ordered list of terminals by ascending distance to the client card location
     # selecting a maximum of max_size_atm_subset of ATMs that are at a distance
     # inferior or equal to max_distance to the residence of the client
@@ -208,6 +203,12 @@ def transaction_generator(card, atm_df, start_date, tx_id):
 
 
 def main():
+
+    # fix a constant seed so that experiments are reproducible
+    key = 37
+    random.seed(int(key))
+    np.random.seed(int(key))
+
     # Read the card and atm datasets
     atm_df = pd.read_csv("csv/atm.csv")
     card_df = pd.read_csv("csv/card.csv")
