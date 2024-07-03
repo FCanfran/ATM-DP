@@ -8,9 +8,15 @@ import datetime
 
 # Parameters
 # --------------------------------------------------------------------------
-num_ATMs = 10  # number of ATMs
+# num_ATMs = 10  # number of ATMs
 # .............
-num_cards = 10  # number of cards
+# num_cards = 10  # number of cards
+"""
+NOTE: If we decide to implement 1 client : N cards
+# mean number of cards per client - to decide the number of cards per each of the clients
+# - coming from Poisson distribution of lambda = mean_cards
+mean_cards = 1
+"""
 # - true -> random location is taken from the random selected customer from wisabi from which the card
 # info is going to be generated (the location of his usual ATM)
 # - false -> random location is taken from one of the locations of the ATMs of the newly generated ATMs dataset
@@ -125,7 +131,7 @@ def generate_random_geolocation_city(city, country, atm_dictionary):
 # TODO: Take into account that for each ATM location we have x number of atms... have this into account for the density distribution
 # from which we drawn the city location of the new generated ATM??
 # FOR THE MOMENT IT IS NOT TAKEN INTO ACCOUNT!
-def atm_generator(atm_df_wisabi, n):
+def atm_generator(atm_df_wisabi, n, bank_code, atm_dictionary):
 
     # create the ATM dataframe
     cols = ["ATM_id", "loc_latitude", "loc_longitude", "city", "country"]
@@ -133,13 +139,10 @@ def atm_generator(atm_df_wisabi, n):
 
     num_atms_wisabi = len(atm_df_wisabi)
 
-    # Create a dictionary of the geolocation bbox of the ATMs in the wisabi df
-    atm_dictionary = create_atm_dictionary(atm_df_wisabi)
-
     # Generate the n synthetic ATMs
     for i in range(n):
         print("_____________________________________")
-        ATM_id = i
+        ATM_id = bank_code + "-" + str(i)
         # Select random wisabi ATM to assign the location -
         # discrete value drawn from uniform distribution in range (0,num_atms_wisabi)
         rand_index = random.randint(0, num_atms_wisabi - 1)  # randint [a,b]
@@ -315,17 +318,65 @@ def main():
     customers_file = "wisabi/customers_lookup.csv"
     customers_df_wisabi = pd.read_csv(customers_file)
 
-    # ATM generator
-    atm_df = atm_generator(atm_df_wisabi, num_ATMs)
-    print(atm_df)
-    atm_df.to_csv("csv/atm.csv", index=False)
+    # Create a dictionary of the geolocation bbox of the ATMs in the wisabi df
+    atm_dictionary = create_atm_dictionary(atm_df_wisabi)
 
-    # Card generator
-    card_df = card_generator(
-        customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, num_cards
+    # Read the bank csv - to do the relationships between
+    # bank - ATM
+    # bank - Card
+    banks_file = "csv/bank.csv"
+    bank_df = pd.read_csv(banks_file)
+    # For each bank, introduce the number of ATMs and Cards that we want to generate for each
+    num_banks = bank_df.shape[0]
+    num_ATMs = []
+    num_cards = []
+    print(
+        f"For each bank, introduce the desired number of ATMs and Cards to be generated"
     )
-    print(card_df)
-    card_df.to_csv("csv/card.csv", index=False)
+    for i in range(num_banks):
+        while True:
+            n_atms = input(f"Number of ATMs for bank {bank_df.iloc[i]['name']}: ")
+            try:
+                num_ATMs.append(int(n_atms))
+                break  # exit True loop if inputs are valid
+            except ValueError:
+                print("Input has to be an integer!")
+
+    for i in range(num_banks):
+        while True:
+            n_cards = input(f"Number of Cards for bank {bank_df.iloc[i]['name']}: ")
+            try:
+                num_cards.append(int(n_cards))
+                break  # exit True loop if inputs are valid
+            except ValueError:
+                print("Input has to be an integer!")
+
+    print(num_ATMs)
+    print(num_cards)
+
+    # For each bank we generate the desired number of ATMs and Cards, and create
+    # the corresponding relationships Bank-ATM, Bank-Card
+
+    for i in range(num_banks):
+        bank_code = bank_df.iloc[i]["code"]
+        # ATM generator
+        atm_df = atm_generator(atm_df_wisabi, num_ATMs[i], bank_code, atm_dictionary)
+        print(atm_df)
+        # atm_df.to_csv("csv/atm.csv", index=False)
+
+        """
+        # Card generator
+        card_df = card_generator(
+            customers_df_wisabi,
+            atm_df_wisabi,
+            atm_df,
+            loc_from_wisabi,
+            num_cards[i],
+            bank_code,
+        )
+        print(card_df)
+        # card_df.to_csv("csv/card.csv", index=False)
+        """
 
 
 if __name__ == "__main__":

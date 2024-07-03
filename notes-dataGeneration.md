@@ -152,4 +152,20 @@ NOTE that: Earth is neither perfectly spherical nor ellipse hence calculating th
 https://www.neovasolutions.com/2019/10/04/haversine-vs-vincenty-which-is-the-best/
 
 
+## Updates: corrections
+
+*02/07*
+
+### 1 client - N cards  
+
+NOTE: For the moment leave it like 1 client:1 card (It does not make much difference at this point!)
+----------------------------------------------------------------------------------
+Allow for 1 client - N cards. So far for simplicity it was decided to determine the number of cards per each of the clients by drawing this number from a Poisson distribution with lambda equal to 1.
+
+TODO: Change in the overleaf. Also update that now we are not necesarily generating num_cards but cards for num_clients such that for each client we have a certain number of cards coming from a Poisson distribution of lambda = mean_cards.
+----------------------------------------------------------------------------------
+
+
+
+
 
