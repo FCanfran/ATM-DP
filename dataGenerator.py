@@ -64,6 +64,7 @@ def get_city_bbox(city, country):
 # so that the bbox of each city does not need to be retrieved for each
 # of the new ATMs generated
 def create_atm_dictionary(atm_df_wisabi):
+    print("... creation of the ATM geolocation dictionary")
     atm_dict = {}
     for i in range(0, len(atm_df_wisabi)):
         atm = atm_df_wisabi.iloc[i]
@@ -107,10 +108,6 @@ def generate_random_geolocation_city(city, country, atm_dictionary):
         min_longitude = atm_dictionary[city]["bbox"]["min_longitude"]
         max_longitude = atm_dictionary[city]["bbox"]["max_longitude"]
 
-    print(
-        "(%f, %f, %f, %f)" % (min_longitude, min_latitude, max_longitude, max_latitude)
-    )
-
     random_latitude = random.uniform(min_latitude, max_latitude)
     random_longitude = random.uniform(min_longitude, max_longitude)
     # limit the values to have only 6 decimals - enough
@@ -136,12 +133,14 @@ def atm_generator(atm_df_wisabi, n, bank_code, atm_dictionary):
     # create the ATM dataframe
     cols = ["ATM_id", "loc_latitude", "loc_longitude", "city", "country"]
     atm_df = pd.DataFrame(columns=cols)
+    # create the relationship ATM-bank dataframe
+    cols = ["code", "ATM_id"]
+    atm_bank_df = pd.DataFrame(columns=cols)
 
     num_atms_wisabi = len(atm_df_wisabi)
 
     # Generate the n synthetic ATMs
     for i in range(n):
-        print("_____________________________________")
         ATM_id = bank_code + "-" + str(i)
         # Select random wisabi ATM to assign the location -
         # discrete value drawn from uniform distribution in range (0,num_atms_wisabi)
@@ -149,8 +148,6 @@ def atm_generator(atm_df_wisabi, n, bank_code, atm_dictionary):
         rand_atm = atm_df_wisabi.iloc[rand_index]
         city = rand_atm["City"]
         country = rand_atm["Country"]
-
-        print(city)
 
         loc_latitude, loc_longitude = generate_random_geolocation_city(
             city, country, atm_dictionary
@@ -164,10 +161,16 @@ def atm_generator(atm_df_wisabi, n, bank_code, atm_dictionary):
             "country": country,
         }
 
-        print(new_atm)
         atm_df.loc[i] = new_atm
 
-    return atm_df
+        # Relationship
+        new_atm_bank = {
+            "code": bank_code,
+            "ATM_id": ATM_id,
+        }
+        atm_bank_df.loc[i] = new_atm_bank
+
+    return atm_df, atm_bank_df
 
 
 # Different types of transactions:
@@ -210,10 +213,10 @@ def get_client_behavior_wisabi(customer):
     transactions = all_transactions_df[
         (all_transactions_df["CardholderID"] == cardholderid)
     ]
-    print(f"# of transactions: {len(transactions)}")
+    # print(f"# of transactions: {len(transactions)}")
     # withdrawals only
     transactions = transactions[(transactions["TransactionTypeID"] == 1)]
-    print(f"# of withdrawals: {len(transactions)}")
+    # print(f"# of withdrawals: {len(transactions)}")
 
     if not transactions.empty:
         amount_avg = round(transactions["TransactionAmount"].mean(), 2)
@@ -229,7 +232,9 @@ def get_client_behavior_wisabi(customer):
     return behavior
 
 
-def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, n):
+def card_generator(
+    customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, n, bank_code
+):
 
     # create the card dataframe
     cols = [
@@ -245,6 +250,10 @@ def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, 
         "withdrawal_day",
     ]
     card_df = pd.DataFrame(columns=cols)
+    # create the relationship card-bank dataframe
+    cols = ["code", "number_id"]
+    card_bank_df = pd.DataFrame(columns=cols)
+
     num_customers_wisabi = len(customers_df_wisabi)
 
     # Generate the n synthetic cards
@@ -253,7 +262,6 @@ def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, 
         # discrete value drawn from uniform distribution in range (0,num_customers_wisabi)
         rand_index = random.randint(0, num_customers_wisabi - 1)  # randint [a,b]
         rand_customer = customers_df_wisabi.iloc[rand_index]
-        print(rand_customer)
 
         # 1. Behavior
         # Get behaviour of this customer so that we also assign them to the new card/client generated
@@ -266,7 +274,6 @@ def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, 
         # Option 1: assign a random location of the usual ATM of the selected wisabi customer
         if loc_from_wisabi:
             atmid = rand_customer["ATMID"]
-            print(atmid)
             # find the city of this atm
             atm = atm_df_wisabi[atm_df_wisabi["LocationID"] == atmid]
             if not atm.empty:
@@ -282,14 +289,16 @@ def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, 
             city = atm_df.iloc[rand_atm_index]["city"]
             country = atm_df.iloc[rand_atm_index]["country"]
 
-        print(city)
         # optional -> use the previously constructed bbox atm_dictionary of wisabi, so that it is faster
         loc_latitude, loc_longitude = generate_random_geolocation_city(
             city, country, atm_dictionary=None
         )
 
+        # id
+        number_id = bank_code + "-" + str(i)
+
         new_card = {
-            "number_id": i,
+            "number_id": number_id,
             "client_id": i,
             "expiration": datetime.date.today(),
             "CVC": 999,
@@ -306,7 +315,15 @@ def card_generator(customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, 
 
         card_df.loc[i] = new_card
 
-    return card_df
+        # Relationship
+        new_card_bank = {
+            "code": bank_code,
+            "number_id": number_id,
+        }
+
+        card_bank_df.loc[i] = new_card_bank
+
+    return card_df, card_bank_df
 
 
 def main():
@@ -351,22 +368,67 @@ def main():
             except ValueError:
                 print("Input has to be an integer!")
 
-    print(num_ATMs)
-    print(num_cards)
-
+    # global ATM dataframe
+    cols = ["ATM_id", "loc_latitude", "loc_longitude", "city", "country"]
+    joint_atm_df = pd.DataFrame(columns=cols)
+    # global relationship ATM-bank dataframe
+    cols = ["code", "ATM_id"]
+    joint_atm_bank_df = pd.DataFrame(columns=cols)
     # For each bank we generate the desired number of ATMs and Cards, and create
     # the corresponding relationships Bank-ATM, Bank-Card
+    for i in range(num_banks):
 
+        bank_code = bank_df.iloc[i]["code"]
+        # ATM generator: returns the ATM df and the ATM-bank relationship dataframe
+        atm_df, atm_bank_df = atm_generator(
+            atm_df_wisabi, num_ATMs[i], bank_code, atm_dictionary
+        )
+
+        print(atm_df)
+        print(atm_bank_df)
+
+        atm_df.to_csv("csv/atm-" + bank_code + ".csv", index=False)
+
+        joint_atm_df = (
+            atm_df.copy()
+            if joint_atm_df.empty
+            else pd.concat([joint_atm_df, atm_df], ignore_index=True)
+        )
+        joint_atm_bank_df = (
+            atm_bank_df.copy()
+            if joint_atm_bank_df.empty
+            else pd.concat([joint_atm_bank_df, atm_bank_df], ignore_index=True)
+        )
+
+    joint_atm_df.to_csv("csv/atm.csv", index=False)
+    joint_atm_bank_df.to_csv("csv/atm-bank.csv", index=False)
+
+    print(f"ATMs correctly generated.")
+    print()
+
+    print(f"Card generation process...")
+    # Card generation
+    # global card dataframe
+    cols = [
+        "number_id",
+        "client_id",
+        "expiration",
+        "CVC",
+        "loc_latitude",
+        "loc_longitude",
+        "extract_limit",
+        "amount_avg",
+        "amount_std",
+        "withdrawal_day",
+    ]
+    joint_card_df = pd.DataFrame(columns=cols)
+    # global relationship card-bank dataframe
+    cols = ["code", "number_id"]
+    joint_card_bank_df = pd.DataFrame(columns=cols)
     for i in range(num_banks):
         bank_code = bank_df.iloc[i]["code"]
-        # ATM generator
-        atm_df = atm_generator(atm_df_wisabi, num_ATMs[i], bank_code, atm_dictionary)
-        print(atm_df)
-        # atm_df.to_csv("csv/atm.csv", index=False)
-
-        """
-        # Card generator
-        card_df = card_generator(
+        # Card generator: returns the card df and the card-bank relationship dataframe
+        card_df, card_bank_df = card_generator(
             customers_df_wisabi,
             atm_df_wisabi,
             atm_df,
@@ -374,9 +436,26 @@ def main():
             num_cards[i],
             bank_code,
         )
+
         print(card_df)
-        # card_df.to_csv("csv/card.csv", index=False)
-        """
+        print(card_bank_df)
+
+        card_df.to_csv("csv/card-" + bank_code + ".csv", index=False)
+
+        joint_card_df = (
+            card_df.copy()
+            if joint_card_df.empty
+            else pd.concat([joint_card_df, card_df], ignore_index=True)
+        )
+        joint_card_bank_df = (
+            card_bank_df.copy()
+            if joint_card_bank_df.empty
+            else pd.concat([joint_card_bank_df, card_bank_df], ignore_index=True)
+        )
+
+    joint_card_df.to_csv("csv/card.csv", index=False)
+    joint_card_bank_df.to_csv("csv/card-bank.csv", index=False)
+    print(f"Cards correctly generated.")
 
 
 if __name__ == "__main__":
