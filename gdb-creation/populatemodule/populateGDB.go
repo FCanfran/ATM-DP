@@ -85,7 +85,7 @@ func SafeConnect() {
 	fmt.Println("Connection established.")
 }
 
-func populateQuery(session neo4j.SessionWithContext, query) error {
+func populateQuery(session neo4j.SessionWithContext, query string) error {
 
 	_, err := neo4j.ExecuteWrite(ctx, session,
 		func(tx neo4j.ManagedTransaction) (any, error) {
@@ -103,8 +103,7 @@ func populateQuery(session neo4j.SessionWithContext, query) error {
 	return nil
 } 
 
-func populateATMs() {
-	// ATM
+func populateATMs(session neo4j.SessionWithContext) {
 	query := `
 	LOAD CSV WITH HEADERS FROM 'file:///csv/atm.csv' AS row
 	MERGE (a:ATM {
@@ -123,7 +122,7 @@ func populateATMs() {
 	}
 }
 
-func populateBanks() {
+func populateBanks(session neo4j.SessionWithContext) {
 	query := `
 	LOAD CSV WITH HEADERS FROM 'file:///csv/bank.csv' AS row
 	MERGE (b:Bank {
@@ -141,7 +140,7 @@ func populateBanks() {
 	}
 }
 
-func populateATMBanks() {
+func populateATMBanks(session neo4j.SessionWithContext) {
 	query := `
 	LOAD CSV WITH HEADERS FROM 'file:///csv/atm-bank.csv' AS row
              MATCH (a:ATM {ATM_id: row.ATM_id})
@@ -156,7 +155,7 @@ func populateATMBanks() {
 	}
 }
 
-func populateCards() {
+func populateCards(session neo4j.SessionWithContext) {
 	query := `
 	LOAD CSV WITH HEADERS FROM 'file:///csv/card.csv' AS row
 	MERGE (c:Card {
@@ -176,7 +175,7 @@ func populateCards() {
 	}
 }
 
-func populateCardBanks() {
+func populateCardBanks(session neo4j.SessionWithContext) {
 	query := `
 	LOAD CSV WITH HEADERS FROM 'file:///csv/card-bank.csv' AS row
              MATCH (c:Card {number_id: row.number_id})
@@ -196,11 +195,11 @@ func Populate() {
 	session := driver.NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
 	defer session.Close(ctx)
 
-	populateATMs()
-	populateBanks()
-	populateATMBanks()
-	populateCards()
-	populateCardBanks()
+	populateATMs(session)
+	populateBanks(session)
+	populateATMBanks(session)
+	populateCards(session)
+	populateCardBanks(session)
 
 }
 
