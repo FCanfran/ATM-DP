@@ -295,7 +295,7 @@ def card_generator(
         )
 
         # id
-        number_id = bank_code + "-" + str(i)
+        number_id = "c-" + bank_code + "-" + str(i)
 
         new_card = {
             "number_id": number_id,

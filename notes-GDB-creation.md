@@ -73,3 +73,59 @@ LOAD CSV WITH HEADERS FROM 'file:///csv/atm-bank.csv' AS row
 
 Notes:
 - The edges are labeled as `BELONGS_TO`.
+
+### Card
+
+card.csv:
+
+```
+number_id,client_id,expiration,CVC,loc_latitude,loc_longitude,extract_limit,amount_avg,amount_std,withdrawal_day
+LAGO-0,0,2024-07-03,999,9.002378,7.581718,126556.6,25311.32,28105.03,0.2904
+LAGO-1,1,2024-07-03,999,9.09826,7.602691,108483.4,21696.68,23203.51,0.5781
+KANO-0,0,2024-07-03,999,9.171933,7.389227,113673.45,22734.69,22709.98,0.2685
+KANO-1,1,2024-07-03,999,10.733811,7.876416,119193.55,23838.71,23348.16,0.2548
+ABYA-0,0,2024-07-03,999,9.002271,7.63722,109608.7,21921.74,23508.11,0.6301
+ABYA-1,1,2024-07-03,999,9.105015,7.383571,102427.2,20485.44,21348.12,0.2822
+```
+
+```
+LOAD CSV WITH HEADERS FROM 'file:///csv/card.csv' AS row
+MERGE (c:Card {number_id: row.number_id, client_id: row.client_id, expiration: date(row.expiration), CVC: toInteger(row.CVC), extract_limit: toFloat(row.extract_limit), loc_latitude: toFloat(row.loc_latitude), loc_longitude: toFloat(row.loc_longitude)});
+``` 
+
+Notes:
+
+- We do not include the fields that were generated to define the behavior of the card. They are only used for the generation of the transactions: `amount_avg`, `amount_std`,`withdrawal_day`.
+- `expiration`: set as date type.
+
+**Possible improvements:**
+
+- `CVC`: set as integer data type, although it could be set as string, and probably will occupy less space this way.
+- `extract_limit`: set as float data type, although it could be rounded to be set as integer and therefore occupy less space.
+
+**A change:**
+- The card identifier: followed the same structure as the ATM ids. It is changed to make it more clear the difference between these two nodes apart from the label.
+
+### Card-Bank relationships
+
+card-bank.csv:
+
+```
+code,number_id
+LAGO,LAGO-0
+LAGO,LAGO-1
+KANO,KANO-0
+KANO,KANO-1
+ABYA,ABYA-0
+ABYA,ABYA-1
+```
+
+```
+LOAD CSV WITH HEADERS FROM 'file:///csv/card-bank.csv' AS row
+             MATCH (c:Card {number_id: row.number_id})
+             MATCH (b:Bank {code: row.code})
+             MERGE (c)-[r:ISSUED_BY]->(b);
+```
+
+Notes:
+- The edges are labeled as `ISSUED_BY`.
