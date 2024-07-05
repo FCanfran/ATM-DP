@@ -85,7 +85,7 @@ func SafeConnect() {
 	fmt.Println("Connection established.")
 }
 
-func populateQuery(session neo4j.SessionWithContext, query string) error {
+func writeQuery(session neo4j.SessionWithContext, query string) error {
 
 	_, err := neo4j.ExecuteWrite(ctx, session,
 		func(tx neo4j.ManagedTransaction) (any, error) {
@@ -114,7 +114,7 @@ func populateATMs(session neo4j.SessionWithContext) {
 		country: row.country
 	});
 	`
-	err := populateQuery(session, query)
+	err := writeQuery(session, query)
 	if err != nil {
 		fmt.Println("ATM population: failure - %v", err)
 	} else {
@@ -132,7 +132,7 @@ func populateBanks(session neo4j.SessionWithContext) {
 		loc_longitude: toFloat(row.loc_longitude)
 	});
 	`
-	err := populateQuery(session, query)
+	err := writeQuery(session, query)
 	if err != nil {
 		fmt.Println("Bank population: failure - %v", err)
 	} else {
@@ -147,7 +147,7 @@ func populateATMBanks(session neo4j.SessionWithContext) {
              MATCH (b:Bank {code: row.code})
              MERGE (a)-[r:BELONGS_TO]->(b);
 	`
-	err := populateQuery(session, query)
+	err := writeQuery(session, query)
 	if err != nil {
 		fmt.Println("ATM-Bank relationships population: failure - %v", err)
 	} else {
@@ -167,7 +167,7 @@ func populateCards(session neo4j.SessionWithContext) {
 		loc_latitude: toFloat(row.loc_latitude), 
 		loc_longitude: toFloat(row.loc_longitude)});
 	`
-	err := populateQuery(session, query)
+	err := writeQuery(session, query)
 	if err != nil {
 		fmt.Println("Card population: failure - %v", err)
 	} else {
@@ -182,7 +182,7 @@ func populateCardBanks(session neo4j.SessionWithContext) {
              MATCH (b:Bank {code: row.code})
              MERGE (c)-[r:ISSUED_BY]->(b);
 	`
-	err := populateQuery(session, query)
+	err := writeQuery(session, query)
 	if err != nil {
 		fmt.Println("Card-Bank relationships population: failure - %v", err)
 	} else {
@@ -201,6 +201,51 @@ func Populate() {
 	populateCards(session)
 	populateCardBanks(session)
 
+}
+
+// Creates uniqueness constraints within each kind of node's IDs
+// Bank, ATM and Card
+// Avoids duplication of nodes prior to the population and also afterwards, whenever for
+// example an ATM node with the same ATM_id as an already existing one in the database
+// wants to be inserted. This is forbidden!.
+func UniquenessConstraints() {
+	fmt.Println("Adding uniqueness constraints on the nodes IDs to the GDB...")
+	session := driver.NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
+	defer session.Close(ctx)
+
+	bankUniquenessQuery := `
+		CREATE CONSTRAINT code IF NOT EXISTS
+		FOR (b:Bank) REQUIRE b.code IS UNIQUE;
+	`
+	err := writeQuery(session, bankUniquenessQuery)
+	if err != nil {
+		fmt.Println("Bank uniqueness constraint addition: failure - %v", err)
+	} else {
+		fmt.Println("Bank uniqueness constraint addition: sucess")
+	}
+
+	cardUniquenessQuery := `
+		CREATE CONSTRAINT number_id IF NOT EXISTS
+		FOR (c:Card) REQUIRE c.number_id IS UNIQUE;
+	`
+	err = writeQuery(session, cardUniquenessQuery)
+	if err != nil {
+		fmt.Println("Card uniqueness constraint addition: failure - %v", err)
+	} else {
+		fmt.Println("Card uniqueness constraint addition: sucess")
+	}
+
+
+	ATMUniquenessQuery := `
+		CREATE CONSTRAINT ATM_id IF NOT EXISTS
+		FOR (a:ATM) REQUIRE a.ATM_id IS UNIQUE;
+	`
+	err = writeQuery(session, ATMUniquenessQuery)
+	if err != nil {
+		fmt.Println("ATM uniqueness constraint addition: failure - %v", err)
+	} else {
+		fmt.Println("ATM uniqueness constraint addition: sucess")
+	}
 }
 
 // Query

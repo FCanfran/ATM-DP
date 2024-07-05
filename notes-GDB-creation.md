@@ -163,3 +163,9 @@ Create node property uniqueness constraints on Bank `code`:
 CREATE CONSTRAINT code IF NOT EXISTS
 FOR (b:Bank) REQUIRE b.code IS UNIQUE
 ```
+
+Note: to drop constraints we can do:
+
+```
+DROP CONSTRAINT constraint_name [IF EXISTS]
+```
