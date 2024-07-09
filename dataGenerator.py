@@ -258,6 +258,9 @@ def card_generator(
 
     # Generate the n synthetic cards
     for i in range(n):
+        print(f"i: {i}")
+        if i % 100 == 0:
+            print(f"Generated {i} / {n} cards")
         # Select random wisabi customer
         # discrete value drawn from uniform distribution in range (0,num_customers_wisabi)
         rand_index = random.randint(0, num_customers_wisabi - 1)  # randint [a,b]
