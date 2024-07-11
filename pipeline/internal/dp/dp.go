@@ -78,8 +78,8 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	// filter id: is the Card identifier
 	var id string = edge.Number_id
 
-	fmt.Println("...filter ", id, "creation - edge arrived: ", edge.Number_id, " ", edge.ATM_id)
-	/*
+	fmt.Println("...filter ", id, "creation - edge arrived: ", edge.Number_id, edge.ATM_id, edge.Tx_start, edge.Tx_end, edge.Tx_amount)
+	
 	int_edge := make(chan cmn.Edge, channelSize)
 	int_time := make(chan int64) // synchronous
 	// TOCHECK: Avoid this channel being blocking (?) Does it make sense?
@@ -89,11 +89,13 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	for {
 		select {
 		case edge := <-in_edge:
-			fmt.Println("filter ", id, " - edge arrived: ", edge.Card, " ", edge.ATM, " ", edge.Time)
-			if edge.Card == id {
+			fmt.Println("filter ", id, " - edge arrived: ", edge.Number_id, edge.ATM_id, edge.Tx_start, edge.Tx_end, edge.Tx_amount)
+			if edge.Number_id == id {
 				fmt.Println("filter ", id, " - same card edge arrived")
 				int_edge <- edge
 			} else {
+// -------------------------------------------------------------------------------------------------- //
+// TODO: Gestion del tiempo de vida del filtro con incoming timestamp de los edges que van pasando
 				fmt.Println("filter ", id, " - diff card edge arrived")
 				out_edge <- edge
 				int_time <- edge.Time
@@ -105,6 +107,7 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 					return // finish filter
 				}
 			}
+// -------------------------------------------------------------------------------------------------- //
 		case input := <-in_front:
 			fmt.Println("filter ", id, " - reconnection")
 			// a previous filter died, reconnect pipeline
@@ -112,27 +115,32 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 			in_front = input.Front_Channel
 		}
 	}
-	*/
 }
-/*
+
 func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-chan int64, int_stop chan<- bool,
 	out_alert chan<- cmn.Graph) {
 
-	var time int64 = initial_edge.Time
+	var tx_start time.Time = initial_edge.Tx_start
+	var tx_end time.Time = initial_edge.Tx_end
 	var edge cmn.Edge = initial_edge
-	fmt.Println("...filter_worker creation - edge arrived: ", edge.Card, " ", edge.ATM, " ", edge.Time)
+	fmt.Println("...filter_worker creation - edge arrived: ", edge.Number_id, edge.ATM_id, edge.Tx_start, edge.Tx_end, edge.Tx_amount)
+// -------------------------------------------------------------------------------------------------- //
+// TODO: Construccion del subgrafo volatil!!!! 
 	// TODO: Save more edges? Not only the last one? (the last transaction)
 	// var edges []cmn.Edge
+// -------------------------------------------------------------------------------------------------- //
 
 	// TODO: this goroutine dies alone after its father (the filter) dies?
 	// -> it is the only process with which it has communication / is connected
 	for {
 		select {
 		case new_edge := <-int_edge:
+// -------------------------------------------------------------------------------------------------- // 
+// TODO: Pattern detection update. Con distance. Obteniendo location mediante conexión con la static GDB.
 			// TODO: Check for the pattern and output alert in that case
 			// --> to develop more...
 			// TODO: keep a list of all the edges, not only the last one?
-			if (new_edge.ATM != edge.ATM) && (new_edge.Time-edge.Time < timeTransactionThreshold) {
+			if (new_edge.ATM_id != edge.ATM_id) && (new_edge.Tx_start-edge.Tx_start < timeTransactionThreshold) {
 				// alert is the pattern: edge list that form the pattern
 				var pattern cmn.Graph // = []Edge
 				pattern = append(pattern, edge, new_edge)
@@ -140,6 +148,7 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 				// TODO: check timeout in this case? -> no, in general,
 				// if we register movement with the card then no need to check
 				// timeouts to potentially erase the filter (the filter is active)
+// -------------------------------------------------------------------------------------------------- //
 			} else {
 				// TODO:
 				// keep a list of all... if alert do not save the new_edge, otherwise
@@ -166,7 +175,6 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 
 	}
 }
-*/
 
 /*
 func test_generator(in <-chan cmn.Edge) {
@@ -223,16 +231,6 @@ func Start(istream string) {
 		cmn.CheckError(err)
 		tx_amount_32 := float32(tx_amount)
 		
-		/*
-		type Edge struct {
-			Number_id string 	// Card id
-			ATM_id string		// ATM id
-			Tx_id int64			// transaction id
-			Tx_start time.Time	// transaction start date time (DD/MM/YYYY HH:MM:SS)
-			Tx_end time.Time	// transaction end date time (DD/MM/YYYY HH:MM:SS)
-			Tx_amount float32	// transaction amount 
-		}
-		*/
 		edge := cmn.Edge{
 			Number_id: tx[1], 
 			ATM_id: tx[2], 
@@ -244,9 +242,9 @@ func Start(istream string) {
 
 		fmt.Println(edge)
 
-		//edges_input <- edge
+		edges_input <- edge
 
-		//time.Sleep(1 * time.Second)
+		time.Sleep(1 * time.Second)
 		
 	//}
 	// -------------------------------------------------------------------------
