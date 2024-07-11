@@ -1,2 +1,3 @@
 gdb/wisabi
 gdb/gdb-creation/populatemodule/cmd/main
+pipeline/cmd/main
