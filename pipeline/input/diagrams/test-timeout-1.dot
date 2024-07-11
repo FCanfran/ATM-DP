@@ -1,0 +1,62 @@
+digraph G {
+    rankdir=LR
+    node [shape=box]
+
+    subgraph cluster_g4 {
+        label="4. F1 newly created - (check pipeline reconnection)";
+        labeljust=l; // Place label on the left
+        color=transparent;
+        F1_4 [label="F1"];
+        F2_4 [label="F2"];
+        F3_4 [label="F3"];
+        F4_4 [label="F4"];
+        G_4 [label="G"];
+
+        F4_4 -> F3_4;
+        F3_4 -> F2_4;
+        F2_4 -> F1_4;
+        F1_4 -> G_4;
+    }
+
+    subgraph cluster_g3 {
+        label="3. F2 newly created - (check pipeline reconnection)";
+        labeljust=l; // Place label on the left
+        color=transparent;
+        F2_3 [label="F2"];
+        F3_3 [label="F3"];
+        F4_3 [label="F4"];
+        G_3 [label="G"];
+
+        F4_3 -> F3_3;
+        F3_3 -> F2_3;
+        F2_3 -> G_3;
+    }
+
+    subgraph cluster_g2 {
+        label="2. F1 timeout";
+        labeljust=l; // Place label on the left
+        color=transparent;
+        F3_2 [label="F3"];
+        F4_2 [label="F4"];
+        G_2 [label="G"];
+
+        F4_2 -> F3_2;
+        F3_2 -> G_2; 
+    }
+
+    subgraph cluster_g1 {
+        label="1. Initial setup";
+        labeljust=l; // Place label on the left
+        color=transparent;
+        // nodes
+        F1_1 [label="F1"]
+        F3_1 [label="F3"]
+        F4_1 [label="F4"]
+        G_1 [label="G"]
+
+        F1_1 -> F4_1;
+        F4_1 -> F3_1;
+        F3_1 -> G_1;
+    }
+    
+}
