@@ -13,8 +13,8 @@ def main():
     bank_df = pd.DataFrame(columns=cols)
 
     bank_row = {
-        "name": "Lagos Bank",
-        "code": "LAGO",
+        "name": "Niger Bank",
+        "code": "NIGER",
         "loc_latitude": 6.478685,
         "loc_longitude": 3.368442,
     }
@@ -23,8 +23,8 @@ def main():
     bank_df = pd.concat([bank_df, bank_row_df], ignore_index=True)
 
     bank_row = {
-        "name": "Kano Bank",
-        "code": "KANO",
+        "name": "Benue Bank",
+        "code": "BENUE",
         "loc_latitude": 11.994949,
         "loc_longitude": 8.520313,
     }
@@ -33,8 +33,8 @@ def main():
     bank_df = pd.concat([bank_df, bank_row_df], ignore_index=True)
 
     bank_row = {
-        "name": "Abuya Bank",
-        "code": "ABYA",
+        "name": "Ogun Bank",
+        "code": "OGUN",
         "loc_latitude": 9.042977,
         "loc_longitude": 7.478564,
     }

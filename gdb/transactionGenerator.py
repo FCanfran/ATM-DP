@@ -7,7 +7,7 @@ from geopy.distance import geodesic, great_circle
 # Parameters
 # --------------------------------------------------------------------------
 start_date = "2018-04-01"  # start date, from which the first transaction is generated
-num_days = 10  # num of days for which transactions are generated (init start_date)
+num_days = 5  # num of days for which transactions are generated (init start_date)
 # TODO: Improve this - values are "testing" values
 max_size_atm_subset = 10  # maximum size of the ATM subset
 max_distance = 30  # maximum distance of the atms in the ATM subset to client residence
@@ -49,7 +49,8 @@ def get_ordered_atms(
         calculate_distance, point=card_loc, axis=1
     )
 
-    # Subset that has distnace <= max_distance
+    # TODO: Give priority to the ATMs belonging to the same bank company as the card
+    # Subset that has distance <= max_distance
     atm_df_ordered = atm_df_ordered[atm_df_ordered["distance"] <= max_distance]
 
     # Sort DataFrame based on distance
