@@ -43,10 +43,7 @@ func generator(in <-chan cmn.Edge) {
 	for {
 		select {
 		case edge := <-in:
-			fmt.Println("generator - edge ", edge.Tx_id, " arrived: ", edge.Number_id, " ", edge.ATM_id)
-			fmt.Println("Tx_start:", edge.Tx_start)
-			fmt.Println("Tx_end:", edge.Tx_end)
-			fmt.Println("Tx_amount:", edge.Tx_amount)
+			fmt.Println("generator - edge arrived: ", edge.Tx_id, ", ", edge.Number_id, "->", edge.ATM_id)
 			// spawn a filter
 			// - input channels: the input channels of the generator:
 			//					* in - Edge
@@ -79,7 +76,7 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	// filter id: is the Card unique identifier
 	var id string = edge.Number_id
 
-	fmt.Println("...filter ", id, "creation - edge arrived: ", edge.Number_id, edge.ATM_id, edge.Tx_start, edge.Tx_end, edge.Tx_amount)
+	fmt.Println("...filter creation ", id)
 
 	int_edge := make(chan cmn.Edge, channelSize)
 	int_time := make(chan time.Time) // synchronous
@@ -90,7 +87,7 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	for {
 		select {
 		case edge := <-in_edge:
-			fmt.Println("filter ", id, " - edge arrived: ", edge.Number_id, edge.ATM_id, edge.Tx_start, edge.Tx_end, edge.Tx_amount)
+			fmt.Println("filter ", id, " - edge arrived:", edge.Tx_id, ", ", edge.Number_id, "->", edge.ATM_id)
 			if edge.Number_id == id {
 				fmt.Println("filter ", id, " - same card edge arrived")
 				int_edge <- edge
@@ -129,7 +126,7 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 	var tx_start time.Time = initial_edge.Tx_start
 	//var tx_end time.Time = initial_edge.Tx_end
 	var edge cmn.Edge = initial_edge
-	fmt.Println("...filter_worker creation - edge arrived: ", edge.Number_id, edge.ATM_id, edge.Tx_start, edge.Tx_end, edge.Tx_amount)
+	fmt.Println("...filter_worker creation - edge arrived: ", edge.Tx_id, ", ", edge.Number_id, "->", edge.ATM_id)
 	// -------------------------------------------------------------------------------------------------- //
 	// TODO: Construccion del subgrafo volatil!!!!
 	// TODO: Save more edges? Not only the last one? (the last transaction)
@@ -146,7 +143,7 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			// -------------------------------------------------------------------------------------------------- //
 			// TODO: keep a list of all the edges, not only the last one?
 			subgraph = append(subgraph, new_edge)
-			fmt.Println(subgraph)
+			//fmt.Println(subgraph)
 			// -------------------------------------------------------------------------------------------------- //
 			// TODO: Pattern detection update. Con distance. Obteniendo location mediante conexión con la static GDB.
 			// TODO: Check for the pattern and output alert in that case
@@ -230,7 +227,6 @@ func Start(istream string) {
 			break
 		}
 		cmn.CheckError(err)
-		fmt.Println(tx)
 
 		// conversions
 		tx_id, err := strconv.ParseInt(tx[0], 10, 64) // 10: base (decimal) & 64: bit-size (int64)
@@ -254,8 +250,6 @@ func Start(istream string) {
 			Tx_end:    tx_end,
 			Tx_amount: tx_amount_32,
 		}
-
-		fmt.Println(edge)
 
 		edges_input <- edge
 

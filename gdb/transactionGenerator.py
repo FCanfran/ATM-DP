@@ -49,7 +49,6 @@ def get_ordered_atms(
         calculate_distance, point=card_loc, axis=1
     )
 
-    # TODO: Give priority to the ATMs belonging to the same bank company as the card
     # Subset that has distance <= max_distance
     atm_df_ordered = atm_df_ordered[atm_df_ordered["distance"] <= max_distance]
 
@@ -60,6 +59,8 @@ def get_ordered_atms(
 
     # Subset of max size of max_size_subset
     atm_df_ordered = atm_df_ordered.head(max_size_subset)
+
+    # TODO: Give priority to the ATMs belonging to the same bank company as the card
 
     return atm_df_ordered
 
