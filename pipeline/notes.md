@@ -1,13 +1,7 @@
 
-# Adapting BipartiteDP
+# Description
 
-## 1. Connection with Neo4j static GDB
-
-## 2. Adapting transaction flux
-
-## 3. Volatile subgraph storage (in each filter)
-
-# Detection of triangles in bipartite graphs using Dynamic Pipelines
+This was done for the *Detection of triangles in bipartite graphs using Dynamic Pipelines*. See BipartiteDP.
 
 - Graph: a list of Edges
 
@@ -29,3 +23,18 @@ Input channels:
     - alerts: (chan cmn.Graph) to receive / pass a graph pattern that has been detected. Creates an alert.
 
     - front_channels: (<-chan in_comm) to receive in_comm channels, needed for the case that a filter is eliminated, to properly reconnect the pipeline.
+
+
+# 1. Adapting transaction flux
+
+- So far: 1 filter per card. Later it could be done so that we allow to have multiple different cards per filter.
+
+
+
+
+# 2. Volatile subgraph storage (in each filter)
+
+# 3. Connection with Neo4j static GDB
+
+# 4. Filter lifetime management
+
