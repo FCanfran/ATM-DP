@@ -2,7 +2,6 @@ package common
 
 import (
 	"container/list"
-	"fmt"
 	"log"
 	"time"
 )
@@ -18,9 +17,14 @@ type Edge struct {
 	Tx_amount float32   // transaction amount
 }
 
-// For the volatile subgraph
+// TODO: Put this correctly!, for the moment the diff is 24h
+// In Duration format
+const timeTransactionThreshold = 24 * time.Hour
 
-//const timeTransactionThreshold = 5
+// TODO: Put this correctly!
+const timeFilterThreshold = 48 * time.Hour
+
+// For the volatile subgraph
 
 // Golang list - doubly linked list
 // Graph is a struct that encapsulates a list of edges
@@ -47,22 +51,37 @@ func (g *Graph) AddAtEnd(e Edge) {
 
 // Given a certain datetime, it updates the graph, starting from the first
 // edge, by eliminating those that are outdated wrt this datetime
-// datetime format: DD/MM/YYYY HH:MM:SS
+// - datetime format: DD/MM/YYYY HH:MM:SS
 func (g *Graph) Update(timestamp time.Time) {
 	// Traverse the list from the beginning and eliminate edges until no
 	// outdate is detected
 	for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
 		eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
-		fmt.Println(eg_val)
-		// TODO: HACER ESTO BIEN
-		/*
-			if eg_val.Tx_end-timestamp >= timeTransactionThreshold {
-				g.edges.Remove(eg)
-			} else {
-				return
-			}
-		*/
+		difference := timestamp.Sub(eg_val.Tx_end)
+		if difference >= timeTransactionThreshold {
+			g.edges.Remove(eg)
+		} else {
+			// at the time that we find the first edge which is not
+			// outdated, we stop, since for sure the next ones are
+			// also not outdated (we are assuming that the tx are
+			// received ordered in time...)
+			return
+		}
+
 	}
+}
+
+// Filter timeout check: test if the filter has to die (with the last edge
+// of the volatile subgraph and a timestamp), if the time difference is
+// greater than timeFilterThreshold returns true, otherwise false
+// TODO: Again this is assuming that the tx are ordered in time!!!
+// otherwise we will have to find the most recent tx in time
+func (g *Graph) CheckFilterTimeout(timestamp time.Time) bool {
+	eg := g.edges.Back()
+	eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
+	// TODO: tx_start or end?
+	difference := timestamp.Sub(eg_val.Tx_start)
+	return (difference >= timeFilterThreshold)
 }
 
 // Delete a specific edge of the graph

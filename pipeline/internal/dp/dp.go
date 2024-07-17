@@ -17,11 +17,11 @@ const channelSize = 5000
 
 // TODO: Set correct time threshold --> THINK ABOUT THIS!!
 // So far 24 hours
-const timeFilterThreshold = 24 * time.Hour
+//const timeFilterThreshold = 24 * time.Hour
 
 // TODO: Set different times thresholds for the destruction of a filter and
 // for the diff transaction times?
-const timeTransactionThreshold = 5
+//const timeTransactionThreshold = 5
 
 type in_comm struct {
 	// read-only channels
@@ -122,18 +122,18 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 
 func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-chan time.Time, int_stop chan<- bool,
 	out_alert chan<- cmn.Graph) {
-
-	var tx_start time.Time = initial_edge.Tx_start
+	// var filter_id string = initial_edge.Number_id // id of the filter (it is the card identifier)
+	//var tx_start time.Time = initial_edge.Tx_start
 	//var tx_end time.Time = initial_edge.Tx_end
-	var edge cmn.Edge = initial_edge
-	fmt.Println("...filter_worker creation - edge arrived: ", edge.Tx_id, ", ", edge.Number_id, "->", edge.ATM_id)
+	//var edge cmn.Edge = initial_edge
+	fmt.Println("...filter_worker creation - edge arrived: ", initial_edge.Tx_id, ", ", initial_edge.Number_id, "->", initial_edge.ATM_id)
 	// -------------------------------------------------------------------------------------------------- //
 	// TODO: Construccion del subgrafo volatil!!!!
 	// TODO: Save more edges? Not only the last one? (the last transaction)
 	// var edges []cmn.Edge
 	// var subgraph := cmn.NewGraph() 		 // Implicit declaration
 	var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
-	subgraph.Add(edge)
+	subgraph.AddAtEnd(initial_edge)
 	// -------------------------------------------------------------------------------------------------- //
 
 	// TODO: this goroutine dies alone after its father (the filter) dies?
@@ -142,13 +142,13 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 		select {
 		case new_edge := <-int_edge:
 			// -------------------------------------------------------------------------------------------------- //
-			// TODO: keep a list of all the edges, not only the last one?
-			subgraph = append(subgraph, new_edge)
+			subgraph.AddAtEnd(new_edge)
 			//fmt.Println(subgraph)
 			// -------------------------------------------------------------------------------------------------- //
 			// TODO: Pattern detection update. Con distance. Obteniendo location mediante conexión con la static GDB.
 			// TODO: Check for the pattern and output alert in that case
 			// --> to develop more...
+			// TODO: Also, apart from the pattern detection do the temporal update of the volatile subgraph
 			/*
 				if (new_edge.ATM_id != edge.ATM_id) && (new_edge.Tx_start-edge.Tx_start < timeTransactionThreshold) {
 					// alert is the pattern: edge list that form the pattern
@@ -175,15 +175,16 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			*/
 
 		case new_time := <-int_time:
-			// Timeout check: test if the filter has to die, in that case
-			// send stop signal to the (father) filter
-			difference := new_time.Sub(tx_start)
-			if difference > timeFilterThreshold {
-				fmt.Println("Filter", edge.Number_id, "timeout (should die)")
+			// 1. Filter Timeout check: test if the filter has to die (with the last edge of the volatile
+			// subgraph), in that case send stop signal to the (father) filter
+			if subgraph.CheckFilterTimeout(new_time) {
 				//int_stop <- true
-			} //else {
-			//int_stop <- false
-			//}
+			} else {
+				// filter wont die but we need to update the subgraph to eliminate the outdated edges
+				// on the volatile subgraph
+				subgraph.Update(new_time)
+				//int_stop <- false
+			}
 		}
 
 	}
