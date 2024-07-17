@@ -131,8 +131,9 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 	// TODO: Construccion del subgrafo volatil!!!!
 	// TODO: Save more edges? Not only the last one? (the last transaction)
 	// var edges []cmn.Edge
-	var subgraph cmn.Graph
-	subgraph = append(subgraph, edge)
+	// var subgraph := cmn.NewGraph() 		 // Implicit declaration
+	var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
+	subgraph.Add(edge)
 	// -------------------------------------------------------------------------------------------------- //
 
 	// TODO: this goroutine dies alone after its father (the filter) dies?
@@ -217,8 +218,6 @@ func Start(istream string) {
 	_, err = reader.Read()
 	cmn.CheckError(err)
 
-	// READING ONLY 1 TX
-	// -------------------------------------------------------------------------
 	for {
 
 		tx, err := reader.Read()
@@ -253,6 +252,8 @@ func Start(istream string) {
 
 		edges_input <- edge
 
+		// TODO: Sleep time for debugging to slow down the flux of transactions
+		// Leave without this sleep / change it
 		time.Sleep(1 * time.Second)
 
 	}
