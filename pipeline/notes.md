@@ -110,7 +110,28 @@ due to the nature of the pipeline so far, the timestamps only reach those filter
 
 Result in `text-update.txt`:
 
+The sequence of what it is expected to happen is shown in the following table:
 
+| filter 0 | filter 1 | filter 2 |
+|----------|----------|----------|
+| 0        |          |          |
+| 0,1      |          |          |
+| 1,2      |          |          |
+| 2        | 7        |          |
+| 2        | 7        | 9        |
+|          | 7        | 9,10     |
+| 3        | 7        | 9,10     |
+| 3,4      | 7        | 9,10     |
+| 3,4,5    | 7        | 9,10     |
+| 5        |          | 11       |
+| 5,6      |          | 11       |
+| 5,6      | 8        | 11       |
+| 6        | 8        | 11,12    |
+| 6        | 8        | 11,12,13 |
+
+
+TODO: Gestionar cómo hacer cuando tras un update no queda ningún edge en el subgraph...
+(eliminar filtro, mantener?)
 
 
 ### Filter lifetime management
