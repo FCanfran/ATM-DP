@@ -58,11 +58,16 @@ func (g *Graph) Update(timestamp time.Time) {
 	fmt.Println(":::: update ::::")
 	// Traverse the list from the beginning and eliminate edges until no
 	// outdate is detected
-	for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
+	eg := g.edges.Front()
+	for eg != nil {
 		eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
 		difference := timestamp.Sub(eg_val.Tx_end)
 		if difference >= timeTransactionThreshold {
+			// Keep the next before deleting the current, so that we can have
+			// the next of the current after the removal
+			eg_next := eg.Next()
 			g.edges.Remove(eg)
+			eg = eg_next
 		} else {
 			// at the time that we find the first edge which is not
 			// outdated, we stop, since for sure the next ones are
@@ -70,7 +75,6 @@ func (g *Graph) Update(timestamp time.Time) {
 			// received ordered in time...)
 			return
 		}
-
 	}
 }
 
@@ -106,28 +110,30 @@ func (g *Graph) Delete(e Edge) {
 
 // Print a subgraph
 func (g *Graph) Print() {
-	// TODO: CHECK THAT LIST IS NOT EMPTY
-	filter_id := g.edges.Front().Value.(Edge).Number_id
-	fmt.Println("subgraph: ", filter_id)
-	fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-	for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
-		eg_val := eg.Value.(Edge)
-		fmt.Println(eg_val)
+	if g.edges.Front() != nil {
+		filter_id := g.edges.Front().Value.(Edge).Number_id
+		fmt.Println("subgraph: ", filter_id)
+		fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+		for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
+			eg_val := eg.Value.(Edge)
+			fmt.Println(eg_val)
+		}
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 	}
-	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 }
 
 // Print a subgraph - only the tx ids
 func (g *Graph) PrintId() {
-	// TODO: CHECK THAT LIST IS NOT EMPTY
-	filter_id := g.edges.Front().Value.(Edge).Number_id
-	fmt.Println("subgraph: ", filter_id)
-	fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-	for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
-		eg_val := eg.Value.(Edge)
-		fmt.Println(eg_val.Tx_id)
+	if g.edges.Front() != nil {
+		filter_id := g.edges.Front().Value.(Edge).Number_id
+		fmt.Println("subgraph: ", filter_id)
+		fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+		for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
+			eg_val := eg.Value.(Edge)
+			fmt.Println(eg_val.Tx_id)
+		}
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 	}
-	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 }
 
 // Generic Functions -----------------------------

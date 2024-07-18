@@ -10,8 +10,8 @@ subgraph:  c-NIGER-0
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 filter  c-NIGER-0  - edge arrived: 1 ,  c-NIGER-0 -> BENUE-4
 filter  c-NIGER-0  - same card edge arrived
-:::: addition ::::
 :::: update ::::
+:::: addition ::::
 subgraph:  c-NIGER-0
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 0
@@ -19,8 +19,8 @@ subgraph:  c-NIGER-0
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 filter  c-NIGER-0  - edge arrived: 2 ,  c-NIGER-0 -> OGUN-0
 filter  c-NIGER-0  - same card edge arrived
-:::: addition ::::
 :::: update ::::
+:::: addition ::::
 subgraph:  c-NIGER-0
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 1
@@ -28,14 +28,12 @@ subgraph:  c-NIGER-0
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 filter  c-NIGER-0  - edge arrived: 7 ,  c-NIGER-1 -> OGUN-1
 filter  c-NIGER-0  - diff card edge arrived
-AOO2W2OOOOOOOOOOOOOOOO
-generator - edge arrived:  7 ,  c-NIGER-1 -> OGUN-1
-&{0xc0000a20c0 0xc0000a2120 0xc0000a20c0 {c-NIGER-0 OGUN-0 2 2018-04-02 10:30:27 +0000 UTC 2018-04-02 10:36:58 +0000 UTC 37940.13}}
 :::: update ::::
 subgraph:  c-NIGER-0
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 2
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+generator - edge arrived:  7 ,  c-NIGER-1 -> OGUN-1
 ...filter creation  c-NIGER-1
 ...filter_worker creation - edge arrived:  7 ,  c-NIGER-1 -> OGUN-1
 :::: addition ::::
@@ -45,34 +43,161 @@ subgraph:  c-NIGER-1
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 filter  c-NIGER-0  - edge arrived: 9 ,  c-NIGER-2 -> OGUN-1
 filter  c-NIGER-0  - diff card edge arrived
-AOO2W2OOOOOOOOOOOOOOOO
+:::: update ::::
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+2
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 filter  c-NIGER-1  - edge arrived: 9 ,  c-NIGER-2 -> OGUN-1
 filter  c-NIGER-1  - diff card edge arrived
-AOO2W2OOOOOOOOOOOOOOOO
-&{0xc000104030 0xc000104030 0xc000104030 {c-NIGER-1 OGUN-1 7 2018-04-03 02:39:36 +0000 UTC 2018-04-03 02:45:32 +0000 UTC 43667.03}}
 :::: update ::::
 subgraph:  c-NIGER-1
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 7
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 generator - edge arrived:  9 ,  c-NIGER-2 -> OGUN-1
-&{0xc0000a20c0 0xc0000a20c0 0xc0000a20c0 {c-NIGER-0 OGUN-0 2 2018-04-02 10:30:27 +0000 UTC 2018-04-02 10:36:58 +0000 UTC 37940.13}}
-:::: update ::::
 ...filter creation  c-NIGER-2
-subgraph:  c-NIGER-0
 ...filter_worker creation - edge arrived:  9 ,  c-NIGER-2 -> OGUN-1
 :::: addition ::::
 subgraph:  c-NIGER-2
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 9
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-2
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 filter  c-NIGER-0  - edge arrived: 10 ,  c-NIGER-2 -> OGUN-1
 filter  c-NIGER-0  - diff card edge arrived
-AOO2W2OOOOOOOOOOOOOOOO
-&{0xc0000a20c0 0xc0000a20c0 0xc0000a20c0 {c-NIGER-0 OGUN-0 2 2018-04-02 10:30:27 +0000 UTC 2018-04-02 10:36:58 +0000 UTC 37940.13}}
 :::: update ::::
 filter  c-NIGER-1  - edge arrived: 10 ,  c-NIGER-2 -> OGUN-1
 filter  c-NIGER-1  - diff card edge arrived
+:::: update ::::
+subgraph:  c-NIGER-1
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+7
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-2  - edge arrived: 10 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-2  - same card edge arrived
+:::: update ::::
+:::: addition ::::
+subgraph:  c-NIGER-2
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+9
+10
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 3 ,  c-NIGER-0 -> BENUE-4
+filter  c-NIGER-0  - same card edge arrived
+:::: update ::::
+:::: addition ::::
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+3
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 4 ,  c-NIGER-0 -> BENUE-4
+filter  c-NIGER-0  - same card edge arrived
+:::: update ::::
+:::: addition ::::
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+3
+4
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 5 ,  c-NIGER-0 -> BENUE-4
+filter  c-NIGER-0  - same card edge arrived
+:::: update ::::
+:::: addition ::::
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+3
+4
+5
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 11 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-0  - diff card edge arrived
+:::: update ::::
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+5
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-1  - edge arrived: 11 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-1  - diff card edge arrived
+:::: update ::::
+filter  c-NIGER-2  - edge arrived: 11 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-2  - same card edge arrived
+:::: update ::::
+:::: addition ::::
+subgraph:  c-NIGER-2
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+11
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 6 ,  c-NIGER-0 -> OGUN-0
+filter  c-NIGER-0  - same card edge arrived
+:::: update ::::
+:::: addition ::::
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+5
+6
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 8 ,  c-NIGER-1 -> OGUN-3
+filter  c-NIGER-0  - diff card edge arrived
+:::: update ::::
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+5
+6
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-1  - edge arrived: 8 ,  c-NIGER-1 -> OGUN-3
+filter  c-NIGER-1  - same card edge arrived
+:::: update ::::
+:::: addition ::::
+subgraph:  c-NIGER-1
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+8
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 12 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-0  - diff card edge arrived
+:::: update ::::
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+6
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-1  - edge arrived: 12 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-1  - diff card edge arrived
+:::: update ::::
+subgraph:  c-NIGER-1
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+8
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-2  - edge arrived: 12 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-2  - same card edge arrived
+:::: update ::::
+:::: addition ::::
+subgraph:  c-NIGER-2
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+11
+12
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 13 ,  c-NIGER-2 -> OGUN-2
+filter  c-NIGER-0  - diff card edge arrived
+:::: update ::::
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+6
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-1  - edge arrived: 13 ,  c-NIGER-2 -> OGUN-2
+filter  c-NIGER-1  - diff card edge arrived
+:::: update ::::
+subgraph:  c-NIGER-1
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+8
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-2  - edge arrived: 13 ,  c-NIGER-2 -> OGUN-2
+filter  c-NIGER-2  - same card edge arrived
+:::: update ::::
+:::: addition ::::
+subgraph:  c-NIGER-2
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+11
+12
+13
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+End of stream...
+End of stream...

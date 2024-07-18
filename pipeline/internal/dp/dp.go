@@ -144,9 +144,11 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 		select {
 		case new_edge := <-int_edge:
 			// -------------------------------------------------------------------------------------------------- //
-			// add the new edge and update the subgraph wrt the timestamp of this new edge
-			subgraph.AddAtEnd(new_edge)
+			// NOTE: update the subgraph wrt the timestamp of this new edge
+			// first: update the subgraph wrt the timestamp of this new edge and
+			// second: add the new edge
 			subgraph.Update(new_edge.Tx_start)
+			subgraph.AddAtEnd(new_edge)
 			subgraph.PrintId()
 			// -------------------------------------------------------------------------------------------------- //
 			// TODO: Pattern detection update. Con distance. Obteniendo location mediante conexión con la static GDB.
