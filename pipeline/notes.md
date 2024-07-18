@@ -89,6 +89,28 @@ To simply check this and avoid other operations on the filters being performed, 
 so that all the edges of the filters' volatile subgraphs are kept and no filters are destroyed.
 The objective is to see that all the tx are added to the corresponding filter subgraph.
 
+Result in `test-add.txt`:
+
+*Note that we only print the tx ids to show the edges that are in each of the subgraphs*
+
+- Subgraph c-NIGER-0: 0-1-2-3-4-5-6
+- Subgraph c-NIGER-1: 7-8
+- Subgraph c-NIGER-2: 9-10-11-12-13
+
+### 2. Update
+
+Check that the subgraphs of the filters are updated accordingly to the `timeTransactionThreshold` defined time and avoiding the deletion of filters so that
+we only focus in the update of the subgraphs. 
+
+**Note**: remember the problem of the temporal outdate of some of the filters. That is,
+due to the nature of the pipeline so far, the timestamps only reach those filters through which the corresponding tx reaches to flow, not reaching those after the corresponding filter to which that tx belongs.
+
+- `timeTransactionThreshold` = 1 * 24 * time.Hour  // 1 days
+- `timeFilterThreshold` = 10 * 24 * time.Hour      // 10 days 
+
+Result in `text-update.txt`:
+
+
 
 
 ### Filter lifetime management

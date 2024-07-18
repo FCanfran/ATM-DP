@@ -20,7 +20,7 @@ type Edge struct {
 
 // TODO: Put this correctly!, for the moment the diff is 24h
 // In Duration format
-const timeTransactionThreshold = 10 * 24 * time.Hour
+const timeTransactionThreshold = 1 * 24 * time.Hour
 
 // TODO: Put this correctly!
 const timeFilterThreshold = 10 * 24 * time.Hour
@@ -41,6 +41,7 @@ func NewGraph() *Graph {
 
 // Appends a new edge at the end of the list
 func (g *Graph) AddAtEnd(e Edge) {
+	fmt.Println(":::: addition ::::")
 	g.edges.PushBack(e)
 }
 
@@ -54,6 +55,7 @@ func (g *Graph) AddAtEnd(e Edge) {
 // edge, by eliminating those that are outdated wrt this datetime
 // - datetime format: DD/MM/YYYY HH:MM:SS
 func (g *Graph) Update(timestamp time.Time) {
+	fmt.Println(":::: update ::::")
 	// Traverse the list from the beginning and eliminate edges until no
 	// outdate is detected
 	for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
@@ -79,6 +81,9 @@ func (g *Graph) Update(timestamp time.Time) {
 // otherwise we will have to find the most recent tx in time
 func (g *Graph) CheckFilterTimeout(timestamp time.Time) bool {
 	eg := g.edges.Back()
+	if eg == nil {
+		return true
+	}
 	eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
 	// TODO: tx_start or end?
 	difference := timestamp.Sub(eg_val.Tx_start)
@@ -101,6 +106,7 @@ func (g *Graph) Delete(e Edge) {
 
 // Print a subgraph
 func (g *Graph) Print() {
+	// TODO: CHECK THAT LIST IS NOT EMPTY
 	filter_id := g.edges.Front().Value.(Edge).Number_id
 	fmt.Println("subgraph: ", filter_id)
 	fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
@@ -113,6 +119,7 @@ func (g *Graph) Print() {
 
 // Print a subgraph - only the tx ids
 func (g *Graph) PrintId() {
+	// TODO: CHECK THAT LIST IS NOT EMPTY
 	filter_id := g.edges.Front().Value.(Edge).Number_id
 	fmt.Println("subgraph: ", filter_id)
 	fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")

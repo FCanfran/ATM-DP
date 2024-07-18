@@ -122,7 +122,7 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 
 func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-chan time.Time, int_stop chan<- bool,
 	out_alert chan<- cmn.Graph) {
-	// var filter_id string = initial_edge.Number_id // id of the filter (it is the card identifier)
+	//var filter_id string = initial_edge.Number_id // id of the filter (it is the card identifier)
 	//var tx_start time.Time = initial_edge.Tx_start
 	//var tx_end time.Time = initial_edge.Tx_end
 	//var edge cmn.Edge = initial_edge
@@ -134,7 +134,7 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 	// var subgraph := cmn.NewGraph() 		 // Implicit declaration
 	var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
 	subgraph.AddAtEnd(initial_edge)
-	fmt.Println("+ filter: ", initial_edge.Number_id, "- addition of edge")
+	//fmt.Println("+ filter: ", initial_edge.Number_id, "- addition of edge")
 	subgraph.PrintId()
 	// -------------------------------------------------------------------------------------------------- //
 
@@ -144,8 +144,9 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 		select {
 		case new_edge := <-int_edge:
 			// -------------------------------------------------------------------------------------------------- //
+			// add the new edge and update the subgraph wrt the timestamp of this new edge
 			subgraph.AddAtEnd(new_edge)
-			fmt.Println("+ filter: ", new_edge.Number_id, "- addition of edge")
+			subgraph.Update(new_edge.Tx_start)
 			subgraph.PrintId()
 			// -------------------------------------------------------------------------------------------------- //
 			// TODO: Pattern detection update. Con distance. Obteniendo location mediante conexión con la static GDB.
@@ -186,6 +187,7 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 				// filter wont die but we need to update the subgraph to eliminate the outdated edges
 				// on the volatile subgraph
 				subgraph.Update(new_time)
+				subgraph.PrintId()
 				//int_stop <- false
 			}
 		}
