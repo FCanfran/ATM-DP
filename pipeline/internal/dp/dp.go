@@ -134,6 +134,8 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 	// var subgraph := cmn.NewGraph() 		 // Implicit declaration
 	var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
 	subgraph.AddAtEnd(initial_edge)
+	fmt.Println("+ filter: ", initial_edge.Number_id, "- addition of edge")
+	subgraph.PrintId()
 	// -------------------------------------------------------------------------------------------------- //
 
 	// TODO: this goroutine dies alone after its father (the filter) dies?
@@ -143,7 +145,8 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 		case new_edge := <-int_edge:
 			// -------------------------------------------------------------------------------------------------- //
 			subgraph.AddAtEnd(new_edge)
-			//fmt.Println(subgraph)
+			fmt.Println("+ filter: ", new_edge.Number_id, "- addition of edge")
+			subgraph.PrintId()
 			// -------------------------------------------------------------------------------------------------- //
 			// TODO: Pattern detection update. Con distance. Obteniendo location mediante conexión con la static GDB.
 			// TODO: Check for the pattern and output alert in that case

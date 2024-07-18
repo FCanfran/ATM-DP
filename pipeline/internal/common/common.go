@@ -2,6 +2,7 @@ package common
 
 import (
 	"container/list"
+	"fmt"
 	"log"
 	"time"
 )
@@ -19,10 +20,10 @@ type Edge struct {
 
 // TODO: Put this correctly!, for the moment the diff is 24h
 // In Duration format
-const timeTransactionThreshold = 24 * time.Hour
+const timeTransactionThreshold = 10 * 24 * time.Hour
 
 // TODO: Put this correctly!
-const timeFilterThreshold = 48 * time.Hour
+const timeFilterThreshold = 10 * 24 * time.Hour
 
 // For the volatile subgraph
 
@@ -96,6 +97,30 @@ func (g *Graph) Delete(e Edge) {
 			return
 		}
 	}
+}
+
+// Print a subgraph
+func (g *Graph) Print() {
+	filter_id := g.edges.Front().Value.(Edge).Number_id
+	fmt.Println("subgraph: ", filter_id)
+	fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+	for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
+		eg_val := eg.Value.(Edge)
+		fmt.Println(eg_val)
+	}
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+}
+
+// Print a subgraph - only the tx ids
+func (g *Graph) PrintId() {
+	filter_id := g.edges.Front().Value.(Edge).Number_id
+	fmt.Println("subgraph: ", filter_id)
+	fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+	for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
+		eg_val := eg.Value.(Edge)
+		fmt.Println(eg_val.Tx_id)
+	}
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 }
 
 // Generic Functions -----------------------------
