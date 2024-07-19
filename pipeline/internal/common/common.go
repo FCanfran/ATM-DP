@@ -23,14 +23,16 @@ type Edge struct {
 const timeTransactionThreshold = 1 * 24 * time.Hour
 
 // TODO: Put this correctly!
-const timeFilterThreshold = 10 * 24 * time.Hour
+const timeFilterThreshold = 3 * 24 * time.Hour
 
 // For the volatile subgraph
 
 // Golang list - doubly linked list
-// Graph is a struct that encapsulates a list of edges
+// Graph is a struct that encapsulates a list of edges: edges
+// last_timestamp: to save the last timestamp of the filter / subgraph
 type Graph struct {
-	edges *list.List
+	last_timestamp time.Time // Tx_end of the last edge to have been added to the subgraph
+	edges          *list.List
 }
 
 // NewGraph creates a new graph
@@ -43,6 +45,7 @@ func NewGraph() *Graph {
 func (g *Graph) AddAtEnd(e Edge) {
 	fmt.Println(":::: addition ::::")
 	g.edges.PushBack(e)
+	g.last_timestamp = e.Tx_end
 }
 
 // TODO: Idea --> hacer una función que haga el add de una nueva edge
@@ -84,13 +87,7 @@ func (g *Graph) Update(timestamp time.Time) {
 // TODO: Again this is assuming that the tx are ordered in time!!!
 // otherwise we will have to find the most recent tx in time
 func (g *Graph) CheckFilterTimeout(timestamp time.Time) bool {
-	eg := g.edges.Back()
-	if eg == nil {
-		return true
-	}
-	eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
-	// TODO: tx_start or end?
-	difference := timestamp.Sub(eg_val.Tx_start)
+	difference := timestamp.Sub(g.last_timestamp)
 	return (difference >= timeFilterThreshold)
 }
 

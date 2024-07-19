@@ -98,16 +98,15 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 				// -------------------------------------------------------------------------------------------------- //
 				// TODO: Gestion del tiempo de vida del filtro con incoming timestamp de los edges que van pasando
 				int_time <- edge.Tx_start
-				// TODO: So far we do not stop the filter. We just update its internal clock
 				// TODO: avoid this signal (stop) being synchronous! -
 				// allow worker to tell at any moment to stop! instead of blocking
-				/*
-					if stop := <-int_stop; stop {
-						out_front <- in_comm{in_edge, in_front}
-						fmt.Println("filter ", id, " - stop")
-						return // finish filter
-					}
-				*/
+
+				if stop := <-int_stop; stop {
+					// kill the filter and pass the front channel to do the reconnection
+					out_front <- in_comm{in_edge, in_front}
+					fmt.Println("filter ", id, " - kill")
+					return // finish filter
+				}
 
 			}
 			// -------------------------------------------------------------------------------------------------- //
@@ -184,15 +183,15 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			// 1. Filter Timeout check: test if the filter has to die (with the last edge of the volatile
 			// subgraph), in that case send stop signal to the (father) filter
 			if subgraph.CheckFilterTimeout(new_time) {
-				//int_stop <- true
+				int_stop <- true
 			} else {
-				// filter is not killed but we need to update the subgraph to eliminate the outdated edges
-				// on the volatile subgraph
-				// NOTE: Since CheckFilterTimeout returned false, at least there is one edge (the last) that
-				// will remain in the subgraph after the update
+				int_stop <- false // TODO: CHECK IF THIS CAN COME HERE OR WE HAVE TO WAIT TO DO IT AT
+				// THE END
+				// filter is not killed but we need to update the subgraph to (possibly) eliminate the
+				// outdated edges on the volatile subgraph
 				subgraph.Update(new_time)
 				subgraph.PrintId()
-				//int_stop <- false
+				// int_stop <- false
 			}
 		}
 
