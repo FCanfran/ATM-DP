@@ -131,7 +131,8 @@ The sequence of what it is expected to happen is shown in the following table:
 
 
 TODO: Gestionar cómo hacer cuando tras un update no queda ningún edge en el subgraph...
-(eliminar filtro, mantener?)
+(eliminar filtro, mantener?) --> Esto no puede ocurrir tal y como lo tenemos implementado
+--> ver explicación en el cuadernillo!!! 
 
 
 ### Filter lifetime management

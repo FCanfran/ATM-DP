@@ -186,8 +186,10 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			if subgraph.CheckFilterTimeout(new_time) {
 				//int_stop <- true
 			} else {
-				// filter wont die but we need to update the subgraph to eliminate the outdated edges
+				// filter is not killed but we need to update the subgraph to eliminate the outdated edges
 				// on the volatile subgraph
+				// NOTE: Since CheckFilterTimeout returned false, at least there is one edge (the last) that
+				// will remain in the subgraph after the update
 				subgraph.Update(new_time)
 				subgraph.PrintId()
 				//int_stop <- false
