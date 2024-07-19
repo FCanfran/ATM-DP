@@ -20,10 +20,10 @@ type Edge struct {
 
 // TODO: Put this correctly!, for the moment the diff is 24h
 // In Duration format
-const timeTransactionThreshold = 1 * 24 * time.Hour
+const timeTxThreshold = 1 * 24 * time.Hour
 
 // TODO: Put this correctly!
-const timeFilterThreshold = 3 * 24 * time.Hour
+const timeFilterThreshold = 2 * 24 * time.Hour
 
 // For the volatile subgraph
 
@@ -65,7 +65,7 @@ func (g *Graph) Update(timestamp time.Time) {
 	for eg != nil {
 		eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
 		difference := timestamp.Sub(eg_val.Tx_end)
-		if difference >= timeTransactionThreshold {
+		if difference >= timeTxThreshold {
 			// Keep the next before deleting the current, so that we can have
 			// the next of the current after the removal
 			eg_next := eg.Next()
@@ -87,6 +87,7 @@ func (g *Graph) Update(timestamp time.Time) {
 // TODO: Again this is assuming that the tx are ordered in time!!!
 // otherwise we will have to find the most recent tx in time
 func (g *Graph) CheckFilterTimeout(timestamp time.Time) bool {
+	fmt.Println(":::: checkFilterTimeout ::::")
 	difference := timestamp.Sub(g.last_timestamp)
 	return (difference >= timeFilterThreshold)
 }

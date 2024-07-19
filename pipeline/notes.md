@@ -142,6 +142,45 @@ Objectives:
 - Check correct pipeline reconnection
 
 
+*Test file:* `transaction-tests-kill.csv`.
+
+| filter 0 | filter 1 | filter 2 |
+|----------|----------|----------|
+| 0        |          |          |
+| 0,1      |          |          |
+| 1,2      |          |          |
+| 2        | 7        |          |
+| 2        | 7        | 9        |
+|          | 7        | 9,10     |
+| 3        | 7        | 9,10     |
+| 3,4      | 7        | 9,10     |
+| 3,4,5    | 7        | 9,10     |
+| 5        | x        | 11       |
+| filter 0 | filter 2 |          |
+| 5,6      | 11       |          |
+| 6        | 11,12    |          |
+| 6        | 11,12,13 |          |
+| filter 0 | filter 2 | filter 1 |
+| 6        | 11,12,13 | 8        |
+|          | 12,13    | 8,14     |
+| x        | 15       | 8,14     |
+| filter 2 | filter 1 |          |
+| 15       | 16       |          |
+
+
+Qué probamos:
+
+- Subgrafo vacío pero filtro no se destruye -> causante tx 10, filtro 0
+- Filtro destruido directamente (sin subgrafo vacío) -> causa tx 11, filtro 1
+- Filtro destruido tras haber pasado fase de tener subgrafo vacío -> causa tx 15, filtro 0
+
+Vida filtros y orden:
+- 0-1-2
+- 0-2
+- 0-2-1
+- 2-1
+
+
 # 3. Connection with Neo4j static GDB
 
 
