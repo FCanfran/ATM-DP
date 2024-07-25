@@ -287,71 +287,268 @@ func populateATMsAlt(session neo4j.SessionWithContext) {
 }
 
 func populateBanksAlt(session neo4j.SessionWithContext) {
-	query := `
-	LOAD CSV WITH HEADERS FROM 'file:///csv/bank.csv' AS row
-	MERGE (b:Bank {
-		name: row.name, 
-		code: row.code, 
-		loc_latitude: toFloat(row.loc_latitude), 
-		loc_longitude: toFloat(row.loc_longitude)
-	});
-	`
-	err := writeQuery(session, query)
+
+	// 1. Open and read the CSV file
+	file, err := os.Open("/path/to/bank.csv")
 	if err != nil {
-		fmt.Println("Bank population: failure - %v", err)
-	} else {
-		fmt.Println("Bank population: sucessful")
+		fmt.Println("could not open CSV file: %w", err)
+		return
 	}
+	// closes the file after read from it no matter if there is error or not
+	defer file.Close()
+
+	// csv reader
+	reader := csv.NewReader(bufio.NewReader(file))
+	// Read and discard the header line
+	_, err = reader.Read()
+	if err != nil {
+		fmt.Println("could not read header from CSV file: %w", err)
+		return
+	}
+
+	query := `
+		MERGE (b:Bank {
+			name: $name, 
+			code: $code, 
+			loc_latitude: $loc_latitude, 
+			loc_longitude: $loc_longitude
+		});
+	`
+
+	i := 0
+	success := 0
+	for {
+		row, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+
+		name := row[0]
+		code := row[1]
+		loc_latitude, err := strconv.ParseFloat(row[2], 64)
+		if err != nil {
+			fmt.Println("invalid latitude value at row %d: %w", i+2, err)
+			continue
+		}
+		loc_longitude, err := strconv.ParseFloat(row[3], 64)
+		if err != nil {
+			fmt.Println("invalid longitude value at row %d: %w", i+2, err)
+			continue
+		}
+
+		params := map[string]interface{}{
+			"name":          name,
+			"code":          code,
+			"loc_latitude":  loc_latitude,
+			"loc_longitude": loc_longitude,
+		}
+
+		err = writeQuery(session, query, params)
+		if err != nil {
+			fmt.Println("Bank population: failure - %v", err)
+		} else {
+			success += 1
+		}
+
+		i += 1
+	}
+
+	fmt.Println("Bank population: %d sucess / %d total", success, i)
 }
 
 func populateATMBanksAlt(session neo4j.SessionWithContext) {
+
+	// 1. Open and read the CSV file
+	file, err := os.Open("/path/to/atm-bank.csv")
+	if err != nil {
+		fmt.Println("could not open CSV file: %w", err)
+		return
+	}
+	// closes the file after read from it no matter if there is error or not
+	defer file.Close()
+
+	// csv reader
+	reader := csv.NewReader(bufio.NewReader(file))
+	// Read and discard the header line
+	_, err = reader.Read()
+	if err != nil {
+		fmt.Println("could not read header from CSV file: %w", err)
+		return
+	}
+
 	query := `
-	LOAD CSV WITH HEADERS FROM 'file:///csv/atm-bank.csv' AS row
-             MATCH (a:ATM {ATM_id: row.ATM_id})
-             MATCH (b:Bank {code: row.code})
+             MATCH (a:ATM {ATM_id: $ATM_id})
+             MATCH (b:Bank {code: $code})
              MERGE (a)-[r:BELONGS_TO]->(b);
 	`
-	err := writeQuery(session, query)
-	if err != nil {
-		fmt.Println("ATM-Bank relationships population: failure - %v", err)
-	} else {
-		fmt.Println("ATM-Bank relationships population: sucessful")
+
+	i := 0
+	success := 0
+	for {
+		row, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+
+		ATM_id := row[0]
+		code := row[1]
+
+		params := map[string]interface{}{
+			"ATM_id": ATM_id,
+			"code":   code,
+		}
+
+		err = writeQuery(session, query, params)
+		if err != nil {
+			fmt.Println("ATM-Bank relationships population: failure - %v", err)
+		} else {
+			success += 1
+		}
+
+		i += 1
 	}
+
+	fmt.Println("ATM-Bank relationships population: %d sucess / %d total", success, i)
 }
 
 func populateCardsAlt(session neo4j.SessionWithContext) {
-	query := `
-	LOAD CSV WITH HEADERS FROM 'file:///csv/card.csv' AS row
-	MERGE (c:Card {
-		number_id: row.number_id, 
-		client_id: row.client_id, 
-		expiration: date(row.expiration), 
-		CVC: toInteger(row.CVC), 
-		extract_limit: toFloat(row.extract_limit), 
-		loc_latitude: toFloat(row.loc_latitude), 
-		loc_longitude: toFloat(row.loc_longitude)});
-	`
-	err := writeQuery(session, query)
+	// 1. Open and read the CSV file
+	file, err := os.Open("/path/to/card.csv")
 	if err != nil {
-		fmt.Println("Card population: failure - %v", err)
-	} else {
-		fmt.Println("Card population: sucessful")
+		fmt.Println("could not open CSV file: %w", err)
+		return
 	}
+	// closes the file after read from it no matter if there is error or not
+	defer file.Close()
+
+	// csv reader
+	reader := csv.NewReader(bufio.NewReader(file))
+	// Read and discard the header line
+	_, err = reader.Read()
+	if err != nil {
+		fmt.Println("could not read header from CSV file: %w", err)
+		return
+	}
+
+	query := `
+		MERGE (c:Card {
+			number_id: $number_id, 
+			client_id: $client_id, 
+			expiration: $expiration,
+			CVC: $CVC,
+			extract_limit: $extract_limit, 
+			loc_latitude: $loc_latitude, 
+			loc_longitude: $loc_longitude
+		});
+	`
+
+	i := 0
+	success := 0
+	for {
+		row, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+
+		number_id := row[0]
+		client_id := row[1]
+		// date
+		expiration := row[2]
+		// integer
+		CVC := row[3]
+		// float
+		extract_limit, err := strconv.ParseFloat(row[4], 64)
+		if err != nil {
+			fmt.Println("invalid extract_limit value at row %d: %w", i+2, err)
+			continue
+		}
+		loc_latitude, err := strconv.ParseFloat(row[5], 64)
+		if err != nil {
+			fmt.Println("invalid latitude value at row %d: %w", i+2, err)
+			continue
+		}
+		loc_longitude, err := strconv.ParseFloat(row[6], 64)
+		if err != nil {
+			fmt.Println("invalid longitude value at row %d: %w", i+2, err)
+			continue
+		}
+
+		params := map[string]interface{}{
+			"number_id":     number_id,
+			"client_id":     client_id,
+			"expiration":    expiration,
+			"CVC":           CVC,
+			"extract_limit": extract_limit,
+			"loc_latitude":  loc_latitude,
+			"loc_longitude": loc_longitude,
+		}
+
+		err = writeQuery(session, query, params)
+		if err != nil {
+			fmt.Println("Card population: failure - %v", err)
+		} else {
+			success += 1
+		}
+
+		i += 1
+	}
+
+	fmt.Println("Card population: %d sucess / %d total", success, i)
 }
 
 func populateCardBanksAlt(session neo4j.SessionWithContext) {
+	// 1. Open and read the CSV file
+	file, err := os.Open("/path/to/card-bank.csv")
+	if err != nil {
+		fmt.Println("could not open CSV file: %w", err)
+		return
+	}
+	// closes the file after read from it no matter if there is error or not
+	defer file.Close()
+
+	// csv reader
+	reader := csv.NewReader(bufio.NewReader(file))
+	// Read and discard the header line
+	_, err = reader.Read()
+	if err != nil {
+		fmt.Println("could not read header from CSV file: %w", err)
+		return
+	}
+
 	query := `
-	LOAD CSV WITH HEADERS FROM 'file:///csv/card-bank.csv' AS row
-             MATCH (c:Card {number_id: row.number_id})
-             MATCH (b:Bank {code: row.code})
+             MATCH (c:Card {number_id: $number_id})
+             MATCH (b:Bank {code: $code})
              MERGE (c)-[r:ISSUED_BY]->(b);
 	`
-	err := writeQuery(session, query)
-	if err != nil {
-		fmt.Println("Card-Bank relationships population: failure - %v", err)
-	} else {
-		fmt.Println("Card-Bank relationships population: sucessful")
+
+	i := 0
+	success := 0
+	for {
+		row, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+
+		number_id := row[0]
+		code := row[1]
+
+		params := map[string]interface{}{
+			"number_id": number_id,
+			"code":      code,
+		}
+
+		err = writeQuery(session, query, params)
+		if err != nil {
+			fmt.Println("Card-Bank relationship population: failure - %v", err)
+		} else {
+			success += 1
+		}
+
+		i += 1
 	}
+
+	fmt.Println("Card-Bank relationships population: %d sucess / %d total", success, i)
+
 }
 
 func PopulateAlt() {
