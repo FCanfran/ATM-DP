@@ -1,3 +1,6 @@
 gdb/wisabi
-gdb/gdb-creation/populatemodule/cmd/main
+gdb/populatemodule/cmd/csvimport/main
+gdb/populatemodule/cmd/cypherimport/main
+gdb/populatemodule/cmd/csvimport/.env
+gdb/populatemodule/cmd/cypherimport/.env
 pipeline/cmd/main

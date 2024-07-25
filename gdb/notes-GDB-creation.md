@@ -1,4 +1,11 @@
 
+
+2 different ways:
+- Use CSV import clause of cypher
+- Parse CSV data and run creation Cypher queries against a Neo4j database
+
+# 1. CSV import (csvimport)
+
 Use of CSV import clause of cypher. See documentation [here](https://neo4j.com/docs/cypher-manual/5/clauses/load-csv/).
 
 - **Requirement**: Place all the CSVs to import under the `/var/lib/neo4j/import` directory.
@@ -169,3 +176,8 @@ Note: to drop constraints we can do:
 ```
 DROP CONSTRAINT constraint_name [IF EXISTS]
 ```
+
+
+# 2. Creation of cypher queries (cypherimport)
+
+TODO: Explain!

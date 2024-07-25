@@ -1,4 +1,4 @@
-package populatemodule
+package populate
 
 import (
 	"bufio"
@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
@@ -213,9 +214,9 @@ func Populate() {
 // - reading directly the csv with golang and then adding the data directly in neo4j using
 //   cypher commands
 
-func populateATMsAlt(session neo4j.SessionWithContext) {
+func populateATMsAlt(session neo4j.SessionWithContext, csvPath string) {
 	// 1. Open and read the CSV file
-	file, err := os.Open("/path/to/atm.csv")
+	file, err := os.Open(csvPath + "/atm.csv")
 	if err != nil {
 		fmt.Printf("could not open CSV file: %v\n", err)
 		return
@@ -250,6 +251,8 @@ func populateATMsAlt(session neo4j.SessionWithContext) {
 			break
 		}
 
+		i += 1
+
 		ATM_id := row[0]
 		loc_latitude, err := strconv.ParseFloat(row[1], 64)
 		if err != nil {
@@ -278,18 +281,16 @@ func populateATMsAlt(session neo4j.SessionWithContext) {
 		} else {
 			success += 1
 		}
-
-		i += 1
 	}
 
 	fmt.Printf("ATM population: %d sucess / %d total\n", success, i)
 
 }
 
-func populateBanksAlt(session neo4j.SessionWithContext) {
+func populateBanksAlt(session neo4j.SessionWithContext, csvPath string) {
 
 	// 1. Open and read the CSV file
-	file, err := os.Open("/path/to/bank.csv")
+	file, err := os.Open(csvPath + "/bank.csv")
 	if err != nil {
 		fmt.Printf("could not open CSV file: %v\n", err)
 		return
@@ -323,6 +324,8 @@ func populateBanksAlt(session neo4j.SessionWithContext) {
 			break
 		}
 
+		i += 1
+
 		name := row[0]
 		code := row[1]
 		loc_latitude, err := strconv.ParseFloat(row[2], 64)
@@ -349,17 +352,15 @@ func populateBanksAlt(session neo4j.SessionWithContext) {
 		} else {
 			success += 1
 		}
-
-		i += 1
 	}
 
 	fmt.Printf("Bank population: %d sucess / %d total\n", success, i)
 }
 
-func populateATMBanksAlt(session neo4j.SessionWithContext) {
+func populateATMBanksAlt(session neo4j.SessionWithContext, csvPath string) {
 
 	// 1. Open and read the CSV file
-	file, err := os.Open("/path/to/atm-bank.csv")
+	file, err := os.Open(csvPath + "/atm-bank.csv")
 	if err != nil {
 		fmt.Printf("could not open CSV file: %v\n", err)
 		return
@@ -390,8 +391,10 @@ func populateATMBanksAlt(session neo4j.SessionWithContext) {
 			break
 		}
 
-		ATM_id := row[0]
-		code := row[1]
+		i += 1
+
+		code := row[0]
+		ATM_id := row[1]
 
 		params := map[string]interface{}{
 			"ATM_id": ATM_id,
@@ -404,16 +407,14 @@ func populateATMBanksAlt(session neo4j.SessionWithContext) {
 		} else {
 			success += 1
 		}
-
-		i += 1
 	}
 
 	fmt.Printf("ATM-Bank relationships population: %d sucess / %d total\n", success, i)
 }
 
-func populateCardsAlt(session neo4j.SessionWithContext) {
+func populateCardsAlt(session neo4j.SessionWithContext, csvPath string) {
 	// 1. Open and read the CSV file
-	file, err := os.Open("/path/to/card.csv")
+	file, err := os.Open(csvPath + "/card.csv")
 	if err != nil {
 		fmt.Printf("could not open CSV file: %v\n", err)
 		return
@@ -441,6 +442,9 @@ func populateCardsAlt(session neo4j.SessionWithContext) {
 			loc_longitude: $loc_longitude
 		});
 	`
+	// To do datetime conversion
+	// https://yourbasic.org/golang/format-parse-string-time-date-example/
+	const layout = "2006-01-02"
 
 	i := 0
 	success := 0
@@ -450,12 +454,23 @@ func populateCardsAlt(session neo4j.SessionWithContext) {
 			break
 		}
 
+		i += 1
+
 		number_id := row[0]
 		client_id := row[1]
+
 		// date
-		expiration := row[2]
+		expiration, err := time.Parse(layout, row[2])
+		if err != nil {
+			fmt.Printf("invalid expiration datetime value at row %d: %v\n", i+2, err)
+			continue
+		}
 		// integer
-		CVC := row[3]
+		CVC, err := strconv.Atoi(row[3])
+		if err != nil {
+			fmt.Printf("invalid CVC value at row %d: %v\n", i+2, err)
+			continue
+		}
 		// float
 		extract_limit, err := strconv.ParseFloat(row[4], 64)
 		if err != nil {
@@ -490,15 +505,14 @@ func populateCardsAlt(session neo4j.SessionWithContext) {
 			success += 1
 		}
 
-		i += 1
 	}
 
 	fmt.Printf("Card population: %d sucess / %d total\n", success, i)
 }
 
-func populateCardBanksAlt(session neo4j.SessionWithContext) {
+func populateCardBanksAlt(session neo4j.SessionWithContext, csvPath string) {
 	// 1. Open and read the CSV file
-	file, err := os.Open("/path/to/card-bank.csv")
+	file, err := os.Open(csvPath + "/card-bank.csv")
 	if err != nil {
 		fmt.Printf("could not open CSV file: %v", err)
 		return
@@ -529,8 +543,10 @@ func populateCardBanksAlt(session neo4j.SessionWithContext) {
 			break
 		}
 
-		number_id := row[0]
-		code := row[1]
+		i += 1
+
+		code := row[0]
+		number_id := row[1]
 
 		params := map[string]interface{}{
 			"number_id": number_id,
@@ -543,8 +559,6 @@ func populateCardBanksAlt(session neo4j.SessionWithContext) {
 		} else {
 			success += 1
 		}
-
-		i += 1
 	}
 
 	fmt.Printf("Card-Bank relationships population: %d sucess / %d total\n", success, i)
@@ -556,11 +570,11 @@ func PopulateAlt(csvPath string) {
 	session := driver.NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
 	defer session.Close(ctx)
 
-	populateATMsAlt(session)
-	populateBanksAlt(session)
-	populateATMBanksAlt(session)
-	populateCardsAlt(session)
-	populateCardBanksAlt(session)
+	populateATMsAlt(session, csvPath)
+	populateBanksAlt(session, csvPath)
+	populateATMBanksAlt(session, csvPath)
+	populateCardsAlt(session, csvPath)
+	populateCardBanksAlt(session, csvPath)
 
 }
 
