@@ -121,7 +121,7 @@ func populateATMs(session neo4j.SessionWithContext) {
 	`
 	err := writeQuery(session, query, nil) // no params (nil)
 	if err != nil {
-		fmt.Println("ATM population: failure - %v", err)
+		fmt.Printf("ATM population: failure - %v\n", err)
 	} else {
 		fmt.Println("ATM population: sucessful")
 	}
@@ -139,7 +139,7 @@ func populateBanks(session neo4j.SessionWithContext) {
 	`
 	err := writeQuery(session, query, nil)
 	if err != nil {
-		fmt.Println("Bank population: failure - %v", err)
+		fmt.Printf("Bank population: failure - %v\n", err)
 	} else {
 		fmt.Println("Bank population: sucessful")
 	}
@@ -154,7 +154,7 @@ func populateATMBanks(session neo4j.SessionWithContext) {
 	`
 	err := writeQuery(session, query, nil)
 	if err != nil {
-		fmt.Println("ATM-Bank relationships population: failure - %v", err)
+		fmt.Printf("ATM-Bank relationships population: failure - %v\n", err)
 	} else {
 		fmt.Println("ATM-Bank relationships population: sucessful")
 	}
@@ -174,7 +174,7 @@ func populateCards(session neo4j.SessionWithContext) {
 	`
 	err := writeQuery(session, query, nil)
 	if err != nil {
-		fmt.Println("Card population: failure - %v", err)
+		fmt.Printf("Card population: failure - %v\n", err)
 	} else {
 		fmt.Println("Card population: sucessful")
 	}
@@ -189,7 +189,7 @@ func populateCardBanks(session neo4j.SessionWithContext) {
 	`
 	err := writeQuery(session, query, nil)
 	if err != nil {
-		fmt.Println("Card-Bank relationships population: failure - %v", err)
+		fmt.Printf("Card-Bank relationships population: failure - %v\n", err)
 	} else {
 		fmt.Println("Card-Bank relationships population: sucessful")
 	}
@@ -217,7 +217,7 @@ func populateATMsAlt(session neo4j.SessionWithContext) {
 	// 1. Open and read the CSV file
 	file, err := os.Open("/path/to/atm.csv")
 	if err != nil {
-		fmt.Println("could not open CSV file: %w", err)
+		fmt.Printf("could not open CSV file: %v\n", err)
 		return
 	}
 	// closes the file after read from it no matter if there is error or not
@@ -253,12 +253,12 @@ func populateATMsAlt(session neo4j.SessionWithContext) {
 		ATM_id := row[0]
 		loc_latitude, err := strconv.ParseFloat(row[1], 64)
 		if err != nil {
-			fmt.Println("invalid latitude value at row %d: %w", i+2, err)
+			fmt.Printf("invalid latitude value at row %d: %v\n", i+2, err)
 			continue
 		}
 		loc_longitude, err := strconv.ParseFloat(row[2], 64)
 		if err != nil {
-			fmt.Println("invalid longitude value at row %d: %w", i+2, err)
+			fmt.Printf("invalid longitude value at row %d: %v\n", i+2, err)
 			continue
 		}
 		city := row[3]
@@ -274,7 +274,7 @@ func populateATMsAlt(session neo4j.SessionWithContext) {
 
 		err = writeQuery(session, query, params)
 		if err != nil {
-			fmt.Println("ATM population: failure - %v", err)
+			fmt.Printf("ATM population: failure - %v\n", err)
 		} else {
 			success += 1
 		}
@@ -282,7 +282,7 @@ func populateATMsAlt(session neo4j.SessionWithContext) {
 		i += 1
 	}
 
-	fmt.Println("ATM population: %d sucess / %d total", success, i)
+	fmt.Printf("ATM population: %d sucess / %d total\n", success, i)
 
 }
 
@@ -291,7 +291,7 @@ func populateBanksAlt(session neo4j.SessionWithContext) {
 	// 1. Open and read the CSV file
 	file, err := os.Open("/path/to/bank.csv")
 	if err != nil {
-		fmt.Println("could not open CSV file: %w", err)
+		fmt.Printf("could not open CSV file: %v\n", err)
 		return
 	}
 	// closes the file after read from it no matter if there is error or not
@@ -302,7 +302,7 @@ func populateBanksAlt(session neo4j.SessionWithContext) {
 	// Read and discard the header line
 	_, err = reader.Read()
 	if err != nil {
-		fmt.Println("could not read header from CSV file: %w", err)
+		fmt.Printf("could not read header from CSV file: %v\n", err)
 		return
 	}
 
@@ -327,12 +327,12 @@ func populateBanksAlt(session neo4j.SessionWithContext) {
 		code := row[1]
 		loc_latitude, err := strconv.ParseFloat(row[2], 64)
 		if err != nil {
-			fmt.Println("invalid latitude value at row %d: %w", i+2, err)
+			fmt.Printf("invalid latitude value at row %d: %v\n", i+2, err)
 			continue
 		}
 		loc_longitude, err := strconv.ParseFloat(row[3], 64)
 		if err != nil {
-			fmt.Println("invalid longitude value at row %d: %w", i+2, err)
+			fmt.Printf("invalid longitude value at row %d: %v\n", i+2, err)
 			continue
 		}
 
@@ -345,7 +345,7 @@ func populateBanksAlt(session neo4j.SessionWithContext) {
 
 		err = writeQuery(session, query, params)
 		if err != nil {
-			fmt.Println("Bank population: failure - %v", err)
+			fmt.Printf("Bank population: failure - %v\n", err)
 		} else {
 			success += 1
 		}
@@ -353,7 +353,7 @@ func populateBanksAlt(session neo4j.SessionWithContext) {
 		i += 1
 	}
 
-	fmt.Println("Bank population: %d sucess / %d total", success, i)
+	fmt.Printf("Bank population: %d sucess / %d total\n", success, i)
 }
 
 func populateATMBanksAlt(session neo4j.SessionWithContext) {
@@ -361,7 +361,7 @@ func populateATMBanksAlt(session neo4j.SessionWithContext) {
 	// 1. Open and read the CSV file
 	file, err := os.Open("/path/to/atm-bank.csv")
 	if err != nil {
-		fmt.Println("could not open CSV file: %w", err)
+		fmt.Printf("could not open CSV file: %v\n", err)
 		return
 	}
 	// closes the file after read from it no matter if there is error or not
@@ -372,7 +372,7 @@ func populateATMBanksAlt(session neo4j.SessionWithContext) {
 	// Read and discard the header line
 	_, err = reader.Read()
 	if err != nil {
-		fmt.Println("could not read header from CSV file: %w", err)
+		fmt.Printf("could not read header from CSV file: %v\n", err)
 		return
 	}
 
@@ -400,7 +400,7 @@ func populateATMBanksAlt(session neo4j.SessionWithContext) {
 
 		err = writeQuery(session, query, params)
 		if err != nil {
-			fmt.Println("ATM-Bank relationships population: failure - %v", err)
+			fmt.Printf("ATM-Bank relationships population: failure - %v\n", err)
 		} else {
 			success += 1
 		}
@@ -408,14 +408,14 @@ func populateATMBanksAlt(session neo4j.SessionWithContext) {
 		i += 1
 	}
 
-	fmt.Println("ATM-Bank relationships population: %d sucess / %d total", success, i)
+	fmt.Printf("ATM-Bank relationships population: %d sucess / %d total\n", success, i)
 }
 
 func populateCardsAlt(session neo4j.SessionWithContext) {
 	// 1. Open and read the CSV file
 	file, err := os.Open("/path/to/card.csv")
 	if err != nil {
-		fmt.Println("could not open CSV file: %w", err)
+		fmt.Printf("could not open CSV file: %v\n", err)
 		return
 	}
 	// closes the file after read from it no matter if there is error or not
@@ -426,7 +426,7 @@ func populateCardsAlt(session neo4j.SessionWithContext) {
 	// Read and discard the header line
 	_, err = reader.Read()
 	if err != nil {
-		fmt.Println("could not read header from CSV file: %w", err)
+		fmt.Printf("could not read header from CSV file: %v\n", err)
 		return
 	}
 
@@ -459,17 +459,17 @@ func populateCardsAlt(session neo4j.SessionWithContext) {
 		// float
 		extract_limit, err := strconv.ParseFloat(row[4], 64)
 		if err != nil {
-			fmt.Println("invalid extract_limit value at row %d: %w", i+2, err)
+			fmt.Printf("invalid extract_limit value at row %d: %v\n", i+2, err)
 			continue
 		}
 		loc_latitude, err := strconv.ParseFloat(row[5], 64)
 		if err != nil {
-			fmt.Println("invalid latitude value at row %d: %w", i+2, err)
+			fmt.Printf("invalid latitude value at row %d: %v\n", i+2, err)
 			continue
 		}
 		loc_longitude, err := strconv.ParseFloat(row[6], 64)
 		if err != nil {
-			fmt.Println("invalid longitude value at row %d: %w", i+2, err)
+			fmt.Printf("invalid longitude value at row %d: %v\n", i+2, err)
 			continue
 		}
 
@@ -485,7 +485,7 @@ func populateCardsAlt(session neo4j.SessionWithContext) {
 
 		err = writeQuery(session, query, params)
 		if err != nil {
-			fmt.Println("Card population: failure - %v", err)
+			fmt.Printf("Card population: failure - %v\n", err)
 		} else {
 			success += 1
 		}
@@ -493,14 +493,14 @@ func populateCardsAlt(session neo4j.SessionWithContext) {
 		i += 1
 	}
 
-	fmt.Println("Card population: %d sucess / %d total", success, i)
+	fmt.Printf("Card population: %d sucess / %d total\n", success, i)
 }
 
 func populateCardBanksAlt(session neo4j.SessionWithContext) {
 	// 1. Open and read the CSV file
 	file, err := os.Open("/path/to/card-bank.csv")
 	if err != nil {
-		fmt.Println("could not open CSV file: %w", err)
+		fmt.Printf("could not open CSV file: %v", err)
 		return
 	}
 	// closes the file after read from it no matter if there is error or not
@@ -511,7 +511,7 @@ func populateCardBanksAlt(session neo4j.SessionWithContext) {
 	// Read and discard the header line
 	_, err = reader.Read()
 	if err != nil {
-		fmt.Println("could not read header from CSV file: %w", err)
+		fmt.Printf("could not read header from CSV file: %v", err)
 		return
 	}
 
@@ -539,7 +539,7 @@ func populateCardBanksAlt(session neo4j.SessionWithContext) {
 
 		err = writeQuery(session, query, params)
 		if err != nil {
-			fmt.Println("Card-Bank relationship population: failure - %v", err)
+			fmt.Printf("Card-Bank relationship population: failure - %v\n", err)
 		} else {
 			success += 1
 		}
@@ -547,11 +547,11 @@ func populateCardBanksAlt(session neo4j.SessionWithContext) {
 		i += 1
 	}
 
-	fmt.Println("Card-Bank relationships population: %d sucess / %d total", success, i)
+	fmt.Printf("Card-Bank relationships population: %d sucess / %d total\n", success, i)
 
 }
 
-func PopulateAlt() {
+func PopulateAlt(csvPath string) {
 	fmt.Println("Population of the GDB...")
 	session := driver.NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
 	defer session.Close(ctx)
@@ -578,9 +578,9 @@ func UniquenessConstraints() {
 		CREATE CONSTRAINT code IF NOT EXISTS
 		FOR (b:Bank) REQUIRE b.code IS UNIQUE;
 	`
-	err := writeQuery(session, bankUniquenessQuery)
+	err := writeQuery(session, bankUniquenessQuery, nil)
 	if err != nil {
-		fmt.Println("Bank uniqueness constraint addition: failure - %v", err)
+		fmt.Printf("Bank uniqueness constraint addition: failure - %v\n", err)
 	} else {
 		fmt.Println("Bank uniqueness constraint addition: sucess")
 	}
@@ -589,9 +589,9 @@ func UniquenessConstraints() {
 		CREATE CONSTRAINT number_id IF NOT EXISTS
 		FOR (c:Card) REQUIRE c.number_id IS UNIQUE;
 	`
-	err = writeQuery(session, cardUniquenessQuery)
+	err = writeQuery(session, cardUniquenessQuery, nil)
 	if err != nil {
-		fmt.Println("Card uniqueness constraint addition: failure - %v", err)
+		fmt.Printf("Card uniqueness constraint addition: failure - %v\n", err)
 	} else {
 		fmt.Println("Card uniqueness constraint addition: sucess")
 	}
@@ -600,9 +600,9 @@ func UniquenessConstraints() {
 		CREATE CONSTRAINT ATM_id IF NOT EXISTS
 		FOR (a:ATM) REQUIRE a.ATM_id IS UNIQUE;
 	`
-	err = writeQuery(session, ATMUniquenessQuery)
+	err = writeQuery(session, ATMUniquenessQuery, nil)
 	if err != nil {
-		fmt.Println("ATM uniqueness constraint addition: failure - %v", err)
+		fmt.Printf("ATM uniqueness constraint addition: failure - %v\n", err)
 	} else {
 		fmt.Println("ATM uniqueness constraint addition: sucess")
 	}
