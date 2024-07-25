@@ -8,7 +8,18 @@
 
 Use of CSV import clause of cypher. See documentation [here](https://neo4j.com/docs/cypher-manual/5/clauses/load-csv/).
 
-- **Requirement**: Place all the CSVs to import under the `/var/lib/neo4j/import` directory.
+**Requirements**: 
+- Place all the CSVs to import under the `/var/lib/neo4j/import` directory.  
+- Place a `.env` file in the `csvimport` directory indicating the `NEO4J_URI`, `NEO4J_USERNAME` and `NEO4J_PASSWORD`
+for example:
+```
+NEO4J_URI="bolt://localhost:7687"
+NEO4J_USERNAME="neo4j"
+NEO4J_PASSWORD="bisaurin"
+```
+
+
+
 - **Note that:** It is better to import the corresponding data types as they are and not as 
 strings. This is supported by NEo4j and it is better since it allows to query more effectively and to process it with type-specific Cypher query functions.
 - **[Neo4j spatial functions](https://neo4j.com/docs/cypher-manual/current/functions/spatial/)** 
@@ -180,4 +191,18 @@ DROP CONSTRAINT constraint_name [IF EXISTS]
 
 # 2. Creation of cypher queries (cypherimport)
 
-TODO: Explain!
+Using a language library (of golang) to parse CSV data and run creation Cypher queries against a Neo4j database.
+
+*Needed to create the graph database from CSV files directly from them, accesing these files from the same machine as
+where we run the golang program. In our case to create the gdb on the cluster VM without having to place the CSVs on 
+that machine*.
+
+**Requirements**: 
+- Indicate the CSV folder path when as argument to the main program.
+- Place a `.env` file in the `cypherimport` directory indicating the `NEO4J_URI`, `NEO4J_USERNAME` and `NEO4J_PASSWORD`
+for example:
+```
+NEO4J_URI="bolt://localhost:7687"
+NEO4J_USERNAME="neo4j"
+NEO4J_PASSWORD="bisaurin"
+```
