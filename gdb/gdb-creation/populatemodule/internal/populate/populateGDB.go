@@ -1,9 +1,14 @@
 package populatemodule
 
 import (
+	"bufio"
 	"context"
+	"encoding/csv"
 	"fmt"
+	"io"
 	"os"
+	"strconv"
+
 	"github.com/joho/godotenv"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
@@ -85,11 +90,11 @@ func SafeConnect() {
 	fmt.Println("Connection established.")
 }
 
-func writeQuery(session neo4j.SessionWithContext, query string) error {
+func writeQuery(session neo4j.SessionWithContext, query string, params map[string]interface{}) error {
 
 	_, err := neo4j.ExecuteWrite(ctx, session,
 		func(tx neo4j.ManagedTransaction) (any, error) {
-			result, err := tx.Run(ctx, query, nil)
+			result, err := tx.Run(ctx, query, params)
 			if err != nil {
 				return nil, err
 			}
@@ -101,7 +106,7 @@ func writeQuery(session neo4j.SessionWithContext, query string) error {
 	}
 
 	return nil
-} 
+}
 
 func populateATMs(session neo4j.SessionWithContext) {
 	query := `
@@ -114,7 +119,7 @@ func populateATMs(session neo4j.SessionWithContext) {
 		country: row.country
 	});
 	`
-	err := writeQuery(session, query)
+	err := writeQuery(session, query, nil) // no params (nil)
 	if err != nil {
 		fmt.Println("ATM population: failure - %v", err)
 	} else {
@@ -132,7 +137,7 @@ func populateBanks(session neo4j.SessionWithContext) {
 		loc_longitude: toFloat(row.loc_longitude)
 	});
 	`
-	err := writeQuery(session, query)
+	err := writeQuery(session, query, nil)
 	if err != nil {
 		fmt.Println("Bank population: failure - %v", err)
 	} else {
@@ -147,7 +152,7 @@ func populateATMBanks(session neo4j.SessionWithContext) {
              MATCH (b:Bank {code: row.code})
              MERGE (a)-[r:BELONGS_TO]->(b);
 	`
-	err := writeQuery(session, query)
+	err := writeQuery(session, query, nil)
 	if err != nil {
 		fmt.Println("ATM-Bank relationships population: failure - %v", err)
 	} else {
@@ -167,7 +172,7 @@ func populateCards(session neo4j.SessionWithContext) {
 		loc_latitude: toFloat(row.loc_latitude), 
 		loc_longitude: toFloat(row.loc_longitude)});
 	`
-	err := writeQuery(session, query)
+	err := writeQuery(session, query, nil)
 	if err != nil {
 		fmt.Println("Card population: failure - %v", err)
 	} else {
@@ -182,7 +187,7 @@ func populateCardBanks(session neo4j.SessionWithContext) {
              MATCH (b:Bank {code: row.code})
              MERGE (c)-[r:ISSUED_BY]->(b);
 	`
-	err := writeQuery(session, query)
+	err := writeQuery(session, query, nil)
 	if err != nil {
 		fmt.Println("Card-Bank relationships population: failure - %v", err)
 	} else {
@@ -200,6 +205,165 @@ func Populate() {
 	populateATMBanks(session)
 	populateCards(session)
 	populateCardBanks(session)
+
+}
+
+// ------------------------------------------------------------------------------------------- //
+// Alternative CSV population:
+// - reading directly the csv with golang and then adding the data directly in neo4j using
+//   cypher commands
+
+func populateATMsAlt(session neo4j.SessionWithContext) {
+	// 1. Open and read the CSV file
+	file, err := os.Open("/path/to/atm.csv")
+	if err != nil {
+		fmt.Println("could not open CSV file: %w", err)
+		return
+	}
+	// closes the file after read from it no matter if there is error or not
+	defer file.Close()
+
+	// csv reader
+	reader := csv.NewReader(bufio.NewReader(file))
+	// Read and discard the header line
+	_, err = reader.Read()
+	if err != nil {
+		fmt.Println("could not read header from CSV file: %w", err)
+		return
+	}
+
+	query := `
+		MERGE (a:ATM {
+			ATM_id: $ATM_id,
+			loc_latitude: $loc_latitude,
+			loc_longitude: $loc_longitude,
+			city: $city,
+			country: $country
+		});
+	`
+
+	i := 0
+	success := 0
+	for {
+		row, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+
+		ATM_id := row[0]
+		loc_latitude, err := strconv.ParseFloat(row[1], 64)
+		if err != nil {
+			fmt.Println("invalid latitude value at row %d: %w", i+2, err)
+			continue
+		}
+		loc_longitude, err := strconv.ParseFloat(row[2], 64)
+		if err != nil {
+			fmt.Println("invalid longitude value at row %d: %w", i+2, err)
+			continue
+		}
+		city := row[3]
+		country := row[4]
+
+		params := map[string]interface{}{
+			"ATM_id":        ATM_id,
+			"loc_latitude":  loc_latitude,
+			"loc_longitude": loc_longitude,
+			"city":          city,
+			"country":       country,
+		}
+
+		err = writeQuery(session, query, params)
+		if err != nil {
+			fmt.Println("ATM population: failure - %v", err)
+		} else {
+			success += 1
+		}
+
+		i += 1
+	}
+
+	fmt.Println("ATM population: %d sucess / %d total", success, i)
+
+}
+
+func populateBanksAlt(session neo4j.SessionWithContext) {
+	query := `
+	LOAD CSV WITH HEADERS FROM 'file:///csv/bank.csv' AS row
+	MERGE (b:Bank {
+		name: row.name, 
+		code: row.code, 
+		loc_latitude: toFloat(row.loc_latitude), 
+		loc_longitude: toFloat(row.loc_longitude)
+	});
+	`
+	err := writeQuery(session, query)
+	if err != nil {
+		fmt.Println("Bank population: failure - %v", err)
+	} else {
+		fmt.Println("Bank population: sucessful")
+	}
+}
+
+func populateATMBanksAlt(session neo4j.SessionWithContext) {
+	query := `
+	LOAD CSV WITH HEADERS FROM 'file:///csv/atm-bank.csv' AS row
+             MATCH (a:ATM {ATM_id: row.ATM_id})
+             MATCH (b:Bank {code: row.code})
+             MERGE (a)-[r:BELONGS_TO]->(b);
+	`
+	err := writeQuery(session, query)
+	if err != nil {
+		fmt.Println("ATM-Bank relationships population: failure - %v", err)
+	} else {
+		fmt.Println("ATM-Bank relationships population: sucessful")
+	}
+}
+
+func populateCardsAlt(session neo4j.SessionWithContext) {
+	query := `
+	LOAD CSV WITH HEADERS FROM 'file:///csv/card.csv' AS row
+	MERGE (c:Card {
+		number_id: row.number_id, 
+		client_id: row.client_id, 
+		expiration: date(row.expiration), 
+		CVC: toInteger(row.CVC), 
+		extract_limit: toFloat(row.extract_limit), 
+		loc_latitude: toFloat(row.loc_latitude), 
+		loc_longitude: toFloat(row.loc_longitude)});
+	`
+	err := writeQuery(session, query)
+	if err != nil {
+		fmt.Println("Card population: failure - %v", err)
+	} else {
+		fmt.Println("Card population: sucessful")
+	}
+}
+
+func populateCardBanksAlt(session neo4j.SessionWithContext) {
+	query := `
+	LOAD CSV WITH HEADERS FROM 'file:///csv/card-bank.csv' AS row
+             MATCH (c:Card {number_id: row.number_id})
+             MATCH (b:Bank {code: row.code})
+             MERGE (c)-[r:ISSUED_BY]->(b);
+	`
+	err := writeQuery(session, query)
+	if err != nil {
+		fmt.Println("Card-Bank relationships population: failure - %v", err)
+	} else {
+		fmt.Println("Card-Bank relationships population: sucessful")
+	}
+}
+
+func PopulateAlt() {
+	fmt.Println("Population of the GDB...")
+	session := driver.NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
+	defer session.Close(ctx)
+
+	populateATMsAlt(session)
+	populateBanksAlt(session)
+	populateATMBanksAlt(session)
+	populateCardsAlt(session)
+	populateCardBanksAlt(session)
 
 }
 
@@ -235,7 +399,6 @@ func UniquenessConstraints() {
 		fmt.Println("Card uniqueness constraint addition: sucess")
 	}
 
-
 	ATMUniquenessQuery := `
 		CREATE CONSTRAINT ATM_id IF NOT EXISTS
 		FOR (a:ATM) REQUIRE a.ATM_id IS UNIQUE;
@@ -266,7 +429,7 @@ func Query() {
 // Sessions are not thread safe: you can share the main DriverWithContext object
 // across threads, but make sure each routine creates its own sessions.
 // DIFFERENCE WITH EXECUTEQUERY --> think of managed transactions as a way of
-// unwrapping the flow of ExecuteQuery() and being able to specify its desired behavior 
+// unwrapping the flow of ExecuteQuery() and being able to specify its desired behavior
 // in more places.
 func Transaction() {
 	session := driver.NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
