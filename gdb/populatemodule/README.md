@@ -1,6 +1,7 @@
 
 
-2 different ways:
+2 different ways:  
+
 - Use CSV import clause of cypher
 - Parse CSV data and run creation Cypher queries against a Neo4j database
 
