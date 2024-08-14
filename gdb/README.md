@@ -185,6 +185,17 @@ one directly after the other –¿ this may be fraudulent - AVOID!)
 
 # 2. Population of the Neo4j Graph Database
 
+Prior to the population of the Neo4j graph database, a Neo4j graph database instance needs to be
+created. This can be done either locally or in the cloud. See the following links to get more information on how to do this:
+
+- Locally: [Neo4j Desktop](https://neo4j.com/docs/desktop-manual/current/)
+- Cloud: [AuraDB](https://neo4j.com/cloud/platform/aura-graph-database/?ref=developer-guides)
+
+More hands-on tutorial links:
+- [Installation of Neo4j in Ubuntu 22.04](https://www.virtono.com/community/tutorial-how-to/how-to-install-neo4j-on-ubuntu-22-04/ )
+
+Once we have a Neo4j graph database instance available, we can proceed to the population process.
+
 The population of the Neo4j database can be done in two possible ways:
 - CSV tables imports.
 - With scripts to create with cypher commands all the nodes, relations... all the database.

@@ -5,6 +5,11 @@
 - Use CSV import clause of cypher
 - Parse CSV data and run creation Cypher queries against a Neo4j database
 
+**If not previously installed**, it is needed to install the Neo4j Go driver to be able 
+to interact with a Neo4j instance through our golang population application. See the 
+[reference Neo4j Go Driver page](https://neo4j.com/docs/go-manual/current/) to do 
+the installation.
+
 # 1. CSV import (csvimport)
 
 Use of CSV import clause of cypher. See documentation [here](https://neo4j.com/docs/cypher-manual/5/clauses/load-csv/).
