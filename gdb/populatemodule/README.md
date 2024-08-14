@@ -18,11 +18,12 @@ NEO4J_URI="bolt://localhost:7687"
 NEO4J_USERNAME="neo4j"
 NEO4J_PASSWORD="bisaurin"
 ```
+- Run the golang program in the `csvimport` subdirectory. It automatically runs the cypher commands explained in what follows.
 
-
+Some (not that important remarks):
 
 - **Note that:** It is better to import the corresponding data types as they are and not as 
-strings. This is supported by NEo4j and it is better since it allows to query more effectively and to process it with type-specific Cypher query functions.
+strings. This is supported by Neo4j and it is better since it allows to query more effectively and to process it with type-specific Cypher query functions.
 - **[Neo4j spatial functions](https://neo4j.com/docs/cypher-manual/current/functions/spatial/)** 
 - **[Point data type](https://neo4j.com/docs/api/python-driver/current/types/spatial.html)**: it can be really useful to make use of pre-built spatial cypher functions such as distance function between 2 points.
 
