@@ -1,7 +1,11 @@
 
 # Creation process of the Bank (Graph) Database
 
-For simplicity and to do it in a more stepwise manner, we are going to first create all the CSV data tables for the nodes and for the relations in the corresponding format and then we will populate the Neo4j GDB with those.
+For simplicity and to do it in a more stepwise manner, first all the CSV data tables for the nodes and for the relations are created in the corresponding format and then with those CSV the Neo4j GDB is populated.
+
+The stable graph bank database is created based on this property graph database schema:
+
+![Figure 0: stable property graph schema](./images/diag-PG-stable-def-updated.png)
 
 # 1. Generation of the synthetic data
 
