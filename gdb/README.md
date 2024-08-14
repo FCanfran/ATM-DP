@@ -101,6 +101,9 @@ of the newly generated ATMs objects. (*So far*)
 
 `transactionGenerator.py` 
 
+The transactions represent the (volatile) interactions between the Card and ATM entities. They are modeled based on this schema:
+![Figure 0.1: transactions / volatile property graph schema](./images/diagPG-volatile.png)
+
 ### Remarks:
 
 First we are generating not fraud kinds of transactions. Therefore the transactions generated for each client have to be generated in such a way that they won't produce any fraud pattern alert. Later in the process we will poison our system by generating those transactions to produce fraud pattern alerts.
