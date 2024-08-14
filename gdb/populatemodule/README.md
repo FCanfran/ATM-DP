@@ -16,7 +16,7 @@ for example:
 ```
 NEO4J_URI="bolt://localhost:7687"
 NEO4J_USERNAME="neo4j"
-NEO4J_PASSWORD="bisaurin"
+NEO4J_PASSWORD="xxxxxxx"
 ```
 - Run the golang program in the `csvimport` subdirectory. It automatically runs the cypher commands explained in what follows.
 
@@ -213,7 +213,7 @@ for example:
 ```
 NEO4J_URI="bolt://localhost:7687"
 NEO4J_USERNAME="neo4j"
-NEO4J_PASSWORD="bisaurin"
+NEO4J_PASSWORD="xxxxxxx"
 ```
 
 - Run the golang program in the `cypherimport` subdirectory. It automatically runs the cypher commands needed for the populating process. **Note:** in this case we need to provide the path of the csv files *csvPath* argument on the local machine on which we are running this script.
