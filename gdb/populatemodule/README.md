@@ -32,6 +32,53 @@ Some notes on the nodes and relationships naming conventions: [here](https://neo
 - Relationship labels: Uppercase with underscores -> "HAS_ORDER"
 - Properties: lowercase with underscores -> "first_name"
 
+
+## Adding uniqueness constraints
+
+Note that first, prior to the population of the GDB,
+a uniqueness constraint on the IDs of each of the three different kind of nodes
+are added. This way we avoid having duplicated nodes with the same ID in the
+database. Therefore, when adding a new ATM node that has the same ID as
+another ATM already existing in the database, we are aware of this and we do
+not let this insertion to happen.
+
+Also, it appears as recommendation to do this: *"Always create uniqueness constraints prior to importing data, to avoid duplicates or colliding entities. If the source file contains duplicated data and the right constraints are in place, Cypher raises an error."*
+
+### ATM
+
+Create node property uniqueness constraints on `ATM_id`:
+
+```
+CREATE CONSTRAINT ATM_id IF NOT EXISTS
+FOR (a:ATM) REQUIRE a.ATM_id IS UNIQUE
+```
+
+### Card
+
+Create node property uniqueness constraints on Card `number_id`:
+
+```
+CREATE CONSTRAINT number_id IF NOT EXISTS
+FOR (c:Card) REQUIRE c.number_id IS UNIQUE
+```
+
+### Bank
+
+Create node property uniqueness constraints on Bank `code`:
+
+```
+CREATE CONSTRAINT code IF NOT EXISTS
+FOR (b:Bank) REQUIRE b.code IS UNIQUE
+```
+
+Note: to drop constraints we can do:
+
+```
+DROP CONSTRAINT constraint_name [IF EXISTS]
+```
+
+Then the different CSV files containing all the data tables of our data set, were loaded into the GDB with the following cypher directives.
+
 ### ATMs
 
 ```
@@ -148,46 +195,6 @@ LOAD CSV WITH HEADERS FROM 'file:///csv/card-bank.csv' AS row
 
 Notes:
 - The edges are labeled as `ISSUED_BY`.
-
-## Adding uniqueness constraints
-
-It happens that, so far, when adding for example into the database at has the same ID as other already existing in the database, that node is also merged withouth problem. 
-We would like to avoid this, so that we have a uniquess constraint on the IDs of each of the kind of nodes. Therefore, when adding a new ATM node that has the same ID as another ATM already existing in the database, we are aware of this and we do not let this insertion to happen.
-
-Also, it appears as recommendation to do this: *"Always create uniqueness constraints prior to importing data, to avoid duplicates or colliding entities. If the source file contains duplicated data and the right constraints are in place, Cypher raises an error."*
-
-### ATM
-
-Create node property uniqueness constraints on `ATM_id`:
-
-```
-CREATE CONSTRAINT ATM_id IF NOT EXISTS
-FOR (a:ATM) REQUIRE a.ATM_id IS UNIQUE
-```
-
-### Card
-
-Create node property uniqueness constraints on Card `number_id`:
-
-```
-CREATE CONSTRAINT number_id IF NOT EXISTS
-FOR (c:Card) REQUIRE c.number_id IS UNIQUE
-```
-
-### Bank
-
-Create node property uniqueness constraints on Bank `code`:
-
-```
-CREATE CONSTRAINT code IF NOT EXISTS
-FOR (b:Bank) REQUIRE b.code IS UNIQUE
-```
-
-Note: to drop constraints we can do:
-
-```
-DROP CONSTRAINT constraint_name [IF EXISTS]
-```
 
 
 # 2. Creation of cypher queries (cypherimport)

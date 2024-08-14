@@ -21,7 +21,7 @@ considering a reduced amount of Bank entities. In particular we generated
 three different Banks. `n` ATMs and `m` Cards belonging to each of them, will be
 generated as explained in what follows. Note that apart from the generation
 of the entities ATM and Card we will also need to generate the relationships
-ATM-Bank (belongs to) and Card-Bank (issued by) that matches each of
+ATM-Bank (`belongs_to`) and Card-Bank (`issued_by`) that matches each of
 these entities with the corresponding Bank entity to which they belong.
 
 ## ATM
@@ -165,7 +165,7 @@ the distribution sample was negative.
 
 Note that a limit was set on the duration of the transaction so that we
 can have the control avoiding time overlapping transactions, which will be
-producing irregular undesired fraud pattern alerts.
+producing irregular undesired fraud pattern alerts.  
 
 - `transaction_amount`: based on card behavior parameters, it is drawn
 from a normal distribution N (`amount_avg`, `amount_std`). If negative amount,
@@ -177,6 +177,8 @@ one directly after the other –¿ this may be fraudulent - AVOID!)
 
 # 2. Population of the Neo4j Graph Database
 
-Note that since for the population of the database, typically is seen that is done through:
+The population of the Neo4j database can be done in two possible ways:
 - CSV tables imports.
 - With scripts to create with cypher commands all the nodes, relations... all the database.
+
+The explanation of this process can be seen in the golang `populatemodule` subdirectory.
