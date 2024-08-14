@@ -9,7 +9,8 @@ The stable graph bank database is created based on this property graph database 
 
 # 1. Generation of the synthetic data
 
-Based on the [Wisabi Bank Dataset](https://www.kaggle.com/datasets/obinnaiheanachor/wisabi-bank-dataset?resource=download).
+Based on the [Wisabi Bank Dataset](https://www.kaggle.com/datasets/obinnaiheanachor/wisabi-bank-dataset?resource=download) we explain the process of the generation of the 
+CSV data tables following the property graph schema needed for the creation of the Neo4j graph database.
 
 ## Bank
 
