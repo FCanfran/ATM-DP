@@ -10,6 +10,19 @@ to interact with a Neo4j instance through our golang population application. See
 [reference Neo4j Go Driver page](https://neo4j.com/docs/go-manual/current/) to do 
 the installation.
 
+# Connecting with the (stable) Neo4j graph database
+
+In the `populatemodule` the connection with the corresponding Neo4j graph database instance is done using the `SafeConnect()` method that uses the specified URI, USERNAME and PASSWORD in the required `.env` file. The `.env` file needs to have the `NEO4J_URI`, `NEO4J_USERNAME` and `NEO4J_PASSWORD` and needs to be placed in the indicated directory (*depending on the chosen populating way*), for example:
+```
+NEO4J_URI="bolt://localhost:7687"
+NEO4J_USERNAME="neo4j"
+NEO4J_PASSWORD="xxxxxxx"
+```
+
+Once the connection is established, all the cypher queries to do the population process in any of the two different ways are done using the `writeQuery()` function.
+
+**In this same way, the dynamic pipeline engine filters will do the connection and query the stable graph database.**
+
 # 1. CSV import (csvimport)
 
 Use of CSV import clause of cypher. See documentation [here](https://neo4j.com/docs/cypher-manual/5/clauses/load-csv/).
@@ -226,3 +239,14 @@ NEO4J_PASSWORD="xxxxxxx"
 ```
 $> go run main.go <csvPath>
 ```
+
+# Verification
+
+To simply check that the Neo4j graph database instance was successfuly populated, we can simply open it and execute the following cypher command:
+
+```
+MATCH (n) RETURN n
+```
+
+This should return all the nodes and relations that were created with the `populatemodule` program.
+
