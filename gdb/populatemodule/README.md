@@ -217,3 +217,7 @@ NEO4J_PASSWORD="bisaurin"
 ```
 
 - Run the golang program in the `cypherimport` subdirectory. It automatically runs the cypher commands needed for the populating process. **Note:** in this case we need to provide the path of the csv files *csvPath* argument on the local machine on which we are running this script.
+
+```
+$> go run main.go <csvPath>
+```
