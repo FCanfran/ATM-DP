@@ -1,4 +1,5 @@
 gdb/wisabi
+gdb/personal
 gdb/populatemodule/cmd/csvimport/main
 gdb/populatemodule/cmd/cypherimport/main
 gdb/populatemodule/cmd/csvimport/.env
