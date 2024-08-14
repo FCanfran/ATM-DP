@@ -35,7 +35,7 @@ func Connect() {
 	// URI examples: "neo4j://localhost", "neo4j+s://xxx.databases.neo4j.io"
 	dbUri := "neo4j+s://e2c3d8d5.databases.neo4j.io"
 	dbUser := "neo4j"
-	dbPassword := "HSJzzC4ySP8xG_OdWYwOn9cFs_gBVPh2EYbm3f1SgTU"
+	dbPassword := ""
 
 	// Creating a DriverWithContext instance only provides information on how to
 	// access the database, but does not actually establish a connection.
