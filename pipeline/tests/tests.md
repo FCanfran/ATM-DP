@@ -24,7 +24,7 @@ transaction_id,number_id,ATM_id,transaction_start,transaction_end,transaction_am
 It gathers transactions from 3 different cards in a time period of 5 days, from 2018-04-01 to 2018-04-05.
 
 
-### Volatile subgraph
+## Volatile subgraph
 
 Objectives:
 - Addition: adds new tx to the corresponding filter volatile subgraph correctly
@@ -33,7 +33,7 @@ in time: *property graph stream* definition 5.2 of Seraph article), we update th
 subgraph in order to only have it in a state corresponding to a certain **window** of time
 (e.g. the last `timeTransactionThreshold`) -> so that no *outdated* edges/tx are no longer stored, and therefore they are deleted from the filter subgraph.
 
-### 1. Addition
+## 1. Addition
 
 To simply check this and avoid other operations on the filters being performed, we set:
 
@@ -51,7 +51,7 @@ Result in `test-add.txt`:
 - Subgraph c-NIGER-1: 7-8
 - Subgraph c-NIGER-2: 9-10-11-12-13
 
-### 2. Update
+## 2. Update
 
 Check that the subgraphs of the filters are updated accordingly to the `timeTransactionThreshold` defined time and avoiding the deletion of filters so that
 we only focus in the update of the subgraphs. 
@@ -92,7 +92,7 @@ vez se haya detectado que se ha sobrepasado el `timeFilterThreshold` time.) - ex
 y en el cuadernillo (opc 2).
 
 
-### Filter lifetime management
+## 3. Filter lifetime management
 
 Objectives:
 - Delete/Destroy the corresponding filters that do not register any activity (no new tx related to them) in the last `timeFilterThreshold` time. 
