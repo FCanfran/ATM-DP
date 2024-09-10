@@ -106,6 +106,33 @@ func (g *Graph) Delete(e Edge) {
 	}
 }
 
+// obtain Tmin(eg.loc, new_e.loc)
+func obtainTmin() float32 {
+	// Connect to the static gdb to obtain the location of the ATMs given the ATM ids
+}
+
+func (g *Graph) CheckFraud(new_e Edge) bool {
+	// NOTE: Initial version - pattern 1 - easy approach (only check with the last added edge of the subgraph)
+
+	// 1. Obtain last added edge of the subgraph
+	eg := g.edges.Back()
+	// 2. Check if the subgraph is empty - no fraud
+	if eg == nil {
+		return false
+	}
+	eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
+
+	if eg_val.ATM_id == new_e.ATM_id {
+		return false
+	}
+
+	// != ATM_id
+
+	// time feasibility check: (new_e.tx_start - eg.tx_end) < Tmin(eg.loc, new_e.loc)
+	// obtain Tmin(eg.loc, new_e.loc)
+	obtainTmin()
+}
+
 // Print a subgraph
 func (g *Graph) Print() {
 	if g.edges.Front() != nil {

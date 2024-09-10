@@ -18,4 +18,9 @@ Options:
 
 # 3. Connection with Neo4j static GDB
 
+# 4. Fraud pattern detection
+
+## 4.1. Pattern 1: Two or more withdrawals with the same card at ATMs from different locations (at the same time)
+
+
 

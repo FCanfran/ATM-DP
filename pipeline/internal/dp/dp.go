@@ -143,41 +143,24 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 		select {
 		case new_edge := <-int_edge:
 			// -------------------------------------------------------------------------------------------------- //
+			// TODO: Check the order of these operations
+
 			// NOTE: update the subgraph wrt the timestamp of this new edge
 			// first: update the subgraph wrt the timestamp of this new edge and
 			// second: add the new edge
 			subgraph.Update(new_edge.Tx_start)
-			subgraph.AddAtEnd(new_edge)
-			subgraph.PrintId()
-			// -------------------------------------------------------------------------------------------------- //
 			// TODO: Pattern detection update. Con distance. Obteniendo location mediante conexión con la static GDB.
 			// TODO: Check for the pattern and output alert in that case
 			// --> to develop more...
-			// TODO: Also, apart from the pattern detection do the temporal update of the volatile subgraph
-			/*
-				if (new_edge.ATM_id != edge.ATM_id) && (new_edge.Tx_start-edge.Tx_start < timeTransactionThreshold) {
-					// alert is the pattern: edge list that form the pattern
-					var pattern cmn.Graph // = []Edge
-					pattern = append(pattern, edge, new_edge)
-					out_alert <- pattern
-					// TODO: check timeout in this case? -> no, in general,
-					// if we register movement with the card then no need to check
-					// timeouts to potentially erase the filter (the filter is active)
-					// -------------------------------------------------------------------------------------------------- //
-				} else {
-					// TODO:
-					// keep a list of all... if alert do not save the new_edge, otherwise
-					// yes... --> think about this
-					// For the moment, if alert, then the original edge is saved (the
-					// last to arrive is considered erroneous)
-					// If not alert, then the last is correct, so we need to update it
-					edge = new_edge
-					// Update time (note that no check if filter has to die, since
-					// it has just been updated by a new transaction on same card - it remains active)
-					time = new_edge.Time
-					fmt.Println("filter-worker ", " - no alert - update card edge to: ", edge.Card, " ", edge.ATM, " ", edge.Time)
-				}
-			*/
+			if subgraph.CheckFraud(new_edge) {
+				// TODO: Create & propagate fraud pattern alert (alert channel)
+				fmt.Println("Positive Fraud pattern")
+			} else {
+				fmt.Println("Negative Fraud pattern")
+				subgraph.AddAtEnd(new_edge)
+			}
+			subgraph.PrintId()
+			// -------------------------------------------------------------------------------------------------- //
 
 		case new_time := <-int_time:
 			// 1. Filter Timeout check: test if the filter has to die (with the last edge of the volatile
