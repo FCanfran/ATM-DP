@@ -5,4 +5,3 @@ gdb/populatemodule/cmd/cypherimport/main
 gdb/populatemodule/cmd/csvimport/.env
 gdb/populatemodule/cmd/cypherimport/.env
 pipeline/cmd/main
-pipeline/personal
