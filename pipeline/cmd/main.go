@@ -5,18 +5,21 @@ Entry point of the program
 package main
 
 import (
-	"pipeline/internal/dp"
-	"fmt"
-	"os"
+	"pipeline/internal/connection"
 )
 
 func main() {
 
-	// obtain stream fileName from args
-	istream := os.Args[1]
+	// Connection to static gdb
+	connection.SafeConnect()
 
-	fmt.Println("Reading stream from: ", istream)
+	/*
+		// obtain stream fileName from args
+		istream := os.Args[1]
 
-	// start the pipeline and give the stream edge by edge
-	dp.Start(istream)
+		fmt.Println("Reading stream from: ", istream)
+
+		// start the pipeline and give the stream edge by edge
+		dp.Start(istream)
+	*/
 }
