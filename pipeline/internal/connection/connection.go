@@ -86,52 +86,22 @@ that a write query submitted in read mode will be rejected.
 Similar remarks hold for the .ExecuteRead() and .ExecuteWrite() methods.
 */
 
-// TODO: Devolver el resultado!!
-func ReadQuery(session neo4j.SessionWithContext, query string, params map[string]any) (neo4j.ResultWithContext, error) {
+func ReadQuery(session neo4j.SessionWithContext,
+	query string,
+	params map[string]any,
+	// function to process result within ReadQuery(), this needs to be done like this since
+	// it is not possible to retrieve the result once the transaction is done (outside of
+	// the ReadQuery function)
+	processResult func(neo4j.ResultWithContext) (any, error)) (any, error) {
 
-	res, err := neo4j.ExecuteRead(ctx, session,
+	result, err := neo4j.ExecuteRead(ctx, session,
 		func(tx neo4j.ManagedTransaction) (any, error) {
 			result, err := tx.Run(ctx, query, params)
 			if err != nil {
 				return nil, err
 			}
-			// TODO: Process the result:
-			// How to do it?: https://neo4j.com/docs/go-manual/current/transactions/
-			// example on the "run a managed transaction" section
-			// Collect() retrieves all records into a list - SEE OTHER ALTERNATIVES!?
-			// records, err := result.Collect(ctx) --> no need to: many disadvantages:
-			// - Memory usage: if result set is large, collecting all records into memory might lead to high
-			//   memory consumption and potential performance issues.
-			// - Performance Overhead: Collecting all results first can be less efficient than processing
-			// records one by one, especially if you only need a small subset of results.
-			//fmt.Println(result.Collect(ctx))
-
-			for result.Next(ctx) {
-				record := result.Record()
-
-				loc_latitude, found := record.Get("loc_latitude")
-				if found {
-					fmt.Println("Latitude: ", loc_latitude)
-				}
-			}
-
-			// Check if there were any errors during result processing
-			if err = result.Err(); err != nil {
-				return nil, err
-			}
-
-			return result, nil
+			return processResult(result) // process the result within the active transaction
 		})
-	/*
-		if err != nil {
-			return nil, err
-		}
-	*/
-	// Assert the type of result
-	result, ok := res.(neo4j.ResultWithContext)
-	if !ok {
-		return nil, fmt.Errorf("unexpected result type")
-	}
 
 	return result, err
 }
@@ -149,15 +119,36 @@ func TestQuery() {
 		"ATM_id": "OGUN-3",
 	}
 
-	result, _ := ReadQuery(session, getATMLocationQuery, params)
+	processCoordinates := func(result neo4j.ResultWithContext) (any, error) {
 
-	fmt.Println(result.Record())
+		//var location float64
+		for result.Next(ctx) {
+			record := result.Record()
 
-	if result.Next(ctx) {
-		record := result.Record()
-		loc_latitude, _ := record.Get("a.loc_latitude")
-		fmt.Println(loc_latitude)
+			loc_latitude, found := record.Get("loc_latitude")
+			if found {
+				fmt.Println("Latitude: ", loc_latitude)
+			}
+
+			// location = loc_latitude
+		}
+
+		// Check for errors after processing the results
+		if err := result.Err(); err != nil {
+			return nil, err
+		}
+		return "done", nil
 	}
+
+	result, err := ReadQuery(session, getATMLocationQuery, params, processCoordinates)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	fmt.Println("Result: ", result)
+
 }
 
 // DriverWithContext VS Sessions
