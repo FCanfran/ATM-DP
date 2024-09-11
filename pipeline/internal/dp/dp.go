@@ -82,6 +82,7 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	int_time := make(chan time.Time) // synchronous
 	// TOCHECK: Avoid this channel being blocking (?) Does it make sense?
 	int_stop := make(chan bool) // synchronous
+
 	go filter_worker(edge, int_edge, int_time, int_stop, out_alert)
 
 	for {

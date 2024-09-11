@@ -6,3 +6,4 @@ gdb/populatemodule/cmd/csvimport/.env
 gdb/populatemodule/cmd/cypherimport/.env
 pipeline/cmd/main
 pipeline/cmd/.env
+pipeline/personal

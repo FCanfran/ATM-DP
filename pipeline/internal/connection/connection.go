@@ -17,12 +17,6 @@ import (
 
 var (
 	driver neo4j.DriverWithContext
-	// TODO: Como apaño lo he puesto público para facilitar acceso desde el resto de módulos
-	// --> Estructurar y modular de la forma correcta sin jugarretas!!!!
-	// Define a module that holds and manages the context and this variables (this one for
-	// example) and define Init() and other proper functions to correctly manage them
-	//Ctx context.Context
-	ctx context.Context
 )
 
 // Connection (safe, with godotenv)
@@ -33,7 +27,9 @@ var (
 // DriverWithContext objects are immutable, thread-safe, and fairly expensive to
 // create, so your application should only create one instance
 func SafeConnect() {
-	ctx = context.Background()
+	// root context: it has no deadline and it can not be cancelled.
+	// used as the base context for connecting to the Neo4j database
+	ctx := context.Background()
 	err := godotenv.Load()
 	if err != nil {
 		panic(err)

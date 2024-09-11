@@ -4,7 +4,10 @@ import (
 	"container/list"
 	"fmt"
 	"log"
+	"pipeline/internal/connection"
 	"time"
+
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
 // An Edge = Transaction: Card ---> ATM
@@ -107,12 +110,56 @@ func (g *Graph) Delete(e Edge) {
 }
 
 // obtain Tmin(eg.loc, new_e.loc)
-func obtainTmin() float32 {
+func obtainTmin(session neo4j.SessionWithContext) (float32, error) {
 	// Connect to the static gdb to obtain the location of the ATMs given the ATM ids
+	// TODO: Use Indexes for Performance
+	// Ensure that the ATM_id field is indexed if you are performing many lookups based on this property.
+	// While this is not a different query form, indexing helps improve the performance of queries that filter on this property.
+	getATMLocationQuery := `MATCH (a:ATM) WHERE a.ATM_id = $ATM_id RETURN a.loc_latitude AS loc_latitude`
+
+	params := map[string]any{
+		"ATM_id": "OGUN-3",
+	}
+
+	processCoordinates := func(result neo4j.ResultWithContext) (any, error) {
+
+		//var location float64
+		for result.Next(ctx) {
+			record := result.Record()
+
+			loc_latitude, found := record.Get("loc_latitude")
+			if found {
+				fmt.Println("Latitude: ", loc_latitude)
+			}
+
+			// location = loc_latitude
+		}
+
+		// Check for errors after processing the results
+		if err := result.Err(); err != nil {
+			return nil, err
+		}
+		return "done", nil
+	}
+
+	result, err := connection.ReadQuery(session, getATMLocationQuery, params, processCoordinates)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+		return 0, err
+	}
+
+	fmt.Println("Result: ", result)
+
+	return 0, nil
 }
 
 func (g *Graph) CheckFraud(new_e Edge) bool {
 	// NOTE: Initial version - pattern 1 - easy approach (only check with the last added edge of the subgraph)
+
+	// 0. Open a session to connect to the gdb
+	session := connection.CreateSession()
+	defer connection.CloseSession(session)
 
 	// 1. Obtain last added edge of the subgraph
 	eg := g.edges.Back()
@@ -130,7 +177,7 @@ func (g *Graph) CheckFraud(new_e Edge) bool {
 
 	// time feasibility check: (new_e.tx_start - eg.tx_end) < Tmin(eg.loc, new_e.loc)
 	// obtain Tmin(eg.loc, new_e.loc)
-	obtainTmin()
+	obtainTmin(session)
 }
 
 // Print a subgraph
