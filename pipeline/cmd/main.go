@@ -13,6 +13,10 @@ import (
 
 func main() {
 
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: go run main.go <transactionFileName>")
+		return
+	}
 	// Connection to static gdb
 	connection.SafeConnect()
 

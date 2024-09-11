@@ -2,6 +2,7 @@ package common
 
 import (
 	"container/list"
+	"context"
 	"fmt"
 	"log"
 	"pipeline/internal/connection"
@@ -110,16 +111,12 @@ func (g *Graph) Delete(e Edge) {
 }
 
 // obtain Tmin(eg.loc, new_e.loc)
-func obtainTmin(session neo4j.SessionWithContext) (float32, error) {
+func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 string, ATM_id_2 string) (float32, error) {
 	// Connect to the static gdb to obtain the location of the ATMs given the ATM ids
 	// TODO: Use Indexes for Performance
 	// Ensure that the ATM_id field is indexed if you are performing many lookups based on this property.
 	// While this is not a different query form, indexing helps improve the performance of queries that filter on this property.
-	getATMLocationQuery := `MATCH (a:ATM) WHERE a.ATM_id = $ATM_id RETURN a.loc_latitude AS loc_latitude`
-
-	params := map[string]any{
-		"ATM_id": "OGUN-3",
-	}
+	getATMLocationQuery := `MATCH (a:ATM) WHERE a.ATM_id = $ATM_id RETURN a.loc_latitude AS loc_latitude, a.loc_longitude AS loc_longitude`
 
 	processCoordinates := func(result neo4j.ResultWithContext) (any, error) {
 
@@ -132,6 +129,11 @@ func obtainTmin(session neo4j.SessionWithContext) (float32, error) {
 				fmt.Println("Latitude: ", loc_latitude)
 			}
 
+			loc_longitude, found := record.Get("loc_longitude")
+			if found {
+				fmt.Println("Longitude: ", loc_longitude)
+			}
+
 			// location = loc_latitude
 		}
 
@@ -142,24 +144,41 @@ func obtainTmin(session neo4j.SessionWithContext) (float32, error) {
 		return "done", nil
 	}
 
-	result, err := connection.ReadQuery(session, getATMLocationQuery, params, processCoordinates)
+	params := map[string]any{
+		"ATM_id": ATM_id_1,
+	}
+
+	result1, err := connection.ReadQuery(ctx, session, getATMLocationQuery, params, processCoordinates)
 
 	if err != nil {
 		fmt.Println("Error:", err)
 		return 0, err
 	}
 
-	fmt.Println("Result: ", result)
+	fmt.Println("Result: ", result1)
+
+	params["ATM_id"] = ATM_id_2
+
+	result2, err := connection.ReadQuery(ctx, session, getATMLocationQuery, params, processCoordinates)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+		return 0, err
+	}
+
+	fmt.Println("Result: ", result2)
 
 	return 0, nil
 }
 
 func (g *Graph) CheckFraud(new_e Edge) bool {
 	// NOTE: Initial version - pattern 1 - easy approach (only check with the last added edge of the subgraph)
-
+	fmt.Println("-------------- CHECKFRAUD()--------------")
+	// New root context for the connections to the gdb that are going to be done here
+	context := context.Background()
 	// 0. Open a session to connect to the gdb
-	session := connection.CreateSession()
-	defer connection.CloseSession(session)
+	session := connection.CreateSession(context)
+	defer connection.CloseSession(context, session)
 
 	// 1. Obtain last added edge of the subgraph
 	eg := g.edges.Back()
@@ -177,7 +196,9 @@ func (g *Graph) CheckFraud(new_e Edge) bool {
 
 	// time feasibility check: (new_e.tx_start - eg.tx_end) < Tmin(eg.loc, new_e.loc)
 	// obtain Tmin(eg.loc, new_e.loc)
-	obtainTmin(session)
+	obtainTmin(context, session, eg_val.ATM_id, new_e.ATM_id)
+	// TODO: Do this properly! REMOVE
+	return false
 }
 
 // Print a subgraph

@@ -51,7 +51,10 @@ func SafeConnect() {
 	fmt.Println("Connection established.")
 }
 
-func WriteQuery(session neo4j.SessionWithContext, query string, params map[string]interface{}) error {
+func WriteQuery(ctx context.Context,
+	session neo4j.SessionWithContext,
+	query string,
+	params map[string]any) error {
 
 	_, err := neo4j.ExecuteWrite(ctx, session,
 		func(tx neo4j.ManagedTransaction) (any, error) {
@@ -82,7 +85,8 @@ that a write query submitted in read mode will be rejected.
 Similar remarks hold for the .ExecuteRead() and .ExecuteWrite() methods.
 */
 
-func ReadQuery(session neo4j.SessionWithContext,
+func ReadQuery(ctx context.Context,
+	session neo4j.SessionWithContext,
 	query string,
 	params map[string]any,
 	// function to process result within ReadQuery(), this needs to be done like this since
@@ -102,51 +106,6 @@ func ReadQuery(session neo4j.SessionWithContext,
 	return result, err
 }
 
-func TestQuery() {
-	//session := connection.CreateSession()
-	session := driver.NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
-	defer session.Close(ctx)
-	// TODO: Use Indexes for Performance
-	// Ensure that the ATM_id field is indexed if you are performing many lookups based on this property.
-	// While this is not a different query form, indexing helps improve the performance of queries that filter on this property.
-	getATMLocationQuery := `MATCH (a:ATM) WHERE a.ATM_id = $ATM_id RETURN a.loc_latitude AS loc_latitude`
-
-	params := map[string]any{
-		"ATM_id": "OGUN-3",
-	}
-
-	processCoordinates := func(result neo4j.ResultWithContext) (any, error) {
-
-		//var location float64
-		for result.Next(ctx) {
-			record := result.Record()
-
-			loc_latitude, found := record.Get("loc_latitude")
-			if found {
-				fmt.Println("Latitude: ", loc_latitude)
-			}
-
-			// location = loc_latitude
-		}
-
-		// Check for errors after processing the results
-		if err := result.Err(); err != nil {
-			return nil, err
-		}
-		return "done", nil
-	}
-
-	result, err := ReadQuery(session, getATMLocationQuery, params, processCoordinates)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-
-	fmt.Println("Result: ", result)
-
-}
-
 // DriverWithContext VS Sessions
 // DriverWithContext:
 // - immutable, thread-safe, and fairly expensive to
@@ -159,18 +118,18 @@ func TestQuery() {
 // not thread safe: you can share the main DriverWithContext object
 // across threads, but make sure each routine creates its own sessions.
 
-func CreateSession() neo4j.SessionWithContext {
+func CreateSession(ctx context.Context) neo4j.SessionWithContext {
 	session := driver.NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
 	fmt.Println("Session created.")
 	return session
 }
 
-func CloseSession(session neo4j.SessionWithContext) {
+func CloseSession(ctx context.Context, session neo4j.SessionWithContext) {
 	session.Close(ctx)
 	fmt.Println("Session closed.")
 }
 
-func CloseConnection() {
+func CloseConnection(ctx context.Context) {
 	driver.Close(ctx)
 	fmt.Println("Connection closed.")
 }
