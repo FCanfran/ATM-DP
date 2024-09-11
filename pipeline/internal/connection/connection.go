@@ -87,7 +87,7 @@ Similar remarks hold for the .ExecuteRead() and .ExecuteWrite() methods.
 */
 
 // TODO: Devolver el resultado!!
-func ReadQuery(session neo4j.SessionWithContext, query string, params map[string]interface{}) (neo4j.ResultWithContext, error) {
+func ReadQuery(session neo4j.SessionWithContext, query string, params map[string]any) (neo4j.ResultWithContext, error) {
 
 	res, err := neo4j.ExecuteRead(ctx, session,
 		func(tx neo4j.ManagedTransaction) (any, error) {
@@ -104,27 +104,60 @@ func ReadQuery(session neo4j.SessionWithContext, query string, params map[string
 			//   memory consumption and potential performance issues.
 			// - Performance Overhead: Collecting all results first can be less efficient than processing
 			// records one by one, especially if you only need a small subset of results.
+			//fmt.Println(result.Collect(ctx))
+
+			for result.Next(ctx) {
+				record := result.Record()
+
+				loc_latitude, found := record.Get("loc_latitude")
+				if found {
+					fmt.Println("Latitude: ", loc_latitude)
+				}
+			}
+
+			// Check if there were any errors during result processing
+			if err = result.Err(); err != nil {
+				return nil, err
+			}
+
 			return result, nil
 		})
-
-	if err != nil {
-		return nil, err
-	}
+	/*
+		if err != nil {
+			return nil, err
+		}
+	*/
 	// Assert the type of result
 	result, ok := res.(neo4j.ResultWithContext)
 	if !ok {
 		return nil, fmt.Errorf("unexpected result type")
 	}
 
+	return result, err
+}
+
+func TestQuery() {
+	//session := connection.CreateSession()
+	session := driver.NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
+	defer session.Close(ctx)
+	// TODO: Use Indexes for Performance
+	// Ensure that the ATM_id field is indexed if you are performing many lookups based on this property.
+	// While this is not a different query form, indexing helps improve the performance of queries that filter on this property.
+	getATMLocationQuery := `MATCH (a:ATM) WHERE a.ATM_id = $ATM_id RETURN a.loc_latitude AS loc_latitude`
+
+	params := map[string]any{
+		"ATM_id": "OGUN-3",
+	}
+
+	result, _ := ReadQuery(session, getATMLocationQuery, params)
+
+	fmt.Println(result.Record())
+
 	if result.Next(ctx) {
 		record := result.Record()
 		loc_latitude, _ := record.Get("a.loc_latitude")
 		fmt.Println(loc_latitude)
 	}
-
-	fmt.Println(result.Next(ctx))
-
-	return result, nil
 }
 
 // DriverWithContext VS Sessions
