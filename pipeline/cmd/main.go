@@ -17,13 +17,11 @@ func main() {
 		fmt.Println("Usage: go run main.go <transactionFileName>")
 		return
 	}
-	// Connection to static gdb
+	// start connection to static gdb
 	connection.SafeConnect()
 
 	// obtain stream fileName from args
 	istream := os.Args[1]
-
-	fmt.Println("Reading stream from: ", istream)
 
 	// start the pipeline and give the stream edge by edge
 	dp.Start(istream)

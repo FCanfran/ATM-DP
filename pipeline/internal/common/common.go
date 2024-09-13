@@ -22,6 +22,11 @@ type Edge struct {
 	Tx_amount float32   // transaction amount
 }
 
+type Coordinates struct {
+	Latitude  float64
+	Longitude float64
+}
+
 // TODO: Put this correctly!, for the moment the diff is 24h
 // In Duration format
 const timeTxThreshold = 1 * 24 * time.Hour
@@ -120,28 +125,34 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 
 	processCoordinates := func(result neo4j.ResultWithContext) (any, error) {
 
-		//var location float64
+		var loc Coordinates
+
 		for result.Next(ctx) {
 			record := result.Record()
 
-			loc_latitude, found := record.Get("loc_latitude")
-			if found {
-				fmt.Println("Latitude: ", loc_latitude)
+			loc_latitude, found_lat := record.Get("loc_latitude")
+			loc_longitude, found_long := record.Get("loc_longitude")
+			if found_lat && found_long {
+				if lat, ok := loc_latitude.(float64); ok {
+					loc.Latitude = lat
+				} else {
+					return loc, fmt.Errorf("expected loc_latitude to be float64, but got %T", loc_latitude)
+				}
+				if long, ok := loc_longitude.(float64); ok {
+					loc.Longitude = long
+				} else {
+					return loc, fmt.Errorf("expected loc_longitude to be float64, but got %T", loc_longitude)
+				}
+			} else {
+				return loc, fmt.Errorf("latitude or longitude not found in record")
 			}
-
-			loc_longitude, found := record.Get("loc_longitude")
-			if found {
-				fmt.Println("Longitude: ", loc_longitude)
-			}
-
-			// location = loc_latitude
 		}
 
 		// Check for errors after processing the results
 		if err := result.Err(); err != nil {
-			return nil, err
+			return loc, err
 		}
-		return "done", nil
+		return loc, nil
 	}
 
 	params := map[string]any{
@@ -156,6 +167,12 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	}
 
 	fmt.Println("Result: ", result1)
+
+	// Assert to type Coordinates
+	if location1, ok := result1.(Coordinates); ok {
+		fmt.Println(location1.Latitude)
+		fmt.Println(location1.Longitude)
+	}
 
 	params["ATM_id"] = ATM_id_2
 

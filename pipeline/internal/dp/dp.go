@@ -30,7 +30,7 @@ type in_comm struct {
 }
 
 func generator(in <-chan cmn.Edge) {
-	fmt.Println("...generator creation")
+	fmt.Println("G - creation")
 	// Generate input channels
 	alerts := make(chan cmn.Graph, channelSize)
 	// Note: by default channels created by "make" create bidirectional
@@ -43,7 +43,7 @@ func generator(in <-chan cmn.Edge) {
 	for {
 		select {
 		case edge := <-in:
-			fmt.Println("generator - edge arrived: ", edge.Tx_id, ", ", edge.Number_id, "->", edge.ATM_id)
+			fmt.Println("G - edge arrived: ", edge.Tx_id, ", ", edge.Number_id, "->", edge.ATM_id)
 			// spawn a filter
 			// - input channels: the input channels of the generator:
 			//					* in - Edge
@@ -60,10 +60,10 @@ func generator(in <-chan cmn.Edge) {
 			in = new_edge_ch
 			front_channels = new_front_ch
 		case alert := <-alerts:
-			fmt.Println("generator - alert!: Graph", alert)
+			fmt.Println("G - alert!: Graph", alert)
 		case input := <-front_channels:
 			// Reconnection of the pipeline (case of a filter having died)
-			fmt.Println("generator - reconnection")
+			fmt.Println("G - reconnection")
 			in = input.Edge
 			front_channels = input.Front_Channel
 		}
@@ -76,7 +76,7 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	// filter id: is the Card unique identifier
 	var id string = edge.Number_id
 
-	fmt.Println("...filter creation ", id)
+	fmt.Println("F ", id, "- creation")
 
 	int_edge := make(chan cmn.Edge, channelSize)
 	int_time := make(chan time.Time) // synchronous
@@ -88,13 +88,13 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	for {
 		select {
 		case edge := <-in_edge:
-			fmt.Println("filter ", id, " - edge arrived:", edge.Tx_id, ", ", edge.Number_id, "->", edge.ATM_id)
+			fmt.Println("F ", id, " - edge arrived:", edge.Tx_id, ", ", edge.Number_id, "->", edge.ATM_id)
 			if edge.Number_id == id {
-				fmt.Println("filter ", id, " - same card edge arrived")
+				fmt.Println("F ", id, " - same card edge arrived")
 				int_edge <- edge
 			} else {
 
-				fmt.Println("filter ", id, " - diff card edge arrived")
+				fmt.Println("F ", id, " - diff card edge arrived")
 				out_edge <- edge
 				// -------------------------------------------------------------------------------------------------- //
 				// TODO: Gestion del tiempo de vida del filtro con incoming timestamp de los edges que van pasando
@@ -105,14 +105,14 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 				if stop := <-int_stop; stop {
 					// kill the filter and pass the front channel to do the reconnection
 					out_front <- in_comm{in_edge, in_front}
-					fmt.Println("filter ", id, " - kill")
+					fmt.Println("F ", id, " - kill")
 					return // finish filter
 				}
 
 			}
 			// -------------------------------------------------------------------------------------------------- //
 		case input := <-in_front:
-			fmt.Println("filter ", id, " - reconnection")
+			fmt.Println("F ", id, " - reconnection")
 			// a previous filter died, reconnect pipeline
 			in_edge = input.Edge
 			in_front = input.Front_Channel
@@ -126,7 +126,7 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 	//var tx_start time.Time = initial_edge.Tx_start
 	//var tx_end time.Time = initial_edge.Tx_end
 	//var edge cmn.Edge = initial_edge
-	fmt.Println("...filter_worker creation - edge arrived: ", initial_edge.Tx_id, ", ", initial_edge.Number_id, "->", initial_edge.ATM_id)
+	fmt.Println("FW creation - edge arrived: ", initial_edge.Tx_id, ", ", initial_edge.Number_id, "->", initial_edge.ATM_id)
 	// -------------------------------------------------------------------------------------------------- //
 	// TODO: Construccion del subgrafo volatil!!!!
 	// TODO: Save more edges? Not only the last one? (the last transaction)
@@ -155,9 +155,9 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			// --> to develop more...
 			if subgraph.CheckFraud(new_edge) {
 				// TODO: Create & propagate fraud pattern alert (alert channel)
-				fmt.Println("Positive Fraud pattern")
+				fmt.Println("FW - Positive Fraud pattern")
 			} else {
-				fmt.Println("Negative Fraud pattern")
+				fmt.Println("FW - Negative Fraud pattern")
 				subgraph.AddAtEnd(new_edge)
 			}
 			subgraph.PrintId()
@@ -250,7 +250,5 @@ func Start(istream string) {
 		time.Sleep(1 * time.Second)
 
 	}
-
-	fmt.Println("End of stream...")
 
 }
