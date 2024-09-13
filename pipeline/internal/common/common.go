@@ -35,6 +35,13 @@ const timeTxThreshold = 1 * 24 * time.Hour
 // TODO: Put this correctly!
 const timeFilterThreshold = 2 * 24 * time.Hour
 
+// CheckFraud() parameters
+// Assumption on the maximum speed (km/h) at which the distance between two geographical points
+// can be traveled
+const maxSpeed = 500 // km/h
+
+// ------------------------------------------------------------------
+
 // For the volatile subgraph
 
 // Golang list - doubly linked list
@@ -116,8 +123,8 @@ func (g *Graph) Delete(e Edge) {
 	}
 }
 
-// obtain Tmin(eg.loc, new_e.loc)
-func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 string, ATM_id_2 string) (float32, error) {
+// obtain Tmin(eg.loc, new_e.loc), returns seconds of time
+func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 string, ATM_id_2 string) (int, error) {
 	// Connect to the static gdb to obtain the location of the ATMs given the ATM ids
 	// TODO: Use Indexes for Performance
 	// Ensure that the ATM_id field is indexed if you are performing many lookups based on this property.
@@ -181,40 +188,62 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	loc2 := haversine.Coord{Lat: location2.Latitude, Lon: location2.Longitude}
 	fmt.Println(loc1)
 	fmt.Println(loc2)
-	_, km := haversine.Distance(loc1, loc2)
-	fmt.Println("Kilometers:", km)
+	_, distance_km := haversine.Distance(loc1, loc2)
+	fmt.Println("Kilometers:", distance_km)
 
-	return 0, nil
+	// t = e / v ---> (km)/(km/h) --> in seconds (*60*60)
+	t_min := (distance_km / maxSpeed) * 60 * 60 // in seconds
+
+	return int(t_min), nil
 }
 
 func (g *Graph) CheckFraud(new_e Edge) bool {
 	// NOTE: Initial version - pattern 1 - easy approach (only check with the last added edge of the subgraph)
 	fmt.Println("-------------- CHECKFRAUD()--------------")
+
+	// 1. Obtain last added edge of the subgraph
+	prev := g.edges.Back()
+	// 2. Check if the subgraph is empty - no fraud
+	if prev == nil {
+		return false
+	}
+	prev_e := prev.Value.(Edge) // asserts eg.Value to type Edge
+
+	// Case new_e.tx_start < prev_e.tx_end -> it can't happen that a transaction starts before the previous is finished
+	if new_e.Tx_start.Before(prev_e.Tx_end) {
+		fmt.Println("tx starts before the previous ends!")
+		return true
+	}
+
+	if prev_e.ATM_id == new_e.ATM_id {
+		return false
+	}
+
+	// != ATM_id
+
 	// New root context for the connections to the gdb that are going to be done here
 	context := context.Background()
 	// 0. Open a session to connect to the gdb
 	session := connection.CreateSession(context)
 	defer connection.CloseSession(context, session)
 
-	// 1. Obtain last added edge of the subgraph
-	eg := g.edges.Back()
-	// 2. Check if the subgraph is empty - no fraud
-	if eg == nil {
-		return false
-	}
-	eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
-
-	if eg_val.ATM_id == new_e.ATM_id {
-		return false
-	}
-
-	// != ATM_id
-
-	// time feasibility check: (new_e.tx_start - eg.tx_end) < Tmin(eg.loc, new_e.loc)
+	// time feasibility check: (new_e.tx_start - prev_e.tx_end) < Tmin(prev_e.loc, new_e.loc)
 	// obtain Tmin(eg.loc, new_e.loc)
-	obtainTmin(context, session, eg_val.ATM_id, new_e.ATM_id)
-	// TODO: Do this properly! REMOVE
-	return false
+	t_min, err := obtainTmin(context, session, prev_e.ATM_id, new_e.ATM_id)
+	CheckError(err)
+
+	t_diff := int((new_e.Tx_start.Sub(prev_e.Tx_end)).Seconds())
+
+	fmt.Println("t_min", t_min)
+	fmt.Println("t_diff", t_diff)
+
+	if t_diff < t_min {
+		// fraud
+		return true
+	} else {
+		return false
+	}
+
 }
 
 // Print a subgraph
