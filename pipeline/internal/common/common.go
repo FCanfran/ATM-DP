@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
+	"github.com/umahmood/haversine"
 )
 
 // An Edge = Transaction: Card ---> ATM
@@ -158,32 +159,30 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	params := map[string]any{
 		"ATM_id": ATM_id_1,
 	}
-
 	result1, err := connection.ReadQuery(ctx, session, getATMLocationQuery, params, processCoordinates)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-		return 0, err
-	}
-
-	fmt.Println("Result: ", result1)
-
+	CheckError(err)
+	var location1 Coordinates
 	// Assert to type Coordinates
-	if location1, ok := result1.(Coordinates); ok {
-		fmt.Println(location1.Latitude)
-		fmt.Println(location1.Longitude)
+	if location, ok := result1.(Coordinates); ok {
+		location1 = location
 	}
 
 	params["ATM_id"] = ATM_id_2
-
 	result2, err := connection.ReadQuery(ctx, session, getATMLocationQuery, params, processCoordinates)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-		return 0, err
+	CheckError(err)
+	var location2 Coordinates
+	// Assert to type Coordinates
+	if location, ok := result2.(Coordinates); ok {
+		location2 = location
 	}
 
-	fmt.Println("Result: ", result2)
+	// Calculate the distance between the two locations
+	loc1 := haversine.Coord{Lat: location1.Latitude, Lon: location1.Longitude}
+	loc2 := haversine.Coord{Lat: location2.Latitude, Lon: location2.Longitude}
+	fmt.Println(loc1)
+	fmt.Println(loc2)
+	_, km := haversine.Distance(loc1, loc2)
+	fmt.Println("Kilometers:", km)
 
 	return 0, nil
 }
