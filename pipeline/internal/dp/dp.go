@@ -15,14 +15,6 @@ import (
 
 const channelSize = 5000
 
-// TODO: Set correct time threshold --> THINK ABOUT THIS!!
-// So far 24 hours
-//const timeFilterThreshold = 24 * time.Hour
-
-// TODO: Set different times thresholds for the destruction of a filter and
-// for the diff transaction times?
-//const timeTransactionThreshold = 5
-
 type in_comm struct {
 	// read-only channels
 	Edge          <-chan cmn.Edge // Edges channel
@@ -70,6 +62,8 @@ func generator(in <-chan cmn.Edge) {
 	}
 }
 
+// FUTURE: Unused channels - for the future filter's lifetime management - to be able
+// to kill a filter and do the reconnection with the pipeline properly
 func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	out_edge chan<- cmn.Edge, out_alert chan<- cmn.Graph, out_front chan<- in_comm) {
 
@@ -97,20 +91,23 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 				fmt.Println("F ", id, " - diff card edge arrived")
 				out_edge <- edge
 				// -------------------------------------------------------------------------------------------------- //
-				// TODO: Gestion del tiempo de vida del filtro con incoming timestamp de los edges que van pasando
-				int_time <- edge.Tx_start
-				// TODO: avoid this signal (stop) being synchronous! -
-				// allow worker to tell at any moment to stop! instead of blocking
+				// FUTURE: So far, assuming that the we have a single infinite time window - no management of filter's lifetime
+				/*
+					// TODO: Gestion del tiempo de vida del filtro con incoming timestamp de los edges que van pasando
+					int_time <- edge.Tx_start
+					// TODO: avoid this signal (stop) being synchronous! -
+					// allow worker to tell at any moment to stop! instead of blocking
 
-				if stop := <-int_stop; stop {
-					// kill the filter and pass the front channel to do the reconnection
-					out_front <- in_comm{in_edge, in_front}
-					fmt.Println("F ", id, " - kill")
-					return // finish filter
-				}
+					if stop := <-int_stop; stop {
+						// kill the filter and pass the front channel to do the reconnection
+						out_front <- in_comm{in_edge, in_front}
+						fmt.Println("F ", id, " - kill")
+						return // finish filter
+					}
+				*/
+				// -------------------------------------------------------------------------------------------------- //
 
 			}
-			// -------------------------------------------------------------------------------------------------- //
 		case input := <-in_front:
 			fmt.Println("F ", id, " - reconnection")
 			// a previous filter died, reconnect pipeline
@@ -120,39 +117,31 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	}
 }
 
+// FUTURE: Unused channels - for the future filter's lifetime management - to be able
+// to kill a filter and do the reconnection with the pipeline properly
 func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-chan time.Time, int_stop chan<- bool,
 	out_alert chan<- cmn.Graph) {
-	//var filter_id string = initial_edge.Number_id // id of the filter (it is the card identifier)
-	//var tx_start time.Time = initial_edge.Tx_start
-	//var tx_end time.Time = initial_edge.Tx_end
-	//var edge cmn.Edge = initial_edge
+
 	fmt.Println("FW creation - edge arrived: ", initial_edge.Tx_id, ", ", initial_edge.Number_id, "->", initial_edge.ATM_id)
-	// -------------------------------------------------------------------------------------------------- //
-	// TODO: Construccion del subgrafo volatil!!!!
-	// TODO: Save more edges? Not only the last one? (the last transaction)
-	// var edges []cmn.Edge
 	// var subgraph := cmn.NewGraph() 		 // Implicit declaration
 	var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
 	subgraph.AddAtEnd(initial_edge)
-	//fmt.Println("+ filter: ", initial_edge.Number_id, "- addition of edge")
 	subgraph.PrintId()
-	// -------------------------------------------------------------------------------------------------- //
 
 	// TODO: this goroutine dies alone after its father (the filter) dies?
 	// -> it is the only process with which it has communication / is connected
 	for {
 		select {
 		case new_edge := <-int_edge:
+			// FUTURE WORK: for multiple window support - so far: Single window support (do not need this)
 			// -------------------------------------------------------------------------------------------------- //
 			// TODO: Check the order of these operations
-
 			// NOTE: update the subgraph wrt the timestamp of this new edge
 			// first: update the subgraph wrt the timestamp of this new edge and
 			// second: add the new edge
-			subgraph.Update(new_edge.Tx_start)
-			// TODO: Pattern detection update. Con distance. Obteniendo location mediante conexión con la static GDB.
-			// TODO: Check for the pattern and output alert in that case
-			// --> to develop more...
+			//subgraph.Update(new_edge.Tx_start)
+			// -------------------------------------------------------------------------------------------------- //
+			// TODO: How to do when the new edge produces fraud pattern? - add/dont add to the volatile subgraph?
 			if subgraph.CheckFraud(new_edge) {
 				// TODO: Create & propagate fraud pattern alert (alert channel)
 				fmt.Println("FW - Positive Fraud pattern")
@@ -162,34 +151,28 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			}
 			subgraph.PrintId()
 			// -------------------------------------------------------------------------------------------------- //
-
-		case new_time := <-int_time:
-			// 1. Filter Timeout check: test if the filter has to die (with the last edge of the volatile
-			// subgraph), in that case send stop signal to the (father) filter
-			if subgraph.CheckFilterTimeout(new_time) {
-				int_stop <- true
-			} else {
-				int_stop <- false // TODO: CHECK IF THIS CAN COME HERE OR WE HAVE TO WAIT TO DO IT AT
-				// THE END
-				// filter is not killed but we need to update the subgraph to (possibly) eliminate the
-				// outdated edges on the volatile subgraph
-				subgraph.Update(new_time)
-				subgraph.PrintId()
-				// int_stop <- false
-			}
+			// FUTURE: So far, assuming that the we have a single infinite time window - no management of filter's lifetime
+			/*
+				case new_time := <-int_time:
+					// 1. Filter Timeout check: test if the filter has to die (with the last edge of the volatile
+					// subgraph), in that case send stop signal to the (father) filter
+					if subgraph.CheckFilterTimeout(new_time) {
+						int_stop <- true
+					} else {
+						int_stop <- false // TODO: CHECK IF THIS CAN COME HERE OR WE HAVE TO WAIT TO DO IT AT
+						// THE END
+						// filter is not killed but we need to update the subgraph to (possibly) eliminate the
+						// outdated edges on the volatile subgraph
+						subgraph.Update(new_time)
+						subgraph.PrintId()
+						// int_stop <- false
+					}
+			*/
+			// -------------------------------------------------------------------------------------------------- //
 		}
 
 	}
 }
-
-/*
-func test_generator(in <-chan cmn.Edge) {
-	for edge := range in {
-		fmt.Println("c: ", edge.Card, "t: ", edge.Time, "a: ", edge.ATM)
-	}
-
-}
-*/
 
 func Start(istream string) {
 
