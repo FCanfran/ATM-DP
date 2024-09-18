@@ -200,51 +200,54 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 }
 
 func (g *Graph) CheckFraud(new_e Edge) bool {
-	// NOTE: Initial version - pattern 1 - easy approach (only check with the last added edge of the subgraph)
+
 	fmt.Println("-------------- CHECKFRAUD()--------------")
-
-	// 1. Obtain last added edge of the subgraph
-	prev := g.edges.Back()
-	// 2. Check if the subgraph is empty - no fraud
-	if prev == nil {
-		return false
-	}
-	prev_e := prev.Value.(Edge) // asserts eg.Value to type Edge
-
-	// Case new_e.tx_start < prev_e.tx_end -> it can't happen that a transaction starts before the previous is finished
-	if new_e.Tx_start.Before(prev_e.Tx_end) {
-		fmt.Println("tx starts before the previous ends!")
-		return true
-	}
-
-	if prev_e.ATM_id == new_e.ATM_id {
-		return false
-	}
-
-	// != ATM_id
-
+	var isFraud bool = false
 	// New root context for the connections to the gdb that are going to be done here
 	context := context.Background()
 	// 0. Open a session to connect to the gdb
 	session := connection.CreateSession(context)
 	defer connection.CloseSession(context, session)
 
-	// time feasibility check: (new_e.tx_start - prev_e.tx_end) < Tmin(prev_e.loc, new_e.loc)
-	// obtain Tmin(eg.loc, new_e.loc)
-	t_min, err := obtainTmin(context, session, prev_e.ATM_id, new_e.ATM_id)
-	CheckError(err)
+	// 1. Obtain last added edge of the subgraph
+	for prev := g.edges.Back(); prev != nil; prev = prev.Next() {
 
-	t_diff := int((new_e.Tx_start.Sub(prev_e.Tx_end)).Seconds())
+		prev_e := prev.Value.(Edge) // asserts eg.Value to type Edge
 
-	fmt.Println("t_min", t_min)
-	fmt.Println("t_diff", t_diff)
+		// Case new_e.tx_start < prev_e.tx_end -> it can't happen that a transaction starts before the previous is finished
+		if new_e.Tx_start.Before(prev_e.Tx_end) {
+			fmt.Println("tx starts before the previous ends!")
+			isFraud = true
+			// print fraud pattern with this edge
+			PrintEdge("Fraud pattern with: ", prev_e)
+			continue
+		}
 
-	if t_diff < t_min {
-		// fraud
-		return true
-	} else {
-		return false
+		if prev_e.ATM_id == new_e.ATM_id {
+			continue // no fraud with current edge, go to check next edge
+		}
+
+		// != ATM_id
+
+		// time feasibility check: (new_e.tx_start - prev_e.tx_end) < Tmin(prev_e.loc, new_e.loc)
+		// obtain Tmin(eg.loc, new_e.loc)
+		t_min, err := obtainTmin(context, session, prev_e.ATM_id, new_e.ATM_id)
+		CheckError(err)
+
+		t_diff := int((new_e.Tx_start.Sub(prev_e.Tx_end)).Seconds())
+
+		fmt.Println("t_min", t_min)
+		fmt.Println("t_diff", t_diff)
+
+		if t_diff < t_min {
+			isFraud = true
+			// print fraud pattern with this edge
+			PrintEdge("Fraud pattern with: ", prev_e)
+		}
 	}
+
+	// if the subgraph was empty, then isFraud is false...
+	return isFraud
 
 }
 
