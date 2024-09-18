@@ -91,7 +91,9 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 				// FUTURE: So far, assuming that the we have a single infinite time window - no management of filter's lifetime
 				/*
 					// TODO: Gestion del tiempo de vida del filtro con incoming timestamp de los edges que van pasando
-					int_time <- edge.Tx_start
+					// TOCHECK: Tx_end instead of Tx_start: tx come ordered by tx_end, which is the moment when the tx ended
+					// which is when it arrived to our system -> closer to the current real time!
+					int_time <- edge.Tx_end
 					// TODO: avoid this signal (stop) being synchronous! -
 					// allow worker to tell at any moment to stop! instead of blocking
 
@@ -136,7 +138,9 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			// NOTE: update the subgraph wrt the timestamp of this new edge
 			// first: update the subgraph wrt the timestamp of this new edge and
 			// second: add the new edge
-			//subgraph.Update(new_edge.Tx_start)
+			// TOCHECK: Tx_end instead of Tx_start: tx come ordered by tx_end, which is the moment when the tx ended
+			// which is when it arrived to our system -> closer to the current real time!
+			//subgraph.Update(new_edge.Tx_end)
 			// -------------------------------------------------------------------------------------------------- //
 			// TODO: How to do when the new edge produces fraud pattern? - add/dont add to the volatile subgraph?
 			if subgraph.CheckFraud(new_edge) {
