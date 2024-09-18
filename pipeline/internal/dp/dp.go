@@ -35,7 +35,7 @@ func generator(in <-chan cmn.Edge) {
 	for {
 		select {
 		case edge := <-in:
-			fmt.Println("G - edge arrived: ", edge.Tx_id, ", ", edge.Number_id, "->", edge.ATM_id)
+			//cmn.PrintEdge("G - edge arrived: ", edge)
 			// spawn a filter
 			// - input channels: the input channels of the generator:
 			//					* in - Edge
@@ -82,13 +82,10 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	for {
 		select {
 		case edge := <-in_edge:
-			fmt.Println("F ", id, " - edge arrived:", edge.Tx_id, ", ", edge.Number_id, "->", edge.ATM_id)
+			// cmn.PrintEdge("F - edge arrived: ", edge)
 			if edge.Number_id == id {
-				fmt.Println("F ", id, " - same card edge arrived")
 				int_edge <- edge
 			} else {
-
-				fmt.Println("F ", id, " - diff card edge arrived")
 				out_edge <- edge
 				// -------------------------------------------------------------------------------------------------- //
 				// FUTURE: So far, assuming that the we have a single infinite time window - no management of filter's lifetime
@@ -122,11 +119,11 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-chan time.Time, int_stop chan<- bool,
 	out_alert chan<- cmn.Graph) {
 
-	fmt.Println("FW creation - edge arrived: ", initial_edge.Tx_id, ", ", initial_edge.Number_id, "->", initial_edge.ATM_id)
+	//cmn.PrintEdge("FW creation - edge arrived: ", initial_edge)
 	// var subgraph := cmn.NewGraph() 		 // Implicit declaration
 	var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
 	subgraph.AddAtEnd(initial_edge)
-	subgraph.PrintId()
+	subgraph.PrintIds()
 
 	// TODO: this goroutine dies alone after its father (the filter) dies?
 	// -> it is the only process with which it has communication / is connected
@@ -149,7 +146,7 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 				fmt.Println("FW - Negative Fraud pattern")
 				subgraph.AddAtEnd(new_edge)
 			}
-			subgraph.PrintId()
+			subgraph.PrintIds()
 			// -------------------------------------------------------------------------------------------------- //
 			// FUTURE: So far, assuming that the we have a single infinite time window - no management of filter's lifetime
 			/*
@@ -164,7 +161,7 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 						// filter is not killed but we need to update the subgraph to (possibly) eliminate the
 						// outdated edges on the volatile subgraph
 						subgraph.Update(new_time)
-						subgraph.PrintId()
+						subgraph.PrintIds()
 						// int_stop <- false
 					}
 			*/

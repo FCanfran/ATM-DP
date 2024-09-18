@@ -28,6 +28,8 @@ type Coordinates struct {
 	Longitude float64
 }
 
+// FUTURE: For the multiple window support - for the moment: single window support
+// ------------------------------------------------------------------------------ //
 // TODO: Put this correctly!, for the moment the diff is 24h
 // In Duration format
 const timeTxThreshold = 1 * 24 * time.Hour
@@ -35,12 +37,14 @@ const timeTxThreshold = 1 * 24 * time.Hour
 // TODO: Put this correctly!
 const timeFilterThreshold = 2 * 24 * time.Hour
 
+// ------------------------------------------------------------------------------ //
+
 // CheckFraud() parameters
 // Assumption on the maximum speed (km/h) at which the distance between two geographical points
 // can be traveled
 const maxSpeed = 500 // km/h
 
-// ------------------------------------------------------------------
+// ------------------------------------------------------------------ //
 
 // For the volatile subgraph
 
@@ -60,17 +64,13 @@ func NewGraph() *Graph {
 
 // Appends a new edge at the end of the list
 func (g *Graph) AddAtEnd(e Edge) {
-	fmt.Println(":::: addition ::::")
+	//fmt.Println(":::: addition ::::")
 	g.edges.PushBack(e)
 	g.last_timestamp = e.Tx_end
 }
 
-// TODO: Idea --> hacer una función que haga el add de una nueva edge
-// + el pattern matching check + el update de la lista de tx en base al
-// timestamp (eliminando las que estén desfasadas, desde el principio de
-// la lista)
-// ------------> POR EL MOMENTO, POR SEPARADO.
-
+// FUTURE: For the multiple window support - for the moment: single window support
+// ------------------------------------------------------------------------------ //
 // Given a certain datetime, it updates the graph, starting from the first
 // edge, by eliminating those that are outdated wrt this datetime
 // - datetime format: DD/MM/YYYY HH:MM:SS
@@ -122,6 +122,8 @@ func (g *Graph) Delete(e Edge) {
 		}
 	}
 }
+
+// ------------------------------------------------------------------------------ //
 
 // obtain Tmin(eg.loc, new_e.loc), returns seconds of time
 func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 string, ATM_id_2 string) (int, error) {
@@ -251,30 +253,38 @@ func (g *Graph) Print() {
 	if g.edges.Front() != nil {
 		filter_id := g.edges.Front().Value.(Edge).Number_id
 		fmt.Println("subgraph: ", filter_id)
-		fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+		fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
 		for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
 			eg_val := eg.Value.(Edge)
 			fmt.Println(eg_val)
 		}
-		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+		fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
 	}
 }
 
 // Print a subgraph - only the tx ids
-func (g *Graph) PrintId() {
+func (g *Graph) PrintIds() {
 	if g.edges.Front() != nil {
 		filter_id := g.edges.Front().Value.(Edge).Number_id
 		fmt.Println("subgraph: ", filter_id)
-		fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+		fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
 		for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
 			eg_val := eg.Value.(Edge)
 			fmt.Println(eg_val.Tx_id)
 		}
-		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+		fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
 	}
 }
 
 // Generic Functions -----------------------------
+
+func PrintEdge(msg string, e Edge) {
+	if msg == "" {
+		fmt.Printf("%d, %s -> %s\n", e.Tx_id, e.Number_id, e.ATM_id)
+	} else {
+		fmt.Printf("%s  %d, %s -> %s\n", msg, e.Tx_id, e.Number_id, e.ATM_id)
+	}
+}
 
 func CheckError(e error) {
 	if e != nil {
