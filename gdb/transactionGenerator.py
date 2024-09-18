@@ -242,9 +242,12 @@ def main():
         )
 
     print(transaction_df)
-    # sort by transaction_start, and if equal (if ties) by transaction_end in ascending order
+    # NOTE: We want the stream of transactions to come ordered by tx_end, which is the time
+    # in which the tx finished and therefore when we simulate that it reaches the query engine
+    # - order by the times they finished and therefore reached the system
+    # sort by transaction_end, and if equal (if ties) by transaction_start in ascending order
     transaction_df = transaction_df.sort_values(
-        by=["transaction_start", "transaction_end"], ascending=True
+        by=["transaction_end", "transaction_start"], ascending=True
     ).reset_index(drop=True)
     print(transaction_df)
     transaction_df.to_csv("csv/transaction.csv", index=False)
