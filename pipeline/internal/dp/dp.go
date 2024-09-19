@@ -32,6 +32,12 @@ func generator(in <-chan cmn.Edge) {
 	var front_channels <-chan in_comm // read only channel
 	front_channels = tmp
 
+	// TOCHECK: Create results output files: one for each kind of fraud pattern (?)
+	// TODO: For the moment only 1 kind of pattern
+	file1, err := os.Create("outPattern1.txt")
+	cmn.CheckError(err)
+	defer file1.Close()
+
 	for {
 		select {
 		case edge := <-in:
@@ -54,6 +60,7 @@ func generator(in <-chan cmn.Edge) {
 		case alert := <-alerts:
 			fmt.Println("G - alert!: ", alert)
 			cmn.PrintAlertVerbose(alert)
+			cmn.PrintAlertOnFile(alert, file1)
 		case input := <-front_channels:
 			// Reconnection of the pipeline (case of a filter having died)
 			fmt.Println("G - reconnection")
@@ -143,14 +150,15 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			//subgraph.Update(new_edge.Tx_end)
 			// -------------------------------------------------------------------------------------------------- //
 			// TODO: How to do when the new edge produces fraud pattern? - add/dont add to the volatile subgraph?
-			isFraud, fraudSubgraph := subgraph.CheckFraud(new_edge)
+			isFraud, fraudSubgraph, anomalousEdge := subgraph.CheckFraud(new_edge)
 			if isFraud {
 				// TODO: Create & propagate fraud pattern alert (alert channel)
 				fmt.Println("FW - Positive Fraud pattern")
 				fraud1Alert := cmn.Alert{
-					Label:    "1",
-					Info:     "fraud pattern",
-					Subgraph: *fraudSubgraph,
+					Label:         "1",
+					Info:          "fraud pattern",
+					Subgraph:      *fraudSubgraph,
+					AnomalousEdge: anomalousEdge,
 				}
 				out_alert <- fraud1Alert
 
@@ -213,8 +221,10 @@ func Start(istream string) {
 		cmn.CheckError(err)
 
 		// conversions
-		tx_id, err := strconv.ParseInt(tx[0], 10, 64) // 10: base (decimal) & 64: bit-size (int64)
+		tx_id_64, err := strconv.ParseInt(tx[0], 10, 32) // 10: base (decimal) & 32: bit-size (int32)
 		cmn.CheckError(err)
+		// still the type returned is int64 -> convert to int32
+		tx_id := int32(tx_id_64)
 		// https://yourbasic.org/golang/format-parse-string-time-date-example/
 		const layout = "2006-01-02 15:04:05"
 		tx_start, err := time.Parse(layout, tx[3])

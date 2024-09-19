@@ -5,7 +5,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"pipeline/internal/connection"
+	"strconv"
 	"time"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
@@ -17,7 +19,7 @@ import (
 type Edge struct {
 	Number_id string    // Card id
 	ATM_id    string    // ATM id
-	Tx_id     int64     // transaction id
+	Tx_id     int32     // transaction id
 	Tx_start  time.Time // transaction start date time (DD/MM/YYYY HH:MM:SS)
 	Tx_end    time.Time // transaction end date time (DD/MM/YYYY HH:MM:SS)
 	Tx_amount float32   // transaction amount
@@ -57,9 +59,10 @@ type Graph struct {
 }
 
 type Alert struct {
-	Label    string // it can also be set as integer - for each kind of fraud pattern put a int
-	Info     string // optional additional information of the alert to be passed
-	Subgraph Graph  // if desired, if needed later when receiving the alert in the generator
+	Label         string // it can also be set as integer - for each kind of fraud pattern put a int
+	Info          string // optional additional information of the alert to be passed
+	Subgraph      Graph  // if desired, if needed later when receiving the alert in the generator
+	AnomalousEdge Edge   // the anomalous tx itself
 }
 
 // NewGraph creates a new graph
@@ -205,11 +208,12 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	return int(t_min), nil
 }
 
-func (g *Graph) CheckFraud(new_e Edge) (bool, *Graph) {
+func (g *Graph) CheckFraud(new_e Edge) (bool, *Graph, Edge) {
 
 	fmt.Println("-------------- CHECKFRAUD()--------------")
 	var isFraud bool = false
 	var subgraph *Graph = nil
+	var anomalousEdge Edge
 	// New root context for the connections to the gdb that are going to be done here
 	context := context.Background()
 	// 0. Open a session to connect to the gdb
@@ -256,11 +260,13 @@ func (g *Graph) CheckFraud(new_e Edge) (bool, *Graph) {
 			subgraph = NewGraph()
 			subgraph.AddAtEnd(prev_e)
 			subgraph.AddAtEnd(new_e)
+			// anomalous edge
+			anomalousEdge = new_e
 		}
 	}
 
 	// if the subgraph was empty, then isFraud is false...
-	return isFraud, subgraph
+	return isFraud, subgraph, anomalousEdge
 
 }
 
@@ -314,6 +320,15 @@ func PrintAlertVerbose(alert Alert) {
 
 	}
 	fmt.Println("______________________________________________________________________________")
+}
+
+// So far, to print the id of the anomalous tx on a dedicated log file for each kind of fraud
+func PrintAlertOnFile(alert Alert, file *os.File) {
+	switch alert.Label {
+	case "1":
+		// get the id of the anomalous tx
+		file.WriteString(strconv.Itoa(int(alert.AnomalousEdge.Tx_id)) + "\n")
+	}
 }
 
 func CheckError(e error) {
