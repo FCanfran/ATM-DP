@@ -56,6 +56,12 @@ type Graph struct {
 	edges          *list.List
 }
 
+type Alert struct {
+	Label    string // it can also be set as integer - for each kind of fraud pattern put a int
+	Info     string // optional additional information of the alert to be passed
+	Subgraph Graph  // if desired, if needed later when receiving the alert in the generator
+}
+
 // NewGraph creates a new graph
 func NewGraph() *Graph {
 	g := Graph{edges: list.New()}
@@ -199,10 +205,11 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	return int(t_min), nil
 }
 
-func (g *Graph) CheckFraud(new_e Edge) bool {
+func (g *Graph) CheckFraud(new_e Edge) (bool, *Graph) {
 
 	fmt.Println("-------------- CHECKFRAUD()--------------")
 	var isFraud bool = false
+	var subgraph *Graph = nil
 	// New root context for the connections to the gdb that are going to be done here
 	context := context.Background()
 	// 0. Open a session to connect to the gdb
@@ -217,7 +224,9 @@ func (g *Graph) CheckFraud(new_e Edge) bool {
 		// Case new_e.tx_start < prev_e.tx_end -> it can't happen that a transaction starts before the previous is finished
 		if new_e.Tx_start.Before(prev_e.Tx_end) {
 			fmt.Println("tx starts before the previous ends!")
-			isFraud = true
+			// TODO: It is a TRUE fraud, but not of this kind! - other kind
+			// do not consider it here so far
+			isFraud = false
 			// print fraud pattern with this edge
 			PrintEdge("Fraud pattern with: ", prev_e)
 			continue
@@ -243,11 +252,15 @@ func (g *Graph) CheckFraud(new_e Edge) bool {
 			isFraud = true
 			// print fraud pattern with this edge
 			PrintEdge("Fraud pattern with: ", prev_e)
+			// subgraph
+			subgraph = NewGraph()
+			subgraph.AddAtEnd(prev_e)
+			subgraph.AddAtEnd(new_e)
 		}
 	}
 
 	// if the subgraph was empty, then isFraud is false...
-	return isFraud
+	return isFraud, subgraph
 
 }
 
@@ -287,6 +300,20 @@ func PrintEdge(msg string, e Edge) {
 	} else {
 		fmt.Printf("%s  %d, %s -> %s\n", msg, e.Tx_id, e.Number_id, e.ATM_id)
 	}
+}
+
+func PrintAlertVerbose(alert Alert) {
+	fmt.Printf("Alert!: %s, %s\n", alert.Label, alert.Info)
+
+	switch alert.Label {
+	case "1":
+		fmt.Print("Anomalous tx: ")
+		PrintEdge("", alert.Subgraph.edges.Back().Value.(Edge))
+		fmt.Println("....................")
+		alert.Subgraph.Print()
+
+	}
+	fmt.Println("______________________________________________________________________________")
 }
 
 func CheckError(e error) {

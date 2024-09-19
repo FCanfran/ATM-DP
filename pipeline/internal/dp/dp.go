@@ -24,7 +24,7 @@ type in_comm struct {
 func generator(in <-chan cmn.Edge) {
 	fmt.Println("G - creation")
 	// Generate input channels
-	alerts := make(chan cmn.Graph, channelSize)
+	alerts := make(chan cmn.Alert, channelSize)
 	// Note: by default channels created by "make" create bidirectional
 	// channels by default. To make it receive-only channel, we perform
 	// the type conversion as shown
@@ -52,7 +52,8 @@ func generator(in <-chan cmn.Edge) {
 			in = new_edge_ch
 			front_channels = new_front_ch
 		case alert := <-alerts:
-			fmt.Println("G - alert!: Graph", alert)
+			fmt.Println("G - alert!: ", alert)
+			cmn.PrintAlertVerbose(alert)
 		case input := <-front_channels:
 			// Reconnection of the pipeline (case of a filter having died)
 			fmt.Println("G - reconnection")
@@ -65,7 +66,7 @@ func generator(in <-chan cmn.Edge) {
 // FUTURE: Unused channels - for the future filter's lifetime management - to be able
 // to kill a filter and do the reconnection with the pipeline properly
 func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
-	out_edge chan<- cmn.Edge, out_alert chan<- cmn.Graph, out_front chan<- in_comm) {
+	out_edge chan<- cmn.Edge, out_alert chan<- cmn.Alert, out_front chan<- in_comm) {
 
 	// filter id: is the Card unique identifier
 	var id string = edge.Number_id
@@ -119,10 +120,9 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 // FUTURE: Unused channels - for the future filter's lifetime management - to be able
 // to kill a filter and do the reconnection with the pipeline properly
 func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-chan time.Time, int_stop chan<- bool,
-	out_alert chan<- cmn.Graph) {
+	out_alert chan<- cmn.Alert) {
 
 	//cmn.PrintEdge("FW creation - edge arrived: ", initial_edge)
-	// var subgraph := cmn.NewGraph() 		 // Implicit declaration
 	var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
 	subgraph.AddAtEnd(initial_edge)
 	subgraph.PrintIds()
@@ -143,9 +143,17 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			//subgraph.Update(new_edge.Tx_end)
 			// -------------------------------------------------------------------------------------------------- //
 			// TODO: How to do when the new edge produces fraud pattern? - add/dont add to the volatile subgraph?
-			if subgraph.CheckFraud(new_edge) {
+			isFraud, fraudSubgraph := subgraph.CheckFraud(new_edge)
+			if isFraud {
 				// TODO: Create & propagate fraud pattern alert (alert channel)
 				fmt.Println("FW - Positive Fraud pattern")
+				fraud1Alert := cmn.Alert{
+					Label:    "1",
+					Info:     "fraud pattern",
+					Subgraph: *fraudSubgraph,
+				}
+				out_alert <- fraud1Alert
+
 			} else {
 				fmt.Println("FW - Negative Fraud pattern")
 				subgraph.AddAtEnd(new_edge)
