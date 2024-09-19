@@ -34,7 +34,7 @@ func generator(in <-chan cmn.Edge) {
 
 	// TOCHECK: Create results output files: one for each kind of fraud pattern (?)
 	// TODO: For the moment only 1 kind of pattern
-	file1, err := os.Create("outPattern1.txt")
+	file1, err := os.Create("../output/outPattern1.txt")
 	cmn.CheckError(err)
 	defer file1.Close()
 
