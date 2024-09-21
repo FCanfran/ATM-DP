@@ -17,6 +17,9 @@ max_distance = 30  # maximum distance of the atms in the ATM subset to client re
 max_duration = 600  # max duration - 600s (10min)
 mean_duration = 300  # mean duration - 300s (5min)
 std_duration = 120  # std duration - 120s  (2min)
+# Needed to calculate the t_min: time needed to traverse the distance between 2 geographical points at SPEED km/h
+# -> speed at which we consider the client travels NORMALY (by any means of transport) between 2 points
+SPEED = 50
 # --------------------------------------------------------------------------
 
 # ------------------
@@ -124,8 +127,8 @@ def transaction_generator(card, atm_df, start_date, tx_id):
         # T_MIN: Minimum threshold time in between 2 transactions of this client
         # TODO: Calculate t_min? - based on the max distance between 2 atms of the subset list
         # NOTE: Approx -> 2 x MAX_DISTANCE kms is the upper bound on this max distance btw 2 atms of the subset list
-        # Therefore we set the t_min approx to be the time needed to traverse that distance at 50km/h
-        t_min = ((max_distance * 2) / 50) * 60 * 60  # in seconds
+        # Therefore we set the t_min approx to be the time needed to traverse that distance at SPEED km/h
+        t_min = ((max_distance * 2) / SPEED) * 60 * 60  # in seconds
 
         # 3. Generation of transactions
         for day in range(num_days):
@@ -203,11 +206,11 @@ def transaction_generator(card, atm_df, start_date, tx_id):
         global success_cards
         success_cards += 1
 
-    return transaction_df, tx_id, atm_df_non_regular
+    return transaction_df, tx_id, atm_df_regular, atm_df_non_regular
 
 
 # Introduction of anomalous tx to cause the fraud pattern 1
-def introduce_anomalous_fp_1(regular_tx_card, ratio, atm_non_regular):
+def introduce_anomalous_fp_1(regular_tx_card, ratio, atm_regular, atm_non_regular):
     num_regular = len(regular_tx_card)
     num_anomalous = round(num_regular * ratio)
     print(num_regular, num_anomalous)
@@ -229,8 +232,22 @@ def introduce_anomalous_fp_1(regular_tx_card, ratio, atm_non_regular):
         if holes[index] == 0:
             # not occupied, mark as occupied
             holes[index] = 1
-            print(index)
-            # introduce anomalous tx in this position
+            print(regular_tx_card)
+            print("index", index)
+            # ................................ #
+            # TODO: While loop in case we cant meet the conditions for the first selected random ATM from the atm_non_regular subset?
+            # introduce anomalous tx in this position: after the tx[index] and before tx[index+1]
+            tx_prev = regular_tx_card.iloc[index]
+            tx_next = regular_tx_card.iloc[index + 1]
+            print(tx_prev)
+            print(tx_next)
+            # select one ATM at random from atm_non_regular
+            rand_index = np.random.choice(atm_non_regular.index)
+            ATM_new = atm_non_regular.loc[rand_index]
+
+            # Calculate t_min(ATM_prev, ATM_new)
+
+            # ................................ #
             anomalous += 1
     # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
 
@@ -278,12 +295,15 @@ def main():
     tx_id = 0
 
     for card_index in card_df.index:
-        tx_card, tx_id, atm_non_regular = transaction_generator(
+        # atm_non_rgular: is the set of atms not selected for the generated tx of the card since distance <= max_distance
+        tx_card, tx_id, atm_regular, atm_non_regular = transaction_generator(
             card_df.iloc[card_index], atm_df, start_date, tx_id
         )
         if len(tx_card) > 0:
             # Introduction of anomalous tx
-            introduce_anomalous_fp_1(tx_card, anomalous_ratio, atm_non_regular)
+            introduce_anomalous_fp_1(
+                tx_card, anomalous_ratio, atm_regular, atm_non_regular
+            )
             print(
                 "########################################################################################################################################"
             )
