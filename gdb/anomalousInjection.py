@@ -17,9 +17,20 @@ max_distance = 30  # maximum distance of the atms in the ATM subset to client re
 max_duration = 600  # max duration - 600s (10min)
 mean_duration = 300  # mean duration - 300s (5min)
 std_duration = 120  # std duration - 120s  (2min)
+
+# TODO: Adjust
+# anomalous_tx_duration
+anomalous_tx_duration = 5  # segs
+
+########### Speeds ###########
+# SPEED: for the creation of the regular tx
+# MAX_SPEED: for the creation of the anomalous tx
 # Needed to calculate the t_min: time needed to traverse the distance between 2 geographical points at SPEED km/h
 # -> speed at which we consider the client travels NORMALY (by any means of transport) between 2 points
-SPEED = 50
+SPEED = 50  # km/h
+# Assumption on the maximum speed (km/h) at which the distance between two geographical points
+# can be traveled
+MAX_SPPED = 500  # km/h
 # --------------------------------------------------------------------------
 
 # ------------------
@@ -222,6 +233,7 @@ def transaction_generator(card, atm_df, start_date, tx_id):
 def introduce_anomalous_fp_1(regular_tx_card, ratio, atm_regular, atm_non_regular):
     num_regular = len(regular_tx_card)
     num_anomalous = round(num_regular * ratio)
+    print("..........................................")
     print(num_regular, num_anomalous)
 
     # randomly select in between which tx the anomalous are introduced
@@ -236,6 +248,7 @@ def introduce_anomalous_fp_1(regular_tx_card, ratio, atm_regular, atm_non_regula
     anomalous = 0
     # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
     while anomalous < num_anomalous:
+        print("................... ANOMALOUS: ", anomalous, "...................")
         # random hole selection in [0, num_regular-1]
         index = np.random.randint(0, num_regular)
         if holes[index] == 0:
@@ -245,9 +258,8 @@ def introduce_anomalous_fp_1(regular_tx_card, ratio, atm_regular, atm_non_regula
             print("index", index)
             # ................................ #
             # TODO: While loop in case we cant meet the conditions for the first selected random ATM from the atm_non_regular subset?
-            # introduce anomalous tx in this position: after the tx[index] and before tx[index+1]
+            # introduce anomalous tx in this position: after the tx[index] and before tx[index+1], in case it exists tx[index+1] (tx_next)
             tx_prev = regular_tx_card.iloc[index]
-            tx_next = regular_tx_card.iloc[index + 1]
 
             # print(tx_next)
             # select one ATM at random from atm_non_regular
@@ -256,13 +268,48 @@ def introduce_anomalous_fp_1(regular_tx_card, ratio, atm_regular, atm_non_regula
 
             print(tx_prev)
             print(tx_prev["ATM_id"])
-            ATM_prev = atm_regular.loc[atm_regular["ATM_id"] == tx_prev["ATM_id"]]
+            ATM_prev = (
+                atm_regular.loc[atm_regular["ATM_id"] == tx_prev["ATM_id"]]
+            ).iloc[0]
+            print(":::::::::::::::::prev:::::::::::::::::::::")
             print(ATM_prev)
+            ATM_prev_loc = (ATM_prev["loc_latitude"], ATM_prev["loc_longitude"])
+            print("=====")
+            print(ATM_prev_loc)
+            print(":::::::::::::::::new:::::::::::::::::::::")
+            print(ATM_new)
+            print("=====")
+            ATM_new_loc = (ATM_new["loc_latitude"], ATM_new["loc_longitude"])
+            print(ATM_new_loc)
 
             # Calculate t_min(ATM_prev, ATM_new)
             # 1. Calculate the distance between the 2 ATM locations (Haversine distance)
             # 2. t = e / v ---> (km)/(km/h) --> in seconds (*60*60)
+            distance_km = calculate_distance_points(ATM_prev_loc, ATM_new_loc)
+            t_min = int((distance_km / MAX_SPPED) * 60 * 60)  # in seconds
+            print(distance_km)
+            print("//////////////")
+            print(t_min)
+            # Make t_diff(tx_prev, tx_new) < t_min(ATM_prev, ATM_new)
+            # tx_new.start = tx_prev.end + s_time s.t. s_time < t_min (in seconds) & s_time > 0
+            # (so that tx_new.start > tx_prev.end)
+            # take a random number of seconds s_time in [1, t_min)
+            s_time = np.random.randint(1, t_min)
+            print(s_time)
 
+            print(tx_prev["transaction_start"])
+            tx_new_start = tx_prev["transaction_start"] + datetime.timedelta(
+                seconds=s_time
+            )
+            print("_ _ _ _ _ _ _ _ _ _ _ _ _ _")
+            print(tx_new_start)
+
+            # transaction_end:
+            # tx_end = tx_start + anomalous_tx_duration segs, for all the anomalous tx
+            tx_new_end = tx_new_start + datetime.timedelta(
+                seconds=anomalous_tx_duration
+            )
+            print(tx_new_end)
             # ................................ #
             anomalous += 1
     # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
