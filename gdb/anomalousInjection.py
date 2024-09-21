@@ -34,9 +34,18 @@ success_cards = 0
 # - Vicenty: Earth as a ellipsoid (oblate spheroid). More accurate. More expensive computation.
 # NOTE that: Earth is neither perfectly spherical nor ellipse hence calculating the distance on its surface is a challenging task.
 # https://www.neovasolutions.com/2019/10/04/haversine-vs-vincenty-which-is-the-best/
+# Haversine
+# Specific function for the ATM dataframe
 def calculate_distance(atm_row, point):
     atm_loc = (atm_row["loc_latitude"], atm_row["loc_longitude"])
     distance = great_circle(atm_loc, point).kilometers
+    return round(distance, 3)  # limit to 3 decimals only, km and meters
+
+
+# - Haversine: (great-circle distance) Earth as a sphere. Less accurate. Less expensive computation.
+# point: (latitude, longitude)
+def calculate_distance_points(point_1, point_2):
+    distance = great_circle(point_1, point_2).kilometers
     return round(distance, 3)  # limit to 3 decimals only, km and meters
 
 
@@ -239,13 +248,20 @@ def introduce_anomalous_fp_1(regular_tx_card, ratio, atm_regular, atm_non_regula
             # introduce anomalous tx in this position: after the tx[index] and before tx[index+1]
             tx_prev = regular_tx_card.iloc[index]
             tx_next = regular_tx_card.iloc[index + 1]
-            print(tx_prev)
-            print(tx_next)
+
+            # print(tx_next)
             # select one ATM at random from atm_non_regular
             rand_index = np.random.choice(atm_non_regular.index)
             ATM_new = atm_non_regular.loc[rand_index]
 
+            print(tx_prev)
+            print(tx_prev["ATM_id"])
+            ATM_prev = atm_regular.loc[atm_regular["ATM_id"] == tx_prev["ATM_id"]]
+            print(ATM_prev)
+
             # Calculate t_min(ATM_prev, ATM_new)
+            # 1. Calculate the distance between the 2 ATM locations (Haversine distance)
+            # 2. t = e / v ---> (km)/(km/h) --> in seconds (*60*60)
 
             # ................................ #
             anomalous += 1
