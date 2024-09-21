@@ -30,7 +30,7 @@ anomalous_tx_duration = 5  # segs
 SPEED = 50  # km/h
 # Assumption on the maximum speed (km/h) at which the distance between two geographical points
 # can be traveled
-MAX_SPPED = 500  # km/h
+MAX_SPEED = 500  # km/h
 # --------------------------------------------------------------------------
 
 # ------------------
@@ -38,6 +38,8 @@ MAX_SPPED = 500  # km/h
 # -> for example: empty ATM subset (since the distance of the residence to the closest ATM is > max_distance)
 fail_cards = 0
 success_cards = 0
+# anomalous tx counter
+total_anomalous = 0
 
 
 # 2 approaches for the distance:
@@ -230,7 +232,9 @@ def transaction_generator(card, atm_df, start_date, tx_id):
 
 
 # Introduction of anomalous tx to cause the fraud pattern 1
-def introduce_anomalous_fp_1(regular_tx_card, ratio, atm_regular, atm_non_regular):
+def introduce_anomalous_fp_1(
+    regular_tx_card, ratio, atm_regular, atm_non_regular, tx_id
+):
     num_regular = len(regular_tx_card)
     num_anomalous = round(num_regular * ratio)
     print("..........................................")
@@ -246,73 +250,93 @@ def introduce_anomalous_fp_1(regular_tx_card, ratio, atm_regular, atm_non_regula
     holes = bitarray(num_regular)
     holes.setall(0)
     anomalous = 0
-    # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
+    # create anomalous transaction dataframe
+    cols = [
+        "transaction_id",
+        "number_id",
+        "ATM_id",
+        "transaction_start",
+        "transaction_end",
+        "transaction_amount",
+    ]
+    anomalous_df = pd.DataFrame(columns=cols)
     while anomalous < num_anomalous:
         print("................... ANOMALOUS: ", anomalous, "...................")
         # random hole selection in [0, num_regular-1]
-        index = np.random.randint(0, num_regular)
-        if holes[index] == 0:
+        hole_index = np.random.randint(0, num_regular)
+        if holes[hole_index] == 0:
             # not occupied, mark as occupied
-            holes[index] = 1
-            print(regular_tx_card)
-            print("index", index)
+            holes[hole_index] = 1
             # ................................ #
             # TODO: While loop in case we cant meet the conditions for the first selected random ATM from the atm_non_regular subset?
-            # introduce anomalous tx in this position: after the tx[index] and before tx[index+1], in case it exists tx[index+1] (tx_next)
-            tx_prev = regular_tx_card.iloc[index]
+            # introduce anomalous tx in this position: after the tx[index] (and before tx[index+1], in case it exists tx[index+1] (tx_next) ????)
+            tx_prev = regular_tx_card.iloc[hole_index]
 
-            # print(tx_next)
             # select one ATM at random from atm_non_regular
             rand_index = np.random.choice(atm_non_regular.index)
             ATM_new = atm_non_regular.loc[rand_index]
 
-            print(tx_prev)
-            print(tx_prev["ATM_id"])
             ATM_prev = (
                 atm_regular.loc[atm_regular["ATM_id"] == tx_prev["ATM_id"]]
             ).iloc[0]
-            print(":::::::::::::::::prev:::::::::::::::::::::")
-            print(ATM_prev)
+
             ATM_prev_loc = (ATM_prev["loc_latitude"], ATM_prev["loc_longitude"])
-            print("=====")
-            print(ATM_prev_loc)
-            print(":::::::::::::::::new:::::::::::::::::::::")
-            print(ATM_new)
-            print("=====")
             ATM_new_loc = (ATM_new["loc_latitude"], ATM_new["loc_longitude"])
-            print(ATM_new_loc)
 
             # Calculate t_min(ATM_prev, ATM_new)
             # 1. Calculate the distance between the 2 ATM locations (Haversine distance)
             # 2. t = e / v ---> (km)/(km/h) --> in seconds (*60*60)
             distance_km = calculate_distance_points(ATM_prev_loc, ATM_new_loc)
-            t_min = int((distance_km / MAX_SPPED) * 60 * 60)  # in seconds
-            print(distance_km)
-            print("//////////////")
-            print(t_min)
+            t_min = int((distance_km / MAX_SPEED) * 60 * 60)  # in seconds
             # Make t_diff(tx_prev, tx_new) < t_min(ATM_prev, ATM_new)
             # tx_new.start = tx_prev.end + s_time s.t. s_time < t_min (in seconds) & s_time > 0
             # (so that tx_new.start > tx_prev.end)
             # take a random number of seconds s_time in [1, t_min)
             s_time = np.random.randint(1, t_min)
-            print(s_time)
-
-            print(tx_prev["transaction_start"])
-            tx_new_start = tx_prev["transaction_start"] + datetime.timedelta(
+            tx_new_start = tx_prev["transaction_end"] + datetime.timedelta(
                 seconds=s_time
             )
-            print("_ _ _ _ _ _ _ _ _ _ _ _ _ _")
-            print(tx_new_start)
 
             # transaction_end:
             # tx_end = tx_start + anomalous_tx_duration segs, for all the anomalous tx
             tx_new_end = tx_new_start + datetime.timedelta(
                 seconds=anomalous_tx_duration
             )
-            print(tx_new_end)
-            # ................................ #
+
+            # create the tx and insert it in the dataframe
+            tx_new = {
+                "transaction_id": tx_id,
+                "number_id": tx_prev["number_id"],  # card id
+                "ATM_id": ATM_new["ATM_id"],
+                "transaction_start": tx_new_start,
+                "transaction_end": tx_new_end,
+                "transaction_amount": tx_prev["transaction_amount"] * 2,
+            }
+
+            tx_new_df = pd.DataFrame([tx_new])
+            anomalous_df = (
+                tx_new_df.copy()
+                if anomalous_df.empty
+                else pd.concat([anomalous_df, tx_new_df], ignore_index=True)
+            )
+            """
+            # inject tx_new in position hole_index + 1 -> slicing the dataframe
+            # before and after the insertion point
+            regular_tx_card = pd.concat(
+                [
+                    regular_tx_card.iloc[: hole_index + 1],  # previous rows
+                    tx_new_df,  # new added row
+                    regular_tx_card.iloc[hole_index + 1 :],  # next rows
+                ],
+                ignore_index=True,
+            )
+            """
+            tx_id += 1
             anomalous += 1
-    # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
+            global total_anomalous
+            total_anomalous += 1
+
+    return anomalous_df, tx_id
 
 
 def main():
@@ -355,6 +379,7 @@ def main():
         "transaction_amount",
     ]
     transaction_df = pd.DataFrame(columns=cols)
+    all_anomalous_df = pd.DataFrame(columns=cols)
     tx_id = 0
 
     for card_index in card_df.index:
@@ -364,9 +389,18 @@ def main():
         )
         if len(tx_card) > 0:
             # Introduction of anomalous tx
-            introduce_anomalous_fp_1(
-                tx_card, anomalous_ratio, atm_regular, atm_non_regular
+            anomalous_df, tx_id = introduce_anomalous_fp_1(
+                tx_card, anomalous_ratio, atm_regular, atm_non_regular, tx_id
             )
+            anomalous_df_cleaned = tx_card.dropna(how="all").dropna(axis=1, how="all")
+            all_anomalous_df = (
+                tx_card_cleaned.copy()
+                if all_anomalous_df.empty
+                else pd.concat(
+                    [all_anomalous_df, anomalous_df_cleaned], ignore_index=True
+                )
+            )
+
             print(
                 "########################################################################################################################################"
             )
@@ -395,7 +429,10 @@ def main():
     print("\n")
     print("~~~~~~~~~~~~~~~~~~~ Summary ~~~~~~~~~~~~~~~~~~~~~")
     print(
-        f"Number of transactions created:                                       {tx_id}"
+        f"Total number of transactions created:                                 {tx_id}"
+    )
+    print(
+        f"Number of Regular | Anomalous transactions created:                   {tx_id-total_anomalous, total_anomalous}"
     )
     print(
         f"Number of Cards with success:                                         {success_cards}"
