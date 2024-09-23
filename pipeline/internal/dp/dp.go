@@ -21,7 +21,7 @@ type in_comm struct {
 	Front_Channel <-chan in_comm  // in_comm channel
 }
 
-func generator(in <-chan cmn.Edge) {
+func generator(in <-chan cmn.Edge, log_ch chan cmn.Edge) {
 	fmt.Println("G - creation")
 	// Generate input channels
 	alerts := make(chan cmn.Alert, channelSize)
@@ -34,9 +34,13 @@ func generator(in <-chan cmn.Edge) {
 
 	// TOCHECK: Create results output files: one for each kind of fraud pattern (?)
 	// TODO: For the moment only 1 kind of pattern
-	file1, err := os.Create("../output/outPattern1.txt")
+	file_fp_1, err := os.Create("../output/outPattern1.txt")
 	cmn.CheckError(err)
-	defer file1.Close()
+	defer file_fp_1.Close()
+
+	file_log, err := os.Create("../output/log.txt")
+	cmn.CheckError(err)
+	defer file_log.Close()
 
 	for {
 		select {
@@ -53,14 +57,16 @@ func generator(in <-chan cmn.Edge) {
 			// creation of new bidirectional needed channels
 			new_edge_ch := make(chan cmn.Edge, channelSize)
 			new_front_ch := make(chan in_comm, channelSize)
-			go filter(edge, in, front_channels, new_edge_ch, alerts, new_front_ch)
+			go filter(edge, in, front_channels, new_edge_ch, alerts, log_ch, new_front_ch)
 			// set the new input channels of the generator
 			in = new_edge_ch
 			front_channels = new_front_ch
 		case alert := <-alerts:
 			fmt.Println("G - alert!: ", alert)
 			cmn.PrintAlertVerbose(alert)
-			cmn.PrintAlertOnFile(alert, file1)
+			cmn.PrintAlertOnFile(alert, file_fp_1)
+		case event := <-log_ch:
+			cmn.PrinteEventOnFile(event, file_log)
 		case input := <-front_channels:
 			// Reconnection of the pipeline (case of a filter having died)
 			fmt.Println("G - reconnection")
@@ -70,10 +76,12 @@ func generator(in <-chan cmn.Edge) {
 	}
 }
 
-// FUTURE: Unused channels - for the future filter's lifetime management - to be able
+// FUTURE: Unused channels
+// in_front, out_front - for the future filter's lifetime management - to be able
 // to kill a filter and do the reconnection with the pipeline properly
+// out_log: to register logging messages that are sent to the generator
 func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
-	out_edge chan<- cmn.Edge, out_alert chan<- cmn.Alert, out_front chan<- in_comm) {
+	out_edge chan<- cmn.Edge, out_alert chan<- cmn.Alert, out_log_ch chan<- cmn.Edge, out_front chan<- in_comm) {
 
 	// filter id: is the Card unique identifier
 	var id string = edge.Number_id
@@ -85,7 +93,7 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	// TOCHECK: Avoid this channel being blocking (?) Does it make sense?
 	int_stop := make(chan bool) // synchronous
 
-	go filter_worker(edge, int_edge, int_time, int_stop, out_alert)
+	go filter_worker(edge, int_edge, int_time, int_stop, out_alert, out_log_ch)
 
 	for {
 		select {
@@ -127,7 +135,7 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 // FUTURE: Unused channels - for the future filter's lifetime management - to be able
 // to kill a filter and do the reconnection with the pipeline properly
 func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-chan time.Time, int_stop chan<- bool,
-	out_alert chan<- cmn.Alert) {
+	out_alert chan<- cmn.Alert, out_log_ch chan<- cmn.Edge) {
 
 	//cmn.PrintEdge("FW creation - edge arrived: ", initial_edge)
 	var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
@@ -196,7 +204,12 @@ func Start(istream string) {
 	// Creation of edges channel to pass from the read input to the pipeline
 	edges_input := make(chan cmn.Edge, channelSize)
 
-	go generator(edges_input)
+	// Log channel: to register all the events coming to the engine. Bidirectional.
+	// Registering in the sink (generator for the moment)
+	// TOCHECK: For the moment only edges through it
+	log_ch := make(chan cmn.Edge, channelSize)
+
+	go generator(edges_input, log_ch)
 
 	file, err := os.Open(istream)
 	cmn.CheckError(err)
@@ -225,11 +238,9 @@ func Start(istream string) {
 		cmn.CheckError(err)
 		// still the type returned is int64 -> convert to int32
 		tx_id := int32(tx_id_64)
-		// https://yourbasic.org/golang/format-parse-string-time-date-example/
-		const layout = "2006-01-02 15:04:05"
-		tx_start, err := time.Parse(layout, tx[3])
+		tx_start, err := time.Parse(cmn.Time_layout, tx[3])
 		cmn.CheckError(err)
-		tx_end, err := time.Parse(layout, tx[4])
+		tx_end, err := time.Parse(cmn.Time_layout, tx[4])
 		cmn.CheckError(err)
 
 		tx_amount, err := strconv.ParseFloat(tx[5], 32)
@@ -246,6 +257,8 @@ func Start(istream string) {
 		}
 
 		edges_input <- edge
+		// Log - register the event in the sink
+		log_ch <- edge
 
 		// TODO: Sleep time for debugging to slow down the flux of transactions
 		// Leave without this sleep / change it

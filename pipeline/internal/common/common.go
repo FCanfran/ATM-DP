@@ -14,6 +14,9 @@ import (
 	"github.com/umahmood/haversine"
 )
 
+// https://yourbasic.org/golang/format-parse-string-time-date-example/
+const Time_layout = "2006-01-02 15:04:05"
+
 // An Edge = Transaction: Card ---> ATM
 // It is an edge of the volatile subgraph
 type Edge struct {
@@ -329,6 +332,20 @@ func PrintAlertOnFile(alert Alert, file *os.File) {
 		// get the id of the anomalous tx
 		file.WriteString(strconv.Itoa(int(alert.AnomalousEdge.Tx_id)) + "\n")
 	}
+}
+
+// TODO: For the moment the events are ONLY edges
+func PrinteEventOnFile(e Edge, file *os.File) {
+	// transaction_id,number_id,ATM_id,transaction_start,transaction_end,transaction_amount
+	out_string := fmt.Sprintf("%d,%s,%s,%s,%s,%.2f\n",
+		e.Tx_id,
+		e.Number_id,
+		e.ATM_id,
+		e.Tx_start.Format(Time_layout),
+		e.Tx_end.Format(Time_layout),
+		e.Tx_amount)
+	file.WriteString(out_string)
+
 }
 
 func CheckError(e error) {
