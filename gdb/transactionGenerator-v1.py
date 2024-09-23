@@ -237,7 +237,6 @@ def transaction_generator(card, atm_df, start_date, tx_id):
                     new_tx_df = pd.DataFrame([new_tx_end])
                     # Ensure the df is not empty and does not contain only NaN values, to avoid warnings
                     if not new_tx_df.dropna(how="all").empty:
-                        new_tx_df_cleaned = new_tx_df.dropna(axis=1, how="all")
                         transaction_df = (
                             new_tx_df.copy()
                             if transaction_df.empty
@@ -293,6 +292,7 @@ def introduce_anomalous_fp_1(
         "transaction_amount",
     ]
     anomalous_df = pd.DataFrame(columns=cols)
+
     while anomalous < num_anomalous:
         print("................... ANOMALOUS: ", anomalous, "...................")
         # random hole selection in [0, num_regular-1]
@@ -343,7 +343,7 @@ def introduce_anomalous_fp_1(
             )
 
             # create the tx
-            tx_new_start = {
+            tx_new_start_df = {
                 "transaction_id": tx_id,
                 "number_id": tx_prev["number_id"],  # card id
                 "ATM_id": ATM_new["ATM_id"],
@@ -353,10 +353,10 @@ def introduce_anomalous_fp_1(
             }
             tx_id += 1
 
-            print("==================== tx_new_start ======================")
-            print(tx_new_start)
+            print("==================== tx_new_start_df ======================")
+            print(tx_new_start_df)
 
-            tx_new_df = pd.DataFrame([tx_new_start])
+            tx_new_df = pd.DataFrame([tx_new_start_df])
             # Ensure the df is not empty and does not contain only NaN values, to avoid warnings
             if not tx_new_df.dropna(how="all").empty:
                 anomalous_df = (
@@ -365,7 +365,7 @@ def introduce_anomalous_fp_1(
                     else pd.concat([anomalous_df, tx_new_df], ignore_index=True)
                 )
 
-            tx_new_end = {
+            tx_new_end_df = {
                 "transaction_id": tx_id,
                 "number_id": tx_prev["number_id"],  # card id
                 "ATM_id": ATM_new["ATM_id"],
@@ -375,10 +375,10 @@ def introduce_anomalous_fp_1(
             }
             tx_id += 1
 
-            print("==================== tx_new_end ======================")
-            print(tx_new_end)
+            print("==================== tx_new_end_df ======================")
+            print(tx_new_end_df)
 
-            tx_new_df = pd.DataFrame([tx_new_end])
+            tx_new_df = pd.DataFrame([tx_new_end_df])
             # Ensure the df is not empty and does not contain only NaN values, to avoid warnings
             if not tx_new_df.dropna(how="all").empty:
                 anomalous_df = (
@@ -460,6 +460,7 @@ def main():
             print(
                 "########################################################################################################################################"
             )
+
         # if transaction_df is empty (on first iteration) then directly assign the returned df, otherwise an ordinary concat
         # Drop all-NaN rows from tx_card before concatenation:
         # Ensure the df is not empty and does not contain only NaN values, to avoid warnings
@@ -470,7 +471,6 @@ def main():
                 else pd.concat([transaction_df, tx_card], ignore_index=True)
             )
 
-    print("PUTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     # 3 csv generated:
     # - regular tx
     # - anomalous tx
@@ -485,20 +485,17 @@ def main():
                 row["transaction_end"]
                 if pd.notna(row["transaction_end"])
                 else row["transaction_start"]
-            ),2
+            ),
             axis=1,
         )
-
-        print("kkkkkkkkkkkkkkkkkkkkkkkkkk")
 
         # Sort based on the custom sort_key column
         transaction_df = transaction_df.sort_values(
             by="sort_key", ascending=True
         ).reset_index(drop=True)
 
-        print("zzzzzzzzzzzzzzzzzzzzzzzzzz")
-
         if total_anomalous > 0:
+
             anomalous_df["sort_key"] = anomalous_df.apply(
                 lambda row: (
                     row["transaction_end"]
@@ -507,12 +504,10 @@ def main():
                 ),
                 axis=1,
             )
-            print("wwwwwwwwwwwwwwwwwwwwwwwwwww")
+
             anomalous_df = anomalous_df.sort_values(
                 by="sort_key", ascending=True
             ).reset_index(drop=True)
-
-            print("qqqqqqqqqqqqqqqqqqqqqqqqq")
 
             # Join regular & anomalous
             all_tx = pd.concat([transaction_df, anomalous_df], ignore_index=True)
@@ -543,7 +538,7 @@ def main():
     print("\n")
     print("~~~~~~~~~~~~~~~~~~~ Summary ~~~~~~~~~~~~~~~~~~~~~")
     print(
-        f"Total number of transactions created:                                 {tx_id}"
+        f"Total number of transactions created:                                 {total_regular + total_anomalous}"
     )
     print(
         f"Number of Regular | Anomalous transactions created:                   {total_regular, total_anomalous}"

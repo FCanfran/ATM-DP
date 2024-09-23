@@ -1,0 +1,362 @@
+     ATM_id  loc_latitude  loc_longitude           city  country
+0   NIGER-0     12.458285       7.953503           Kano  Nigeria
+1   NIGER-1      4.525863       7.522440          Opobo  Nigeria
+2   NIGER-2      4.775489       6.955963  Port Harcourt  Nigeria
+3   NIGER-3      5.862564       7.961667          Nkanu  Nigeria
+4   NIGER-4      6.105162       6.968657          Enugu  Nigeria
+5   BENUE-0     11.303351       8.272400           Kano  Nigeria
+6   BENUE-1      6.298541       7.386406          Enugu  Nigeria
+7   BENUE-2     11.998791       9.154878           Kano  Nigeria
+8   BENUE-3      5.851530       7.929058          Nkanu  Nigeria
+9   BENUE-4      4.720917       7.008753  Port Harcourt  Nigeria
+10   OGUN-0      4.693822       7.075094         Okrika  Nigeria
+11   OGUN-1      6.368279       3.401772          Lagos  Nigeria
+12   OGUN-2      6.604991       3.345177          Lagos  Nigeria
+13   OGUN-3      6.421123       3.365359          Lagos  Nigeria
+14   OGUN-4     11.795325       8.676139           Kano  Nigeria
+   number_id  client_id  expiration  ...  amount_avg  amount_std  withdrawal_day
+0  c-NIGER-0          0  2024-07-12  ...    21573.91    24721.14          0.9452
+1  c-NIGER-1          1  2024-07-12  ...    19990.99    21913.03          0.6082
+2  c-NIGER-2          2  2024-07-12  ...    25188.68    23567.17          0.2904
+3  c-BENUE-0          0  2024-07-12  ...    23831.46    27594.15          0.2438
+4  c-BENUE-1          1  2024-07-12  ...    19785.05    22853.29          0.5863
+5   c-OGUN-0          0  2024-07-12  ...    18932.69    18217.28          0.2849
+
+[6 rows x 10 columns]
+------------- Generation for card: c-NIGER-0 -------------
+..........................................
+12 6
+................... ANOMALOUS:  0 ...................
+----------------------- prev -----------------------
+transaction_id                          4
+number_id                       c-NIGER-0
+ATM_id                             OGUN-0
+transaction_start     2018-04-02 22:24:23
+transaction_end                       NaT
+transaction_amount                    NaN
+Name: 4, dtype: object
+----------------------- next -----------------------
+transaction_id                          5
+number_id                       c-NIGER-0
+ATM_id                             OGUN-0
+transaction_start     2018-04-02 22:24:23
+transaction_end       2018-04-02 22:27:54
+transaction_amount               61741.12
+Name: 5, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 12, 'number_id': 'c-NIGER-0', 'ATM_id': 'OGUN-1', 'transaction_start': NaT, 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 13, 'number_id': 'c-NIGER-0', 'ATM_id': 'OGUN-1', 'transaction_start': NaT, 'transaction_end': NaT, 'transaction_amount': nan}
+................... ANOMALOUS:  1 ...................
+----------------------- prev -----------------------
+transaction_id                          5
+number_id                       c-NIGER-0
+ATM_id                             OGUN-0
+transaction_start     2018-04-02 22:24:23
+transaction_end       2018-04-02 22:27:54
+transaction_amount               61741.12
+Name: 5, dtype: object
+----------------------- next -----------------------
+transaction_id                          6
+number_id                       c-NIGER-0
+ATM_id                             OGUN-0
+transaction_start     2018-04-04 05:10:33
+transaction_end                       NaT
+transaction_amount                    NaN
+Name: 6, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 14, 'number_id': 'c-NIGER-0', 'ATM_id': 'OGUN-2', 'transaction_start': Timestamp('2018-04-02 23:09:37'), 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 15, 'number_id': 'c-NIGER-0', 'ATM_id': 'OGUN-2', 'transaction_start': Timestamp('2018-04-02 23:09:37'), 'transaction_end': Timestamp('2018-04-02 23:09:42'), 'transaction_amount': 123482.24}
+................... ANOMALOUS:  2 ...................
+----------------------- prev -----------------------
+transaction_id                          3
+number_id                       c-NIGER-0
+ATM_id                             OGUN-0
+transaction_start     2018-04-01 16:05:10
+transaction_end       2018-04-01 16:11:41
+transaction_amount               37940.13
+Name: 3, dtype: object
+----------------------- next -----------------------
+transaction_id                          4
+number_id                       c-NIGER-0
+ATM_id                             OGUN-0
+transaction_start     2018-04-02 22:24:23
+transaction_end                       NaT
+transaction_amount                    NaN
+Name: 4, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 16, 'number_id': 'c-NIGER-0', 'ATM_id': 'OGUN-4', 'transaction_start': Timestamp('2018-04-01 16:19:59'), 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 17, 'number_id': 'c-NIGER-0', 'ATM_id': 'OGUN-4', 'transaction_start': Timestamp('2018-04-01 16:19:59'), 'transaction_end': Timestamp('2018-04-01 16:20:04'), 'transaction_amount': 75880.26}
+................... ANOMALOUS:  3 ...................
+----------------------- prev -----------------------
+transaction_id                          2
+number_id                       c-NIGER-0
+ATM_id                             OGUN-0
+transaction_start     2018-04-01 16:05:10
+transaction_end                       NaT
+transaction_amount                    NaN
+Name: 2, dtype: object
+----------------------- next -----------------------
+transaction_id                          3
+number_id                       c-NIGER-0
+ATM_id                             OGUN-0
+transaction_start     2018-04-01 16:05:10
+transaction_end       2018-04-01 16:11:41
+transaction_amount               37940.13
+Name: 3, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 18, 'number_id': 'c-NIGER-0', 'ATM_id': 'NIGER-0', 'transaction_start': NaT, 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 19, 'number_id': 'c-NIGER-0', 'ATM_id': 'NIGER-0', 'transaction_start': NaT, 'transaction_end': NaT, 'transaction_amount': nan}
+................... ANOMALOUS:  4 ...................
+----------------------- prev -----------------------
+transaction_id                          0
+number_id                       c-NIGER-0
+ATM_id                            BENUE-4
+transaction_start     2018-04-01 13:46:12
+transaction_end                       NaT
+transaction_amount                    NaN
+Name: 0, dtype: object
+----------------------- next -----------------------
+transaction_id                          1
+number_id                       c-NIGER-0
+ATM_id                            BENUE-4
+transaction_start     2018-04-01 13:46:12
+transaction_end       2018-04-01 13:54:06
+transaction_amount               56202.66
+Name: 1, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 20, 'number_id': 'c-NIGER-0', 'ATM_id': 'OGUN-3', 'transaction_start': NaT, 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 21, 'number_id': 'c-NIGER-0', 'ATM_id': 'OGUN-3', 'transaction_start': NaT, 'transaction_end': NaT, 'transaction_amount': nan}
+................... ANOMALOUS:  5 ...................
+----------------------- prev -----------------------
+transaction_id                          8
+number_id                       c-NIGER-0
+ATM_id                             OGUN-0
+transaction_start     2018-04-04 17:02:41
+transaction_end                       NaT
+transaction_amount                    NaN
+Name: 8, dtype: object
+----------------------- next -----------------------
+transaction_id                          9
+number_id                       c-NIGER-0
+ATM_id                             OGUN-0
+transaction_start     2018-04-04 17:02:41
+transaction_end       2018-04-04 17:11:46
+transaction_amount               34197.03
+Name: 9, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 22, 'number_id': 'c-NIGER-0', 'ATM_id': 'OGUN-2', 'transaction_start': NaT, 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 23, 'number_id': 'c-NIGER-0', 'ATM_id': 'OGUN-2', 'transaction_start': NaT, 'transaction_end': NaT, 'transaction_amount': nan}
+########################################################################################################################################
+------------- Generation for card: c-NIGER-1 -------------
+..........................................
+6 3
+................... ANOMALOUS:  0 ...................
+----------------------- prev -----------------------
+transaction_id                         25
+number_id                       c-NIGER-1
+ATM_id                             OGUN-3
+transaction_start     2018-04-02 15:59:02
+transaction_end       2018-04-02 16:00:31
+transaction_amount               29124.11
+Name: 1, dtype: object
+----------------------- next -----------------------
+transaction_id                         26
+number_id                       c-NIGER-1
+ATM_id                             OGUN-3
+transaction_start     2018-04-03 07:26:13
+transaction_end                       NaT
+transaction_amount                    NaN
+Name: 2, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 30, 'number_id': 'c-NIGER-1', 'ATM_id': 'NIGER-1', 'transaction_start': Timestamp('2018-04-02 16:14:03'), 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 31, 'number_id': 'c-NIGER-1', 'ATM_id': 'NIGER-1', 'transaction_start': Timestamp('2018-04-02 16:14:03'), 'transaction_end': Timestamp('2018-04-02 16:14:08'), 'transaction_amount': 58248.22}
+................... ANOMALOUS:  1 ...................
+----------------------- prev -----------------------
+transaction_id                         27
+number_id                       c-NIGER-1
+ATM_id                             OGUN-3
+transaction_start     2018-04-03 07:26:13
+transaction_end       2018-04-03 07:31:13
+transaction_amount               29188.73
+Name: 3, dtype: object
+----------------------- next -----------------------
+transaction_id                         28
+number_id                       c-NIGER-1
+ATM_id                             OGUN-3
+transaction_start     2018-04-03 12:11:57
+transaction_end                       NaT
+transaction_amount                    NaN
+Name: 4, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 32, 'number_id': 'c-NIGER-1', 'ATM_id': 'NIGER-0', 'transaction_start': Timestamp('2018-04-03 07:44:55'), 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 33, 'number_id': 'c-NIGER-1', 'ATM_id': 'NIGER-0', 'transaction_start': Timestamp('2018-04-03 07:44:55'), 'transaction_end': Timestamp('2018-04-03 07:45:00'), 'transaction_amount': 58377.46}
+................... ANOMALOUS:  2 ...................
+----------------------- prev -----------------------
+transaction_id                         29
+number_id                       c-NIGER-1
+ATM_id                             OGUN-3
+transaction_start     2018-04-03 12:11:57
+transaction_end       2018-04-03 12:17:32
+transaction_amount               37668.02
+Name: 5, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 34, 'number_id': 'c-NIGER-1', 'ATM_id': 'OGUN-2', 'transaction_start': Timestamp('2018-04-03 12:17:44'), 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 35, 'number_id': 'c-NIGER-1', 'ATM_id': 'OGUN-2', 'transaction_start': Timestamp('2018-04-03 12:17:44'), 'transaction_end': Timestamp('2018-04-03 12:17:49'), 'transaction_amount': 75336.04}
+########################################################################################################################################
+------------- Generation for card: c-NIGER-2 -------------
+..........................................
+2 1
+................... ANOMALOUS:  0 ...................
+----------------------- prev -----------------------
+transaction_id                         37
+number_id                       c-NIGER-2
+ATM_id                             OGUN-2
+transaction_start     2018-04-03 16:09:24
+transaction_end       2018-04-03 16:11:54
+transaction_amount               30222.12
+Name: 1, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 38, 'number_id': 'c-NIGER-2', 'ATM_id': 'BENUE-3', 'transaction_start': Timestamp('2018-04-03 16:52:56'), 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 39, 'number_id': 'c-NIGER-2', 'ATM_id': 'BENUE-3', 'transaction_start': Timestamp('2018-04-03 16:52:56'), 'transaction_end': Timestamp('2018-04-03 16:53:01'), 'transaction_amount': 60444.24}
+########################################################################################################################################
+------------- Generation for card: c-BENUE-0 -------------
+..........................................
+4 2
+................... ANOMALOUS:  0 ...................
+----------------------- prev -----------------------
+transaction_id                         43
+number_id                       c-BENUE-0
+ATM_id                            NIGER-2
+transaction_start     2018-04-03 08:37:50
+transaction_end       2018-04-03 08:44:42
+transaction_amount               82999.81
+Name: 3, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 44, 'number_id': 'c-BENUE-0', 'ATM_id': 'OGUN-1', 'transaction_start': Timestamp('2018-04-03 09:15:31'), 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 45, 'number_id': 'c-BENUE-0', 'ATM_id': 'OGUN-1', 'transaction_start': Timestamp('2018-04-03 09:15:31'), 'transaction_end': Timestamp('2018-04-03 09:15:36'), 'transaction_amount': 165999.62}
+................... ANOMALOUS:  1 ...................
+................... ANOMALOUS:  1 ...................
+----------------------- prev -----------------------
+transaction_id                         41
+number_id                       c-BENUE-0
+ATM_id                            NIGER-2
+transaction_start     2018-04-01 07:59:21
+transaction_end       2018-04-01 08:04:17
+transaction_amount                6972.22
+Name: 1, dtype: object
+----------------------- next -----------------------
+transaction_id                         42
+number_id                       c-BENUE-0
+ATM_id                            NIGER-2
+transaction_start     2018-04-03 08:37:50
+transaction_end                       NaT
+transaction_amount                    NaN
+Name: 2, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 46, 'number_id': 'c-BENUE-0', 'ATM_id': 'OGUN-2', 'transaction_start': Timestamp('2018-04-01 08:36:41'), 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 47, 'number_id': 'c-BENUE-0', 'ATM_id': 'OGUN-2', 'transaction_start': Timestamp('2018-04-01 08:36:41'), 'transaction_end': Timestamp('2018-04-01 08:36:46'), 'transaction_amount': 13944.44}
+########################################################################################################################################
+------------- Generation for card: c-BENUE-1 -------------
+..........................................
+4 2
+................... ANOMALOUS:  0 ...................
+----------------------- prev -----------------------
+transaction_id                         48
+number_id                       c-BENUE-1
+ATM_id                             OGUN-1
+transaction_start     2018-04-02 07:45:57
+transaction_end                       NaT
+transaction_amount                    NaN
+Name: 0, dtype: object
+----------------------- next -----------------------
+transaction_id                         49
+number_id                       c-BENUE-1
+ATM_id                             OGUN-1
+transaction_start     2018-04-02 07:45:57
+transaction_end       2018-04-02 07:49:01
+transaction_amount               31556.48
+Name: 1, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 52, 'number_id': 'c-BENUE-1', 'ATM_id': 'BENUE-4', 'transaction_start': NaT, 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 53, 'number_id': 'c-BENUE-1', 'ATM_id': 'BENUE-4', 'transaction_start': NaT, 'transaction_end': NaT, 'transaction_amount': nan}
+................... ANOMALOUS:  1 ...................
+----------------------- prev -----------------------
+transaction_id                         49
+number_id                       c-BENUE-1
+ATM_id                             OGUN-1
+transaction_start     2018-04-02 07:45:57
+transaction_end       2018-04-02 07:49:01
+transaction_amount               31556.48
+Name: 1, dtype: object
+----------------------- next -----------------------
+transaction_id                         50
+number_id                       c-BENUE-1
+ATM_id                             OGUN-3
+transaction_start     2018-04-05 00:41:34
+transaction_end                       NaT
+transaction_amount                    NaN
+Name: 2, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 54, 'number_id': 'c-BENUE-1', 'ATM_id': 'NIGER-1', 'transaction_start': Timestamp('2018-04-02 07:53:32'), 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 55, 'number_id': 'c-BENUE-1', 'ATM_id': 'NIGER-1', 'transaction_start': Timestamp('2018-04-02 07:53:32'), 'transaction_end': Timestamp('2018-04-02 07:53:37'), 'transaction_amount': 63112.96}
+########################################################################################################################################
+------------- Generation for card: c-OGUN-0 -------------
+..........................................
+4 2
+................... ANOMALOUS:  0 ...................
+----------------------- prev -----------------------
+transaction_id                         59
+number_id                        c-OGUN-0
+ATM_id                             OGUN-0
+transaction_start     2018-04-01 17:25:54
+transaction_end       2018-04-01 17:29:45
+transaction_amount               31274.03
+Name: 3, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 60, 'number_id': 'c-OGUN-0', 'ATM_id': 'BENUE-1', 'transaction_start': Timestamp('2018-04-01 17:40:43'), 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 61, 'number_id': 'c-OGUN-0', 'ATM_id': 'BENUE-1', 'transaction_start': Timestamp('2018-04-01 17:40:43'), 'transaction_end': Timestamp('2018-04-01 17:40:48'), 'transaction_amount': 62548.06}
+................... ANOMALOUS:  1 ...................
+----------------------- prev -----------------------
+transaction_id                         57
+number_id                        c-OGUN-0
+ATM_id                             OGUN-0
+transaction_start     2018-04-01 13:39:14
+transaction_end       2018-04-01 13:39:27
+transaction_amount                45221.4
+Name: 1, dtype: object
+----------------------- next -----------------------
+transaction_id                         58
+number_id                        c-OGUN-0
+ATM_id                             OGUN-0
+transaction_start     2018-04-01 17:25:54
+transaction_end                       NaT
+transaction_amount                    NaN
+Name: 2, dtype: object
+==================== tx_new_start_df ======================
+{'transaction_id': 62, 'number_id': 'c-OGUN-0', 'ATM_id': 'NIGER-1', 'transaction_start': Timestamp('2018-04-01 13:40:46'), 'transaction_end': None, 'transaction_amount': None}
+==================== tx_new_end_df ======================
+{'transaction_id': 63, 'number_id': 'c-OGUN-0', 'ATM_id': 'NIGER-1', 'transaction_start': Timestamp('2018-04-01 13:40:46'), 'transaction_end': Timestamp('2018-04-01 13:40:51'), 'transaction_amount': 90442.8}
+########################################################################################################################################
+
+
+~~~~~~~~~~~~~~~~~~~ Summary ~~~~~~~~~~~~~~~~~~~~~
+Total number of transactions created:                                 32
+Number of Regular | Anomalous transactions created:                   (16, 16)
+Number of Cards with success:                                         6
+Number of Cards with "failure" (no transactions could be generated):  0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
