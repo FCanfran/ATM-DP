@@ -231,7 +231,8 @@ def transaction_generator(card, atm_df, start_date, tx_id):
     return transaction_df, tx_id, atm_df_regular, atm_df_non_regular
 
 
-# Introduction of anomalous tx to cause the fraud pattern 1
+# Generation of anomalous tx to cause the fraud pattern 1
+# Per each of the generated card tx
 def introduce_anomalous_fp_1(
     regular_tx_card, ratio, atm_regular, atm_non_regular, tx_id
 ):
@@ -271,6 +272,12 @@ def introduce_anomalous_fp_1(
             # TODO: While loop in case we cant meet the conditions for the first selected random ATM from the atm_non_regular subset?
             # introduce anomalous tx in this position: after the tx[index] (and before tx[index+1], in case it exists tx[index+1] (tx_next) ????)
             tx_prev = regular_tx_card.iloc[hole_index]
+
+            print("----------------------- prev -----------------------")
+            print(tx_prev)
+            if hole_index + 1 < num_regular:
+                print("----------------------- next -----------------------")
+                print(regular_tx_card.iloc[hole_index + 1])
 
             # select one ATM at random from atm_non_regular
             rand_index = np.random.choice(atm_non_regular.index)
@@ -313,24 +320,16 @@ def introduce_anomalous_fp_1(
                 "transaction_amount": tx_prev["transaction_amount"] * 2,
             }
 
+            print("==================== tx_new ======================")
+            print(tx_new)
+
             tx_new_df = pd.DataFrame([tx_new])
             anomalous_df = (
                 tx_new_df.copy()
                 if anomalous_df.empty
                 else pd.concat([anomalous_df, tx_new_df], ignore_index=True)
             )
-            """
-            # inject tx_new in position hole_index + 1 -> slicing the dataframe
-            # before and after the insertion point
-            regular_tx_card = pd.concat(
-                [
-                    regular_tx_card.iloc[: hole_index + 1],  # previous rows
-                    tx_new_df,  # new added row
-                    regular_tx_card.iloc[hole_index + 1 :],  # next rows
-                ],
-                ignore_index=True,
-            )
-            """
+
             tx_id += 1
             anomalous += 1
             global total_anomalous
@@ -379,7 +378,7 @@ def main():
         "transaction_amount",
     ]
     transaction_df = pd.DataFrame(columns=cols)
-    all_anomalous_df = pd.DataFrame(columns=cols)
+    anomalous_df = pd.DataFrame(columns=cols)
     tx_id = 0
 
     for card_index in card_df.index:
@@ -388,16 +387,18 @@ def main():
             card_df.iloc[card_index], atm_df, start_date, tx_id
         )
         if len(tx_card) > 0:
-            # Introduction of anomalous tx
-            anomalous_df, tx_id = introduce_anomalous_fp_1(
+            # Generation of anomalous tx for this card
+            card_anomalous_df, tx_id = introduce_anomalous_fp_1(
                 tx_card, anomalous_ratio, atm_regular, atm_non_regular, tx_id
             )
-            anomalous_df_cleaned = tx_card.dropna(how="all").dropna(axis=1, how="all")
-            all_anomalous_df = (
-                tx_card_cleaned.copy()
-                if all_anomalous_df.empty
+            card_anomalous_df_cleaned = card_anomalous_df.dropna(how="all").dropna(
+                axis=1, how="all"
+            )
+            anomalous_df = (
+                card_anomalous_df_cleaned.copy()
+                if anomalous_df.empty
                 else pd.concat(
-                    [all_anomalous_df, anomalous_df_cleaned], ignore_index=True
+                    [anomalous_df, card_anomalous_df_cleaned], ignore_index=True
                 )
             )
 
@@ -414,17 +415,41 @@ def main():
             else pd.concat([transaction_df, tx_card_cleaned], ignore_index=True)
         )
 
-    # print(transaction_df)
-    # NOTE: We want the stream of transactions to come ordered by tx_end, which is the time
-    # in which the tx finished and therefore when we simulate that it reaches the query engine
-    # - order by the times they finished and therefore reached the system
-    # sort by transaction_end, and if equal (if ties) by transaction_start in ascending order
-    transaction_df = transaction_df.sort_values(
-        by=["transaction_end", "transaction_start"], ascending=True
-    ).reset_index(drop=True)
+    # 3 csv generated:
+    # - regular tx
+    # - anomalous tx
+    # - all tx
 
-    # print(transaction_df)
-    transaction_df.to_csv("csv/" + output_file_name + ".csv", index=False)
+    if tx_id > 0:
+        # NOTE: We want the stream of transactions to come ordered by tx_end, which is the time
+        # in which the tx finished and therefore when we simulate that it reaches the query engine
+        # - order by the times they finished and therefore reached the system
+        # sort by transaction_end, and if equal (if ties) by transaction_start in ascending order
+        transaction_df = transaction_df.sort_values(
+            by=["transaction_end", "transaction_start"], ascending=True
+        ).reset_index(drop=True)
+        transaction_df.to_csv("csv/" + output_file_name + "-regular.csv", index=False)
+
+        if total_anomalous > 0:
+            anomalous_df = anomalous_df.sort_values(
+                by=["transaction_end", "transaction_start"], ascending=True
+            ).reset_index(drop=True)
+            anomalous_df.to_csv(
+                "csv/" + output_file_name + "-anomalous.csv", index=False
+            )
+
+            all_tx = pd.concat([transaction_df, anomalous_df], ignore_index=True)
+            # sort after joining both
+            all_tx = all_tx.sort_values(
+                by=["transaction_end", "transaction_start"], ascending=True
+            ).reset_index(drop=True)
+        else:
+            all_tx = transaction_df
+
+        all_tx.to_csv("csv/" + output_file_name + "-all.csv", index=False)
+
+    else:
+        print("No transactions generated\n")
 
     print("\n")
     print("~~~~~~~~~~~~~~~~~~~ Summary ~~~~~~~~~~~~~~~~~~~~~")
