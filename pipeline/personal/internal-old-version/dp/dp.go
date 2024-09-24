@@ -157,37 +157,24 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			// which is when it arrived to our system -> closer to the current real time!
 			//subgraph.Update(new_edge.Tx_end)
 			// -------------------------------------------------------------------------------------------------- //
-			// NOTE: New -> with 2 edges per tx
-			// 1. Identify if it is start or end edge
-			if new_edge.IsStart() {
-				// start edge
-				// 1. Check fraud
-				// 2. Add to the subgraph
-			} else {
-				// end edge
-				// Add to the subgraph
-
-			}
-			/*
-				// TODO: How to do when the new edge produces fraud pattern? - add/dont add to the volatile subgraph?
-				isFraud, fraudSubgraph, anomalousEdge := subgraph.CheckFraud(new_edge)
-				if isFraud {
-					// TODO: Create & propagate fraud pattern alert (alert channel)
-					fmt.Println("FW - Positive Fraud pattern")
-					fraud1Alert := cmn.Alert{
-						Label:         "1",
-						Info:          "fraud pattern",
-						Subgraph:      *fraudSubgraph,
-						AnomalousEdge: anomalousEdge,
-					}
-					out_alert <- fraud1Alert
-
-				} else {
-					fmt.Println("FW - Negative Fraud pattern")
-					subgraph.AddAtEnd(new_edge)
+			// TODO: How to do when the new edge produces fraud pattern? - add/dont add to the volatile subgraph?
+			isFraud, fraudSubgraph, anomalousEdge := subgraph.CheckFraud(new_edge)
+			if isFraud {
+				// TODO: Create & propagate fraud pattern alert (alert channel)
+				fmt.Println("FW - Positive Fraud pattern")
+				fraud1Alert := cmn.Alert{
+					Label:         "1",
+					Info:          "fraud pattern",
+					Subgraph:      *fraudSubgraph,
+					AnomalousEdge: anomalousEdge,
 				}
-				subgraph.PrintIds()
-			*/
+				out_alert <- fraud1Alert
+
+			} else {
+				fmt.Println("FW - Negative Fraud pattern")
+				subgraph.AddAtEnd(new_edge)
+			}
+			subgraph.PrintIds()
 			// -------------------------------------------------------------------------------------------------- //
 			// FUTURE: So far, assuming that the we have a single infinite time window - no management of filter's lifetime
 			/*
@@ -251,27 +238,14 @@ func Start(istream string) {
 		cmn.CheckError(err)
 		// still the type returned is int64 -> convert to int32
 		tx_id := int32(tx_id_64)
-
 		tx_start, err := time.Parse(cmn.Time_layout, tx[3])
 		cmn.CheckError(err)
+		tx_end, err := time.Parse(cmn.Time_layout, tx[4])
+		cmn.CheckError(err)
 
-		// Check if tx_end field is empty
-		// From: https://pkg.go.dev/time#Time
-		// The zero value of type Time is January 1, year 1, 00:00:00.000000000 UTC. As this time
-		// is unlikely to come up in practice, the Time.IsZero method gives a simple way of detecting
-		// a time that has not been initialized explicitly.
-		var tx_end time.Time
-		if tx[4] != "" {
-			tx_end, err = time.Parse(cmn.Time_layout, tx[4])
-			cmn.CheckError(err)
-		}
-
-		var tx_amount_32 float32
-		if tx[5] != "" {
-			tx_amount, err := strconv.ParseFloat(tx[5], 32)
-			cmn.CheckError(err)
-			tx_amount_32 = float32(tx_amount)
-		}
+		tx_amount, err := strconv.ParseFloat(tx[5], 32)
+		cmn.CheckError(err)
+		tx_amount_32 := float32(tx_amount)
 
 		edge := cmn.Edge{
 			Number_id: tx[1],
@@ -284,7 +258,6 @@ func Start(istream string) {
 
 		edges_input <- edge
 		// Log - register the event in the sink
-		// TODO: Change, the log of events is done here directly on the sink
 		log_ch <- edge
 
 		// TODO: Sleep time for debugging to slow down the flux of transactions
