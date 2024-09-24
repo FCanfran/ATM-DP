@@ -75,9 +75,10 @@ func NewGraph() *Graph {
 	return &g
 }
 
-// Appends a new edge at the end of the list
-func (g *Graph) AddAtEnd(e Edge) {
+// Adds a new edge to the subgraph
+func (g *Graph) AddEdge(e Edge, isStart bool) {
 	//fmt.Println(":::: addition ::::")
+
 	g.edges.PushBack(e)
 	g.last_timestamp = e.Tx_end
 }

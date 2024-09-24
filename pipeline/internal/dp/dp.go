@@ -159,15 +159,14 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			// -------------------------------------------------------------------------------------------------- //
 			// NOTE: New -> with 2 edges per tx
 			// 1. Identify if it is start or end edge
-			if new_edge.IsStart() {
+			isStart := new_edge.IsStart()
+			if isStart {
 				// start edge
 				// 1. Check fraud
 				// 2. Add to the subgraph
-			} else {
-				// end edge
-				// Add to the subgraph
-
 			}
+			// Add to the subgraph
+			subgraph.AddEdge(new_edge, isStart)
 			/*
 				// TODO: How to do when the new edge produces fraud pattern? - add/dont add to the volatile subgraph?
 				isFraud, fraudSubgraph, anomalousEdge := subgraph.CheckFraud(new_edge)
