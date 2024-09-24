@@ -312,6 +312,27 @@ func PrintEdge(msg string, e Edge) {
 	}
 }
 
+func PrintEdgeComplete(msg string, e Edge) {
+	if msg == "" {
+		fmt.Printf("%d,%s,%s,%s,%s,%.2f\n",
+			e.Tx_id,
+			e.Number_id,
+			e.ATM_id,
+			e.Tx_start.Format(Time_layout),
+			e.Tx_end.Format(Time_layout),
+			e.Tx_amount)
+	} else {
+		fmt.Printf("%s:   %d,%s,%s,%s,%s,%.2f\n",
+			msg,
+			e.Tx_id,
+			e.Number_id,
+			e.ATM_id,
+			e.Tx_start.Format(Time_layout),
+			e.Tx_end.Format(Time_layout),
+			e.Tx_amount)
+	}
+}
+
 func PrintAlertVerbose(alert Alert) {
 	fmt.Printf("Alert!: %s, %s\n", alert.Label, alert.Info)
 

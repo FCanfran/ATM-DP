@@ -238,14 +238,27 @@ func Start(istream string) {
 		cmn.CheckError(err)
 		// still the type returned is int64 -> convert to int32
 		tx_id := int32(tx_id_64)
+
 		tx_start, err := time.Parse(cmn.Time_layout, tx[3])
 		cmn.CheckError(err)
-		tx_end, err := time.Parse(cmn.Time_layout, tx[4])
-		cmn.CheckError(err)
 
-		tx_amount, err := strconv.ParseFloat(tx[5], 32)
-		cmn.CheckError(err)
-		tx_amount_32 := float32(tx_amount)
+		// Check if tx_end field is empty
+		// From: https://pkg.go.dev/time#Time
+		// The zero value of type Time is January 1, year 1, 00:00:00.000000000 UTC. As this time
+		// is unlikely to come up in practice, the Time.IsZero method gives a simple way of detecting
+		// a time that has not been initialized explicitly.
+		var tx_end time.Time
+		if tx[4] != "" {
+			tx_end, err = time.Parse(cmn.Time_layout, tx[4])
+			cmn.CheckError(err)
+		}
+
+		var tx_amount_32 float32
+		if tx[5] != "" {
+			tx_amount, err := strconv.ParseFloat(tx[5], 32)
+			cmn.CheckError(err)
+			tx_amount_32 = float32(tx_amount)
+		}
 
 		edge := cmn.Edge{
 			Number_id: tx[1],
@@ -256,8 +269,21 @@ func Start(istream string) {
 			Tx_amount: tx_amount_32,
 		}
 
+		cmn.PrintEdgeComplete("", edge)
+
+		if edge.Tx_start.IsZero() {
+			fmt.Println("TX START IS ZERO")
+		}
+
+		if edge.Tx_end.IsZero() {
+			fmt.Println("TX END IS ZERO")
+		} else {
+			fmt.Println("TX END IS NOT ZERO")
+		}
+
 		edges_input <- edge
 		// Log - register the event in the sink
+		// TODO: Change, the log of events is done here directly on the sink
 		log_ch <- edge
 
 		// TODO: Sleep time for debugging to slow down the flux of transactions
