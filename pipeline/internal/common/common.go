@@ -26,6 +26,7 @@ type Edge struct {
 	Tx_start  time.Time // transaction start date time (DD/MM/YYYY HH:MM:SS)
 	Tx_end    time.Time // transaction end date time (DD/MM/YYYY HH:MM:SS)
 	Tx_amount float32   // transaction amount
+	// Tx_type: type of tx (NOTE: for the moment only withdrawals are considered)
 }
 
 type Coordinates struct {
