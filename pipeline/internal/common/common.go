@@ -2,16 +2,11 @@ package common
 
 import (
 	"container/list"
-	"context"
 	"fmt"
 	"log"
 	"os"
-	"pipeline/internal/connection"
 	"strconv"
 	"time"
-
-	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
-	"github.com/umahmood/haversine"
 )
 
 // https://yourbasic.org/golang/format-parse-string-time-date-example/
@@ -58,8 +53,8 @@ const maxSpeed = 500 // km/h
 // Graph is a struct that encapsulates a list of edges: edges
 // last_timestamp: to save the last timestamp of the filter / subgraph
 type Graph struct {
-	last_timestamp time.Time // Tx_end of the last edge to have been added to the subgraph
-	edges          *list.List
+	last_timestamp time.Time
+	edges          *list.List // a list of pointers to edges
 }
 
 type Alert struct {
@@ -76,11 +71,34 @@ func NewGraph() *Graph {
 }
 
 // Adds a new edge to the subgraph
+// isStart indicates whether the edge is of the type tx start
+// or tx end
 func (g *Graph) AddEdge(e Edge, isStart bool) {
 	//fmt.Println(":::: addition ::::")
 
-	g.edges.PushBack(e)
-	g.last_timestamp = e.Tx_end
+	if isStart {
+		g.edges.PushBack(&e) // Adding edge as pointer to the list (list of pointers to edges)
+		// TODO: Needs to be updated?
+		// g.last_timestamp = e.Tx_start
+	} else {
+		// Get the last edge of the list and complete it
+		// we are getting a reference of the object, so any change directly modifies it
+		prev := g.edges.Back()
+		// Security check
+		if prev != nil {
+			edge := prev.Value.(*Edge)
+			if edge.Tx_id == e.Tx_id {
+				// Complete the edge with the tx-end information
+				edge.Tx_end = e.Tx_end
+				edge.Tx_amount = e.Tx_amount
+			} else {
+				log.Println("Warning: AddEdge ->  possible overlapping: a tx-end of a different tx-id was received before the previous tx was closed")
+			}
+		} else {
+			log.Println("Warning: AddEdge -> a tx-end was tryied to be added on a empty subgraph")
+		}
+	}
+
 }
 
 // FUTURE: For the multiple window support - for the moment: single window support
@@ -139,6 +157,7 @@ func (g *Graph) Delete(e Edge) {
 
 // ------------------------------------------------------------------------------ //
 
+/*
 // obtain Tmin(eg.loc, new_e.loc), returns seconds of time
 func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 string, ATM_id_2 string) (int, error) {
 	// Connect to the static gdb to obtain the location of the ATMs given the ATM ids
@@ -274,15 +293,16 @@ func (g *Graph) CheckFraud(new_e Edge) (bool, *Graph, Edge) {
 	return isFraud, subgraph, anomalousEdge
 
 }
+*/
 
 // Print a subgraph
 func (g *Graph) Print() {
 	if g.edges.Front() != nil {
-		filter_id := g.edges.Front().Value.(Edge).Number_id
+		filter_id := g.edges.Front().Value.(*Edge).Number_id
 		fmt.Println("subgraph: ", filter_id)
 		fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
 		for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
-			eg_val := eg.Value.(Edge)
+			eg_val := eg.Value.(*Edge)
 			fmt.Println(eg_val)
 		}
 		fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
@@ -292,11 +312,11 @@ func (g *Graph) Print() {
 // Print a subgraph - only the tx ids
 func (g *Graph) PrintIds() {
 	if g.edges.Front() != nil {
-		filter_id := g.edges.Front().Value.(Edge).Number_id
+		filter_id := g.edges.Front().Value.(*Edge).Number_id
 		fmt.Println("subgraph: ", filter_id)
 		fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
 		for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
-			eg_val := eg.Value.(Edge)
+			eg_val := eg.Value.(*Edge)
 			fmt.Println(eg_val.Tx_id)
 		}
 		fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
@@ -350,7 +370,8 @@ func PrintAlertVerbose(alert Alert) {
 	switch alert.Label {
 	case "1":
 		fmt.Print("Anomalous tx: ")
-		PrintEdge("", alert.Subgraph.edges.Back().Value.(Edge))
+		anomalous_tx := *(alert.Subgraph.edges.Back().Value.(*Edge))
+		PrintEdge("", anomalous_tx)
 		fmt.Println("....................")
 		alert.Subgraph.Print()
 

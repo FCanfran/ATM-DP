@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	cmn "pipeline/internal/common"
 	"strconv"
@@ -98,7 +99,7 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	for {
 		select {
 		case edge := <-in_edge:
-			// cmn.PrintEdge("F - edge arrived: ", edge)
+			cmn.PrintEdge("F - edge arrived: ", edge)
 			if edge.Number_id == id {
 				int_edge <- edge
 			} else {
@@ -137,9 +138,13 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-chan time.Time, int_stop chan<- bool,
 	out_alert chan<- cmn.Alert, out_log_ch chan<- cmn.Edge) {
 
-	//cmn.PrintEdge("FW creation - edge arrived: ", initial_edge)
+	cmn.PrintEdge("FW creation - edge arrived: ", initial_edge)
 	var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
-	subgraph.AddAtEnd(initial_edge)
+	isStart := initial_edge.IsStart()
+	if !isStart {
+		log.Fatalf("Error: AddEdge ->  Initial edge of the filter is not of type tx-start")
+	}
+	subgraph.AddEdge(initial_edge, isStart)
 	subgraph.PrintIds()
 
 	// TODO: this goroutine dies alone after its father (the filter) dies?
@@ -157,6 +162,7 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			// which is when it arrived to our system -> closer to the current real time!
 			//subgraph.Update(new_edge.Tx_end)
 			// -------------------------------------------------------------------------------------------------- //
+			cmn.PrintEdge("FW - edge arrived: ", new_edge)
 			// NOTE: New -> with 2 edges per tx
 			// 1. Identify if it is start or end edge
 			isStart := new_edge.IsStart()
@@ -164,9 +170,13 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 				// start edge
 				// 1. Check fraud
 				// 2. Add to the subgraph
+				fmt.Println("Is start")
+			} else {
+				fmt.Println("Is end")
 			}
 			// Add to the subgraph
 			subgraph.AddEdge(new_edge, isStart)
+			subgraph.Print()
 			/*
 				// TODO: How to do when the new edge produces fraud pattern? - add/dont add to the volatile subgraph?
 				isFraud, fraudSubgraph, anomalousEdge := subgraph.CheckFraud(new_edge)
@@ -281,10 +291,11 @@ func Start(istream string) {
 			Tx_amount: tx_amount_32,
 		}
 
+		cmn.PrintEdgeComplete("", edge)
 		edges_input <- edge
 		// Log - register the event in the sink
 		// TODO: Change, the log of events is done here directly on the sink
-		log_ch <- edge
+		//log_ch <- edge
 
 		// TODO: Sleep time for debugging to slow down the flux of transactions
 		// Leave without this sleep / change it
