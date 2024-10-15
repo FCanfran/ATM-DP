@@ -150,21 +150,34 @@ alerts.
 
 \subsection{Regular transactions}
 
-Considerations:
+\begin{tcolorbox}
+  \begin{itemize}
+    \item \textbf{By card}: Generation of the transactions for each of the cards independently. \textbf{We have
+    control} to avoid anomalous scenarios when selecting the ATMs and distributing the transactions along time.
+    \item \textbf{In general}: Linking ATM and client composing (card,ATM) pairs, and distributing these pairs along
+    time according to a certain distribution. \textbf{No control / More difficult to control the possible derived
+    anomalous scenarios produced among same card pairs}.
+  \end{itemize}
+\end{tcolorbox}
+
+Therefore, the generation by card option it is considered to be the best so to be able to have the control
+on the possible anomalous scenarios for the generated transactions of each of the cards. Some ideas to explore:
 
 \begin{itemize}
-  \item Particular ATM usage frequency
-  \item ATM selection for the generated transactions of each card
-  \item Distribution of the genetated transactions on the decided considered time
-\end{itemize}
-
-Some ideas to explore:
-
-\begin{itemize}
-  \item ATM - Pre-selection of closed card ATM subset.
-  \item Time - Uniform distribution. 
-  \item Time - Poisson process distribution.
-  \item Random walks.
+  \item Selection of ATMs:
+  \begin{itemize}
+    \item Neighborhood / Closed ATM subset.
+    \item Random walk. To do the selection of the sequence of ATMs for the generated transactions.
+  \end{itemize}
+  \item Distribution of the transactions along time:
+  \begin{itemize}
+    \item Uniform distribution.
+    \item Poisson process distribution.
+  \end{itemize}
+  \item Other options:
+  \begin{itemize}
+    \item Random walk for both the ATM and the transaction time selection, in the same algorithm together.
+  \end{itemize}
 \end{itemize}
 
 \subsubsection{ATM closed subset + Uniform time distribution}
@@ -295,7 +308,7 @@ fraud scenarios. By taking into account the previous generated transaction: both
 linked ATM of the new transaction and its transaction time (to avoid transactions that 
 are overlapped or that come one directly after the other, since this may be fraudulent!).
 
-\subsubsection{Poisson Process}
+\subsubsection{ATM closed subset + Poisson Process}
 
 \begin{tcolorbox}
   \begin{itemize}
@@ -309,19 +322,56 @@ are overlapped or that come one directly after the other, since this may be frau
 Generate $\texttt{num\_tx}$ transactions for a selected period of time $\texttt{t}$.
 Distribution following a Poisson process distribution along $[0,t]$.
 \begin{itemize}
-    \item[$\bullet$] $\lambda=\texttt{avg\_tx}$ on a day for the client.
-    \item[$\bullet$] $\texttt{t = 24h}$.
-    \item[$\bullet$] Inter-arrival times are distributed following an exponential distribution: $T \sim \text{Exp}(\lambda)$ with the constraint that: 
-    $T_{i-1}+ \Delta_{max} + t_{min} \leq T_i, \forall T_i$
+    \item[$\bullet$] $\lambda=\texttt{avg\_tx}$ on a day for the client if $\texttt{t = 24h}$. Otherwise, 
+    decide a specific $\lambda$ for the considered $\texttt{t}$.
+    \item[$\bullet$] Inter-arrival times $X_1, X_2, \cdots$ are distributed following an exponential distribution:
+    $X_i \sim \text{Exp}(\lambda)$. They represent the time elapsed between two of these events, e.g. $X_2$ 
+    represents the time elapsed between the first and the second arrival. 
+    Note that in this case, since we need to respect the minimum required time between two consecutive 
+    transactions ($t_{min}$) so to avoid introducing anomalous undesired scenarios, we have to impose 
+    that: $X_i \geq \Delta_{i-1} + t_{min}, \forall X_i$, where:
+
+    \begin{itemize}
+      \item[$\circ$] $X_{i}$: time elapsed between the $i$-$1$ and $i$-th transaction.
+      \item[$\circ$] $\Delta_{i-1}$: time duration of the $i$-$1$ transaction. This duration will 
+      be upper bounded by $\Delta_{max}$, which will be considered the maximum possible duration of a transaction.
+      \item[$\circ$] $t_{min}$: minimum calculated time distance between any 2 consecutive transactions of the client.
+  \end{itemize}
+
+    With these interarrival times, we obtain the arrival times $T_i$. Note that they are not independent, in particular:
+    $T_1 \leq T_2 \leq T_3 \cdots$.
+
+    Therefore, to generate the Poisson process with rate $\lambda$:
+    \begin{enumerate}
+      \item Generate i.i.d. random variables $X_1, X_2, \cdots$ where $X_i \sim \text{Exp}(\lambda)$.
+      \item Obtain the arrival times as:
         \begin{itemize}
-            \item[$\circ$] $T_{i}$: starting time of the $i$-th transaction.
-            \item[$\circ$] $\Delta_{max}$: considered maximum duration of a transaction.
-            \item[$\circ$] $t_{min}$: minimum calculated time distance between any 2 consecutive transactions of the client.
+          \item $T_1 = X_1$
+          \item $T_2 = X_1 + X_2$
+          \item $T_3 = X_1 + X_2 + X_3$
+          \item $\cdots$
         \end{itemize}
+    \end{enumerate}
+
+    Note that, having imposed the previous we will have that:
+    \begin{equation}
+      \begin{cases}
+        T_i = T_{i-1} + X_i \\
+        X_i \geq \Delta_{max} + t_{min}
+      \end{cases}\forall X_i \
+    \end{equation}
+
+    which implies that:
+    
+    \begin{equation}
+      T_i \geq T_{i-1} + \Delta_{max} + t_{min}, \forall X_i
+    \end{equation}
+    
 \end{itemize}
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.55]{images/tx-generation-dist.png}
+    \includegraphics[scale=0.55]{images/tx-generation-dist-corrected.png}
+    \caption{Schema of the interarrival and arrival event times on the poisson process.}
 \end{figure}
 
 
@@ -334,8 +384,6 @@ References:
   \item \href{https://www.math.wsu.edu/faculty/genz/416/lect/l05-45.pdf}{More theory}
   \item \href{https://en.wikipedia.org/wiki/Poisson_point_process}{Wikipedia entry}
 \end{itemize}
-
-
 
 \subsubsection{Random Walk}
 
