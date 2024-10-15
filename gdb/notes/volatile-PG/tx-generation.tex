@@ -169,12 +169,14 @@ Some ideas to explore:
 
 \subsubsection{ATM closed subset + Uniform time distribution}
 
-\begin{itemize}
-  \item $\rightarrow$ ATM selection: closed ATM subset.
-  \item $\rightarrow$ Time distribution: uniform distribution of the $num\_tx$ transactions 
-  for a card on a certain day ($num\_tx$ is drawn from a Poisson distribution of 
-  $\lambda = \texttt{withdrawal\_day}$, based on the behavior of the \emph{Wisabi} clients).
-\end{itemize}
+\begin{tcolorbox}
+  \begin{itemize}
+    \item[$\rightarrow$] \textbf{ATM selection}: Closed ATM subset.
+    \item[$\rightarrow$] \textbf{Time distribution}: Uniform distribution of the $num\_tx$ transactions 
+    for a card on a certain day ($num\_tx$ is drawn from a Poisson distribution of 
+    $\lambda = \texttt{withdrawal\_day}$, based on the behavior of the \emph{Wisabi} clients).
+  \end{itemize}
+\end{tcolorbox}
 
 More detailed explanation follows.
 \\
@@ -288,15 +290,50 @@ For each card:
     from a uniform distribution $\mathcal{U}(0,\ \texttt{amount\_avg}*2)$.
 \end{itemize}
 
-% --------------------------------------------------------------------------------------------------------------
-% TODO: CONTINUE HERE 
 Note that this approach is done with the focus on avoiding the production of potential
 fraud scenarios. By taking into account the previous generated transaction: both for the
 linked ATM of the new transaction and its transaction time (to avoid transactions that 
 are overlapped or that come one directly after the other, since this may be fraudulent!).
 
-
 \subsubsection{Poisson Process}
+
+\begin{tcolorbox}
+  \begin{itemize}
+    \item[$\rightarrow$] \textbf{ATM selection}: Closed ATM subset.
+    \item[$\rightarrow$] \textbf{Time distribution}: Poisson process distribution of $num\_tx$ 
+    transactions for each of the cards.
+  \end{itemize}
+\end{tcolorbox}
+
+
+Generate $\texttt{num\_tx}$ transactions for a selected period of time $\texttt{t}$.
+Distribution following a Poisson process distribution along $[0,t]$.
+\begin{itemize}
+    \item[$\bullet$] $\lambda=\texttt{avg\_tx}$ on a day for the client.
+    \item[$\bullet$] $\texttt{t = 24h}$.
+    \item[$\bullet$] Inter-arrival times are distributed following an exponential distribution: $T \sim \text{Exp}(\lambda)$ with the constraint that: 
+    $T_{i-1}+ \Delta_{max} + t_{min} \leq T_i, \forall T_i$
+        \begin{itemize}
+            \item[$\circ$] $T_{i}$: starting time of the $i$-th transaction.
+            \item[$\circ$] $\Delta_{max}$: considered maximum duration of a transaction.
+            \item[$\circ$] $t_{min}$: minimum calculated time distance between any 2 consecutive transactions of the client.
+        \end{itemize}
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.55]{images/tx-generation-dist.png}
+\end{figure}
+
+
+References:
+
+\begin{itemize}
+  \item \href{https://www.probabilitycourse.com/chapter11/11_1_2_basic_concepts_of_the_poisson_process.php}{Poisson process modeling - Theoric description}
+  \item \href{https://www.probabilitycourse.com/chapter14/Chapter_14.pdf}{Poisson process modeling - Python implementation}
+  \item \href{https://timeseriesreasoning.com/contents/poisson-process/}{Less formal explanation with Python code}
+  \item \href{https://www.math.wsu.edu/faculty/genz/416/lect/l05-45.pdf}{More theory}
+  \item \href{https://en.wikipedia.org/wiki/Poisson_point_process}{Wikipedia entry}
+\end{itemize}
 
 
 
