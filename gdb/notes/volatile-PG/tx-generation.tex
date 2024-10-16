@@ -385,8 +385,57 @@ References:
   \item \href{https://en.wikipedia.org/wiki/Poisson_point_process}{Wikipedia entry}
 \end{itemize}
 
-\subsubsection{Random Walk}
+\subsubsection{Random Walk / Markov Chain}
 
+Idea is to model the sequence of transactions for each of the clients as a markov chain through the
+network of ATMs. The network is a fully-connected graph with ATMs as nodes and edges are
+weighted with the distance between each pair of ATMs as weights.
 
+The idea is to obtain the sequence of transactions for each client as a markov chain, in which,
+for each step a transaction is generated in that specific ATM node, at a certain datetime 
+respecting the constraint of the minimum time distance with the previous transaction, so 
+that no undesired anomalous fraud scenarios are produced. \\ 
+
+Some considerations:
+\begin{itemize}
+  \item Initially, we will compute the transition matrix obtaining all the respective 
+  transition probabilities. The probability of transition to another ATM-node will be 
+  inversely proportional to the distance to the considered ATM-node.
+  \item Transition matrix $P_t$: containing, for each state, the probability of transitioning
+  between states. For example, the entry $i,j$: $(P_t)_{i,j} = \mathcal{P}(X_{t+1} = j | X_t = i)$
+  contains the probability of transitioning to state $j$ when being in state $i$. 
+  Note that since we assume a complete graph, and also the posibility to transition 
+  to the same state, all entries of this matrix will be distinct to 0: $(P_t)_{i,j} \neq 0 \  
+  \forall i,j$.
+  \item Finally, once $P_t$ is computed, we perform the simulation to obtain the sequence of
+  transactions for the specific card/client.
+\end{itemize}
+
+References:
+
+\begin{itemize}
+\item Markov Chains
+\begin{itemize}
+  \item \href{https://brilliant.org/wiki/markov-chains/}{MC - Theory}
+  \item \href{https://www.columbia.edu/~ks20/4703-Sigman/4703-07-Notes-MC.pdf}{Simulation of Markov Chains - Theory}
+  \item \href{https://stephens999.github.io/fiveMinuteStats/simulating_discrete_chains_1.html}{MC - Implementation example}
+  \item \href{https://www.youtube.com/watch?v=G7FIQ9fXl6U}{MC - Implementation video example}
+\end{itemize}
+\item Random Walks
+\begin{itemize}
+  \item Theory:
+  \begin{itemize}
+    \item \href{https://ieeexplore.ieee.org/abstract/document/8911513?casa_token=vznpjKL5HG0AAAAA:hNzLCxAHBk75zCDUHsswB7ImAKgilzZcOBzxaXWz_G6U8Vy-ogbei40MoZ49M-Em5tTii0Q}{RWs: A Review of Algorithms and Applications}
+    \item \href{https://www.lirmm.fr/~sau/JCALM/Josep.pdf}{RWs on Graphs}
+    \item \href{https://www.fi.muni.cz/usr/gruska/random18/random1808.pdf}{RW - More theory}
+  \end{itemize}
+  \item Implementation examples:
+  \begin{itemize}
+    \item \href{https://tleise.people.amherst.edu/Math365Spring2016/RmarkdownFiles/WalkOnGraph.html}{Simple RW on a Graph - Implementation example}
+    \item \href{https://graphstream-project.org/doc/Algorithms/Random-walks-on-graphs/}{A RW on a graph - Implementation}
+    \item \href{https://es.mathworks.com/help/econ/simulate-random-walks-through-markov-chain.html}{Simulate Random Walks Through Markov Chain - Matlab Implementation example}
+  \end{itemize}
+\end{itemize}
+\end{itemize}
 
 \end{document}
