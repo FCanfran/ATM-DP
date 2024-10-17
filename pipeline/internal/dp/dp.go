@@ -67,7 +67,7 @@ func generator(in <-chan cmn.Edge, log_ch chan cmn.Edge) {
 			cmn.PrintAlertVerbose(alert)
 			cmn.PrintAlertOnFile(alert, file_fp_1)
 		case event := <-log_ch:
-			cmn.PrinteEventOnFile(event, file_log)
+			cmn.PrintEventOnFile(event, file_log)
 		case input := <-front_channels:
 			// Reconnection of the pipeline (case of a filter having died)
 			fmt.Println("G - reconnection")
@@ -169,7 +169,7 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			if isStart {
 				// start edge
 				// 1. Check fraud
-				subgraph.CheckFraud(new_edge)
+				subgraph.CheckFraud(new_edge, out_alert)
 				fmt.Println("........................................")
 				// 2. Add to the subgraph
 				subgraph.AddEdge(new_edge)
@@ -178,26 +178,6 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 				subgraph.CompleteEdge(new_edge)
 			}
 			subgraph.Print()
-			/*
-				// TODO: How to do when the new edge produces fraud pattern? - add/dont add to the volatile subgraph?
-				isFraud, fraudSubgraph, anomalousEdge := subgraph.CheckFraud(new_edge)
-				if isFraud {
-					// TODO: Create & propagate fraud pattern alert (alert channel)
-					fmt.Println("FW - Positive Fraud pattern")
-					fraud1Alert := cmn.Alert{
-						Label:         "1",
-						Info:          "fraud pattern",
-						Subgraph:      *fraudSubgraph,
-						AnomalousEdge: anomalousEdge,
-					}
-					out_alert <- fraud1Alert
-
-				} else {
-					fmt.Println("FW - Negative Fraud pattern")
-					subgraph.AddAtEnd(new_edge)
-				}
-				subgraph.PrintIds()
-			*/
 			// -------------------------------------------------------------------------------------------------- //
 			// FUTURE: So far, assuming that the we have a single infinite time window - no management of filter's lifetime
 			/*

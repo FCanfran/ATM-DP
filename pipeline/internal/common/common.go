@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"pipeline/internal/connection"
-	"strconv"
 	"time"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
@@ -63,10 +62,9 @@ type Graph struct {
 }
 
 type Alert struct {
-	Label         string // it can also be set as integer - for each kind of fraud pattern put a int
-	Info          string // optional additional information of the alert to be passed
-	Subgraph      Graph  // if desired, if needed later when receiving the alert in the generator
-	AnomalousEdge Edge   // the anomalous tx itself
+	Label    string // it can also be set as integer - for each kind of fraud pattern put a int
+	Info     string // optional additional information of the alert to be passed
+	Subgraph Graph  // if desired, if needed later when receiving the alert in the generator
 }
 
 // NewGraph creates a new graph
@@ -233,7 +231,11 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	return int(t_min), nil
 }
 
-func (g *Graph) CheckFraud(new_e Edge) {
+// Parameters:
+// - new_e: the new edge that we check the FP against
+// - out_alert: the output alert channel to directly emit the alerts from this method when they
+// are detected
+func (g *Graph) CheckFraud(new_e Edge, out_alert chan<- Alert) {
 
 	fmt.Println("-------------- CHECKFRAUD()--------------")
 	// New root context for the connections to the gdb that are going to be done here
@@ -284,9 +286,26 @@ func (g *Graph) CheckFraud(new_e Edge) {
 			fmt.Println("TRUE FP1: ")
 			subgraph.Print()
 			fmt.Println("...........................................................")
+			// emit the alert through the channel
+			fraud1Alert := Alert{
+				Label:    "1",
+				Info:     "fraud pattern",
+				Subgraph: *subgraph,
+			}
+			out_alert <- fraud1Alert
 		} else {
 			fmt.Println("FALSE FP1")
 		}
+	}
+}
+
+// Returns true if the tx edge is start.
+// Based on the tx_end property -> isZero in that case.
+func (e Edge) IsStart() bool {
+	if e.Tx_end.IsZero() {
+		return true
+	} else {
+		return false
 	}
 }
 
@@ -304,6 +323,19 @@ func (g *Graph) Print() {
 	}
 }
 
+func (g *Graph) PrintToFile(file *os.File) {
+	if g.edges.Front() != nil {
+		filter_id := g.edges.Front().Value.(*Edge).Number_id
+		fmt.Fprintln(file, "subgraph: ", filter_id)
+		fmt.Fprintln(file, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+		for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
+			eg_val := eg.Value.(*Edge)
+			PrintEdgeCompleteToFile("", *eg_val, file)
+		}
+		fmt.Fprintln(file, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+	}
+}
+
 // Print a subgraph - only the tx ids
 func (g *Graph) PrintIds() {
 	if g.edges.Front() != nil {
@@ -318,17 +350,7 @@ func (g *Graph) PrintIds() {
 	}
 }
 
-// Returns true if the tx edge is start.
-// Based on the tx_end property -> isZero in that case.
-func (e Edge) IsStart() bool {
-	if e.Tx_end.IsZero() {
-		return true
-	} else {
-		return false
-	}
-}
-
-// Generic Functions -----------------------------
+// ------------------------------ Generic Functions ------------------------------
 
 func PrintEdge(msg string, e Edge) {
 	if msg == "" {
@@ -359,32 +381,47 @@ func PrintEdgeComplete(msg string, e Edge) {
 	}
 }
 
+func PrintEdgeCompleteToFile(msg string, e Edge, file *os.File) {
+	if msg == "" {
+		fmt.Fprintf(file, "%d,%s,%s,%s,%s,%.2f\n",
+			e.Tx_id,
+			e.Number_id,
+			e.ATM_id,
+			e.Tx_start.Format(Time_layout),
+			e.Tx_end.Format(Time_layout),
+			e.Tx_amount)
+	} else {
+		fmt.Fprintf(file, "%s:   %d,%s,%s,%s,%s,%.2f\n",
+			msg,
+			e.Tx_id,
+			e.Number_id,
+			e.ATM_id,
+			e.Tx_start.Format(Time_layout),
+			e.Tx_end.Format(Time_layout),
+			e.Tx_amount)
+	}
+}
+
 func PrintAlertVerbose(alert Alert) {
 	fmt.Printf("Alert!: %s, %s\n", alert.Label, alert.Info)
 
 	switch alert.Label {
 	case "1":
-		fmt.Print("Anomalous tx: ")
-		anomalous_tx := *(alert.Subgraph.edges.Back().Value.(*Edge))
-		PrintEdge("", anomalous_tx)
-		fmt.Println("....................")
 		alert.Subgraph.Print()
-
 	}
 	fmt.Println("______________________________________________________________________________")
 }
 
-// So far, to print the id of the anomalous tx on a dedicated log file for each kind of fraud
+// So far, to print the anomalous tx subgraph on a dedicated log file for each kind of fraud
 func PrintAlertOnFile(alert Alert, file *os.File) {
 	switch alert.Label {
 	case "1":
-		// get the id of the anomalous tx
-		file.WriteString(strconv.Itoa(int(alert.AnomalousEdge.Tx_id)) + "\n")
+		alert.Subgraph.PrintToFile(file)
 	}
 }
 
 // TODO: For the moment the events are ONLY edges
-func PrinteEventOnFile(e Edge, file *os.File) {
+func PrintEventOnFile(e Edge, file *os.File) {
 	// transaction_id,number_id,ATM_id,transaction_start,transaction_end,transaction_amount
 	out_string := fmt.Sprintf("%d,%s,%s,%s,%s,%.2f\n",
 		e.Tx_id,
@@ -396,6 +433,8 @@ func PrinteEventOnFile(e Edge, file *os.File) {
 	file.WriteString(out_string)
 
 }
+
+// --------------------------------------------------------------------------------------
 
 func CheckError(e error) {
 	if e != nil {
