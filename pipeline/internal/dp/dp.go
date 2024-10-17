@@ -22,7 +22,7 @@ type in_comm struct {
 	Front_Channel <-chan in_comm  // in_comm channel
 }
 
-func generator(in <-chan cmn.Edge, log_ch chan cmn.Edge) {
+func generator(in <-chan cmn.Edge) {
 	fmt.Println("G - creation")
 	// Generate input channels
 	alerts := make(chan cmn.Alert, channelSize)
@@ -33,13 +33,18 @@ func generator(in <-chan cmn.Edge, log_ch chan cmn.Edge) {
 	var front_channels <-chan in_comm // read only channel
 	front_channels = tmp
 
+	// Log channel: to register all the events generated in the engine. Bidirectional.
+	// Registering in the sink (generator for the moment)
+	// TOCHECK: For the moment only edges through it
+	log_ch := make(chan cmn.Edge, channelSize)
+
 	// TOCHECK: Create results output files: one for each kind of fraud pattern (?)
 	// TODO: For the moment only 1 kind of pattern
 	file_fp_1, err := os.Create("../output/outPattern1.txt")
 	cmn.CheckError(err)
 	defer file_fp_1.Close()
 
-	file_log, err := os.Create("../output/log.txt")
+	file_log, err := os.Create("../output/gen-log.txt")
 	cmn.CheckError(err)
 	defer file_log.Close()
 
@@ -207,12 +212,12 @@ func Start(istream string) {
 	// Creation of edges channel to pass from the read input to the pipeline
 	edges_input := make(chan cmn.Edge, channelSize)
 
-	// Log channel: to register all the events coming to the engine. Bidirectional.
-	// Registering in the sink (generator for the moment)
-	// TOCHECK: For the moment only edges through it
-	log_ch := make(chan cmn.Edge, channelSize)
+	// log file to registering the events arriving to the system
+	file_log, err := os.Create("../output/in-log.txt")
+	cmn.CheckError(err)
+	defer file_log.Close()
 
-	go generator(edges_input, log_ch)
+	go generator(edges_input)
 
 	file, err := os.Open(istream)
 	cmn.CheckError(err)
@@ -274,9 +279,9 @@ func Start(istream string) {
 
 		cmn.PrintEdgeComplete("", edge)
 		edges_input <- edge
-		// Log - register the event in the sink
-		// TODO: Change, the log of events is done here directly on the sink
-		//log_ch <- edge
+
+		// the log of events is done here directly on the sink
+		cmn.PrintEdgeCompleteToFile("", edge, file_log)
 
 		// TODO: Sleep time for debugging to slow down the flux of transactions
 		// Leave without this sleep / change it
