@@ -2,11 +2,16 @@ package common
 
 import (
 	"container/list"
+	"context"
 	"fmt"
 	"log"
 	"os"
+	"pipeline/internal/connection"
 	"strconv"
 	"time"
+
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
+	"github.com/umahmood/haversine"
 )
 
 // https://yourbasic.org/golang/format-parse-string-time-date-example/
@@ -70,35 +75,33 @@ func NewGraph() *Graph {
 	return &g
 }
 
-// Adds a new edge to the subgraph
-// isStart indicates whether the edge is of the type tx start
-// or tx end
-func (g *Graph) AddEdge(e Edge, isStart bool) {
-	//fmt.Println(":::: addition ::::")
+// For adding a general edge or a tx-start edge at the end of the volatile subgraph ds
+func (g *Graph) AddEdge(e Edge) {
+	fmt.Println(":::: AddEdge ::::")
+	g.edges.PushBack(&e) // Adding edge as pointer to the list (list of pointers to edges)
+	// TODO: Needs to be updated?
+	// g.last_timestamp = e.Tx_start
+}
 
-	if isStart {
-		g.edges.PushBack(&e) // Adding edge as pointer to the list (list of pointers to edges)
-		// TODO: Needs to be updated?
-		// g.last_timestamp = e.Tx_start
-	} else {
-		// Get the last edge of the list and complete it
-		// we are getting a reference of the object, so any change directly modifies it
-		prev := g.edges.Back()
-		// Security check
-		if prev != nil {
-			edge := prev.Value.(*Edge)
-			if edge.Tx_id == e.Tx_id {
-				// Complete the edge with the tx-end information
-				edge.Tx_end = e.Tx_end
-				edge.Tx_amount = e.Tx_amount
-			} else {
-				log.Println("Warning: AddEdge ->  possible overlapping: a tx-end of a different tx-id was received before the previous tx was closed")
-			}
+// Complete an edge in the subgraph with the tx-end edge
+func (g *Graph) CompleteEdge(e Edge) {
+	fmt.Println(":::: CompleteEdge ::::")
+	// Get the last edge of the list and complete it
+	// we are getting a reference of the object, so any change directly modifies it
+	prev := g.edges.Back()
+	// Security check
+	if prev != nil {
+		edge := prev.Value.(*Edge)
+		if edge.Tx_id == e.Tx_id {
+			// Complete the edge with the tx-end information
+			edge.Tx_end = e.Tx_end
+			edge.Tx_amount = e.Tx_amount
 		} else {
-			log.Println("Warning: AddEdge -> a tx-end was tryied to be added on a empty subgraph")
+			log.Println("Warning: AddEdge ->  possible overlapping: a tx-end of a different tx-id was received before the previous tx was closed")
 		}
+	} else {
+		log.Println("Warning: AddEdge -> a tx-end was tryied to be added on a empty subgraph")
 	}
-
 }
 
 // FUTURE: For the multiple window support - for the moment: single window support
@@ -156,8 +159,6 @@ func (g *Graph) Delete(e Edge) {
 }
 
 // ------------------------------------------------------------------------------ //
-
-/*
 // obtain Tmin(eg.loc, new_e.loc), returns seconds of time
 func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 string, ATM_id_2 string) (int, error) {
 	// Connect to the static gdb to obtain the location of the ATMs given the ATM ids
@@ -232,12 +233,9 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	return int(t_min), nil
 }
 
-func (g *Graph) CheckFraud(new_e Edge) (bool, *Graph, Edge) {
+func (g *Graph) CheckFraud(new_e Edge) {
 
 	fmt.Println("-------------- CHECKFRAUD()--------------")
-	var isFraud bool = false
-	var subgraph *Graph = nil
-	var anomalousEdge Edge
 	// New root context for the connections to the gdb that are going to be done here
 	context := context.Background()
 	// 0. Open a session to connect to the gdb
@@ -245,16 +243,16 @@ func (g *Graph) CheckFraud(new_e Edge) (bool, *Graph, Edge) {
 	defer connection.CloseSession(context, session)
 
 	// 1. Obtain last added edge of the subgraph
-	for prev := g.edges.Back(); prev != nil; prev = prev.Next() {
+	// TODO: FIX ---> I think the backward traversal is incorrect!
+	for prev := g.edges.Back(); prev != nil; prev = prev.Prev() {
 
-		prev_e := prev.Value.(Edge) // asserts eg.Value to type Edge
+		prev_e := *(prev.Value.(*Edge)) // asserts eg.Value to type Edge
 
 		// Case new_e.tx_start < prev_e.tx_end -> it can't happen that a transaction starts before the previous is finished
 		if new_e.Tx_start.Before(prev_e.Tx_end) {
 			fmt.Println("tx starts before the previous ends!")
 			// TODO: It is a TRUE fraud, but not of this kind! - other kind
 			// do not consider it here so far
-			isFraud = false
 			// print fraud pattern with this edge
 			PrintEdge("Fraud pattern with: ", prev_e)
 			continue
@@ -277,23 +275,20 @@ func (g *Graph) CheckFraud(new_e Edge) (bool, *Graph, Edge) {
 		fmt.Println("t_diff", t_diff)
 
 		if t_diff < t_min {
-			isFraud = true
 			// print fraud pattern with this edge
 			PrintEdge("Fraud pattern with: ", prev_e)
 			// subgraph
-			subgraph = NewGraph()
-			subgraph.AddAtEnd(prev_e)
-			subgraph.AddAtEnd(new_e)
-			// anomalous edge
-			anomalousEdge = new_e
+			subgraph := NewGraph()
+			subgraph.AddEdge(prev_e)
+			subgraph.AddEdge(new_e)
+			fmt.Println("TRUE FP1: ")
+			subgraph.Print()
+			fmt.Println("...........................................................")
+		} else {
+			fmt.Println("FALSE FP1")
 		}
 	}
-
-	// if the subgraph was empty, then isFraud is false...
-	return isFraud, subgraph, anomalousEdge
-
 }
-*/
 
 // Print a subgraph
 func (g *Graph) Print() {
@@ -303,7 +298,7 @@ func (g *Graph) Print() {
 		fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
 		for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
 			eg_val := eg.Value.(*Edge)
-			fmt.Println(eg_val)
+			PrintEdgeComplete("", *eg_val)
 		}
 		fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
 	}

@@ -144,7 +144,7 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 	if !isStart {
 		log.Fatalf("Error: AddEdge ->  Initial edge of the filter is not of type tx-start")
 	}
-	subgraph.AddEdge(initial_edge, isStart)
+	subgraph.AddEdge(initial_edge)
 	subgraph.PrintIds()
 
 	// TODO: this goroutine dies alone after its father (the filter) dies?
@@ -169,13 +169,14 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			if isStart {
 				// start edge
 				// 1. Check fraud
+				subgraph.CheckFraud(new_edge)
+				fmt.Println("........................................")
 				// 2. Add to the subgraph
-				fmt.Println("Is start")
+				subgraph.AddEdge(new_edge)
 			} else {
 				fmt.Println("Is end")
+				subgraph.CompleteEdge(new_edge)
 			}
-			// Add to the subgraph
-			subgraph.AddEdge(new_edge, isStart)
 			subgraph.Print()
 			/*
 				// TODO: How to do when the new edge produces fraud pattern? - add/dont add to the volatile subgraph?
