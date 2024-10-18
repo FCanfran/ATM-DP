@@ -285,7 +285,7 @@ func Start(istream string) {
 
 		// TODO: Sleep time for debugging to slow down the flux of transactions
 		// Leave without this sleep / change it
-		time.Sleep(1 * time.Second)
+		time.Sleep(500 * time.Millisecond)
 
 	}
 
