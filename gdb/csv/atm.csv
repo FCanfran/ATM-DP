@@ -1,8 +1,9 @@
 ATM_id,loc_latitude,loc_longitude,city,country
-NIGER-0,10.998884,7.946162,Kano,Nigeria
-NIGER-1,6.522761,3.356947,Lagos,Nigeria
-NIGER-2,10.842773,7.82895,Kano,Nigeria
-EXT-0,6.973933,7.394918,Nsukka,Nigeria
-EXT-1,10.587464,7.893378,Kano,Nigeria
-EXT-2,12.275826,7.833935,Kano,Nigeria
-EXT-3,6.413009,3.531294,Lagos,Nigeria
+NIGER-0,6.341166,3.393058,Lagos,Nigeria
+NIGER-1,12.228465,7.841604,Kano,Nigeria
+NIGER-2,4.616915,7.279798,Gokana,Nigeria
+NIGER-3,6.513551,3.324973,Lagos,Nigeria
+NIGER-4,6.564336,3.361563,Lagos,Nigeria
+EXT-0,8.132795,6.76599,Oji,Nigeria
+EXT-1,11.318309,8.386252,Kano,Nigeria
+EXT-2,4.636195,7.025936,Okrika,Nigeria

@@ -137,19 +137,18 @@ def atm_generator(
     # create the ATM dataframe
     cols = ["ATM_id", "loc_latitude", "loc_longitude", "city", "country"]
     atm_df = pd.DataFrame(columns=cols)
-    # create the relationship ATM-bank dataframe
-    cols = ["code", "ATM_id", "ownership"]
-    atm_bank_df = pd.DataFrame(columns=cols)
+    # create the relationship ATM-bank dataframes: internal & external
+    cols = ["code", "ATM_id"]
+    atm_bank_internal_df = pd.DataFrame(columns=cols)
+    atm_bank_external_df = pd.DataFrame(columns=cols)
 
     num_atms_wisabi = len(atm_df_wisabi)
 
     # Generate the n_atms_internal + n_atms_external synthetic ATMs
-    for i in range(n_atms_internal + n_atms_external):
-        ATM_id = (
-            bank_code + "-" + str(i)
-            if i < n_atms_internal
-            else "EXT-" + str(i - n_atms_internal)
-        )
+
+    # Internal ATMs
+    for i in range(n_atms_internal):
+        ATM_id = bank_code + "-" + str(i)
         # Select random wisabi ATM to assign the location -
         # discrete value drawn from uniform distribution in range (0,num_atms_wisabi)
         rand_index = random.randint(0, num_atms_wisabi - 1)  # randint [a,b]
@@ -171,19 +170,45 @@ def atm_generator(
 
         atm_df.loc[i] = new_atm
 
-        # Relationship
-        # internal -> the first [0, n_atms_internal)
-        # external -> [n_atms_internal, n_atms_internal + n_atms_external]
-        ownership = True if i < n_atms_internal else False
+        new_atm_bank = {
+            "code": bank_code,
+            "ATM_id": ATM_id,
+        }
+        atm_bank_internal_df.loc[i] = new_atm_bank
+
+    # External ATMs
+    for i in range(n_atms_external):
+        ATM_id = "EXT-" + str(i)
+
+        # Select random wisabi ATM to assign the location -
+        # discrete value drawn from uniform distribution in range (0,num_atms_wisabi)
+        rand_index = random.randint(0, num_atms_wisabi - 1)  # randint [a,b]
+        rand_atm = atm_df_wisabi.iloc[rand_index]
+        city = rand_atm["City"]
+        country = rand_atm["Country"]
+
+        loc_latitude, loc_longitude = generate_random_geolocation_city(
+            city, country, atm_dictionary
+        )
+
+        new_atm = {
+            "ATM_id": ATM_id,
+            "loc_latitude": loc_latitude,
+            "loc_longitude": loc_longitude,
+            "city": city,
+            "country": country,
+        }
+
+        atm_df.loc[n_atms_internal + i] = new_atm
 
         new_atm_bank = {
             "code": bank_code,
             "ATM_id": ATM_id,
-            "ownership": ownership,
         }
-        atm_bank_df.loc[i] = new_atm_bank
 
-    return atm_df, atm_bank_df
+        atm_bank_external_df.loc[i] = new_atm_bank
+
+    return atm_df, atm_bank_internal_df, atm_bank_external_df
 
 
 # Different types of transactions:
@@ -388,16 +413,18 @@ def main():
     # For the bank we generate the desired number of ATMs and Cards, and create
     # the corresponding relationships Bank-ATM, Bank-Card
     bank_code = bank_df.iloc[0]["code"]
-    # ATM generator: returns the ATM df and the ATM-bank relationship dataframe
-    atm_df, atm_bank_df = atm_generator(
+    # ATM generator: returns the ATM df and the ATM-bank relationship dataframes: internal and external
+    atm_df, atm_bank_internal_df, atm_bank_external_df = atm_generator(
         atm_df_wisabi, n_atms_internal, n_atms_external, bank_code, atm_dictionary
     )
 
     print(atm_df)
-    print(atm_bank_df)
+    print(atm_bank_internal_df)
+    print(atm_bank_external_df)
 
     atm_df.to_csv("csv/atm.csv", index=False)
-    atm_bank_df.to_csv("csv/atm-bank.csv", index=False)
+    atm_bank_internal_df.to_csv("csv/atm-bank-internal.csv", index=False)
+    atm_bank_external_df.to_csv("csv/atm-bank-external.csv", index=False)
 
     print(f"ATMs correctly generated.")
     print()
