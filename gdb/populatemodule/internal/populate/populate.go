@@ -146,18 +146,33 @@ func populateBanks(session neo4j.SessionWithContext) {
 	}
 }
 
-func populateATMBanks(session neo4j.SessionWithContext) {
+func populateATMBanksInternal(session neo4j.SessionWithContext) {
 	query := `
-	LOAD CSV WITH HEADERS FROM 'file:///csv/atm-bank.csv' AS row
+	LOAD CSV WITH HEADERS FROM 'file:///csv/atm-bank-internal.csv' AS row
              MATCH (a:ATM {ATM_id: row.ATM_id})
              MATCH (b:Bank {code: row.code})
              MERGE (a)-[r:BELONGS_TO]->(b);
 	`
 	err := writeQuery(session, query, nil)
 	if err != nil {
-		fmt.Printf("ATM-Bank relationships population: failure - %v\n", err)
+		fmt.Printf("ATM-Bank-Internal relationships population: failure - %v\n", err)
 	} else {
-		fmt.Println("ATM-Bank relationships population: sucessful")
+		fmt.Println("ATM-Bank-Internal relationships population: sucessful")
+	}
+}
+
+func populateATMBanksExternal(session neo4j.SessionWithContext) {
+	query := `
+	LOAD CSV WITH HEADERS FROM 'file:///csv/atm-bank-external.csv' AS row
+             MATCH (a:ATM {ATM_id: row.ATM_id})
+             MATCH (b:Bank {code: row.code})
+             MERGE (a)-[r:EXTERNAL]->(b);
+	`
+	err := writeQuery(session, query, nil)
+	if err != nil {
+		fmt.Printf("ATM-Bank-External relationships population: failure - %v\n", err)
+	} else {
+		fmt.Println("ATM-Bank-External relationships population: sucessful")
 	}
 }
 
@@ -203,7 +218,8 @@ func Populate() {
 
 	populateATMs(session)
 	populateBanks(session)
-	populateATMBanks(session)
+	populateATMBanksInternal(session)
+	populateATMBanksExternal(session)
 	populateCards(session)
 	populateCardBanks(session)
 
@@ -357,10 +373,10 @@ func populateBanksAlt(session neo4j.SessionWithContext, csvPath string) {
 	fmt.Printf("Bank population: %d sucess / %d total\n", success, i)
 }
 
-func populateATMBanksAlt(session neo4j.SessionWithContext, csvPath string) {
+func populateATMBanksInternalAlt(session neo4j.SessionWithContext, csvPath string) {
 
 	// 1. Open and read the CSV file
-	file, err := os.Open(csvPath + "/atm-bank.csv")
+	file, err := os.Open(csvPath + "/atm-bank-internal.csv")
 	if err != nil {
 		fmt.Printf("could not open CSV file: %v\n", err)
 		return
@@ -403,13 +419,68 @@ func populateATMBanksAlt(session neo4j.SessionWithContext, csvPath string) {
 
 		err = writeQuery(session, query, params)
 		if err != nil {
-			fmt.Printf("ATM-Bank relationships population: failure - %v\n", err)
+			fmt.Printf("ATM-Bank-Internal relationships population: failure - %v\n", err)
 		} else {
 			success += 1
 		}
 	}
 
-	fmt.Printf("ATM-Bank relationships population: %d sucess / %d total\n", success, i)
+	fmt.Printf("ATM-Bank-Internal relationships population: %d sucess / %d total\n", success, i)
+}
+
+func populateATMBanksExternalAlt(session neo4j.SessionWithContext, csvPath string) {
+
+	// 1. Open and read the CSV file
+	file, err := os.Open(csvPath + "/atm-bank-external.csv")
+	if err != nil {
+		fmt.Printf("could not open CSV file: %v\n", err)
+		return
+	}
+	// closes the file after read from it no matter if there is error or not
+	defer file.Close()
+
+	// csv reader
+	reader := csv.NewReader(bufio.NewReader(file))
+	// Read and discard the header line
+	_, err = reader.Read()
+	if err != nil {
+		fmt.Printf("could not read header from CSV file: %v\n", err)
+		return
+	}
+
+	query := `
+             MATCH (a:ATM {ATM_id: $ATM_id})
+             MATCH (b:Bank {code: $code})
+             MERGE (a)-[r:EXTERNAL]->(b);
+	`
+
+	i := 0
+	success := 0
+	for {
+		row, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+
+		i += 1
+
+		code := row[0]
+		ATM_id := row[1]
+
+		params := map[string]interface{}{
+			"ATM_id": ATM_id,
+			"code":   code,
+		}
+
+		err = writeQuery(session, query, params)
+		if err != nil {
+			fmt.Printf("ATM-Bank-External relationships population: failure - %v\n", err)
+		} else {
+			success += 1
+		}
+	}
+
+	fmt.Printf("ATM-Bank-External relationships population: %d sucess / %d total\n", success, i)
 }
 
 func populateCardsAlt(session neo4j.SessionWithContext, csvPath string) {
@@ -572,7 +643,8 @@ func PopulateAlt(csvPath string) {
 
 	populateATMsAlt(session, csvPath)
 	populateBanksAlt(session, csvPath)
-	populateATMBanksAlt(session, csvPath)
+	populateATMBanksInternalAlt(session, csvPath)
+	populateATMBanksExternalAlt(session, csvPath)
 	populateCardsAlt(session, csvPath)
 	populateCardBanksAlt(session, csvPath)
 
