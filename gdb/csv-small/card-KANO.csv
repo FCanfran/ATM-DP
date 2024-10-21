@@ -1,3 +1,0 @@
-number_id,client_id,expiration,CVC,loc_latitude,loc_longitude,extract_limit,amount_avg,amount_std,withdrawal_day
-c-KANO-0,0,2024-07-04,999,6.457287,3.255123,99086.95,19817.39,22258.68,0.3151
-c-KANO-1,1,2024-07-04,999,6.497446,3.355157,93000.0,18600.0,22718.75,0.274

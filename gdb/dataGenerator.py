@@ -1,10 +1,11 @@
 import pandas as pd
 import random
-
-# https://nominatim.org/ -> open-source geocoding with OpenStreetMap data -> search API
-from geopy.geocoders import Nominatim
-from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 import datetime
+from geopy.geocoders import (
+    Nominatim,
+)  # https://nominatim.org/ -> open-source geocoding with OpenStreetMap data -> search API
+from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
+from tqdm import tqdm
 
 # Parameters
 # --------------------------------------------------------------------------
@@ -66,13 +67,15 @@ def get_city_bbox(city, country):
 def create_atm_dictionary(atm_df_wisabi):
     print("... creation of the ATM geolocation dictionary")
     atm_dict = {}
-    for i in range(0, len(atm_df_wisabi)):
+    for i in tqdm(
+        range(0, len(atm_df_wisabi)),
+        desc="Creating ATM geolocation dictionary of the wisabi dataset",
+    ):
         atm = atm_df_wisabi.iloc[i]
         city = atm["City"]
         country = atm["Country"]
 
         if city not in atm_dict:
-            print("~~~~~~~~~~~~~~~~~", city, "~~~~~~~~~~~~~~~~~")
             min_latitude, max_latitude, min_longitude, max_longitude = get_city_bbox(
                 city, country
             )
@@ -86,7 +89,6 @@ def create_atm_dictionary(atm_df_wisabi):
                     "max_longitude": max_longitude,
                 },
             }
-        print(i)
 
     return atm_dict
 
@@ -128,20 +130,26 @@ def generate_random_geolocation_city(city, country, atm_dictionary):
 # TODO: Take into account that for each ATM location we have x number of atms... have this into account for the density distribution
 # from which we drawn the city location of the new generated ATM??
 # FOR THE MOMENT IT IS NOT TAKEN INTO ACCOUNT!
-def atm_generator(atm_df_wisabi, n, bank_code, atm_dictionary):
+def atm_generator(
+    atm_df_wisabi, n_atms_internal, n_atms_external, bank_code, atm_dictionary
+):
 
     # create the ATM dataframe
     cols = ["ATM_id", "loc_latitude", "loc_longitude", "city", "country"]
     atm_df = pd.DataFrame(columns=cols)
     # create the relationship ATM-bank dataframe
-    cols = ["code", "ATM_id"]
+    cols = ["code", "ATM_id", "ownership"]
     atm_bank_df = pd.DataFrame(columns=cols)
 
     num_atms_wisabi = len(atm_df_wisabi)
 
-    # Generate the n synthetic ATMs
-    for i in range(n):
-        ATM_id = bank_code + "-" + str(i)
+    # Generate the n_atms_internal + n_atms_external synthetic ATMs
+    for i in range(n_atms_internal + n_atms_external):
+        ATM_id = (
+            bank_code + "-" + str(i)
+            if i < n_atms_internal
+            else "EXT-" + str(i - n_atms_internal)
+        )
         # Select random wisabi ATM to assign the location -
         # discrete value drawn from uniform distribution in range (0,num_atms_wisabi)
         rand_index = random.randint(0, num_atms_wisabi - 1)  # randint [a,b]
@@ -164,9 +172,14 @@ def atm_generator(atm_df_wisabi, n, bank_code, atm_dictionary):
         atm_df.loc[i] = new_atm
 
         # Relationship
+        # internal -> the first [0, n_atms_internal)
+        # external -> [n_atms_internal, n_atms_internal + n_atms_external]
+        ownership = True if i < n_atms_internal else False
+
         new_atm_bank = {
             "code": bank_code,
             "ATM_id": ATM_id,
+            "ownership": ownership,
         }
         atm_bank_df.loc[i] = new_atm_bank
 
@@ -257,10 +270,8 @@ def card_generator(
     num_customers_wisabi = len(customers_df_wisabi)
 
     # Generate the n synthetic cards
-    for i in range(n):
-        print(f"i: {i}")
-        if i % 100 == 0:
-            print(f"Generated {i} / {n} cards")
+    for i in tqdm(range(n), desc="Generating cards"):
+
         # Select random wisabi customer
         # discrete value drawn from uniform distribution in range (0,num_customers_wisabi)
         rand_index = random.randint(0, num_customers_wisabi - 1)  # randint [a,b]
@@ -331,6 +342,7 @@ def card_generator(
 
 def main():
     # Pre: read wisabi dataset info
+
     # read the csv of wisabi atms
     atm_file = "wisabi/atm_location lookup.csv"
     atm_df_wisabi = pd.read_csv(atm_file)
@@ -346,118 +358,68 @@ def main():
     # bank - Card
     banks_file = "csv/bank.csv"
     bank_df = pd.read_csv(banks_file)
-    # For each bank, introduce the number of ATMs and Cards that we want to generate for each
-    num_banks = bank_df.shape[0]
-    num_ATMs = []
-    num_cards = []
-    print(
-        f"For each bank, introduce the desired number of ATMs and Cards to be generated"
-    )
-    for i in range(num_banks):
-        while True:
-            n_atms = input(f"Number of ATMs for bank {bank_df.iloc[i]['name']}: ")
-            try:
-                num_ATMs.append(int(n_atms))
-                break  # exit True loop if inputs are valid
-            except ValueError:
-                print("Input has to be an integer!")
+    # For the bank, introduce the number of ATMs and Cards that we want to generate
+    print(f"Introduce the desired number of ATMs and Cards to be generated")
 
-    for i in range(num_banks):
-        while True:
-            n_cards = input(f"Number of Cards for bank {bank_df.iloc[i]['name']}: ")
-            try:
-                num_cards.append(int(n_cards))
-                break  # exit True loop if inputs are valid
-            except ValueError:
-                print("Input has to be an integer!")
+    while True:
+        n_atms_internal = input(f"\t-> Number of internal ATMs: ")
+        try:
+            n_atms_internal = int(n_atms_internal)
+            break  # exit True loop if inputs are valid
+        except ValueError:
+            print("Input has to be an integer!")
 
-    # global ATM dataframe
-    cols = ["ATM_id", "loc_latitude", "loc_longitude", "city", "country"]
-    joint_atm_df = pd.DataFrame(columns=cols)
-    # global relationship ATM-bank dataframe
-    cols = ["code", "ATM_id"]
-    joint_atm_bank_df = pd.DataFrame(columns=cols)
-    # For each bank we generate the desired number of ATMs and Cards, and create
+    while True:
+        n_atms_external = input(f"\t-> Number of external ATMs: ")
+        try:
+            n_atms_external = int(n_atms_external)
+            break  # exit True loop if inputs are valid
+        except ValueError:
+            print("Input has to be an integer!")
+
+    while True:
+        n_cards = input(f"\t-> Number of Cards: ")
+        try:
+            num_cards = int(n_cards)
+            break  # exit True loop if inputs are valid
+        except ValueError:
+            print("Input has to be an integer!")
+
+    # For the bank we generate the desired number of ATMs and Cards, and create
     # the corresponding relationships Bank-ATM, Bank-Card
-    for i in range(num_banks):
+    bank_code = bank_df.iloc[0]["code"]
+    # ATM generator: returns the ATM df and the ATM-bank relationship dataframe
+    atm_df, atm_bank_df = atm_generator(
+        atm_df_wisabi, n_atms_internal, n_atms_external, bank_code, atm_dictionary
+    )
 
-        bank_code = bank_df.iloc[i]["code"]
-        # ATM generator: returns the ATM df and the ATM-bank relationship dataframe
-        atm_df, atm_bank_df = atm_generator(
-            atm_df_wisabi, num_ATMs[i], bank_code, atm_dictionary
-        )
+    print(atm_df)
+    print(atm_bank_df)
 
-        print(atm_df)
-        print(atm_bank_df)
-
-        atm_df.to_csv("csv/atm-" + bank_code + ".csv", index=False)
-
-        joint_atm_df = (
-            atm_df.copy()
-            if joint_atm_df.empty
-            else pd.concat([joint_atm_df, atm_df], ignore_index=True)
-        )
-        joint_atm_bank_df = (
-            atm_bank_df.copy()
-            if joint_atm_bank_df.empty
-            else pd.concat([joint_atm_bank_df, atm_bank_df], ignore_index=True)
-        )
-
-    joint_atm_df.to_csv("csv/atm.csv", index=False)
-    joint_atm_bank_df.to_csv("csv/atm-bank.csv", index=False)
+    atm_df.to_csv("csv/atm.csv", index=False)
+    atm_bank_df.to_csv("csv/atm-bank.csv", index=False)
 
     print(f"ATMs correctly generated.")
     print()
 
     print(f"Card generation process...")
     # Card generation
-    # global card dataframe
-    cols = [
-        "number_id",
-        "client_id",
-        "expiration",
-        "CVC",
-        "loc_latitude",
-        "loc_longitude",
-        "extract_limit",
-        "amount_avg",
-        "amount_std",
-        "withdrawal_day",
-    ]
-    joint_card_df = pd.DataFrame(columns=cols)
-    # global relationship card-bank dataframe
-    cols = ["code", "number_id"]
-    joint_card_bank_df = pd.DataFrame(columns=cols)
-    for i in range(num_banks):
-        bank_code = bank_df.iloc[i]["code"]
-        # Card generator: returns the card df and the card-bank relationship dataframe
-        card_df, card_bank_df = card_generator(
-            customers_df_wisabi,
-            atm_df_wisabi,
-            atm_df,
-            loc_from_wisabi,
-            num_cards[i],
-            bank_code,
-        )
+    bank_code = bank_df.iloc[0]["code"]
+    # Card generator: returns the card df and the card-bank relationship dataframe
+    card_df, card_bank_df = card_generator(
+        customers_df_wisabi,
+        atm_df_wisabi,
+        atm_df,
+        loc_from_wisabi,
+        num_cards,
+        bank_code,
+    )
 
-        print(card_df)
-        print(card_bank_df)
+    print(card_df)
+    print(card_bank_df)
 
-        card_df.to_csv("csv/card-" + bank_code + ".csv", index=False)
-
-        joint_card_df = (
-            card_df.copy()
-            if joint_card_df.empty
-            else pd.concat([joint_card_df, card_df], ignore_index=True)
-        )
-        joint_card_bank_df = (
-            card_bank_df.copy()
-            if joint_card_bank_df.empty
-            else pd.concat([joint_card_bank_df, card_bank_df], ignore_index=True)
-        )
-
-    joint_card_df.to_csv("csv/card.csv", index=False)
-    joint_card_bank_df.to_csv("csv/card-bank.csv", index=False)
+    card_df.to_csv("csv/card.csv", index=False)
+    card_bank_df.to_csv("csv/card-bank.csv", index=False)
     print(f"Cards correctly generated.")
 
 

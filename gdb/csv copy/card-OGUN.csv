@@ -1,2 +1,2 @@
 number_id,client_id,expiration,CVC,loc_latitude,loc_longitude,extract_limit,amount_avg,amount_std,withdrawal_day
-c-ABYA-0,0,2024-07-04,999,6.305361,3.308666,104661.0,20932.2,21523.48,0.3233
+c-OGUN-0,0,2024-07-12,999,4.762795,7.020019,94663.45,18932.69,18217.28,0.2849

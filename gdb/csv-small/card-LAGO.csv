@@ -1,4 +1,0 @@
-number_id,client_id,expiration,CVC,loc_latitude,loc_longitude,extract_limit,amount_avg,amount_std,withdrawal_day
-c-LAGO-0,0,2024-07-04,999,6.580848,3.316995,116500.0,23300.0,24038.57,0.2466
-c-LAGO-1,1,2024-07-04,999,6.441021,3.53405,104883.7,20976.74,25104.54,0.589
-c-LAGO-2,2,2024-07-04,999,6.572064,3.482546,96179.5,19235.9,21749.41,0.5342
