@@ -214,6 +214,13 @@ as the \texttt{loc\_latitude} and \texttt{loc\_longitude} of the ATM.
 \textcolor{blue}{Note that we do not take into account for the density distribution of the 
 ATMs of the wisabi dataset that, for each ATM location of the dataset, we have \texttt{x} 
 number of atms.}
+
+Aspects to explain:
+\begin{itemize}
+  \item Geographical distribution of the ATMs based on the geographical distribution 
+  of the locations of the Wisabi ATMs.
+  \item Do a plot of the geographical dist of the positions of the ATMs of the wisabi dataset.
+\end{itemize}
 \end{tcolorbox}
 
 \subsubsection*{Card}
@@ -227,6 +234,17 @@ number of atms.}
 \item[-] loc\_latitude: Client address GPS-location latitude.
 \item[-] loc\_longitude: Client address GPS-location longitude.
 \end{itemize}
+
+\begin{tcolorbox}
+  Aspects to explain:
+  \begin{itemize}
+    \item Extended behavior fields: to not only withdrawal.
+    \item Location: Explain the 2 options we have developed and the one used so far.
+    \item Explain how the behavior of the card is generated based on a random
+    selected wisabi customer.
+    \item Extract\_limit: explain how and why?
+  \end{itemize}
+\end{tcolorbox}
 
 For the Card entity generation there are some different aspects that are worth to mention:
 \begin{itemize}
@@ -260,11 +278,11 @@ For the Card entity generation there are some different aspects that are worth t
         on a transaction.
         \item \texttt{withdrawal\_day}: average number of transactions per day of the 
         customer. \textcolor{red}{Withdrawals only for the moment!}.
-        \begin{tcolorbox}
-          \item New added behavior: interesting for the generation of transactions that are
-          not only withdrawals.
-        \end{tcolorbox}
     \end{itemize}
+    \begin{tcolorbox}
+      \item New added behavior: interesting for the generation of transactions that are
+      not only withdrawals: balance inquiries, deposits, transfers.
+    \end{tcolorbox}
     Note that all this fields are additionally added to the Card CSV records.
     Some additional remarks:
     \begin{itemize}
