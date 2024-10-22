@@ -297,55 +297,52 @@ For the Card entity generation there are some different aspects that are worth t
     \end{itemize}
 \end{itemize}
 
-\subsubsection*{Transaction}
+\section{Indexing}
 
+Useful for ensuring efficient lookups and obtaining a better performance as the database 
+scales.
+
+$\rightarrow$ indexes will be created on those properties of the entities on which the 
+lookups are going to be mostly performed; specifically in our case:
 \begin{itemize}
-\item[-] transaction\_id: Unique identifier for each transaction in the database.
-\item[+] number\_id: Identifier of the card linked with the transaction.
-\item[+] ATM\_id: Identifier of the ATM in which the transaction takes place.
-\item[-] transaction\_start: Datetime when the transaction started. Format: DD/MM/YYYY HH:MM (ex. 1/1/2022 4:50).
-\item[-] transaction\_end: Datetime when the transaction was completed. Format: DD/MM/YYYY HH:MM (ex. 1/1/2022 4:54).
-\item[-] transaction\_amount: Amount of money involved in the transaction.
+  \item Bank: \texttt{code} ?
+  \item ATM: \texttt{ATM\_id}
+  \item Card: \texttt{number\_id}
 \end{itemize}
 
+Why on these ones?
 
-\begin{comment}
-\textcolor{blue}{The transaction generator is done to be able to generate transactions for each of the cards based on the gathered client transaction behavior of each of the cards for a customisable \textcolor{orange}{\texttt{d}} number of days starting in a \textcolor{orange}{\texttt{start\_date}}. For a card, the idea is to create a certain number of transactions per day, by linking the card to a certain ATM that is no farther than \textcolor{orange}{\texttt{max\_distance}} kms from the residence location of the client of the card. Also, we will limit the time distance between two consecutive transactions so that the final set of created transactions can not produce a potential fraud related with having two transactions in different ATM locations with an insufficient feasible time distance.}
-For each card:
+$\rightarrow$ Basically the volatile relations / transactions only contain this information,
+which is the minimal information to define the transaction. This is the only information that
+the engine recieves from a transaction, and it is the one used to retrieve additional information - the complete information details of the ATM and Card nodes on the complete
+stable bank database. Therefore these parameters/fields (look for the specific correct
+word on the PG world) are the ones used to retrieve / query the PG. 
+
+By indexing or applying a unique constraint on the node properties, queries related to these entities can be optimized, ensuring efficient lookups and better performance as the database scales.
+
+From Neo4j documentation:
+\begin{tcolorbox}
+  An index is a copy of specified primary data in a Neo4j database, such as nodes, relationships, or properties. The data stored in the index provides an access path to the data in the primary storage and allows users to evaluate query filters more efficiently (and, in some cases, semantically interpret query filters). In short, much like indexes in a book, their function in a Neo4j graph database is to make data retrieval more efficient.
+\end{tcolorbox}
+
+Some references on indexing:
 \begin{itemize}
-    \item ATM subset: Create a subset of ATMs that are considered to be \textit{usual} for the card client, so that they are all at a distance inferior or equal to \textcolor{orange}{\texttt{max\_distance}} kms to the residence location of the client of the card. We limit the size of this subset to be of \textcolor{orange}{\texttt{max\_size\_atm\_subset}}, so that we take only a maximum of \textcolor{orange}{\texttt{max\_size\_atm\_subset}} of the closest ATMs.
-    \textcolor{blue}{In addition, among the ATMs in this subset, preference is given to those that are the closest to the residence location of the client and those that belong to the same bank company as the client's card.}
-    The transactions generated for this card will be linked only to ATMs of this subset.
-    \item \textcolor{orange}{\texttt{t\_min}}: Minimum threshold time in between two transactions of this client. That is, the minimum time distance between the end of a transaction and the start of the next consecutive transaction of a card. There are two options for the calculation of this minimum time distance:
-    \begin{itemize}
-        \item In general: taking $2*\texttt{max\_distance}$ kms as the upper bound on the maximum distance between 2 ATMs of the ATM subset, set the \textcolor{orange}{\texttt{t\_min}} to be the time needed to traverse that distance at 50km/h. (*: for the moment)
-        \item Specifically: Taking the specific maximum distance between all the ATM pairs in the ATM subset to get the \textcolor{orange}{\texttt{t\_min}}.
-    \end{itemize}  
-    \item For each day generate \textcolor{orange}{\texttt{num\_tx}} transactions, random number drawn from a Poisson distribution of $\lambda = \texttt{withdrawal\_day}$.
-    \item \textcolor{blue}{Distribution of the \texttt{num\_tx} transaction times (\texttt{transaction\_start}) during a day: we create an ordered list of \texttt{num\_tx} start moments in seconds in a day (in the range $[\texttt{t\_min}/2, 86400-(\texttt{t\_min}/2)-\texttt{max\_duration}]$) so that all of them are at a minimum time distance of $\texttt{t\_min} + \texttt{max\_duration}$. See Figure \ref{img:tx-distribution}.
-    \textit{\texttt{max\_duration} limits the maximum duration of an ordinary transaction. For the moment it was set to be of 10 minutes (600s)}.\\
-    Note that the interval bounds for the transaction start moments are designed in such a way that the \texttt{t\_min} minimum time distance between the end of a transaction and the start of the next transaction is also respected between transactions belonging to different consecutive days.} See Figure \ref{img:tx-distribution-day}. \textcolor{red}{Note that this way of generation (day by day) we are not allowing transactions to occur in the interval marked among the two red dotted lines of the Figure \ref{img:tx-distribution-day}.} \textcolor{orange}{NOTE/TODO: This could be fixed by looking to the start time of the last transaction of the previous day...}. 
-    The start moments are therefore taken to define the \texttt{transaction\_start} of each of the transactions of that day. \texttt{transaction\_end} is assigned a shifted time difference with the respective \texttt{transaction\_start}, in particular the difference is drawn from a normal distribution $\mathcal{N}(300,\,120)$ that defines the duration of a transaction to be of mean of 5 minutes (300s) and a standard deviation of 2 minutes (120s), bounding it to be of a maximum time of \texttt{max\_duration} of 10 minutes (600s) and setting it to the mean if the distribution sample was negative. 
-    \begin{figure}[H]
-        \centering
-        \includegraphics[scale = 0.45]{images/Synthetic-dataset-creation/tx-distribution-1.png}
-        \caption{Time distance limit between two consecutive transactions}
-        \label{img:tx-distribution}
-    \end{figure}
-    \begin{figure}[H]
-        \centering
-        \includegraphics[scale = 0.45]{images/Synthetic-dataset-creation/tx-distribution.png}
-        \caption{Time distance limit between two consecutive transactions between two days}
-        \label{img:tx-distribution-day}
-    \end{figure}
-    Note that a limit was set on the duration of the transaction so that we can have the control avoiding time overlapping transactions, which will be producing irregular undesired fraud pattern alerts.
-    \item \texttt{transaction\_amount}: based on card behavior parameters, it is drawn from a normal distribution 
-    $\mathcal{N}(\texttt{amount\_avg},\,\texttt{amount\_std})$. If negative amount, drawn from a uniform distribution $\mathcal{U}(0,\ \texttt{amount\_avg}*2)$.
+  \item \href{https://neo4j.com/docs/cypher-manual/current/indexes/search-performance-indexes/overview/}{Search-performance indexes}
+  \item \href{https://neo4j.com/docs/cypher-manual/current/indexes/search-performance-indexes/using-indexes/}{The impact of indexes on query performance}
+  \item \href{https://neo4j.com/docs/cypher-manual/current/indexes/search-performance-indexes/managing-indexes/}{Create, show, and delete indexes}
 \end{itemize}
 
-% --------------------------------------------------------------------------------------------------------------
-% TODO: CONTINUE HERE 
-Note that this approach is done with the focus on... taking into account the previous generated transaction: both for the linked ATM of the new transaction and its transaction time (to avoid transactions that are overlapped or that come one directly after the other --> this may be fraudulent - AVOID!) 
-\end{comment}
+Okay... but before diving deeper...:
+
+\textbf{To Index or Not to Index?}
+\begin{tcolorbox}
+When Neo4j creates an index, it creates a redundant copy of the data in the database. Therefore using an index will result in more disk space being utilized, plus slower writes to the disk.
+
+Therefore, you need to weigh up these factors when deciding which data/properties to index.
+
+Generally, it's a good idea to create an index when you know there's going to be a lot of data on certain nodes. Also, if you find queries are taking too long to return, adding an index may help.
+\end{tcolorbox}
+
+From \href{https://www.quackit.com/neo4j/tutorial/neo4j_create_an_index_using_cypher.cfm#google_vignette}{another tutorial on indexing in neo4j}
 
 \end{document}
