@@ -165,37 +165,44 @@ and to do it in a more stepwise manner, we are going to first create all the CSV
 for the nodes and for the relations in the corresponding format and then we will populate 
 the Neo4j GDB with those.
 The description of the creation of the CSV data tables as well as the specific details are 
-described in what follows:
+described in what follows:\\
+
+\textcolor{green}{\rule{\linewidth}{0.4mm}}
 
 \subsubsection*{Bank}
 
-\begin{tcolorbox}
-\textcolor{red}{$\Rightarrow$ Only 1 bank}
-\end{tcolorbox}
+Since a unique bank instance is considered, the values of the properties of the bank node are 
+manually assigned, leaving them completely customisable. Bank node type properties consist
+on the bank \emph{name}, its identifier \emph{code} and the location
+of the bank headquarters, expressed in terms of \emph{latitude} and \emph{longitude}
+coordinates, as seen in Table \ref{table:bank-node-properties}.
+For the bank, we will generate \texttt{n} ATM and \texttt{m} Card entities. Note that 
+apart from the generation of the ATM and Card node types we will also need to generate 
+the relationships between the ATM and Bank entities (\texttt{belongs\_to} and \texttt{external}) 
+and the Card and Bank entities (\texttt{issued\_by}).
 
-\begin{itemize}
-\item[-] name: Bank name.
-\item[-] code: Bank identifier code.
-\item[-] loc\_latitude: Bank headquarters GPS-location latitude.
-\item[-] loc\_longitude: Bank headquarters GPS-location longitude.
-\end{itemize} 
+\input{tables/bank-table.tex}
 
-The generation of the Banks is done taylored to our needs as we are only considering a 
-reduced amount of Bank entities. In particular we generated three different Banks. 
-\texttt{n} ATMs and \texttt{m} Cards belonging to each of them, will be generated as 
-explained in what follows. Note that apart from the generation of the entities ATM and 
-Card we will also need to generate the relationships ATM-Bank (\texttt{belongs\_to}) and 
-Card-Bank (\texttt{issued\_by}) that matches each of these entities with the corresponding 
-Bank entity to which they belong. 
+\textcolor{green}{\rule{\linewidth}{0.4mm}}
 
 \subsubsection*{ATM}
 
+\input{tables/atm-table.tex}
+
+The bank is related with \texttt{n} ATMs. The ATM node type properties consist
+on the ATM unique identifier \emph{ATM\_id}, its location, expressed in terms of 
+\emph{latitude} and \emph{longitude} coordinates, as well as the \emph{city} and 
+\emph{country} in which it is located, as seen in Table \ref{table:atm-node-properties}.
+\textcolor{red}{Note that the last two properties are somehow redundant, considering
+that location coordinates are already included. In any case both properties are left
+since their inclusion provide a more human-understandable way to easily realise about
+its location}.
+
 \begin{itemize}
-\item[-] ATM\_id: Unique identifier of the ATM.
-\item[-] loc\_latitude: GPS-location latitude where the ATM is located.
-\item[-] loc\_longitude: GPS-location longitude where the ATM is located.
-\item[-] city: City in which the ATM is located.
-\item[-] country: Country in which the ATM is located.
+  \item Poner que hay dos tipos de ATM en base a su relacion con el banco -internal
+  y external
+  \item Explicar lo de como se generan en base a la distribucion de las locations 
+  en wisabi...
 \end{itemize}
 
 The generation of \texttt{n} ATMs for the bank is done following
@@ -224,6 +231,11 @@ Aspects to explain:
 \end{tcolorbox}
 
 \subsubsection*{Card}
+
+\begin{itemize}
+  \item Explicar las properties con la tabla y de la forma que se hizo descriptiva
+  para ATM y Bank.
+\end{itemize}
 
 \begin{itemize}
 \item[-] number\_id: Unique identifier of the card.
