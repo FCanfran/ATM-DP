@@ -235,8 +235,6 @@ EXT + "-" + i & 0 \leq i < \texttt{n\_external } \text{if external ATM}
 \end{cases}
 \]
 
-\textcolor{green}{\rule{\linewidth}{0.4mm}}
-
 \subsubsection*{Card}
 
 \input{tables/card-table.tex}
@@ -246,7 +244,8 @@ EXT + "-" + i & 0 \leq i < \texttt{n\_external } \text{if external ATM}
   para ATM y Bank.
 \end{itemize}
 
-The bank manages a total of \texttt{m} cards. The Card node type properties consist on the card unique 
+The bank manages a total of \texttt{m} cards. The Card node type properties, as depicted in Table
+\ref{table:card-node-properties}, consist on the card unique 
 identifier \emph{number\_id}, the associated client unique identifier \emph{client\_id}, as well
 as the coordinates of the associated client habitual residence address \emph{loc\_latitude} and 
 \emph{loc\_longitude}. Additionally it contains the card validity expiration date \emph{expiration}
@@ -263,10 +262,6 @@ gathered behavior for the card: \emph{withdrawal\_day}, \emph{transfer\_day},
 \begin{tcolorbox}
   Aspects to explain:
   \begin{itemize}
-    \item Extended behavior fields: to not only withdrawal.
-    \item Location: Explain the 2 options we have developed and the one used so far.
-    \item Explain how the behavior of the card is generated based on a random
-    selected wisabi customer.
     \item Extract\_limit: explain how and why?
   \end{itemize}
 \end{tcolorbox}
@@ -295,44 +290,37 @@ client\_id = i
 cases they are random 
 coordinates drawn from a bounding box of a location/city. The difference is on to do the selection of the location/city:
 
-\begin{enumerate}
-    \item \textbf{Wisabi customers selection}: Take the city/location of the habitual ATM of a random selected \emph{Wisabi} 
-    database customer. Note that in the \emph{Wisabi Bank Dataset} customers contain an identifier
-    of their usual ATM, more in particular, that dataset is designed in such a way that customers
-    only perform operations in the same ATM.
-    With this approach, we maintain the geographical distribution of the \emph{Wisabi} customers.
-    \item \textbf{Generated ATMs selection}: Take the city/location of a random ATM of the \texttt{n} generated ATMs. This method is the one utilized so far.
+  \begin{enumerate}
+      \item Wisabi customers selection: Take the city/location of the habitual ATM of a random selected \emph{Wisabi} database customer. Note that in the \emph{Wisabi Bank Dataset} customers contain an identifier
+      of their usual ATM, more in particular, the dataset is designed in such a way that customers
+      only perform operations in the same ATM.
+      With this approach, we maintain the geographical distribution of the \emph{Wisabi} customers.
+      \item Generated ATMs selection: Take the city/location of a random ATM of the \texttt{n} generated ATMs. This method is the one utilized so far.
+  \end{enumerate}
 
-\end{enumerate}
+\item[$\circ$]\textbf{\emph{Behavior}}: It contains relevant attributes that will be of special interest when performing the 
+generation of the synthetic transactions of each of the cards. The defined \emph{behavior}
+parameters are shown in Table \ref{table:behavior-parameters}. 
 
-    \item \textcolor{blue}{Behavior: For each Card object to be generated, we assign it a 
-    \textit{behavior} based on the transaction behavior of a randomly selected wisabi 
-    customer. The behavior is gathered from the transaction history of the customer on 
-    the wisabi dataset. This will be particularly useful later for the generation of the 
-    synthetic transactions, so that for each of the cards their transactions can be 
-    simulated based on this gathered behavior.}
-    In particular the customer \textit{behavior} refers to: 
-    \begin{itemize}
-        \item \texttt{extract\_limit}: maximum normal amount that a card can extract. 
-        $\textcolor{blue}{\texttt{amount\_avg} * 5}$.
-        \item \texttt{amount\_avg}: extracted amount average of the customer on a transaction.
-        \item \texttt{amount\_std}: extracted amount standard deviation of the customer 
-        on a transaction.
-        \item \texttt{withdrawal\_day}: average number of transactions per day of the 
-        customer. \textcolor{red}{Withdrawals only for the moment!}.
-    \end{itemize}
-    \begin{tcolorbox}
-      \item New added behavior: interesting for the generation of transactions that are
-      not only withdrawals: balance inquiries, deposits, transfers.
-    \end{tcolorbox}
-    Note that all this fields are additionally added to the Card CSV records.
-    Some additional remarks:
-    \begin{itemize}
-        \item \textcolor{red}{For the moment we only consider the \textit{withdrawal} type of transaction in the behavior. However \textit{transfer} and \textit{deposit} could be also considered.}
-        % retirada de dinero 
-        \item \textcolor{red}{This behavior is gathered from one random customer of the wisabi dataset per each of the Cards, so that we have more variability. However, we could also assign the same behavior to all the clients, and this behavior be like a summary of all the wisabi dataset clients behavior. Also the behavior could be assigned drawning it from taylored distributions selected by us, in a more customizable manner.}   
-    \end{itemize}
+\input{tables/behavior-table.tex}
+
+For each card, its \emph{behavior} parameters are gathered from the operations history of a randomly selected customer on the \emph{Wisabi Bank Dataset}, from which we can access the operations log of $8819$ different customers for one year time interval. On it, there are four different types of operations that a customer can perform: withdrawal, deposit, balance inquiry and transaction. The parameters
+for the \emph{behavior} gather information about these four different types of operations.
+
+\textcolor{gray}{Note that all these \emph{behavior} parameters are added as additional fields of the CSV generated card instances, so, as mentioned, they can later be utilized for the generation of the synthetic
+transactions.}
+
+Another possible way to assign the \emph{behavior} parameters could be the assignation
+of the same behavior to all of the card instances. However, this method will provide less variability in
+the generation of the synthetic transactions than the aforementioned method. 
+Nevertheless, other taylored generation methods to generate different \emph{behavior} for 
+each the cards could also be considered to similarly obtain this
+variability.
+
+\item \textcolor{red}{\texttt{extract\_limit}: $\texttt{amount\_avg\_withdrawal} * 5$}
 \end{itemize}
+
+\textcolor{green}{\rule{\linewidth}{0.4mm}}
 
 \section{Indexing}
 
