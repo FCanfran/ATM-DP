@@ -141,33 +141,28 @@ fill=green!30]
 \section{Synthetic dataset creation}
 
 Given the confidential and private nature of bank data, it was not possible to find
-any real bank datasets to perform our experiments on. In this regard, a synthetic property
-graph bank dataset was built based on the \emph{Wisabi Bank Dataset}\footnote{\href{https://www.kaggle.com/datasets/obinnaiheanachor/wisabi-bank-dataset}{Wisabi bank dataset on kaggle}}. It is a fictional banking dataset that 
-was designed and architected by Obinna Iheanachor, and that was made publicly available in
+any real bank datasets. In this regard, a synthetic property
+graph bank dataset was built based on the \emph{Wisabi Bank Dataset}\footnote{\href{https://www.kaggle.com/datasets/obinnaiheanachor/wisabi-bank-dataset}{Wisabi bank dataset on kaggle}}. It is a fictional banking dataset that was made publicly available in
 the Kaggle platform.
- 
 
-In particular it contains 10 CSV tables. Five of them are of transaction records of five 
-different states of Nigeria (Federal Capital Territory, Lagos, Kano, Enugu and Rivers State) 
-that refers to transactions of cardholders in ATMs. In particular they contain 2143838 
-transactions records done during the year 2022, of which 350251 are in Enugu, 159652 in 
-Federal Capital Territory, 458764 in Kano, 755073 in Lagos and 420098 in Rivers.
+This synthetic bank dataset was considered of interest as a base for the synthetic bank
+database that we wanted to develop. The interest to use this bank dataset as a base was mainly because of its size: it contains 8819 different customers, 50 different ATM locations and 2143838 transactions records of the different customers during a full year (2022). Additionally, it provides good heterogenity on the different kind of transactions: withdrawals, deposits, balance inquiries and transfers.
 
-Then, the rest of the tables are: a customers table (`customers\_lookup`) where the data
+The main uses of this bank dataset are the obtention of a geographical distribution for
+the locations of our generated ATMs and the construction of a card/client \emph{behavior},
+for which the data of the \emph{Wisabi Bank Dataset} will be used.
+
+\paragraph{Details of the \emph{Wisabi Bank Dataset}}
+The \emph{Wisabi Bank Dataset} consists on ten CSV tables. Five of them are of transaction records of five different states of Nigeria (Federal Capital Territory, Lagos, Kano, Enugu and Rivers State) that refers to transactions of cardholders in ATMs. In particular they contain 2143838 transactions records done during the year 2022, of which 350251 are in Enugu, 159652 in Federal Capital Territory, 458764 in Kano, 755073 in Lagos and 420098 in Rivers. Then, the rest of the tables are: a customers table (`customers\_lookup`) where the data
 of 8819 different cardholders is gathered, an ATM table (`atm\_location lookup`) with
 information of each of the 50 different locations of the ATMs, and then three remaining
 tables as complement of the previous ones (`calendar lookup`, `hour lookup` and 
 `transaction\_type lookup`) 
 (\href{https://app.diagrams.net/#G1eAn47YR7-zPNE5KgStkA6_IJcxZRYgX8#%7B%22pageId%22%3A%22R2lEEEUBdFMjLlhIrx00%22%7D}{tables summary}).
 
-Based on the aforementioned dataset we created our own synthetic dataset. For simplicity 
-and to do it in a more stepwise manner, we are going to first create all the CSV data tables
-for the nodes and for the relations in the corresponding format and then we will populate 
-the Neo4j GDB with those.
-The description of the creation of the CSV data tables as well as the specific details are 
-described in what follows:\\
-
-\textcolor{green}{\rule{\linewidth}{0.4mm}}
+In what follows we give the details on the generation of the instances of our static database
+entities.
+For simplicity and to do it in a more stepwise manner, we are going to first create all the CSV data tablesfor the nodes and for the relations in the corresponding format and then we will populate the Neo4j GDB with them.
 
 \subsubsection*{Bank}
 
