@@ -183,13 +183,11 @@ and the Card and Bank entities (\texttt{issued\_by}).
 
 \input{tables/bank-table.tex}
 
-\textcolor{green}{\rule{\linewidth}{0.4mm}}
-
 \subsubsection*{ATM}
 
 \input{tables/atm-table.tex}
 
-The bank operates \texttt{n} ATMs, categorized in two distinct types:
+The bank operates \texttt{n} ATMs, categorized in:
 
 \begin{itemize}
   \item Internal ATMs: ATMs owned and operated by the bank. They are fully integrated within the
@@ -197,14 +195,17 @@ The bank operates \texttt{n} ATMs, categorized in two distinct types:
   \item External ATMs: These ATMs, while not owned by the bank, are still accessible for the bank
   customers to perform transactions.
 \end{itemize}
-In particular, two different types of ATMs are considered: \texttt{n\_internal} ATMs: those belonging to the bank network, that is, those that are under the ownership of the 
-bank, and \texttt{n\_external} ATMs that are not of its ownership, but that the bank can also operate. Both types of ATMs are considered under the same type of ATM node, having
-\texttt{n = n\_internal + n\_external}. The difference will be modeled as their relation 
-with the bank instance: \texttt{belongs\_to} for the \texttt{n\_internal} ATMs and \texttt{external} for the \texttt{n\_external} ATMs.
 
-The ATM node type properties consist
-on the ATM unique identifier \emph{ATM\_id}, its location, expressed in terms of 
-\emph{latitude} and \emph{longitude} coordinates, as well as the \emph{city} and 
+Both types of ATMs are considered to be of the same type of ATM node. Their difference
+is modeled as their relation with the bank instance: \texttt{belongs\_to} for the internal ATMs and \texttt{external} for the external ATMs, having:
+$$\texttt{n = n\_internal + n\_external}$$
+
+where \texttt{n\_internal} is the number of internal ATMs owned by the bank and \texttt{n\_external}
+is the number of external ATMs that are accesible to the bank.
+
+
+The ATM node type properties consist on the ATM unique identifier \emph{ATM\_id}, its location, expressed in terms of 
+\emph{latitude} and \emph{longitude} coordinates, and the \emph{city} and 
 \emph{country} in which it is located, as seen in Table \ref{table:atm-node-properties}.
 \textcolor{red}{Note that the last two properties are somehow redundant, considering
 that location coordinates are already included. In any case both properties are left
@@ -214,21 +215,27 @@ the location of the ATMs}.
 The generation of \texttt{n} ATMs for the bank is done following
 the geographical distribution of the locations of the ATMs in the \emph{Wisabi Bank Dataset}. 
 On this dataset there are 50 ATMs locations distributed along Nigerian cities. 
-\textcolor{gray}{Note that for each of these ATMs locations, there can be more than one ATM.
+Note that for each of these ATMs locations, there can be more than one ATM.
 However, this is not taken into account and only one ATM per location is assumed for the 
-distribution.}\\
+distribution.\\
 \textcolor{red}{$\Rightarrow$ Put a plot of the distribution of the ATM locations}\\
 This distribution of the ATMs matches the relevance of the location in terms of its 
 population, since the number of ATM locations is larger in the most populated 
 Nigerian cities (30\% of the ATM locations are in the city of Lagos, then the 20\% in 
-Kano...).\\
+Kano...).
+Therefore, for the generation of the location of each of the \texttt{n} ATMs, the location/city of an ATM selected uniformly at random from the \emph{Wisabi Bank Dataset} is assigned as \emph{city} and \emph{country}. Then, new random geolocation coordinates 
+inside a bounding box of this city location are set as the \emph{loc\_latitude} and \emph{loc\_longitude} exact coordinates of the ATM. \\
+Finally, as the ATM unique identifier \emph{ATM\_id} it is assigned a different code depending on the ATM internal or external category: 
 
-Therefore, for the generation of the location of each of the \texttt{n} generated ATMs, the location/city of an ATM selected uniformly at random from the \emph{Wisabi Bank Dataset} is assigned as \emph{city} and \emph{country}. Then, new random geolocation coordinates 
-inside a bounding box of this city location are set as the \emph{loc\_latitude} and \emph{loc\_longitude} exact coordinates of the ATM. Finally as the ATM unique identifier \emph{ATM\_id} 
-it is assigned a different code depending $bank_code + "-" + str(i)$
+\[
+\emph{ATM\_id} =
+\begin{cases} 
+bank\_code + "-" + i & 0 \leq i < \texttt{n\_internal } \text{if internal ATM}  \\
+EXT + "-" + i & 0 \leq i < \texttt{n\_external } \text{if external ATM}
+\end{cases}
+\]
 
-Finally, apart from the generation of the ATM instances, the generation of the relationships 
-between the ATMs and the Bank entity are generated: \texttt{belongs\_to} for the \texttt{n\_internal} ATMs and \texttt{external} for the \texttt{n\_external} ATMs.
+\textcolor{green}{\rule{\linewidth}{0.4mm}}
 
 \subsubsection*{Card}
 
