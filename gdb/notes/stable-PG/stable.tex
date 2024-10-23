@@ -260,12 +260,9 @@ extraction/day?}
 gathered behavior for the card: \emph{withdrawal\_day}, \emph{transfer\_day}, 
 \emph{withdrawal\_avg}...}
 
-\textcolor{red}{GENERATION EXPLANATION - DO IT SEPARATING BY PARAGRAPHS OR ITEMIZING LIST...}
-
 \begin{tcolorbox}
   Aspects to explain:
   \begin{itemize}
-    \item So far only 1 card per client
     \item Extended behavior fields: to not only withdrawal.
     \item Location: Explain the 2 options we have developed and the one used so far.
     \item Explain how the behavior of the card is generated based on a random
@@ -274,23 +271,40 @@ gathered behavior for the card: \emph{withdrawal\_day}, \emph{transfer\_day},
   \end{itemize}
 \end{tcolorbox}
 
-For the Card entity generation there are some different aspects that are worth to mention:
 \begin{itemize}
-    \begin{tcolorbox}
-      \item First, in relation with the card and client identifiers (\texttt{number\_id}, 
-      \texttt{client\_id}), \textcolor{blue}{for the moment we define that each client has 
-      1 card, later this can be modified.\\}
-      \textcolor{red}{$\Rightarrow$ For the moment 1 client : 1 card. So far, 
-      for the kind of frauds we are considering this is the easier approach. In a 
-      future, if needed, it could be generated the case that 1 client has n cards} 
-    \end{tcolorbox}
+\item Card and client identifiers:
+so far, although for completeness the \emph{client\_id} is included in the properties of the Card node type, note that for simplicity it could be ignored, since due to the purposes of our work, a \emph{one-to-one} relationship between card and client 
+is assumed, meaning that each card is uniquely associated with a single client, and that a client
+can possess only one card. Therefore, the \emph{client\_id} is not relevant so far, but is included
+in case the database model is extended to allow clients have multiple cards or cards belonging to 
+multiple different clients. For each generated Card instance these identifiers are set as:
 
-    \item \texttt{Expiration} and \texttt{CVC} fields: they are not relevant, could be empty 
-    fields indeed or for all the Cards the same values. For simplicity and completeness we 
-    chose them to be the same values for all the Cards.
-    \begin{tcolorbox}
-      Expiration: set for completeness the same date in all of them but in a far future!
-    \end{tcolorbox}
+\[
+\begin{cases} 
+number\_id = \text{c-}bank\_code\text{-}i \\
+client\_id = i 
+\end{cases}
+0 \leq i < \texttt{m}
+\]
+
+\item \texttt{Expiration} and \texttt{CVC} properties: they are not relevant, could be empty 
+  value properties indeed or a same toy value for all the cards. For completeness the  
+  same values are given for all the cards: $\texttt{Expiration} = \text{2050-01-17}$, $\texttt{CVC} = 999$.
+
+\item Client's habitual address location (\texttt{loc\_latitude}, \texttt{loc\_longitude}): two possible options were designed to define the client habitual residence address. In both 
+cases they are random 
+coordinates drawn from a bounding box of a location/city. The difference is on to do the selection of the location/city:
+
+\begin{enumerate}
+    \item \textbf{Wisabi customers selection}: Take the city/location of the habitual ATM of a random selected \emph{Wisabi} 
+    database customer. Note that in the \emph{Wisabi Bank Dataset} customers contain an identifier
+    of their usual ATM, more in particular, that dataset is designed in such a way that customers
+    only perform operations in the same ATM.
+    With this approach, we maintain the geographical distribution of the \emph{Wisabi} customers.
+    \item \textbf{Generated ATMs selection}: Take the city/location of a random ATM of the \texttt{n} generated ATMs. This method is the one utilized so far.
+
+\end{enumerate}
+
     \item \textcolor{blue}{Behavior: For each Card object to be generated, we assign it a 
     \textit{behavior} based on the transaction behavior of a randomly selected wisabi 
     customer. The behavior is gathered from the transaction history of the customer on 
@@ -317,11 +331,6 @@ For the Card entity generation there are some different aspects that are worth t
         \item \textcolor{red}{For the moment we only consider the \textit{withdrawal} type of transaction in the behavior. However \textit{transfer} and \textit{deposit} could be also considered.}
         % retirada de dinero 
         \item \textcolor{red}{This behavior is gathered from one random customer of the wisabi dataset per each of the Cards, so that we have more variability. However, we could also assign the same behavior to all the clients, and this behavior be like a summary of all the wisabi dataset clients behavior. Also the behavior could be assigned drawning it from taylored distributions selected by us, in a more customizable manner.}   
-    \end{itemize}
-    \item Location (\texttt{loc\_latitude}, \texttt{loc\_longitude}): Two possible options in this case:
-    \begin{itemize}
-        \item 1. Assign a random location of the usual ATM city/location of the random selected wisabi customer. This way, we maintain the geographical distribution of the wisabi customers.
-        \item 2. Assign a random location of the city/location of a random ATM of the newly generated ATMs objects. (* For the moment)
     \end{itemize}
 \end{itemize}
 
