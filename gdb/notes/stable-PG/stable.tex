@@ -239,24 +239,33 @@ EXT + "-" + i & 0 \leq i < \texttt{n\_external } \text{if external ATM}
 
 \subsubsection*{Card}
 
+\input{tables/card-table.tex}
+
 \begin{itemize}
   \item Explicar las properties con la tabla y de la forma que se hizo descriptiva
   para ATM y Bank.
 \end{itemize}
 
-\begin{itemize}
-\item[-] number\_id: Unique identifier of the card.
-\item[-] client\_id: Unique identifier of the client.
-\item[-] expiration: Validity expiration date of the card.
-\item[-] CVC: Card Verification Code.
-\item[-] extract\_limit: Limit amount of money extraction associated with the card.
-\item[-] loc\_latitude: Client address GPS-location latitude.
-\item[-] loc\_longitude: Client address GPS-location longitude.
-\end{itemize}
+The bank manages a total of \texttt{m} cards. The Card node type properties consist on the card unique 
+identifier \emph{number\_id}, the associated client unique identifier \emph{client\_id}, as well
+as the coordinates of the associated client habitual residence address \emph{loc\_latitude} and 
+\emph{loc\_longitude}. Additionally it contains the card validity expiration date \emph{expiration}
+and the Card Verification Code, \emph{CVC}.\\
+
+\textcolor{red}{$\Rightarrow ?$ Finally, it contains the property \emph{extract\_limit}
+which represents the limit on the amount of money it can be extracted with the card on a single 
+extraction/day?}
+
+\textcolor{red}{$\Rightarrow ?$ Include in the card properties the properties related with the
+gathered behavior for the card: \emph{withdrawal\_day}, \emph{transfer\_day}, 
+\emph{withdrawal\_avg}...}
+
+\textcolor{red}{GENERATION EXPLANATION - DO IT SEPARATING BY PARAGRAPHS OR ITEMIZING LIST...}
 
 \begin{tcolorbox}
   Aspects to explain:
   \begin{itemize}
+    \item So far only 1 card per client
     \item Extended behavior fields: to not only withdrawal.
     \item Location: Explain the 2 options we have developed and the one used so far.
     \item Explain how the behavior of the card is generated based on a random
