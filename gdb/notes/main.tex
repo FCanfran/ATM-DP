@@ -197,10 +197,13 @@ The relations are: a directed relationship from Client to Card \texttt{owns} rep
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale = 0.6]{images/diag-PG-stable-def-updated.png}
+    \includegraphics[scale = 0.7]{images/PG-stable-1-edit-cardinal.png}
     \caption{Definitive stable property graph model}
     \label{img:pg-stable-def}
 \end{figure}
+
+//---------------------------------------------------------------------------------//
+AQUI
 
 However, the final version of the model (see Figure \ref{img:pg-stable-def}) was simplified to reduce it to the minimal needed entities. In particular, Client entity was decided to be removed and included inside the Card entity. This reduction allows to simplify the stable property graph to only three entities. 
 For this, all the Client attributes were included in the Card entity. In the initial Figure \ref{img:pg-stable} schema the Client entity was defined with three attributes: the identifier of the client and the GPS coordinates representing the usual residence of the client. This change is done while preserving the restriction of a Card belong to a unique client the same way it was previously done with the relation between Card and Client "owns" in the initial schema, which now is therefore removed. \\
