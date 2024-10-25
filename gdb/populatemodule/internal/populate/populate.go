@@ -166,7 +166,7 @@ func populateATMBanksExternal(session neo4j.SessionWithContext) {
 	LOAD CSV WITH HEADERS FROM 'file:///csv/atm-bank-external.csv' AS row
              MATCH (a:ATM {ATM_id: row.ATM_id})
              MATCH (b:Bank {code: row.code})
-             MERGE (a)-[r:EXTERNAL]->(b);
+             MERGE (a)-[r:INTERBANK]->(b);
 	`
 	err := writeQuery(session, query, nil)
 	if err != nil {
@@ -451,7 +451,7 @@ func populateATMBanksExternalAlt(session neo4j.SessionWithContext, csvPath strin
 	query := `
              MATCH (a:ATM {ATM_id: $ATM_id})
              MATCH (b:Bank {code: $code})
-             MERGE (a)-[r:EXTERNAL]->(b);
+             MERGE (a)-[r:INTERBANK]->(b);
 	`
 
 	i := 0
