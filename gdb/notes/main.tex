@@ -11,7 +11,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage[toc,page]{appendix}
-\usepackage[backend=biber]{biblatex}
+%\usepackage[backend=biber]{biblatex}
 \usepackage{multicol}
 \usepackage{siunitx}
 \usepackage{comment}
@@ -138,16 +138,7 @@ fill=green!30]
 
 \begin{document}
 
-\textcolor{red}{$\rightarrow$ TODO: Explanation of the PG data model chosen - details, reason why...}
-
-\begin{comment}
-\textcolor{gray}{Nowadays data are in motion, change continuously and are -possibly- unbounded implying data
-sources that are also constantly evolving. From the data persistence point of view this reality breaks the
-usual paradigm of having dynamic but stable data sources. This, together with the increasing number
-applications based on data streams for taking critical decisions in real time, raises the need for re-thinking
-both the data and the query models to fit these new requirements. Therefore, under these circumstances,
-it seems reasonable that a suitable data model is a continuously evolving data graph.\\
-...
+\textcolor{gray}{
 Regarding the data model, the new nature of data requires a de facto new database paradigm
 -continuously evolving databases- where data can be both stable and volatile. Even though
 evolving databases can be implemented according to any approach, graph databases seem
@@ -164,7 +155,19 @@ relations are still valid. Without loss of generality, in this work we consider 
 of a PG database where stable relations correspond to the data that a bank typically gathers
 on its issued cards, ATMs (Automated Teller Machines) network, etc. Volatile relations model
 the interaction between cards and ATM entities}
-\end{comment}
+
+
+\textcolor{blue}{In the context of our work we could see the data we are considering to be both static and streaming data, as we are considering a bank system application that contains all the information related to it on the cards, clients\dots, and that it is receiving the streaming of transactions that happens on it.
+More specifically, the static data can be thinked of the classical bank database data, that is, the data a bank typically gathers on its issued cards, clients, accounts, ATMs\dots. Whereas as the streaming data we can consider the transactions the clients of the bank produce with their cards on ATMs, PoS\dots that reach the bank system.
+Therefore, considering this nature of the data, we require a \emph{continuously evolving database} paradigm, where data can be both stable and volatile. Even though 
+evolving databases can be implemented according to any approach, graph databases seem especially well suited here. 
+% TODO: PONER REFERENCIAS
+% TODO: PONER + RAZONES?
+Therefore, due to this nature of the data, we consider the \emph{continuously evolving data graph} to be a suitable data model.
+\textcolor{blue}{\cite{angles2008survey, kumar2015graph}}.
+}
+
+\cite{angles2018property} \cite{kumar2015graph}
 
 The property graph data model consists of two sub property graphs: a stable and a volatile property graph. On the one hand, the stable is composed of the static part of the data that a bank typically gathers such as information about its clients, cards, ATMs (Automated Teller Machines). 
 On the other hand, the volatile property graph models the transaction operations, which defines the most frequent and reiterative kind of interaction between entities of the data model.\\
@@ -536,5 +539,8 @@ The transaction relation will include some attributes that will be essential for
     \label{img:pg-stable}
 \end{figure}
 \end{comment}
+
+\bibliographystyle{plain} % Choose a style (plain, abbrv, unsrt, etc.)
+\bibliography{references} % This points to references.bib
 
 \end{document}
