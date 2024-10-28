@@ -17,8 +17,10 @@
 \usepackage{comment}
 \usepackage{xcolor}
 \usepackage{caption}
+\usepackage{forest}
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows}
+
 
 \tikzstyle{startstop} = [rectangle, rounded corners, 
 minimum width=3cm, 
@@ -454,6 +456,241 @@ variability.
 
 
 \textcolor{green}{\rule{\linewidth}{0.4mm}}
+
+\subsection{Graph database populating process}
+
+% TODO: 
+% 0. Description - Neo4j, what it is, why chosen...
+% 1. Creation
+% 2. Population
+
+\subsubsection{Neo4j graph database creation}
+% Neo4j Desktop y version - instalación y detalles. Cómo conectarse...
+% TODO: Explain how to install / connect... all the details that are in the neo4.md file
+\textcolor{red}{$\rightarrow$ TODO: 0. Describe on how to set up the database}
+\textcolor{red}{$\rightarrow$ TODO: Explanation of the versions of both Neo4j instances used - local and UPC VM cluster.}\\
+
+Prior to the population of the Neo4j graph database, a Neo4j graph database instance needs to be
+created. This was done both locally and in a \textcolor{red}{Virtual Machine of the UPC cluster}.
+
+Version: Neo4j 5.21.0 Community edition. 
+\begin{itemize}
+    \item Accessing it: by default it runs on localhost port 7474: \texttt{http://localhost:7474}.
+    Start the neo4j service locally by: \texttt{sudo systemctl start neo4j}\\
+    It can be also be accessed by the internal utility \texttt{cypher-shell}. Username: \texttt{neo4j} and password: \texttt{bisaurin}.
+\end{itemize}
+
+\subsubsection{Neo4j graph database population - CSV to PG}
+\begin{comment}
+    - Creación de la GDB - de CSV a Neo4j PG: 
+    - Poner primero los comandos cypher por separado, con las constraints de uniqueness
+    y luego lo de poblar. Luego ya referir a que todo ello se tiene en un único script que 
+    permite la ejecución directa (en lugar de paso a paso) en golang.
+    - Incluir detalles específicos de cada CSV...
+\end{comment}
+
+Once we created the Neo4j graph database instance and all the CSV data files representing all the nodes and relations, we populate the Property Graph instance in Neo4j. Before performing the population of the GDB, we create uniqueness constraints on the properties of the nodes that we use as our \emph{de facto} IDs for the ATM and Card IDs: \texttt{ATM\_id} and \texttt{number\_id}, respectively. The reason to do this is to avoid having duplicated nodes of these types with the same ID in the database. Therefore, as an example, when adding a new ATM node that has the same \texttt{ATM\_id} as another ATM already existing in the database, we are aware of this and we do not let this insertion to happen.
+
+ID uniqueness constraints are created with the following cypher directives:
+
+\begin{center}
+\lstset{style=cypherStyle}
+\begin{lstlisting}[caption={Uniqueness ID constraints}]
+            CREATE CONSTRAINT ATM_id IF NOT EXISTS
+            FOR (a:ATM) REQUIRE a.ATM_id IS UNIQUE
+    
+            CREATE CONSTRAINT number_id IF NOT EXISTS
+            FOR (c:Card) REQUIRE c.number_id IS UNIQUE
+    
+            CREATE CONSTRAINT code IF NOT EXISTS
+            FOR (b:Bank) REQUIRE b.code IS UNIQUE
+\end{lstlisting}
+\end{center}
+
+Once we created the Neo4j graph database instance and all the CSV data files representing all the nodes and relations, we populate the Property Graph instance in Neo4j. For this, we propose two different methods. The first does it by directly importing the CSV files using the Cypher's \texttt{LOAD CSV} command, while the second method does it by parsing the CSV data and running the creation of the nodes and relationships using Cypher. Both methods can be found and employed using the \texttt{populatemodule} golang module.
+In this module we can find the two subdirectories where each of the methods can be run. In detail, the module tree structure is depicted in Figure \ref{fig:populatemodule}. On it, the \texttt{cmd} subdirectory contains the scripts to run each of the populating methods: the first method script on \texttt{csvimport} and the second on the \texttt{cypherimport}, while the \texttt{internal} subdirectory is a library of the files with the specific functions used by these methods.
+
+\begin{figure}[h]
+\centering
+\begin{forest}
+  for tree={
+      font=\ttfamily,              % Typewriter font for file names
+      grow'=0,                      % Tree direction (left-to-right)
+      child anchor=west,            % Children alignment
+      parent anchor=east,           % Parent alignment
+      anchor=west,                  % Tree alignment
+      calign=first,                 % Aligns with the first child
+      edge path={
+          \noexpand\path [draw, thick, \forestoption{edge}] (!u.parent anchor) -- +(-1pt,0) |- (.child anchor)\forestoption{edge label};
+      },
+      inner sep=4pt,
+      l=10pt,                       % Level distance
+      s sep=5pt                     % Sibling distance
+  }
+  [populatemodule
+      [cmd
+        [csvimport
+            [main.go]
+            [.env]
+        ]
+        [cypherimport
+            [main.go]
+            [.env]
+        ]
+      ]
+      [internal
+          [common
+              [common.go]
+          ]
+          [populate
+              [populate.go]
+          ]
+      ]
+  ]
+\end{forest}
+\caption{\texttt{populatemodule} file structure}
+\label{fig:populatemodule}
+\end{figure}
+
+% How to run it - .env file
+% Description of each of the methods
+
+
+Prior to run any of these methods we need to first set up correctly the \texttt{.env} file located inside the desired method directory, where we have to define the corresponding Neo4j URI, username and password to access the Neo4j graph database instance.
+
+\begin{itemize}
+\item{\textbf{Method 1: Cypher's \texttt{LOAD CSV}}\\}
+The Cypher's \texttt{LOAD CSV} clause allows to load CSV into Neo4j, creating the nodes and relations expressed on the CSV files (see \href{https://neo4j.com/docs/cypher-manual/5/clauses/load-csv/}{\textit{load-csv cypher manual}}). 
+To use it simply follow these steps:
+\begin{enumerate}
+    \item Place all the CSVs (\texttt{atm.csv}, \texttt{bank.csv}, \texttt{card.csv}, \texttt{atm-bank-internal.csv}, \texttt{atm-bank-external.csv} 
+    and \texttt{card-bank.csv}) under the \texttt{/var/lib/neo4j/import} directory
+    of the machine containing the Neo4j graph database instance.
+    \item Run \texttt{\$ go run populatemodule/cmd/csvimport/main.go}
+\end{enumerate}
+
+\paragraph{Process description:}
+
+Then the different CSV files containing all the data tables of our data set, were loaded into the GDB with the following cypher directives.
+
+% TODO: Esto es en mi local. Se recomienda por razones de seguridad... Sin embargo se puede configurar para que no sea
+% así. - En el cluster veremos. De momento no pongo nada de esto!
+% First, the CSV files were needed to be placed under the \texttt{/var/lib/neo4j/import} directory.
+
+\paragraph{ATM (atm.csv)}
+
+\begin{center}
+\lstset{style=cypherStyle}
+\begin{lstlisting}[caption={atm.csv}]
+    LOAD CSV WITH HEADERS FROM 'file:///csv/atm.csv' AS row
+    MERGE (a:ATM {
+        ATM_id: row.ATM_id,
+        loc_latitude: toFloat(row.loc_latitude),
+        loc_longitude: toFloat(row.loc_longitude),
+        city: row.city,
+        country: row.country
+    });
+\end{lstlisting}
+\end{center}
+
+Some remarks:
+\begin{itemize}
+    \item \texttt{ATM} is the node label, the rest are the properties of this kind of node.
+    \item Latitude and longitude are stored as float values; note that they could also be stored
+    as cypher \textit{Point} data type. However for the moment it is left like this. In the future
+    it could be converted when querying or directly be set as cypher point data type as property.
+\end{itemize}
+
+\paragraph{Bank (bank.csv)}
+
+\begin{center}
+\lstset{style=cypherStyle}
+\begin{lstlisting}[caption={bank.csv}]
+    LOAD CSV WITH HEADERS FROM 'file:///csv/bank.csv' AS row
+    MERGE (b:Bank {
+        name: row.name, 
+        code: row.code, 
+        loc_latitude: toFloat(row.loc_latitude), 
+        loc_longitude: toFloat(row.loc_longitude)
+    });
+\end{lstlisting}
+\end{center}
+
+Note that the \texttt{code} is stored as a string and not as an integer, since to make it more clear it 
+was already generated as a string code name.
+
+\paragraph{ATM-Bank relationships (atm-bank-internal.csv and atm-bank-external.csv)}
+
+\begin{center}
+\lstset{style=cypherStyle}
+\begin{lstlisting}[caption={atm-bank-internal.csv}]
+    LOAD CSV WITH HEADERS FROM 'file:///csv/atm-bank-internal.csv' AS row
+    MATCH (a:ATM {ATM_id: row.ATM_id})
+    MATCH (b:Bank {code: row.code})
+    MERGE (a)-[r:BELONGS_TO]->(b);
+\end{lstlisting}
+\end{center}
+
+\begin{center}
+\lstset{style=cypherStyle}
+\begin{lstlisting}[caption={atm-bank-external.csv}]
+    LOAD CSV WITH HEADERS FROM 'file:///csv/atm-bank-external.csv' AS row
+    MATCH (a:ATM {ATM_id: row.ATM_id})
+    MATCH (b:Bank {code: row.code})
+    MERGE (a)-[r:INTERBANK]->(b);
+\end{lstlisting}
+\end{center}
+
+\paragraph{Card (card.csv)}
+
+\begin{center}
+\lstset{style=cypherStyle}
+\begin{lstlisting}[caption={card.csv}]
+    LOAD CSV WITH HEADERS FROM 'file:///csv/card.csv' AS row
+    MERGE (c:Card {
+        number_id: row.number_id, 
+        client_id: row.client_id, 
+        expiration: date(row.expiration), 
+        CVC: toInteger(row.CVC), 
+        extract_limit: toFloat(row.extract_limit), 
+        loc_latitude: toFloat(row.loc_latitude), 
+        loc_longitude: toFloat(row.loc_longitude)});
+\end{lstlisting}
+\end{center}
+
+Notes:
+\begin{itemize}
+    \item We do not include the fields that were generated to define the behavior of the card. They are only used for the generation of the transactions.
+    \item \texttt{expiration}: set as \textit{date} data type.
+\end{itemize}
+
+\paragraph{Card-Bank relationships (card-bank.csv)}
+
+\begin{center}
+\lstset{style=cypherStyle}
+\begin{lstlisting}[caption={card-bank.csv}]
+    LOAD CSV WITH HEADERS FROM 'file:///csv/card-bank.csv' AS row
+    MATCH (c:Card {number_id: row.number_id})
+    MATCH (b:Bank {code: row.code})
+    MERGE (c)-[r:ISSUED_BY]->(b);
+\end{lstlisting}
+\end{center}
+
+%\subsubsection*{Dataset extensions}
+
+\begin{comment}
+- Interesting reference for coordinates and distances in cypher - https://lyonwj.com/blog/spatial-cypher-cheat-sheet 
+- Transactions dataset Generation  - a transaction dataset simulator → useful with the description of fraud scenarios, that can be generated among the transactions dataset, also with customers and terminals info generation (similar to ATMs concept) 
+\end{comment}
+
+\item Method 2:
+
+\end{itemize}
+
+\textcolor{red}{$\rightarrow$ TODO: Describe the other population method}
+
+\textcolor{green}{\rule{\linewidth}{0.4mm}}
+
 
 \section{Indexing}
 
