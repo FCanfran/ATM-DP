@@ -501,7 +501,33 @@ Therefore, you need to weigh up these factors when deciding which data/propertie
 Generally, it's a good idea to create an index when you know there's going to be a lot of data on certain nodes. Also, if you find queries are taking too long to return, adding an index may help.
 \end{tcolorbox}
 
-From \href{https://www.quackit.com/neo4j/tutorial/neo4j_create_an_index_using_cypher.cfm#google_vignette}{another tutorial on indexing in neo4j}
+From \href{https://www.quackit.com/neo4j/tutorial/neo4j_create_an_index_using_cypher.cfm#google_vignette}{another tutorial on indexing in neo4j}\\
+
+$\rightarrow$ Apparently, there are \emph{Token lookup indexes} which are a default type of node indexes, from the Neo4j documentation: \textit{"Two token lookup indexes are created by default when creating a Neo4j database (one node label lookup index and one relationship type lookup index). Only one node label and one relationship type lookup index can exist at the same time."}. 
+That is, two indexes are created by default, they are on the node label and on the relationship type.\\
+
+$\rightarrow$ There are different type of indexes depending on what we want to use them for, the type of property that they index...: \href{https://neo4j.com/docs/cypher-manual/current/indexes/search-performance-indexes/managing-indexes/#create-indexes}{see here for more details.}\\
+
+$\rightarrow$ An example on when to use indexes: \href{https://stackoverflow.com/questions/51313374/what-is-indexing-means-neo4j-and-how-it-effects-performance}{example case}.\\
+
+
+
+\textcolor{green}{$\rightarrow$ \textbf{Decision}: Create indexes on the ATM and Card node properties which serve as our node identifiers in practice: on \texttt{ATM\_id} and on \texttt{number\_id} node properties.} The reason is that, so far, most of the queries are performed looking at a single node using its identifier; in particular to retrieve ATM nodes location coordinates to calculate the distance between two ATM nodes.\\
+\textcolor{red}{POSSIBLE IMPROVEMENT $\rightarrow$ make Neo4j obtain/calculate/return this distance as the result of a query.}
+
+
+\paragraph{Description of the creation on indexes\\}
+
+\begin{enumerate}
+  \item Select the type of index: range index VS text index\dots
+  Some references on this election:
+  \begin{itemize}
+    \item \href{https://stackoverflow.com/questions/77833955/neo4j-range-index-vs-text-index-when-checking-membership-in-list-of-only-strin}{Use range index (the default), if we do not need to use
+    \texttt{CONTAINS}, \texttt{ENDS WITH} or the value size is not above
+    8k}.
+  \end{itemize}
+  \item Note that for the text index we (may) need to guarantee that the property type is STRING: \href{https://neo4j.com/docs/cypher-manual/current/constraints/managing-constraints/#create-single-property-type-constraint}{create a single property type constraint}.
+\end{enumerate}
 
 \subsubsection{Volatile property graph}
 
