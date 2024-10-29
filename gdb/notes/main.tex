@@ -206,6 +206,8 @@ The relations are: a directed relationship from Client to Card \texttt{owns} rep
     \label{img:pg-stable-def}
 \end{figure}
 
+
+
 However, the final version of the model (see Figure \ref{img:pg-stable-def}) was simplified to reduce it to the minimal needed entities. In particular, we decided to remove the Client entity and to merge it inside the Card entity. This reduction allows to simplify the stable property graph to only three entities. 
 For this, all the Client attributes were included in the Card entity. In the initial schema the Client entity was defined with three attributes: the identifier of the client and the GPS coordinates representing the usual residence of the client. This change is done while preserving the restriction of a Card belonging to a unique client the same way it was previously done with the relation between Card and Client \texttt{owns} in the initial schema, which now is therefore removed. \\
 % Account relation removed
@@ -279,6 +281,51 @@ Note that the client is completely anonymized in the system (no name, surname, a
 There are only two relations in the final stable subgraph, that is, the ones that are left after the deletion of the Client entity from the first version of the stable subgraph; the relation "issued\_by" between the Card and the Bank entities and the "belongs\_to" between ATM and Bank entities. For the moment they do not have any attribute, however they could potentially be added in the case this was needed.
 
 \end{comment}
+
+\subsubsection{Volatile Property Graph}
+
+This separation will allow us to have
+a really simple and light property graph schema single-centered on the transac-
+tions with the minimal needed information (mostly identifiers of the entities a
+transaction links) and another, the stable, acting as a traditional bank database
+schema, from which to obtain the information details of the entities.
+
+It contains the minimal needed information to be able to recognize the anomaly fraud patterns we want to identify.
+This subgraph describes the most volatile part of our model, meaning the transactions between the client's cards and the ATMs. The idea is to have a data model to define the transactions, as continuous temporal interactions between the Card and ATM entities, restricting these kind of relations to the volatile subgraph.
+The idea is to have a really simple and light property graph schema single-centered on the transactions. For that the Card and ATM entities will be simplified to the last bullet, containing only the identifier of the both entities that each transaction relation matches. These identifiers will be enough to be able to recover, if needed, the whole information about the specific Card or ATM entity in the stable subgraph.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.8]{images/schema-volatile.png}
+    \caption{Volatile property graph model}
+    \label{img:pg-stable}
+\end{figure}
+
+Following this idea of volatile subgraph, the Card and ATM entities and transaction relations of it will not be permanently saved, but instead, only for a certain window of time under the mission of detecting anomalous bank operations. 
+
+The transaction relation will include some attributes that will be essential for the detection of the fraud patterns, in particular:
+
+\begin{itemize}
+\item[-] transaction\_id: Unique identifier for each transaction in the database.
+\item[-] transaction\_start: Datetime when the transaction started. Format: DD/MM/YYYY HH:MM (ex. 1/1/2022 4:50).
+\item[-] transaction\_end: Datetime when the transaction was completed. Format: DD/MM/YYYY HH:MM (ex. 1/1/2022 4:54).
+\item[-] transaction\_amount: Amount of money involved in the transaction.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.40]{images/transaction.png}
+    \caption{Transaction relation attributes}
+    \label{img:pg-stable}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.7]{images/schema-complete.png}
+  \caption{Complete property graph model}
+  \label{img:pg-complete}
+\end{figure}
 
 \subsection{Synthetic dataset creation}
 
@@ -764,39 +811,304 @@ $\rightarrow$ An example on when to use indexes: \href{https://stackoverflow.com
   \item Note that for the text index we (may) need to guarantee that the property type is STRING: \href{https://neo4j.com/docs/cypher-manual/current/constraints/managing-constraints/#create-single-property-type-constraint}{create a single property type constraint}.
 \end{enumerate}
 
-\subsubsection{Volatile property graph}
+\section{Transaction Generator}
 
-\begin{comment}
+First of all it is important to remark that we are first generating ordinary, 
+regular transactions that are not fraud kinds of transactions. Therefore the 
+transactions generated for each card object have to be generated in such a way
+that they will not produce any fraud pattern alert. Later in the process we 
+will poison our system by generating those transactions to produce fraud pattern 
+alerts.
 
-It contains the minimal needed information to be able to recognize the anomaly fraud patterns we want to identify.
-This subgraph describes the most volatile part of our model, meaning the transactions between the client's cards and the ATMs. The idea is to have a data model to define the transactions, as continuous temporal interactions between the Card and ATM entities, restricting these kind of relations to the volatile subgraph.
-The idea is to have a really simple and light property graph schema single-centered on the transactions. For that the Card and ATM entities will be simplified to the last bullet, containing only the identifier of the both entities that each transaction relation matches. These identifiers will be enough to be able to recover, if needed, the whole information about the specific Card or ATM entity in the stable subgraph.
+\subsection{Regular transactions}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale = 0.45]{images/diagPG-volatile.png}
-    \caption{Volatile property graph model}
-    \label{img:pg-stable}
-\end{figure}
+\begin{tcolorbox}
+  \begin{itemize}
+    \item \textbf{By card}: Generation of the transactions for each of the cards independently. \textbf{We have
+    control} to avoid anomalous scenarios when selecting the ATMs and distributing the transactions along time.
+    \item \textbf{In general}: Linking ATM and client composing (card,ATM) pairs, and distributing these pairs along
+    time according to a certain distribution. \textbf{No control / More difficult to control the possible derived
+    anomalous scenarios produced among same card pairs}.
+  \end{itemize}
+\end{tcolorbox}
 
-Following this idea of volatile subgraph, the Card and ATM entities and transaction relations of it will not be permanently saved, but instead, only for a certain window of time under the mission of detecting anomalous bank operations. 
-
-The transaction relation will include some attributes that will be essential for the detection of the fraud patterns, in particular:
+Therefore, the generation by card option it is considered to be the best so to be able to have the control
+on the possible anomalous scenarios for the generated transactions of each of the cards. Some ideas to explore:
 
 \begin{itemize}
-\item[-] transaction\_id: Unique identifier for each transaction in the database.
-\item[-] transaction\_start: Datetime when the transaction started. Format: DD/MM/YYYY HH:MM (ex. 1/1/2022 4:50).
-\item[-] transaction\_end: Datetime when the transaction was completed. Format: DD/MM/YYYY HH:MM (ex. 1/1/2022 4:54).
-\item[-] transaction\_amount: Amount of money involved in the transaction.
+  \item Selection of ATMs:
+  \begin{itemize}
+    \item Neighborhood / Closed ATM subset.
+    \item Random walk. To do the selection of the sequence of ATMs for the generated transactions.
+  \end{itemize}
+  \item Distribution of the transactions along time:
+  \begin{itemize}
+    \item Uniform distribution.
+    \item Poisson process distribution.
+  \end{itemize}
+  \item Other options:
+  \begin{itemize}
+    \item Random walk for both the ATM and the transaction time selection, in the same algorithm together.
+  \end{itemize}
 \end{itemize}
 
+\subsubsection{ATM closed subset + Uniform time distribution}
+
+\begin{tcolorbox}
+  \begin{itemize}
+    \item[$\rightarrow$] \textbf{ATM selection}: Closed ATM subset.
+    \item[$\rightarrow$] \textbf{Time distribution}: Uniform distribution of the $num\_tx$ transactions 
+    for a card on a certain day ($num\_tx$ is drawn from a Poisson distribution of 
+    $\lambda = \texttt{withdrawal\_day}$, based on the behavior of the \emph{Wisabi} clients).
+  \end{itemize}
+\end{tcolorbox}
+
+More detailed explanation follows.
+\\
+
+
+The transaction generator is done to be able to generate transactions for 
+each of the cards based on the gathered client transaction behavior of each of the cards 
+for a customisable \textcolor{orange}{\texttt{d}} number of days starting in a 
+\textcolor{orange}{\texttt{start\_date}}. 
+
+For a card, the idea is to create a certain 
+number of transactions per day, by linking the card to a certain ATM that is no farther 
+than \textcolor{orange}{\texttt{max\_distance}} kms from the residence location of the 
+client of the card. Also, we will limit the time distance between two consecutive 
+transactions so that the final set of created transactions can not produce a potential 
+fraud related with having two transactions in different ATM locations with an insufficient 
+feasible time distance.
+
+For each card:  
+
+\begin{itemize}
+    \item \textbf{ATM subset}: Create a subset of ATMs that are considered to be \textit{usual} for 
+    the card client, so that they are all at a distance inferior or equal to 
+    \textcolor{orange}{\texttt{max\_distance}} kms to the residence location of the client 
+    of the card. We limit the size of this subset to be of \textcolor{orange}{\texttt{max\_size\_atm\_subset}}, so that we take only a maximum of \textcolor{orange}{\texttt{max\_size\_atm\_subset}} of the closest ATMs.
+    \textcolor{blue}{In addition, among the ATMs in this subset, preference is given to 
+    those that are the closest to the residence location of the client and those that 
+    belong to the same bank company as the client's card.}
+    The transactions generated for this card will be linked only to ATMs of this subset called 
+    \texttt{Neighborhood}.
+
+    $$\texttt{Neighborhood} = \{\texttt{ATM}\ | \texttt{dist(ATM, residence\_loc)} \leq \texttt{max\_distance}\}$$
+
+    \begin{figure}[H]
+      \centering
+      \includegraphics[scale=1.1]{images/tx-generation-1-named.png}
+      \caption{\texttt{Neighborhood} ATM subset}
+    \end{figure}
+
+    \item \textbf{\texttt{t\_min}}: Minimum threshold time between any two consecutive 
+    transactions of the client. That is, the minimum time distance between the end of 
+    a transaction and the start of the next consecutive transaction of a card. 
+    $$t_{min} = \frac{2 * \texttt{max\_distance}}{\texttt{max\_speed}}$$
+    For the calculation of this minimum time distance:
+    \begin{itemize}
+      \item \texttt{max\_distance}: two options:  
+        \begin{itemize}
+          \item In general: taking $2*\texttt{max\_distance}$ kms as the upper bound on 
+          the maximum distance between 2 ATMs of the ATM subset, set the 
+          \textcolor{orange}{\texttt{t\_min}} to be the time needed to traverse that distance 
+          at a selected $\texttt{max\_speed}$. (* So far done like this). 
+          \begin{figure}[H]
+            \centering
+            \includegraphics[scale=0.5]{images/tx-generation-tmin.png}
+            \caption{\texttt{max\_distance} upper bound for the calculation of \texttt{t\_min}}
+        \end{figure}    
+          \item Specifically: Taking the specific maximum distance between all the ATM pairs 
+          in the ATM subset to get the \textcolor{orange}{\texttt{t\_min}}.
+      \end{itemize}  
+      \item \texttt{max\_speed}: maximum speed at which it is possible to travel 
+      (by any possible means of transport) between any pair of ATMs $\in 
+      \ \texttt{Neighborhood}$.
+    \end{itemize}
+
+    \item For each day generate \textcolor{orange}{\texttt{num\_tx}} transactions, random 
+    number drawn from a Poisson distribution of $\lambda = \texttt{withdrawal\_day}$.
+
+    \item Distribution of the \texttt{num\_tx} transaction times 
+    (\texttt{transaction\_start}), doing a uniform distribution of the \texttt{num\_tx}
+    for each of the days: 
+    
+    We create an ordered list of  \texttt{num\_tx} start moments in seconds in a day 
+    (in the range $[\texttt{t\_min}/2, 86400-(\texttt{t\_min}/2)-\texttt{max\_duration}]$) so that all of them are at a minimum time distance of $\texttt{t\_min} + \texttt{max\_duration}$. See Figure \ref{img:tx-distribution}.
+    \textit{\texttt{max\_duration} limits the maximum duration of an ordinary transaction. 
+    For the moment it was set to be of 10 minutes (600s)}.\\
+    Note that the interval bounds for the transaction start moments are designed in such 
+    a way that the \texttt{t\_min} minimum time distance between the end of a transaction 
+    and the start of the next transaction is also respected between transactions belonging 
+    to different consecutive days. See Figure \ref{img:tx-distribution-day}. 
+    \textcolor{red}{Note that this way of generation (day by day) we are not allowing 
+    transactions to occur in the interval marked among the two red dotted lines of the 
+    Figure \ref{img:tx-distribution-day}.} \textcolor{orange}{NOTE/TODO: This could be 
+    fixed by looking to the start time of the last transaction of the previous day...}. 
+    The start moments are therefore taken to define the \texttt{transaction\_start} of 
+    each of the transactions of that day. \texttt{transaction\_end} is assigned a shifted 
+    time difference with the respective \texttt{transaction\_start}, in particular the 
+    difference is drawn from a normal distribution $\mathcal{N}(300,\,120)$ that defines 
+    the duration of a transaction to be of mean of 5 minutes (300s) and a standard 
+    deviation of 2 minutes (120s), bounding it to be of a maximum time of 
+    \texttt{max\_duration} of 10 minutes (600s) and setting it to the mean if the 
+    distribution sample was negative. 
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale = 0.45]{images/tx-distribution-1.png}
+        \caption{Time distance limit between two consecutive transactions}
+        \label{img:tx-distribution}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale = 0.45]{images/tx-distribution.png}
+        \caption{Time distance limit between two consecutive transactions between two days}
+        \label{img:tx-distribution-day}
+    \end{figure}
+    Note that a limit was set on the duration of the transaction so that we can have the 
+    control avoiding time overlapping transactions, which will be producing irregular 
+    undesired fraud pattern alerts.
+    \item \texttt{transaction\_amount}: based on card behavior parameters, it is drawn 
+    from a normal distribution
+    $\mathcal{N}(\texttt{amount\_avg},\,\texttt{amount\_std})$. If negative amount, drawn 
+    from a uniform distribution $\mathcal{U}(0,\ \texttt{amount\_avg}*2)$.
+\end{itemize}
+
+Note that this approach is done with the focus on avoiding the production of potential
+fraud scenarios. By taking into account the previous generated transaction: both for the
+linked ATM of the new transaction and its transaction time (to avoid transactions that 
+are overlapped or that come one directly after the other, since this may be fraudulent!).
+
+\subsubsection{ATM closed subset + Poisson Process}
+
+\begin{tcolorbox}
+  \begin{itemize}
+    \item[$\rightarrow$] \textbf{ATM selection}: Closed ATM subset.
+    \item[$\rightarrow$] \textbf{Time distribution}: Poisson process distribution of $num\_tx$ 
+    transactions for each of the cards.
+  \end{itemize}
+\end{tcolorbox}
+
+
+Generate $\texttt{num\_tx}$ transactions for a selected period of time $\texttt{t}$.
+Distribution following a Poisson process distribution along $[0,t]$.
+\begin{itemize}
+    \item[$\bullet$] $\lambda=\texttt{avg\_tx}$ on a day for the client if $\texttt{t = 24h}$. Otherwise, 
+    decide a specific $\lambda$ for the considered $\texttt{t}$.
+    \item[$\bullet$] Inter-arrival times $X_1, X_2, \cdots$ are distributed following an exponential distribution:
+    $X_i \sim \text{Exp}(\lambda)$. They represent the time elapsed between two of these events, e.g. $X_2$ 
+    represents the time elapsed between the first and the second arrival. 
+    Note that in this case, since we need to respect the minimum required time between two consecutive 
+    transactions ($t_{min}$) so to avoid introducing anomalous undesired scenarios, we have to impose 
+    that: $X_i \geq \Delta_{i-1} + t_{min}, \forall X_i$, where:
+
+    \begin{itemize}
+      \item[$\circ$] $X_{i}$: time elapsed between the $i$-$1$ and $i$-th transaction.
+      \item[$\circ$] $\Delta_{i-1}$: time duration of the $i$-$1$ transaction. This duration will 
+      be upper bounded by $\Delta_{max}$, which will be considered the maximum possible duration of a transaction.
+      \item[$\circ$] $t_{min}$: minimum calculated time distance between any 2 consecutive transactions of the client.
+  \end{itemize}
+
+    With these interarrival times, we obtain the arrival times $T_i$. Note that they are not independent, in particular:
+    $T_1 \leq T_2 \leq T_3 \cdots$.
+
+    Therefore, to generate the Poisson process with rate $\lambda$:
+    \begin{enumerate}
+      \item Generate i.i.d. random variables $X_1, X_2, \cdots$ where $X_i \sim \text{Exp}(\lambda)$.
+      \item Obtain the arrival times as:
+        \begin{itemize}
+          \item $T_1 = X_1$
+          \item $T_2 = X_1 + X_2$
+          \item $T_3 = X_1 + X_2 + X_3$
+          \item $\cdots$
+        \end{itemize}
+    \end{enumerate}
+
+    Note that, having imposed the previous we will have that:
+    \begin{equation}
+      \begin{cases}
+        T_i = T_{i-1} + X_i \\
+        X_i \geq \Delta_{max} + t_{min}
+      \end{cases}\forall X_i \
+    \end{equation}
+
+    which implies that:
+    
+    \begin{equation}
+      T_i \geq T_{i-1} + \Delta_{max} + t_{min}, \forall X_i
+    \end{equation}
+    
+\end{itemize}
 \begin{figure}[H]
     \centering
-    \includegraphics[scale = 0.40]{images/transaction.png}
-    \caption{Transaction relation attributes}
-    \label{img:pg-stable}
+    \includegraphics[scale=0.55]{images/tx-generation-dist-corrected.png}
+    \caption{Schema of the interarrival and arrival event times on the poisson process.}
 \end{figure}
-\end{comment}
+
+
+References:
+
+\begin{itemize}
+  \item \href{https://www.probabilitycourse.com/chapter11/11_1_2_basic_concepts_of_the_poisson_process.php}{Poisson process modeling - Theoric description}
+  \item \href{https://www.probabilitycourse.com/chapter14/Chapter_14.pdf}{Poisson process modeling - Python implementation}
+  \item \href{https://timeseriesreasoning.com/contents/poisson-process/}{Less formal explanation with Python code}
+  \item \href{https://www.math.wsu.edu/faculty/genz/416/lect/l05-45.pdf}{More theory}
+  \item \href{https://en.wikipedia.org/wiki/Poisson_point_process}{Wikipedia entry}
+\end{itemize}
+
+\subsubsection{Random Walk / Markov Chain}
+
+Idea is to model the sequence of transactions for each of the clients as a markov chain through the
+network of ATMs. The network is a fully-connected graph with ATMs as nodes and edges are
+weighted with the distance between each pair of ATMs as weights.
+
+The idea is to obtain the sequence of transactions for each client as a markov chain, in which,
+for each step a transaction is generated in that specific ATM node, at a certain datetime 
+respecting the constraint of the minimum time distance with the previous transaction, so 
+that no undesired anomalous fraud scenarios are produced. \\ 
+
+Some considerations:
+\begin{itemize}
+  \item Initially, we will compute the transition matrix obtaining all the respective 
+  transition probabilities. The probability of transition to another ATM-node will be 
+  inversely proportional to the distance to the considered ATM-node.
+  \item Transition matrix $P_t$: containing, for each state, the probability of transitioning
+  between states. For example, the entry $i,j$: $(P_t)_{i,j} = \mathcal{P}(X_{t+1} = j | X_t = i)$
+  contains the probability of transitioning to state $j$ when being in state $i$. 
+  Note that since we assume a complete graph, and also the posibility to transition 
+  to the same state, all entries of this matrix will be distinct to 0: $(P_t)_{i,j} \neq 0 \  
+  \forall i,j$.
+  \item Finally, once $P_t$ is computed, we perform the simulation to obtain the sequence of
+  transactions for the specific card/client.
+\end{itemize}
+
+References:
+
+\begin{itemize}
+\item Markov Chains
+\begin{itemize}
+  \item \href{https://brilliant.org/wiki/markov-chains/}{MC - Theory}
+  \item \href{https://www.columbia.edu/~ks20/4703-Sigman/4703-07-Notes-MC.pdf}{Simulation of Markov Chains - Theory}
+  \item \href{https://stephens999.github.io/fiveMinuteStats/simulating_discrete_chains_1.html}{MC - Implementation example}
+  \item \href{https://www.youtube.com/watch?v=G7FIQ9fXl6U}{MC - Implementation video example}
+\end{itemize}
+\item Random Walks
+\begin{itemize}
+  \item Theory:
+  \begin{itemize}
+    \item \href{https://ieeexplore.ieee.org/abstract/document/8911513?casa_token=vznpjKL5HG0AAAAA:hNzLCxAHBk75zCDUHsswB7ImAKgilzZcOBzxaXWz_G6U8Vy-ogbei40MoZ49M-Em5tTii0Q}{RWs: A Review of Algorithms and Applications}
+    \item \href{https://www.lirmm.fr/~sau/JCALM/Josep.pdf}{RWs on Graphs}
+    \item \href{https://www.fi.muni.cz/usr/gruska/random18/random1808.pdf}{RW - More theory}
+  \end{itemize}
+  \item Implementation examples:
+  \begin{itemize}
+    \item \href{https://tleise.people.amherst.edu/Math365Spring2016/RmarkdownFiles/WalkOnGraph.html}{Simple RW on a Graph - Implementation example}
+    \item \href{https://graphstream-project.org/doc/Algorithms/Random-walks-on-graphs/}{A RW on a graph - Implementation}
+    \item \href{https://es.mathworks.com/help/econ/simulate-random-walks-through-markov-chain.html}{Simulate Random Walks Through Markov Chain - Matlab Implementation example}
+  \end{itemize}
+\end{itemize}
+\end{itemize}
 
 \bibliographystyle{plain} % Choose a style (plain, abbrv, unsrt, etc.)
 \bibliography{references} % This points to references.bib
