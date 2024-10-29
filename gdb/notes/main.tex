@@ -173,6 +173,9 @@ On the other hand, the volatile property graph models the transaction operations
 The main difference and the main reason for this separation is the semantics with which we intentionally define each of the subgraphs: the stable will be understood like a fixed static bank database, whereas the volatile will be understood as the data model to define the transactions, as continuous interactions between the entities of the model, which will not be permanently saved, but instead, only for a certain window of time under the mission of detecting anomalous bank operations. Note that we will only model the transaction interaction in the volatile subgraph, only letting them occur here.
 This separation will allow us to have a really simple and light property graph schema single-centered on the transactions with the minimal needed information (mostly identifiers of the entities a transaction links) and another, the stable, acting as a traditional bank database schema, from which to obtain the information details of the entities.
 
+\textcolor{gray}{Due to the confidential and private nature of bank data, it was
+impossible to find a real bank dataset nor a real bank data model. Therefore, we devoloped our own proposal of a bank database model.}
+
 \subsection{Property Graph Design}
 
 In what follows we provide the description of the design of our proposed
@@ -181,9 +184,7 @@ graphs.
 
 \subsubsection{Stable Property Graph}
 
-Due to the confidential and private nature of bank data, it was
-impossible to find a real bank dataset nor a real bank data model. Therefore, we devoloped our own proposal of a bank database model.
-We propose a simplified data model where the defined entities, relations and properties are reduced to the essential ones.
+We propose a simplified stable data model where the defined entities, relations and properties modeling the bank database are reduced to the essential ones.
 Although it is obvious that a real bank data model is way more complex than the one we propose, we believe that ours is relevant and representative enough and therefore sufficient for the purpose of our work. 
 
 \begin{figure}[H]
@@ -211,7 +212,7 @@ The relations are: a directed relationship from Client to Card \texttt{owns} rep
 However, the final version of the model (see Figure \ref{img:pg-stable-def}) was simplified to reduce it to the minimal needed entities. In particular, we decided to remove the Client entity and to merge it inside the Card entity. This reduction allows to simplify the stable property graph to only three entities. 
 For this, all the Client attributes were included in the Card entity. In the initial schema the Client entity was defined with three attributes: the identifier of the client and the GPS coordinates representing the usual residence of the client. This change is done while preserving the restriction of a Card belonging to a unique client the same way it was previously done with the relation between Card and Client \texttt{owns} in the initial schema, which now is therefore removed. \\
 % Account relation removed
-Another derived consequence of this simplification is the removal of the other relation that the Client entity had with other entities: the \texttt{has\_client} relation between Client and Bank, which was originally made with the intention of representing the bank accounts between clients and banks. Maintaining a bank account would imply having to consistently update the bank account state after each transaction of a client, complicating the model. Nevertheless, we elimintate the bank account relation, since its removal is considered negligible and at the same time helpful for the simplification of the model needed for the purposes of our work. However, for the sake of completeness the attribute \textit{extract\_limit} is introduced in the Card entity, representing a money amount limit a person can extract, which will be related with the amount of money a person owns. This will allow the detection of anomalies related with frequent or very high expenses.
+Another derived consequence of this simplification is the removal of the other relation that the Client entity had with other entities: the \texttt{has\_client} relation between Client and Bank, which was originally made with the intention of representing the bank accounts between clients and banks. Maintaining a bank account would imply having to consistently update the bank account state after each transaction of a client, complicating the model. Nevertheless, we eliminate the bank account relation, since its removal is considered negligible and at the same time helpful for the simplification of the model needed for the purposes of our work. However, for the sake of completeness the attribute \textit{extract\_limit} is introduced in the Card entity, representing a money amount limit a person can extract, which will be related with the amount of money a person owns. This will allow the detection of anomalies related with frequent or very high expenses.
 
 
 \begin{comment}
@@ -284,39 +285,17 @@ There are only two relations in the final stable subgraph, that is, the ones tha
 
 \subsubsection{Volatile Property Graph}
 
-This separation will allow us to have
-a really simple and light property graph schema single-centered on the transac-
-tions with the minimal needed information (mostly identifiers of the entities a
-transaction links) and another, the stable, acting as a traditional bank database
-schema, from which to obtain the information details of the entities.
+The volatile subgraph model describes the most \emph{variable} part of our model, the continuous interactions between the client's cards and the ATMs. These interactions are continuously occurring and arrive to our system as a continuous data stream. 
+This subgraph model contains the minimal information needed to identify the Card and ATM entities -- \texttt{number\_id} and \texttt{ATM\_id} Card and ATM identifiers -- between which the interaction occurs, along with additional details related to the interaction. 
+The proposed data model can be seen in the Figure \ref{img:pg-volatile}. On it we define the Card and ATM node entities with only the identifier properties, \texttt{number\_id} and \texttt{ATM\_id}, respectively. These identifiers are enough to be able to recover, if needed, the whole information about the specific Card or ATM entity in the stable subgraph.
+Finally we define the \emph{interaction} relationship between the Card and the ATM nodes.
+The \emph{interaction} relation contains as properties: \texttt{id} as the interaction unique identifier, \texttt{type} which describes the type of the interaction (withdrawal, deposit, balance inquiry or transfer), \texttt{amount} describing the amount of money involved in the interaction in the local currency considered, and finally, \texttt{start} and \texttt{end} which define the interaction \emph{datetime} start and end moments, respectively.
 
-It contains the minimal needed information to be able to recognize the anomaly fraud patterns we want to identify.
-This subgraph describes the most volatile part of our model, meaning the transactions between the client's cards and the ATMs. The idea is to have a data model to define the transactions, as continuous temporal interactions between the Card and ATM entities, restricting these kind of relations to the volatile subgraph.
-The idea is to have a really simple and light property graph schema single-centered on the transactions. For that the Card and ATM entities will be simplified to the last bullet, containing only the identifier of the both entities that each transaction relation matches. These identifiers will be enough to be able to recover, if needed, the whole information about the specific Card or ATM entity in the stable subgraph.
-
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[scale = 0.8]{images/schema-volatile.png}
     \caption{Volatile property graph model}
-    \label{img:pg-stable}
-\end{figure}
-
-Following this idea of volatile subgraph, the Card and ATM entities and transaction relations of it will not be permanently saved, but instead, only for a certain window of time under the mission of detecting anomalous bank operations. 
-
-The transaction relation will include some attributes that will be essential for the detection of the fraud patterns, in particular:
-
-\begin{itemize}
-\item[-] transaction\_id: Unique identifier for each transaction in the database.
-\item[-] transaction\_start: Datetime when the transaction started. Format: DD/MM/YYYY HH:MM (ex. 1/1/2022 4:50).
-\item[-] transaction\_end: Datetime when the transaction was completed. Format: DD/MM/YYYY HH:MM (ex. 1/1/2022 4:54).
-\item[-] transaction\_amount: Amount of money involved in the transaction.
-\end{itemize}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale = 0.40]{images/transaction.png}
-    \caption{Transaction relation attributes}
-    \label{img:pg-stable}
+    \label{img:pg-volatile}
 \end{figure}
 
 
@@ -812,6 +791,21 @@ $\rightarrow$ An example on when to use indexes: \href{https://stackoverflow.com
 \end{enumerate}
 
 \section{Transaction Generator}
+
+\begin{itemize}
+  \item[-] transaction\_id: Unique identifier for each transaction in the database.
+  \item[-] transaction\_start: Datetime when the transaction started. Format: DD/MM/YYYY HH:MM (ex. 1/1/2022 4:50).
+  \item[-] transaction\_end: Datetime when the transaction was completed. Format: DD/MM/YYYY HH:MM (ex. 1/1/2022 4:54).
+  \item[-] transaction\_amount: Amount of money involved in the transaction.
+  \end{itemize}
+  
+  \begin{figure}[H]
+      \centering
+      \includegraphics[scale = 0.40]{images/transaction.png}
+      \caption{Transaction relation attributes}
+      \label{img:pg-stable}
+  \end{figure}
+  
 
 First of all it is important to remark that we are first generating ordinary, 
 regular transactions that are not fraud kinds of transactions. Therefore the 
