@@ -178,42 +178,97 @@ impossible to find a real bank dataset nor a real bank data model. Therefore, we
 
 \subsection{Property Graph Design}
 
-In what follows we provide the description of the design of our proposed
-Property Graph data model, divided into the stable and volatile property
-graphs.
+In what follows we provide the description of the design of our proposed Property Graph data model, divided into the stable and volatile property graphs.
 
-\subsubsection{Stable Property Graph}
+\subsubsection{Stable Property Graph}\label{section:stable-pg}
 
-We propose a simplified stable data model where the defined entities, relations and properties modeling the bank database are reduced to the essential ones.
+We propose a simplified stable data model where the defined entities, relations and properties modeling the bank database are reduced to the essential ones (see Figure \ref{img:pg-stable-def}).
 Although it is obvious that a real bank data model is way more complex than the one we propose, we believe that ours is relevant and representative enough and therefore sufficient for the purpose of our work. 
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[scale = 0.7]{images/PG-stable-edit-cardinal.png}
-    \caption{Initial bank stable property graph model}
-    \label{img:initial-pg-stable}
+  \centering
+  \includegraphics[scale = 0.7]{images/PG-stable-1-edit-cardinal.png}
+  \caption{Definitive stable property graph model}
+  \label{img:pg-stable-def}
 \end{figure}
 
-% TODO: Cómo pongo que se entienda bien el 1er modelo y su correspondiente transformación al segundo y definitivo: explicando también en el medio las entidades, relaciones y atributos y su elección.
-A first model proposal was the one shown in Figure \ref{img:initial-pg-stable}.
-Basically, the idea of this first model attempt was to capture the data that a bank system database typically gathers.
+Before obtaining this final model, a first model proposal was developed, see Figure \ref{img:initial-pg-stable}, and then from it, through continuous iterations we reached the final model.\\
+
+The first model idea was the initial attempt to capture the data that a bank system database typically gathers.
 It contains four entities: Bank, ATM, Client and Card with their respective properties, and the corresponding relationships between them.
-The relations are: a directed relationship from Client to Card \texttt{owns} representing that a client can own multiple credit cards and that a card is owned by a unique client, then a bidirectional relation \texttt{has\_client} between Client and Bank; representing bank accounts of the clients in the bank. The relation between Card and Bank to represent that a card is \texttt{issued\_by} the bank, and that the bank can have multiple cards issued. Finally, the relations \texttt{belongs\_to} and \texttt{interbank} between the ATM and Bank entities, representing the two different kinds of ATMs depending on their relation with the bank; those ATMs owned and operated by the bank and those that, while not owned by the bank, are still accesible for the bank customers to perform transactions.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[scale = 0.7]{images/PG-stable-1-edit-cardinal.png}
-    \caption{Definitive stable property graph model}
-    \label{img:pg-stable-def}
+  \centering
+  \includegraphics[scale = 0.7]{images/PG-stable-edit-cardinal.png}
+  \caption{Initial bank stable property graph model}
+  \label{img:initial-pg-stable}
 \end{figure}
 
+The relations are: a directed relationship from Client to Card \texttt{owns} representing that a client can own multiple credit cards and that a card is owned by a unique client, then a bidirectional relation \texttt{has\_client} between Client and Bank; representing bank accounts of the clients in the bank. The relation between Card and Bank to represent that a card is \texttt{issued\_by} the bank, and that the bank can have multiple cards issued. Finally, the relations \texttt{belongs\_to} and \texttt{interbank} between the ATM and Bank entities, representing the two different kinds of ATMs depending on their relation with the bank; those ATMs owned and operated by the bank and those that, while not owned by the bank, are still accesible for the bank customers to perform transactions.
 
-
-However, the final version of the model (see Figure \ref{img:pg-stable-def}) was simplified to reduce it to the minimal needed entities. In particular, we decided to remove the Client entity and to merge it inside the Card entity. This reduction allows to simplify the stable property graph to only three entities. 
-For this, all the Client attributes were included in the Card entity. In the initial schema the Client entity was defined with three attributes: the identifier of the client and the GPS coordinates representing the usual residence of the client. This change is done while preserving the restriction of a Card belonging to a unique client the same way it was previously done with the relation between Card and Client \texttt{owns} in the initial schema, which now is therefore removed. \\
+However, the final version of the model (Figure \ref{img:pg-stable-def}) was simplified to reduce it to the minimal needed entities. In particular, we decided to remove the Client entity and to merge it inside the Card entity. For this, all the Client properties were included in the Card entity. In the initial schema the Client entity was defined with three properties: the identifier of the client and the GPS coordinates representing the usual residence of the client. This change is done while preserving the restriction of a Card belonging to a unique client the same way it was previously done with the relation between Card and Client \texttt{owns} in the initial schema, which now is therefore removed. \\
 % Account relation removed
-Another derived consequence of this simplification is the removal of the other relation that the Client entity had with other entities: the \texttt{has\_client} relation between Client and Bank, which was originally made with the intention of representing the bank accounts between clients and banks. Maintaining a bank account would imply having to consistently update the bank account state after each transaction of a client, complicating the model. Nevertheless, we eliminate the bank account relation, since its removal is considered negligible and at the same time helpful for the simplification of the model needed for the purposes of our work. However, for the sake of completeness the attribute \textit{extract\_limit} is introduced in the Card entity, representing a money amount limit a person can extract, which will be related with the amount of money a person owns. This will allow the detection of anomalies related with frequent or very high expenses.
+Another derived consequence of this simplification is the removal of the other relation that the Client entity had with other entities: the \texttt{has\_client} relation between Client and Bank, which was originally made with the intention of representing the bank accounts between clients and banks. Maintaining a bank account would imply having to consistently update the bank account state after each transaction of a client, complicating the model. Nevertheless, we eliminate the bank account relation, since its removal is considered negligible and at the same time helpful for the simplification of the model needed for the purposes of our work. However, for the sake of completeness the property \textit{extract\_limit} is introduced in the Card entity, representing a money amount limit a person can extract, which will be related with the amount of money a person owns. This will allow the detection of anomalies related with frequent or very high expenses.
 
+Therefore, our stable property graph model contains three node entities: Bank, Card and ATM, and three relations: \texttt{issued\_by} associating Card entities with the Bank entity, and \texttt{belongs\_to} and \texttt{interbank} associating the ATM entities with the Bank entity. 
+
+The Bank entitity represents the bank we are considering in our system. Its properties consist
+on the bank \emph{name}, its identifier \emph{code} and the location
+of the bank headquarters, expressed in terms of \emph{latitude} and \emph{longitude}
+coordinates, as seen in Table \ref{table:bank-node-properties}.
+  
+\input{tables/bank-table.tex}
+
+\begin{tcolorbox}
+\textcolor{red}{Note that, from the begining we were considering more than 1 bank entity. This lead to consider the creation of this entitity, which now as only 1 bank is considered it may not be needed anymore, being able to reformulate and simplify the model. However, it is left since we considered it appropiate to be able to model the different kinds of ATMs a bank can have with different relation types instead of with different ATM types.}
+\end{tcolorbox}
+
+The ATM entitity represents the Automated Teller Machines (ATM) that the bank can interact with.
+% Potential possible generalization of the ATM entity to a POS entity
+For the moment, this entity is understood as the classic ATM, however note that this entity could potentially be generalized to a Point Of Sale (POS), allowing a more general kind of interactions apart from the current Card-ATM interaction, where also online transactions could be included apart from the physical ones. We distinguish two different kinds of ATMs, depending on their relation with the bank:
+
+\begin{itemize}
+  \item Internal ATMs: ATMs owned and operated by the bank. They are fully integrated within the
+  bank's network. Modeled with the \texttt{belongs\_to} relation.
+  \item External ATMs: These ATMs, while not owned by the bank, are still accessible for the bank
+  customers to perform transactions. Modeled with the \texttt{interbank} relation. 
+\end{itemize}
+
+Both types of ATMs are considered to be of the same type of ATM node. Their difference
+is modeled as their relation with the bank instance: \texttt{belongs\_to} for the internal ATMs and \texttt{interbank} for the external ATMs.
+
+\input{tables/atm-table.tex}
+
+The ATM node type properties consist on the ATM unique identifier \emph{ATM\_id}, its location, expressed in terms of \emph{latitude} and \emph{longitude} coordinates, and the \emph{city} and 
+\emph{country} in which it is located, as seen in Table \ref{table:atm-node-properties}.
+Note that the last two properties are somehow redundant, considering that location coordinates
+are already included. In any case both properties are maintained since their inclusion provides a more explicit description of the location of the ATMs.\\
+
+Finally, the Card node type represents the cards of the clients in the bank system. The Card node type properties, as depicted in Table
+\ref{table:card-node-properties}, consist on the card unique 
+identifier \emph{number\_id}, the associated client unique identifier \emph{client\_id}, as well
+as the coordinates of the associated client habitual residence address \emph{loc\_latitude} and 
+\emph{loc\_longitude}. Additionally it contains the card validity expiration date \emph{expiration}
+and the Card Verification Code, \emph{CVC}.\\
+
+Note that the client is completely anonymized in the system (no name, surname, age, or any other confidential details) by using only a \emph{client\_id}. For the present purpose it is enough to uniquely identify each client.
+
+The Card node type properties, as depicted in Table
+\ref{table:card-node-properties}, consist on the card unique 
+identifier \emph{number\_id}, the associated client unique identifier \emph{client\_id}, as well
+as the coordinates of the associated client habitual residence address \emph{loc\_latitude} and 
+\emph{loc\_longitude}. Additionally it contains the card validity expiration date \emph{expiration}
+, the Card Verification Code, \emph{CVC} and the \emph{extract\_limit} property,
+which represents the limit on the amount of money it can be extracted with the card on a single withdrawal.
+
+\input{tables/card-table.tex}
+
+The client is completely anonymized in the system (no name, surname, age, or any other confidential details) by using only a \emph{client\_id}. Currently, \emph{client\_id} is included in the Card node type for completeness. However, it could be omitted for simplicity, as we assume a one-to-one relationship between card and client for the purposes of our work -- each card is uniquely associated with a single client, and each client holds only one card. Thus, the \emph{client\_id} is not essential at this stage but is retained in case the database model is expanded to support clients with multiple cards or cards shared among different clients.
+
+\textcolor{red}{$\Rightarrow ?$ Include in the card properties the properties related with the
+gathered behavior for the card: \emph{withdrawal\_day}, \emph{transfer\_day}, 
+\emph{withdrawal\_avg}... or just in the CSV to use them for the creation of the synthetic
+transactions, but do not store them in the stable bank database}.
 
 \begin{comment}
 The final entities and their selected attributes are described in what follows:
@@ -283,7 +338,7 @@ There are only two relations in the final stable subgraph, that is, the ones tha
 
 \end{comment}
 
-\subsubsection{Volatile Property Graph}
+\subsubsection{Volatile Property Graph}\label{section:volatile-pg}
 
 The volatile subgraph model describes the most \emph{variable} part of our model, the continuous interactions between the client's cards and the ATMs. These interactions are continuously occurring and arrive to our system as a continuous data stream. 
 This subgraph model contains the minimal information needed to identify the Card and ATM entities -- \texttt{number\_id} and \texttt{ATM\_id} Card and ATM identifiers -- between which the interaction occurs, along with additional details related to the interaction. 
@@ -298,6 +353,9 @@ The \emph{interaction} relation contains as properties: \texttt{id} as the inter
     \label{img:pg-volatile}
 \end{figure}
 
+
+The proposed property graph data model is represented in Figure \ref{img:pg-complete}. On it, the
+representation of both the stable and volatile property subgraphs are merged to give a full view on the final property graph model. The volatile subgraph consists on the blue coloured relationship -- \emph{interaction} relation -- and the two entities that matches, whereas the stable subgraph consists on the rest of the nodes and relations except of this blue coloured relation. Both the stable and volatile subgraphs are explained in detail in \ref{section:stable-pg} and \ref{section:volatile-pg}, respectively.
 
 \begin{figure}[H]
   \centering
