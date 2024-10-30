@@ -444,7 +444,7 @@ on the possible anomalous scenarios for the generated transactions of each of th
   \item Distribution of the transactions along time:
   \begin{itemize}
     \item \textcolor{green}{$\Rightarrow$} Uniform distribution.
-    \item Poisson process distribution.
+    \item \textcolor{blue}{$\Rightarrow$ (Consider the possibility)} Poisson process distribution.
   \end{itemize}
   \item Other options:
   \begin{itemize}
@@ -587,7 +587,14 @@ linked ATM of the new transaction and its transaction time (to avoid transaction
 are overlapped or that come one directly after the other, since this may be fraudulent!).
 
 \subsubsection{ATM closed subset + Poisson Process}
-To do the generation of the synthetic set of transactions we provide the Python program \texttt{transactionGenerator.py}. On it we need to enter some parameters needed to customise the generation of the set of transactions.
+
+\begin{tcolorbox}
+  \begin{itemize}
+    \item[$\rightarrow$] \textbf{ATM selection}: Closed ATM subset.
+    \item[$\rightarrow$] \textbf{Time distribution}: Poisson process distribution of $num\_tx$ 
+    transactions for each of the cards.
+  \end{itemize}
+\end{tcolorbox}
 
 Generate $\texttt{num\_tx}$ transactions for a selected period of time $\texttt{t}$.
 Distribution following a Poisson process distribution along $[0,t]$.
@@ -595,7 +602,8 @@ Distribution following a Poisson process distribution along $[0,t]$.
     \item[$\bullet$] $\lambda=\texttt{avg\_tx}$ on a day for the client if $\texttt{t = 24h}$. Otherwise, 
     decide a specific $\lambda$ for the considered $\texttt{t}$.
     \item[$\bullet$] Inter-arrival times $X_1, X_2, \cdots$ are distributed following an exponential distribution:
-    $X_i \sim \text{Exp}(\lambda)$. They represent the time elapsed between two of these events, e.g. $X_2$ To do the generation of the synthetic set of transactions we provide the Python program \texttt{transactionGenerator.py}. On it we need to enter some parameters needed to customise the generation of the set of transactions.avoid introducing anomalous undesired scenarios, we have to impose 
+    $X_i \sim \text{Exp}(\lambda)$. They represent the time elapsed between two of these events, e.g. $X_2$ represents the time elapsed between the first and the second arrival. Note that in this case, since we need to respect the minimum required time between two consecutive 
+    transactions ($t_{min}$) so to avoid introducing anomalous undesired scenarios, we have to impose
     that: $X_i \geq \Delta_{i-1} + t_{min}, \forall X_i$, where:
 
     \begin{itemize}
