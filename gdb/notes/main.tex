@@ -424,7 +424,7 @@ to measure the efficiency of our system detecting them, as we have the exact num
 
 \begin{tcolorbox}
   \begin{itemize}
-    \item \textbf{By card}: Generation of the transactions for each of the cards independently. \textbf{We have
+    \item \textcolor{green}{$\Rightarrow$}\textbf{By card}: Generation of the transactions for each of the cards independently. \textbf{We have
     control} to avoid anomalous scenarios when selecting the ATMs and distributing the transactions along time.
     \item \textbf{In general}: Linking ATM and client composing (card,ATM) pairs, and distributing these pairs along
     time according to a certain distribution. \textbf{No control / More difficult to control the possible derived
@@ -438,12 +438,12 @@ on the possible anomalous scenarios for the generated transactions of each of th
 \begin{itemize}
   \item Selection of ATMs:
   \begin{itemize}
-    \item Neighborhood / Closed ATM subset.
+    \item \textcolor{green}{$\Rightarrow$} Neighborhood / Closed ATM subset.
     \item Random walk. To do the selection of the sequence of ATMs for the generated transactions.
   \end{itemize}
   \item Distribution of the transactions along time:
   \begin{itemize}
-    \item Uniform distribution.
+    \item \textcolor{green}{$\Rightarrow$} Uniform distribution.
     \item Poisson process distribution.
   \end{itemize}
   \item Other options:
@@ -459,7 +459,9 @@ on the possible anomalous scenarios for the generated transactions of each of th
     \item[$\rightarrow$] \textbf{ATM selection}: Closed ATM subset.
     \item[$\rightarrow$] \textbf{Time distribution}: Uniform distribution of the $num\_tx$ transactions 
     for a card on a certain day ($num\_tx$ is drawn from a Poisson distribution of 
-    $\lambda = \texttt{withdrawal\_day}$, based on the behavior of the \emph{Wisabi} clients).
+    $\lambda = \texttt{withdrawal\_day}$, based on the behavior of the \emph{Wisabi} clients).\\
+    \textcolor{red}{$\rightarrow$ TODO: Ahora genero no solo withdrawals, sino también los otros 
+    tipos de transacciones... cuidado con esto. Dejo por el momento solo withdrawals? o de todo pero con cuidado para no solapar?.... PENSAR BIEN!}
   \end{itemize}
 \end{tcolorbox}
 
@@ -486,10 +488,11 @@ For each card:
     \item \textbf{ATM subset}: Create a subset of ATMs that are considered to be \textit{usual} for 
     the card client, so that they are all at a distance inferior or equal to 
     \textcolor{orange}{\texttt{max\_distance}} kms to the residence location of the client 
-    of the card. We limit the size of this subset to be of \textcolor{orange}{\texttt{max\_size\_atm\_subset}}, so that we take only a maximum of \textcolor{orange}{\texttt{max\_size\_atm\_subset}} of the closest ATMs.
-    \textcolor{blue}{In addition, among the ATMs in this subset, preference is given to 
+    of the card. We limit the size of this subset to be of \textcolor{orange}{\texttt{max\_size\_atm\_subset}}, so that we take only a maximum of \textcolor{orange}{\texttt{max\_size\_atm\_subset}} of the closest ATMs.\\
+    \textcolor{blue}{$\rightarrow$ Tomar como valor de esta variable un \% / ratio del total de ATMs en el banco - 100 ATMs pues tomo como valor de la variable max el 5\% del total de los ATMs -> 5 as max.}\\
+    \textcolor{red}{$\rightarrow$ (Quitar, con lo del ATM subset es más que suficiente. No nos liemos.)} \textcolor{gray}{In addition, among the ATMs in this subset, preference is given to 
     those that are the closest to the residence location of the client and those that 
-    belong to the same bank company as the client's card.}
+    belong to the same bank company as the client's card.\\}
     The transactions generated for this card will be linked only to ATMs of this subset called 
     \texttt{Neighborhood}.
 
@@ -509,7 +512,7 @@ For each card:
     \begin{itemize}
       \item \texttt{max\_distance}: two options:  
         \begin{itemize}
-          \item In general: taking $2*\texttt{max\_distance}$ kms as the upper bound on 
+          \item \textcolor{green}{$\Rightarrow$ DEFINETIVELY SELECT THIS, it is simpler and this way we give more margin to respect the min time and avoid undesired anomalous situations\\}In general: taking $2*\texttt{max\_distance}$ kms as the upper bound on 
           the maximum distance between 2 ATMs of the ATM subset, set the 
           \textcolor{orange}{\texttt{t\_min}} to be the time needed to traverse that distance 
           at a selected $\texttt{max\_speed}$. (* So far done like this). 
@@ -526,10 +529,13 @@ For each card:
       \ \texttt{Neighborhood}$.
     \end{itemize}
 
-    \item For each day generate \textcolor{orange}{\texttt{num\_tx}} transactions, random 
+    \paragraph{NUMBER OF TX AND ITS DISTRIBUTION ALONG TIME:\\}
+    \item \textcolor{red}{$\Rightarrow$ TODO: generate also other kinds of tx?} For each day generate \textcolor{orange}{\texttt{num\_tx}} transactions, random 
     number drawn from a Poisson distribution of $\lambda = \texttt{withdrawal\_day}$.
 
-    \item Distribution of the \texttt{num\_tx} transaction times 
+    \item \textcolor{red}{$\Rightarrow$ TODO: IMPROVE THE DISTRIBUTION ALONG TIME METHOD.
+    Idea: do not do it by days, but for the time interval as a whole of the selected set of days!
+    }Distribution of the \texttt{num\_tx} transaction times 
     (\texttt{transaction\_start}), doing a uniform distribution of the \texttt{num\_tx}
     for each of the days: 
     
