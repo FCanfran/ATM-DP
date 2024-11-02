@@ -160,72 +160,79 @@ def transaction_generator(card, atm_df, start_date, tx_id):
         t_min = ((max_distance * 2) / SPEED) * 60 * 60  # in seconds
 
         # 3. Generation of transactions
-        for day in range(num_days):
-            # random number of transactions on this day:
-            # poisson of lambda = withdrawal_day (= avg number of withdrawals per day)
-            num_tx = np.random.poisson(card["withdrawal_day"])
-            if num_tx > 0:
-                # distributed transaction start moments on a day (in seconds)
-                moments = distribute_tx(num_tx, t_min)
-                for moment in moments:
-                    # 0. ATM id
-                    # randomly among the subset of ATMs -> all of them satisfy the constraints
-                    # of the min threshold time TMIN etc...
-                    rand_index = np.random.choice(atm_df_regular.index)
-                    ATM_id = atm_df_regular.loc[rand_index]["ATM_id"]
-                    # 1. transaction_start
-                    # shift based on the number of day
-                    start_time_tx = (86400 * day) + moment
-                    start_time_delta = datetime.timedelta(seconds=start_time_tx)
-                    # Add the timedelta to the start date
-                    transaction_start = start_datetime + start_time_delta
-                    # 2. transaction_end
-                    # -> increment some diff time based on the normal duration of a transaction
-                    diff_end = int(np.random.normal(mean_duration, std_duration))
-                    if diff_end < 0:
-                        diff_end = (
-                            mean_duration  # if negative -> then it is = to the mean
-                        )
-                    if diff_end > max_duration:
-                        diff_end = max_duration  # if above 10 mins -> then 10 min
+        # poisson of lambda = withdrawal_day (= avg number of withdrawals per day)
+        # num_tx = np.random.poisson(card["withdrawal_day"])
 
-                    end_time_tx = start_time_tx + diff_end
-                    end_time_delta = datetime.timedelta(seconds=end_time_tx)
-                    transaction_end = start_datetime + end_time_delta
+        withdrawal_day = card["withdrawal_day"]
+        deposit_day = card["deposit_day"]
+        inquiry_day = card["inquiry_day"]
+        transfer_day = card["transfer_day"]
 
-                    # 3. transaction_amount
-                    # based on card behavior params: amount_avg & amount_std
-                    # normal distribution: mean = amount_avg, std = amount_std
-                    transaction_amount = np.random.normal(
-                        card["amount_avg"], card["amount_std"]
-                    )
-                    # If negative amount, draw from a uniform distribution
-                    if transaction_amount < 0:
-                        transaction_amount = np.random.uniform(
-                            0, card["amount_avg"] * 2
-                        )
+        ops_day = withdrawal_day + deposit_day + inquiry_day + transfer_day
+        print(ops_day)
+        num_tx = np.random.poisson(ops_day)
+        print(num_tx)
 
-                    transaction_amount = np.round(transaction_amount, decimals=2)
+        # TEST: SELECT THE TYPE FOR A TX
+        """
+        if num_tx > 0:
+            # distributed transaction start moments on a day (in seconds)
+            moments = distribute_tx(num_tx, t_min)
+            for moment in moments:
+                # 0. ATM id
+                # randomly among the subset of ATMs -> all of them satisfy the constraints
+                # of the min threshold time TMIN etc...
+                rand_index = np.random.choice(atm_df_regular.index)
+                ATM_id = atm_df_regular.loc[rand_index]["ATM_id"]
+                # 1. transaction_start
+                # shift based on the number of day
+                start_time_tx = (86400 * day) + moment
+                start_time_delta = datetime.timedelta(seconds=start_time_tx)
+                # Add the timedelta to the start date
+                transaction_start = start_datetime + start_time_delta
+                # 2. transaction_end
+                # -> increment some diff time based on the normal duration of a transaction
+                diff_end = int(np.random.normal(mean_duration, std_duration))
+                if diff_end < 0:
+                    diff_end = mean_duration  # if negative -> then it is = to the mean
+                if diff_end > max_duration:
+                    diff_end = max_duration  # if above 10 mins -> then 10 min
 
-                    new_tx = {
-                        "transaction_id": tx_id,
-                        "number_id": card["number_id"],  # card id
-                        "ATM_id": ATM_id,
-                        "transaction_start": transaction_start,
-                        "transaction_end": transaction_end,
-                        "transaction_amount": transaction_amount,
-                    }
+                end_time_tx = start_time_tx + diff_end
+                end_time_delta = datetime.timedelta(seconds=end_time_tx)
+                transaction_end = start_datetime + end_time_delta
 
-                    new_tx_df = pd.DataFrame([new_tx])
-                    transaction_df = (
-                        new_tx_df.copy()
-                        if transaction_df.empty
-                        else pd.concat([transaction_df, new_tx_df], ignore_index=True)
-                    )
-                    tx_id += 1
-                    global total_regular
-                    total_regular += 1
+                # 3. transaction_amount
+                # based on card behavior params: amount_avg & amount_std
+                # normal distribution: mean = amount_avg, std = amount_std
+                transaction_amount = np.random.normal(
+                    card["amount_avg"], card["amount_std"]
+                )
+                # If negative amount, draw from a uniform distribution
+                if transaction_amount < 0:
+                    transaction_amount = np.random.uniform(0, card["amount_avg"] * 2)
 
+                transaction_amount = np.round(transaction_amount, decimals=2)
+
+                new_tx = {
+                    "transaction_id": tx_id,
+                    "number_id": card["number_id"],  # card id
+                    "ATM_id": ATM_id,
+                    "transaction_start": transaction_start,
+                    "transaction_end": transaction_end,
+                    "transaction_amount": transaction_amount,
+                }
+
+                new_tx_df = pd.DataFrame([new_tx])
+                transaction_df = (
+                    new_tx_df.copy()
+                    if transaction_df.empty
+                    else pd.concat([transaction_df, new_tx_df], ignore_index=True)
+                )
+                tx_id += 1
+                global total_regular
+                total_regular += 1
+        """
     else:
         # if ATM subset size = 0 -> then
         print(f"Empty ATM subset for card: {card['number_id']}")
@@ -414,6 +421,11 @@ def main():
         tx_card, tx_id, atm_regular, atm_non_regular = transaction_generator(
             card_df.iloc[card_index], atm_df, start_date, tx_id
         )
+
+        print(tx_card)
+        exit(1)
+
+        """
         if len(tx_card) > 0:
             # Generation of anomalous tx for this card
             card_anomalous_df, tx_id = introduce_anomalous_fp_1(
@@ -441,6 +453,8 @@ def main():
                 if transaction_df.empty
                 else pd.concat([transaction_df, tx_card], ignore_index=True)
             )
+        
+        """
 
     # 3 csv generated:
     # - regular tx
