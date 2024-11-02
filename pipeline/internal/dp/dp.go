@@ -207,6 +207,7 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 	}
 }
 
+// Source Stage
 func Start(istream string) {
 
 	// Creation of edges channel to pass from the read input to the pipeline

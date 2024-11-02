@@ -24,6 +24,7 @@ func main() {
 	istream := os.Args[1]
 
 	// start the pipeline and give the stream edge by edge
+	// TODO: Llamar SOURCE en vez de Start
 	dp.Start(istream)
 
 }

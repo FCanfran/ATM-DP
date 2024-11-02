@@ -1,5 +1,6 @@
 import datetime
 import numpy as np
+import bisect
 
 
 start_date = "2018-04-01"  # start date, from which the first transaction is generated
@@ -9,7 +10,6 @@ num_days = 5  # num of days for which transactions are generated (init start_dat
 
 
 def main():
-
     # fix a constant seed so that experiments are reproducible
     key = 37
     np.random.seed(int(key))
@@ -34,6 +34,7 @@ def main():
     lower_bound = 0
     upper_bound = (86400 * num_days) - 1
 
+    #############################################################################
     num_holes = upper_bound - lower_bound
     needed_holes = t_min * n
     print(f"num_holes: {num_holes}, needed_holes: {needed_holes}")
@@ -49,7 +50,52 @@ def main():
     # Instead
     if (needed_holes) > (num_holes):
         print("It can't be fitted")
+    #############################################################################
 
+    tx_ordered_times = [(10, 11), (12, 18), (24, 30)]
+    start_time = 19
+    diff_end = int(np.random.normal(3, 1))
+    if diff_end < 0:
+        diff_end = 3  # if negative -> then it is = to the mean
+    if diff_end > 10:
+        diff_end = 10  # if above 10 mins -> then 10 min
+
+    end_time = start_time + diff_end
+
+    candidate_tx = (start_time, end_time)
+
+    print(candidate_tx)
+
+    def get_start(element):
+        return element[0]
+
+    def get_end(element):
+        return element[1]
+
+    # Check with previous and end
+    # Find the insertion index
+    index = bisect.bisect_left(tx_ordered_times, get_start(candidate_tx), key=get_start)
+
+    # Access the previous element if it exists
+    prev = tx_ordered_times[index - 1] if index > 0 else None
+
+    # Access the next element if it exists
+    next = tx_ordered_times[index] if index < len(tx_ordered_times) else None
+
+    print(f"Previous element: {prev}")
+    print(f"Next element: {next}")
+
+    # Check if insertion is possible with prev and next
+    # prev: prev.end < tx.start
+    if prev != None:
+        if get_end(prev) < get_start(candidate_tx)
+    # next: tx.end < next.start
+
+    """
+    while len(tx_times) < n:
+        candidate = int(np.random.uniform(lower_bound, upper_bound))
+
+    """
     """
     start_datetime = datetime.datetime.strptime(start_date, "%Y-%m-%d")
     start_time_tx = 86399
