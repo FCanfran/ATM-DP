@@ -5,6 +5,7 @@ from geopy.distance import geodesic, great_circle
 import sys
 from bitarray import bitarray
 import random
+import bisect
 
 # Transaction generator with anomalous transaction generation, given by parameter ratio [0,1], which defines
 # the number of anomalous tx introduced per card (# anomalous tx of card_i = ratio * # tx of card_i)
@@ -107,29 +108,66 @@ def get_ordered_atms(
     return atm_df_regular, atm_df_non_regular
 
 
-# Distribute n transactions on a day [tmin/2, 86400-(tmin/2)]
+# Distribute n transactions over the interval of all the given days
 # Returns a ordered list of start moments in seconds, respecting that all of the moments
 # are at a minimum time distance of TMIN
 def distribute_tx(n, t_min):
-    # in seconds of a day: (86400s in a day) -> [tmin/2, 86400-(tmin/2)]
-    lower_bound = t_min / 2
-    upper_bound = 86400 - (t_min / 2) - max_duration
+    # in seconds of a day: (86400s in a day)
+    lower_bound = 0
+    upper_bound = (86400 * num_days) - 1
 
-    if (upper_bound - lower_bound) < (n - 1) * t_min:
+    num_holes = upper_bound - lower_bound
+    needed_holes = (max_duration + t_min) * (n - 1) + max_duration
+    print(f"num_holes: {num_holes}, needed_holes: {needed_holes}")
+
+    if num_holes < needed_holes:
         raise ValueError(
-            f"Impossible to distribute {n} transactions over a day with tmin = {t_min}"
+            f"Impossible to distribute {n} transactions over the given interval time with tmin = {t_min}"
         )
 
-    moments = []
-    while len(moments) < n:
-        candidate = int(np.random.uniform(lower_bound, upper_bound))
-        # to add this new moment of transaction, it is required that it respects
-        # the time distance constraint wrt all the other added moments
-        if all(abs(candidate - second) >= (t_min + max_duration) for second in moments):
-            moments.append(candidate)
+    tx_ordered_times = []
+    while len(tx_ordered_times) < n:
+        start_time = int(np.random.uniform(lower_bound, upper_bound))
+        diff_end = int(np.random.normal(mean_duration, std_duration))
+        if diff_end < 0:
+            diff_end = mean_duration  # if negative -> then it is = to the mean
+        if diff_end > max_duration:
+            diff_end = max_duration  # if above max_duration -> then max_duration
 
-    moments.sort()
-    return moments
+        end_time = start_time + diff_end
+        candidate_tx = (start_time, end_time)
+
+        def get_start(element):
+            return element[0]
+
+        def get_end(element):
+            return element[1]
+
+        # Check with previous and next
+        # Find the insertion index
+        index = bisect.bisect_left(
+            tx_ordered_times, get_start(candidate_tx), key=get_start
+        )
+
+        # Access the previous element if it exists
+        prev = tx_ordered_times[index - 1] if index > 0 else None
+
+        # Access the next element if it exists
+        next = tx_ordered_times[index] if index < len(tx_ordered_times) else None
+
+        print(f"Previous element: {prev}")
+        print(f"Next element: {next}")
+
+        # Check if insertion is possible with prev and next
+        if (prev == None or get_end(prev) + t_min < get_start(candidate_tx)) and (
+            next == None or get_end(candidate_tx) + t_min < get_start(next)
+        ):
+            # Insert in this position
+            bisect.insort(tx_ordered_times, candidate_tx)
+
+        print(tx_ordered_times)
+
+    return tx_ordered_times
 
 
 def transaction_generator(card, atm_df, start_date, tx_id):
@@ -174,7 +212,7 @@ def transaction_generator(card, atm_df, start_date, tx_id):
         transfer_day = card["transfer_day"]
 
         ops_day = withdrawal_day + deposit_day + inquiry_day + transfer_day
-        num_tx = np.random.poisson(ops_day)
+        num_tx = np.random.poisson(ops_day * num_days)
 
         op_type_probabilities = [
             withdrawal_day / ops_day,
@@ -183,8 +221,7 @@ def transaction_generator(card, atm_df, start_date, tx_id):
             transfer_day / ops_day,
         ]
 
-        # sample = random.choices(events, weights=probabilities)
-        # print(sample)
+        print(f"num_tx: {num_tx}")
 
         if num_tx > 0:
             # distributed transaction start moments on a day (in seconds)
@@ -205,11 +242,11 @@ def transaction_generator(card, atm_df, start_date, tx_id):
                 # 3. transaction_type
                 transaction_type = random.choices(
                     op_types, weights=op_type_probabilities
-                )
-                print(type)
+                )[0]
+                print(transaction_type)
 
                 # transaction_amount - depending on the type of tx
-                if type == 0:  # withdrawal
+                if transaction_type == 0:  # withdrawal
                     transaction_amount = np.random.normal(
                         card["amount_avg_withdrawal"], card["amount_std_withdrawal"]
                     )
@@ -218,7 +255,7 @@ def transaction_generator(card, atm_df, start_date, tx_id):
                         transaction_amount = np.random.uniform(
                             0, card["amount_avg_withdrawal"] * 2
                         )
-                elif type == 1:  # deposit
+                elif transaction_type == 1:  # deposit
                     transaction_amount = np.random.normal(
                         card["amount_avg_deposit"], card["amount_std_deposit"]
                     )
@@ -226,9 +263,9 @@ def transaction_generator(card, atm_df, start_date, tx_id):
                         transaction_amount = np.random.uniform(
                             0, card["amount_avg_deposit"] * 2
                         )
-                elif type == 2:  # balance inquiry
+                elif transaction_type == 2:  # balance inquiry
                     transaction_amount = 0.0
-                elif type == 3:  # transfer
+                elif transaction_type == 3:  # transfer
                     transaction_amount = np.random.normal(
                         card["amount_avg_transfer"], card["amount_std_transfer"]
                     )
@@ -419,8 +456,8 @@ def main():
         sys.exit(1)
 
     # fix a constant seed so that experiments are reproducible
-    key = 37
-    np.random.seed(int(key))
+    # key = 37
+    # np.random.seed(int(key))
 
     # Read the card and atm datasets
     atm_df = pd.read_csv("csv/atm.csv")

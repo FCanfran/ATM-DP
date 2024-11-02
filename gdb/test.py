@@ -31,7 +31,7 @@ def main():
     # num_tx = np.random.poisson(card["withdrawal_day"])
     # n = np.random.poisson(lam=2.5 * num_days)
     # TODO: Provisional
-    # n = int(input("Enter n: "))
+    n = int(input("Enter n: "))
     num_days = int(input("Enter num_days: "))
 
     # print(f"num_tx_total: {n}, num_tx_total")
@@ -39,25 +39,15 @@ def main():
     # full interval: [0, 86400*num_days)
     lower_bound = 0
     upper_bound = (86400 * num_days) - 1
-    """
-    #############################################################################
+
     num_holes = upper_bound - lower_bound
-    needed_holes = t_min * n
+    needed_holes = (max_duration + t_min) * (n - 1) + max_duration
     print(f"num_holes: {num_holes}, needed_holes: {needed_holes}")
 
-    # TODO: Change -> This is not correct like this
-    # - Consider as well here the max duration of the tx
-
-    if (upper_bound - lower_bound) < (n - 1) * t_min:
+    if num_holes < needed_holes:
         raise ValueError(
-            f"Impossible to distribute {n} transactions over a day with tmin = {t_min}"
+            f"Impossible to distribute {n} transactions over the given interval time with tmin = {t_min}"
         )
-
-    # Instead
-    if (needed_holes) > (num_holes):
-        print("It can't be fitted")
-    #############################################################################
-    """
 
     tx_ordered_times = []
     n = 5
