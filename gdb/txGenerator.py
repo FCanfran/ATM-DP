@@ -531,6 +531,7 @@ def main():
     # - anomalous tx
     # - all tx
 
+    # Split the tx in two: tx_start and tx_end
     # Custom sorting logic:
     # - If tx_end is None use tx_start.
     # - Otherwise, use tx_end.
@@ -542,7 +543,9 @@ def main():
         transaction_df_ext["sort_key"] = transaction_df_ext.apply(
             lambda row: (
                 row["transaction_end"]
-                if pd.notna(row["transaction_end"])
+                if pd.notna(
+                    row["transaction_end"]
+                )  # if tx_end is not missing (not NaN) -> use tx_end to sort, otherwise use tx_start
                 else row["transaction_start"]
             ),
             axis=1,
