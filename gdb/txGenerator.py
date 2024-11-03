@@ -6,46 +6,37 @@ import sys
 from bitarray import bitarray
 import random
 import bisect
+import math
 
 # Transaction generator with anomalous transaction generation, given by parameter ratio [0,1], which defines
 # the number of anomalous tx introduced per card (# anomalous tx of card_i = ratio * # tx of card_i)
 # Every transaction consists of 2 "edges"/"tx": the starting and the ending transaction.
 # NOTE: Have the same tx_id for the 2 edges (the start and the end one)
 
-# Parameters
-# --------------------------------------------------------------------------
-start_date = "2018-04-01"  # start date, from which the first transaction is generated
-num_days = 5  # num of days for which transactions are generated (init start_date)
-# TODO: Improve this - values are "testing" values
-max_size_atm_subset = 10  # maximum size of the ATM subset
-# TODO: Calculate the max distance of each of the ATMs subsets
-max_distance = 30  # maximum distance of the atms in the ATM subset to client residence
-# duration of a transaction
-# TODO: Define this better
-max_duration = 600  # max duration - 600s (10min)
-mean_duration = 300  # mean duration - 300s (5min)
-std_duration = 120  # std duration - 120s  (2min)
-
-# TODO: Adjust
-# anomalous_tx_duration
-anomalous_tx_duration = 5  # segs
-
-########### Speeds ###########
-# SPEED: for the creation of the regular tx
-# MAX_SPEED: for the creation of the anomalous tx
-# Needed to calculate the t_min: time needed to traverse the distance between 2 geographical points at SPEED km/h
-# -> speed at which we consider the client travels NORMALY (by any means of transport) between 2 points
-SPEED = 50  # km/h
-# Assumption on the maximum speed (km/h) at which the distance between two geographical points
-# can be traveled
-MAX_SPEED = 500  # km/h
-# --------------------------------------------------------------------------
 # Operation types:
 # 0: withdrawal
 # 1: deposit
 # 2: balance inquiry
 # 3: transfer
-op_types = [0, 1, 2, 3]
+OP_TYPES = [0, 1, 2, 3]
+
+# Parameters
+#############################################################################################################
+START_DATE = "2018-04-01"  # start date, from which the first transaction is generated
+NUM_DAYS = 5  # num of days for which transactions are generated (init START_DATE)
+MAX_SIZE_ATM_SUBSET_RATIO = 0.2  # ratio [0,1] of the total size of the ATM global set - maximum size of the ATM subset: |ATM_subset| = ratio * |ATM|
+MAX_DISTANCE_SUBSET_THRESHOLD = (
+    70  # maximum distance of the atms in the ATM subset to client residence
+)
+MAX_DURATION = 600  # max duration of a transaction - 600s (10min)
+MEAN_DURATION = 300  # mean duration of a transaction- 300s (5min)
+STD_DURATION = 120  # std duration of a transaction - 120s  (2min)
+REGULAR_SPEED = 50  # (km/h) REGULAR_SPEED: for the creation of the regular tx
+# - needed to calculate the t_min: time needed to traverse the distance between 2 geographical points at SPEED km/h
+# - speed at which we consider the client travels NORMALY (by any means of transport) between 2 points
+ANOMALOUS_SPEED = 500  # (km/h)  NOMALOUS_SPEED: Assumption on the maximum ANOMALOUS speed (km/h) at which the distance between two geographical points
+# can be traveled
+ANOMALOUS_TX_DURATION = 5  # (segs)
 
 # ------------------
 # number of cards for which no transactions can be generated due to the specific required conditions
@@ -55,6 +46,7 @@ success_cards = 0
 # regular and anomalous tx counters
 total_regular = 0
 total_anomalous = 0
+#############################################################################################################
 
 
 # 2 approaches for the distance:
@@ -77,11 +69,31 @@ def calculate_distance_points(point_1, point_2):
     return round(distance, 3)  # limit to 3 decimals only, km and meters
 
 
+# max_distance between any pair of ATMs belonging to an ATM subset
+def calculate_max_distance_subset(atm_df_regular):
+    max_distance = 0.0
+    print(atm_df_regular)
+
+    for i in range(len(atm_df_regular)):
+        for j in range(i + 1, len(atm_df_regular)):
+            i_loc = (
+                atm_df_regular.loc[i]["loc_latitude"],
+                atm_df_regular.loc[i]["loc_longitude"],
+            )
+            j_loc = (
+                atm_df_regular.loc[j]["loc_latitude"],
+                atm_df_regular.loc[i]["loc_longitude"],
+            )
+            dist_i_j = calculate_distance_points(i_loc, j_loc)
+            if dist_i_j > max_distance:
+                max_distance = dist_i_j
+
+    return math.ceil(max_distance)
+
+
 # Get ordered ascending list by distance of the atms wrt card location coordinates
 # Optional: limit to the ones that lie inside a specific distance threshold
-def get_ordered_atms(
-    card_loc_latitude, card_loc_longitude, atm_df, max_size_subset, max_distance
-):
+def get_ordered_atms(card_loc_latitude, card_loc_longitude, atm_df):
     # Create a copy of the original DataFrame to avoid modifying it - dataframes are mutable objects!
     atm_df_ordered = atm_df.copy()
     card_loc = (card_loc_latitude, card_loc_longitude)
@@ -89,21 +101,23 @@ def get_ordered_atms(
     atm_df_ordered["distance"] = atm_df_ordered.apply(
         calculate_distance, point=card_loc, axis=1
     )
-
     # Sort DataFrame based on distance
     atm_df_ordered = atm_df_ordered.sort_values(
         by="distance", ascending=True
     ).reset_index(drop=True)
-
-    # The "regular" subset: select those with distance <= max_distance
-    atm_df_regular = atm_df_ordered[atm_df_ordered["distance"] <= max_distance]
+    # The "regular" subset: select those with distance <= MAX_DISTANCE_SUBSET_THRESHOLD
+    atm_df_regular = atm_df_ordered[
+        atm_df_ordered["distance"] <= MAX_DISTANCE_SUBSET_THRESHOLD
+    ]
     # The "non-regular" subset: the rest
-    atm_df_non_regular = atm_df_ordered[atm_df_ordered["distance"] > max_distance]
+    atm_df_non_regular = atm_df_ordered[
+        atm_df_ordered["distance"] > MAX_DISTANCE_SUBSET_THRESHOLD
+    ]
 
-    # Subset of max size of max_size_subset
+    # max size of the subset -> |ATM_subset| = MAX_SIZE_ATM_SUBSET_RATIO * |ATM|
+    max_size_subset = math.ceil(MAX_SIZE_ATM_SUBSET_RATIO * len(atm_df))
+    # print(f"max_size_subset {max_size_subset}, |ATM|={len(atm_df)}")
     atm_df_regular = atm_df_regular.head(max_size_subset)
-
-    # TODO: Give priority to the ATMs belonging to the same bank company as the card
 
     return atm_df_regular, atm_df_non_regular
 
@@ -114,10 +128,10 @@ def get_ordered_atms(
 def distribute_tx(n, t_min):
     # in seconds of a day: (86400s in a day)
     lower_bound = 0
-    upper_bound = (86400 * num_days) - 1
+    upper_bound = (86400 * NUM_DAYS) - 1
 
     num_holes = upper_bound - lower_bound
-    needed_holes = (max_duration + t_min) * (n - 1) + max_duration
+    needed_holes = (MAX_DURATION + t_min) * (n - 1) + MAX_DURATION
     print(f"num_holes: {num_holes}, needed_holes: {needed_holes}")
 
     if num_holes < needed_holes:
@@ -128,11 +142,11 @@ def distribute_tx(n, t_min):
     tx_ordered_times = []
     while len(tx_ordered_times) < n:
         start_time = int(np.random.uniform(lower_bound, upper_bound))
-        diff_end = int(np.random.normal(mean_duration, std_duration))
+        diff_end = int(np.random.normal(MEAN_DURATION, STD_DURATION))
         if diff_end < 0:
-            diff_end = mean_duration  # if negative -> then it is = to the mean
-        if diff_end > max_duration:
-            diff_end = max_duration  # if above max_duration -> then max_duration
+            diff_end = MEAN_DURATION  # if negative -> then it is = to the mean
+        if diff_end > MAX_DURATION:
+            diff_end = MAX_DURATION  # if above MAX_DURATION -> then MAX_DURATION
 
         end_time = start_time + diff_end
         candidate_tx = (start_time, end_time)
@@ -170,7 +184,7 @@ def distribute_tx(n, t_min):
     return tx_ordered_times
 
 
-def transaction_generator(card, atm_df, start_date, tx_id):
+def transaction_generator(card, atm_df, tx_id):
 
     print(f"------------- Generation for card: {card['number_id']} -------------")
     # create transaction dataframe
@@ -185,7 +199,7 @@ def transaction_generator(card, atm_df, start_date, tx_id):
     ]
     transaction_df = pd.DataFrame(columns=cols)
 
-    start_datetime = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+    start_datetime = datetime.datetime.strptime(START_DATE, "%Y-%m-%d")
 
     # 1. Ordered list of terminals by ascending distance to the client card location
     # selecting a maximum of max_size_atm_subset of ATMs that are at a distance
@@ -194,16 +208,18 @@ def transaction_generator(card, atm_df, start_date, tx_id):
         card["loc_latitude"],
         card["loc_longitude"],
         atm_df,
-        max_size_atm_subset,
-        max_distance,
     )
 
     if len(atm_df_regular) > 0:
-        # T_MIN: Minimum threshold time in between 2 transactions of this client
-        # TODO: Calculate t_min? - based on the max distance between 2 atms of the subset list
-        # NOTE: Approx -> 2 x MAX_DISTANCE kms is the upper bound on this max distance btw 2 atms of the subset list
-        # Therefore we set the t_min approx to be the time needed to traverse that distance at SPEED km/h
-        t_min = ((max_distance * 2) / SPEED) * 60 * 60  # in seconds
+        # Calculate max_distance_subset for each specific ATM_subset
+        max_distance_subset = calculate_max_distance_subset(atm_df_regular)
+        # t_min: minimum threshold time in between 2 transactions of this client
+        # - based on the max distance between any pair of atms of the subset list
+        # Therefore we set the t_min approx to be the time needed to traverse that max_distance at REGULAR_SPEED km/h
+        t_min = int(((max_distance_subset * 2) / REGULAR_SPEED) * 60 * 60)  # in seconds
+        print(f"tx-generarion ----- t_min = {t_min}")
+
+        exit(1)
 
         # Generation of transactions
         withdrawal_day = card["withdrawal_day"]
@@ -212,7 +228,7 @@ def transaction_generator(card, atm_df, start_date, tx_id):
         transfer_day = card["transfer_day"]
 
         ops_day = withdrawal_day + deposit_day + inquiry_day + transfer_day
-        num_tx = np.random.poisson(ops_day * num_days)
+        num_tx = np.random.poisson(ops_day * NUM_DAYS)
 
         op_type_probabilities = [
             withdrawal_day / ops_day,
@@ -241,7 +257,7 @@ def transaction_generator(card, atm_df, start_date, tx_id):
                 print(transaction_start, transaction_end)
                 # 3. transaction_type
                 transaction_type = random.choices(
-                    op_types, weights=op_type_probabilities
+                    OP_TYPES, weights=op_type_probabilities
                 )[0]
                 print(transaction_type)
 
@@ -373,7 +389,7 @@ def introduce_anomalous_fp_1(
             # 1. Calculate the distance between the 2 ATM locations (Haversine distance)
             # 2. t = e / v ---> (km)/(km/h) --> in seconds (*60*60)
             distance_km = calculate_distance_points(ATM_prev_loc, ATM_new_loc)
-            t_min = int((distance_km / MAX_SPEED) * 60 * 60)  # in seconds
+            t_min = int((distance_km / ANOMALOUS_SPEED) * 60 * 60)  # in seconds
             # Make t_diff(tx_prev, tx_new) < t_min(ATM_prev, ATM_new)
             # tx_new.start = tx_prev.end + s_time s.t. s_time < t_min (in seconds) & s_time > 0
             # (so that tx_new.start > tx_prev.end)
@@ -384,9 +400,9 @@ def introduce_anomalous_fp_1(
             )
 
             # transaction_end:
-            # tx_end = tx_start + anomalous_tx_duration segs, for all the anomalous tx
+            # tx_end = tx_start + ANOMALOUS_TX_DURATION segs, for all the anomalous tx
             tx_new_end = tx_new_start + datetime.timedelta(
-                seconds=anomalous_tx_duration
+                seconds=ANOMALOUS_TX_DURATION
             )
 
             # create the tx and insert it in the dataframe
@@ -483,7 +499,7 @@ def main():
     for card_index in card_df.index:
         # atm_non_rgular: is the set of atms not selected for the generated tx of the card since distance <= max_distance
         tx_card, tx_id, atm_regular, atm_non_regular = transaction_generator(
-            card_df.iloc[card_index], atm_df, start_date, tx_id
+            card_df.iloc[card_index], atm_df, tx_id
         )
 
         print(tx_card)
