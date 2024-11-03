@@ -37,6 +37,9 @@ REGULAR_SPEED = 50  # (km/h) REGULAR_SPEED: for the creation of the regular tx
 ANOMALOUS_SPEED = 500  # (km/h)  NOMALOUS_SPEED: Assumption on the maximum ANOMALOUS speed (km/h) at which the distance between two geographical points
 # can be traveled
 ANOMALOUS_TX_DURATION = 5  # (segs)
+ANOMALOUS_RATIO = (
+    0.1  # ratio of anomalous tx (per card) argument must be a float in [0,1]
+)
 #############################################################################################################
 
 
@@ -316,12 +319,11 @@ def transaction_generator(card, atm_df, tx_id):
 
 
 # Generation of anomalous tx to cause the fraud pattern 1
+# transaction_type: 0 -> withdrawal
 # Per each of the generated card tx
-def introduce_anomalous_fp_1(
-    regular_tx_card, ratio, atm_regular, atm_non_regular, tx_id
-):
+def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_id):
     num_regular = len(regular_tx_card)
-    num_anomalous = round(num_regular * ratio)
+    num_anomalous = round(num_regular * ANOMALOUS_RATIO)
     print("..........................................")
     print(num_regular, num_anomalous)
 
@@ -340,6 +342,7 @@ def introduce_anomalous_fp_1(
         "transaction_id",
         "number_id",
         "ATM_id",
+        "transaction_type",
         "transaction_start",
         "transaction_end",
         "transaction_amount",
@@ -352,9 +355,7 @@ def introduce_anomalous_fp_1(
         if holes[hole_index] == 0:
             # not occupied, mark as occupied
             holes[hole_index] = 1
-            # ................................ #
-            # TODO: While loop in case we cant meet the conditions for the first selected random ATM from the atm_non_regular subset?
-            # introduce anomalous tx in this position: after the tx[index] (and before tx[index+1], in case it exists tx[index+1] (tx_next) ????)
+            # NOTE: Assume that it can be overlapping with the next regular tx
             tx_prev = regular_tx_card.iloc[hole_index]
 
             print("----------------------- prev -----------------------")
@@ -399,6 +400,7 @@ def introduce_anomalous_fp_1(
                 "transaction_id": tx_id,
                 "number_id": tx_prev["number_id"],  # card id
                 "ATM_id": ATM_new["ATM_id"],
+                "transaction_type": 0,  # withdrawal
                 "transaction_start": tx_new_start,
                 "transaction_end": tx_new_end,
                 "transaction_amount": tx_prev["transaction_amount"] * 2,
@@ -443,26 +445,15 @@ def split_tx(tx_df):
 
 def main():
 
-    if len(sys.argv) < 3:
-        print(
-            "Usage: python transactionGenerator.go <outputFileName> <m: ratio of anomalous tx (per card)>"
-        )
+    if len(sys.argv) < 2:
+        print("Usage: python transactionGenerator.go <outputFileName>")
         sys.exit(1)
 
     output_file_name = sys.argv[1]
-    try:
-        anomalous_ratio = float(sys.argv[2])
-        if not 0 <= anomalous_ratio <= 1:
-            raise ValueError
-    except ValueError:
-        print(
-            "Error: The <m: ratio of anomalous tx (per card)> argument must be a float in [0,1]."
-        )
-        sys.exit(1)
 
     # fix a constant seed so that experiments are reproducible
-    # key = 37
-    # np.random.seed(int(key))
+    key = 37
+    np.random.seed(int(key))
 
     # Read the card and atm datasets
     atm_df = pd.read_csv("csv/atm.csv")
@@ -494,11 +485,10 @@ def main():
         print(tx_card)
 
         # Introduction of anomalous
-        """
         if len(tx_card) > 0:
             # Generation of anomalous tx for this card
             card_anomalous_df, tx_id = introduce_anomalous_fp_1(
-                tx_card, anomalous_ratio, atm_regular, atm_non_regular, tx_id
+                tx_card, atm_regular, atm_non_regular, tx_id
             )
 
             # Ensure the df is not empty and does not contain only NaN values, to avoid warnings
@@ -512,7 +502,6 @@ def main():
             print(
                 "########################################################################################################################################"
             )
-        """
 
         # if transaction_df is empty (on first iteration) then directly assign the returned df, otherwise an ordinary concat
         # Drop all-NaN rows from tx_card before concatenation:
