@@ -37,23 +37,24 @@ REGULAR_SPEED = 50  # (km/h) REGULAR_SPEED: for the creation of the regular tx
 ANOMALOUS_SPEED = 500  # (km/h)  NOMALOUS_SPEED: Assumption on the maximum ANOMALOUS speed (km/h) at which the distance between two geographical points
 # can be traveled
 ANOMALOUS_TX_DURATION = 5  # (segs)
+#############################################################################################################
 
-# ------------------
+
+# Counters
+#############################################################################################################
 # number of cards for which no transactions can be generated due to the specific required conditions
 # -> for example: empty ATM subset (since the distance of the residence to the closest ATM is > max_distance)
-fail_cards = 0
+fail_cards = 0  # number of cards for which no transactions can be generated due to the specific required conditions
+# -> for example: empty ATM subset (since the distance of the residence to the closest ATM is > max_distance)
 success_cards = 0
-# regular and anomalous tx counters
-total_regular = 0
-total_anomalous = 0
+total_regular = 0  # regular transactions counter
+total_anomalous = 0  # anomalous transactions counter
 #############################################################################################################
 
 
 # 2 approaches for the distance:
-# - Haversine: (great-circle distance) Earth as a sphere. Less accurate. Less expensive computation.
+# - (*) Haversine: (great-circle distance) Earth as a sphere. Less accurate. Less expensive computation.
 # - Vicenty: Earth as a ellipsoid (oblate spheroid). More accurate. More expensive computation.
-# NOTE that: Earth is neither perfectly spherical nor ellipse hence calculating the distance on its surface is a challenging task.
-# https://www.neovasolutions.com/2019/10/04/haversine-vs-vincenty-which-is-the-best/
 # Haversine
 # Specific function for the ATM dataframe
 def calculate_distance(atm_row, point):
@@ -72,7 +73,6 @@ def calculate_distance_points(point_1, point_2):
 # max_distance between any pair of ATMs belonging to an ATM subset
 def calculate_max_distance_subset(atm_df_regular):
     max_distance = 0.0
-    print(atm_df_regular)
 
     for i in range(len(atm_df_regular)):
         for j in range(i + 1, len(atm_df_regular)):
@@ -91,8 +91,9 @@ def calculate_max_distance_subset(atm_df_regular):
     return math.ceil(max_distance)
 
 
-# Get ordered ascending list by distance of the atms wrt card location coordinates
-# Optional: limit to the ones that lie inside a specific distance threshold
+# Get ordered ascending list by distance of the atms wrt. card location coordinates
+# - Filter those that lie inside a specific distance threshold MAX_DISTANCE_SUBSET_THRESHOLD
+# - Filter a maximum of ATMs: max size of the subset -> |ATM_subset| = MAX_SIZE_ATM_SUBSET_RATIO * |ATM|
 def get_ordered_atms(card_loc_latitude, card_loc_longitude, atm_df):
     # Create a copy of the original DataFrame to avoid modifying it - dataframes are mutable objects!
     atm_df_ordered = atm_df.copy()
@@ -132,7 +133,7 @@ def distribute_tx(n, t_min):
 
     num_holes = upper_bound - lower_bound
     needed_holes = (MAX_DURATION + t_min) * (n - 1) + MAX_DURATION
-    print(f"num_holes: {num_holes}, needed_holes: {needed_holes}")
+    # print(f"num_holes: {num_holes}, needed_holes: {needed_holes}")
 
     if num_holes < needed_holes:
         raise ValueError(
@@ -162,24 +163,16 @@ def distribute_tx(n, t_min):
         index = bisect.bisect_left(
             tx_ordered_times, get_start(candidate_tx), key=get_start
         )
-
         # Access the previous element if it exists
         prev = tx_ordered_times[index - 1] if index > 0 else None
-
         # Access the next element if it exists
         next = tx_ordered_times[index] if index < len(tx_ordered_times) else None
-
-        print(f"Previous element: {prev}")
-        print(f"Next element: {next}")
-
         # Check if insertion is possible with prev and next
         if (prev == None or get_end(prev) + t_min < get_start(candidate_tx)) and (
             next == None or get_end(candidate_tx) + t_min < get_start(next)
         ):
             # Insert in this position
             bisect.insort(tx_ordered_times, candidate_tx)
-
-        print(tx_ordered_times)
 
     return tx_ordered_times
 
@@ -216,10 +209,10 @@ def transaction_generator(card, atm_df, tx_id):
         # t_min: minimum threshold time in between 2 transactions of this client
         # - based on the max distance between any pair of atms of the subset list
         # Therefore we set the t_min approx to be the time needed to traverse that max_distance at REGULAR_SPEED km/h
+        # if |ATM_subset| = 0 -> max_distance_subset = 0 -> t_min = 0
         t_min = int(((max_distance_subset * 2) / REGULAR_SPEED) * 60 * 60)  # in seconds
-        print(f"tx-generarion ----- t_min = {t_min}")
-
-        exit(1)
+        print(max_distance_subset)
+        print(f"tx-generation ----- t_min = {t_min}")
 
         # Generation of transactions
         withdrawal_day = card["withdrawal_day"]
@@ -237,8 +230,6 @@ def transaction_generator(card, atm_df, tx_id):
             transfer_day / ops_day,
         ]
 
-        print(f"num_tx: {num_tx}")
-
         if num_tx > 0:
             # distributed transaction start moments on a day (in seconds)
             tx_times = distribute_tx(num_tx, t_min)
@@ -254,12 +245,10 @@ def transaction_generator(card, atm_df, tx_id):
                 # 2. transaction_end
                 end_time_delta = datetime.timedelta(seconds=tx_time[1])
                 transaction_end = start_datetime + end_time_delta
-                print(transaction_start, transaction_end)
                 # 3. transaction_type
                 transaction_type = random.choices(
                     OP_TYPES, weights=op_type_probabilities
                 )[0]
-                print(transaction_type)
 
                 # transaction_amount - depending on the type of tx
                 if transaction_type == 0:  # withdrawal
@@ -503,8 +492,8 @@ def main():
         )
 
         print(tx_card)
-        exit(1)
 
+        # Introduction of anomalous
         """
         if len(tx_card) > 0:
             # Generation of anomalous tx for this card
@@ -523,6 +512,7 @@ def main():
             print(
                 "########################################################################################################################################"
             )
+        """
 
         # if transaction_df is empty (on first iteration) then directly assign the returned df, otherwise an ordinary concat
         # Drop all-NaN rows from tx_card before concatenation:
@@ -533,8 +523,8 @@ def main():
                 if transaction_df.empty
                 else pd.concat([transaction_df, tx_card], ignore_index=True)
             )
-        
-        """
+
+    print(transaction_df)
 
     # 3 csv generated:
     # - regular tx
