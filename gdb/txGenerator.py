@@ -38,7 +38,8 @@ ANOMALOUS_SPEED = 500  # (km/h)  NOMALOUS_SPEED: Assumption on the maximum ANOMA
 # can be traveled
 ANOMALOUS_TX_DURATION = 5  # (segs)
 ANOMALOUS_RATIO = (
-    0.1  # ratio of anomalous tx (per card) argument must be a float in [0,1]
+    0.1  # ratio of anomalous tx (per card) over the total amount of generated withdrawal transactions
+    # argument must be a float in [0,1]
 )
 #############################################################################################################
 
@@ -322,10 +323,13 @@ def transaction_generator(card, atm_df, tx_id):
 # transaction_type: 0 -> withdrawal
 # Per each of the generated card tx
 def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_id):
-    num_regular = len(regular_tx_card)
+
+    # Filter the tx of type withdrawal
+    regular_withdrawals_df = regular_tx_card[regular_tx_card["transaction_type"] == 0]
+    num_regular = len(regular_withdrawals_df)
     num_anomalous = round(num_regular * ANOMALOUS_RATIO)
     print("..........................................")
-    print(num_regular, num_anomalous)
+    print(f"num_regular_withdrawals = {num_regular}, num_anomalous = {num_anomalous}")
 
     # randomly select in between which tx the anomalous are introduced
 
@@ -356,13 +360,13 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
             # not occupied, mark as occupied
             holes[hole_index] = 1
             # NOTE: Assume that it can be overlapping with the next regular tx
-            tx_prev = regular_tx_card.iloc[hole_index]
+            tx_prev = regular_withdrawals_df.iloc[hole_index]
 
             print("----------------------- prev -----------------------")
             print(tx_prev)
             if hole_index + 1 < num_regular:
                 print("----------------------- next -----------------------")
-                print(regular_tx_card.iloc[hole_index + 1])
+                print(regular_withdrawals_df.iloc[hole_index + 1])
 
             # select one ATM at random from atm_non_regular
             rand_index = np.random.choice(atm_non_regular.index)
@@ -477,7 +481,7 @@ def main():
     tx_id = 0
 
     for card_index in card_df.index:
-        # atm_non_rgular: is the set of atms not selected for the generated tx of the card since distance <= max_distance
+        # atm_non_regular: is the set of atms not selected for the generated tx of the card since distance <= max_distance
         tx_card, tx_id, atm_regular, atm_non_regular = transaction_generator(
             card_df.iloc[card_index], atm_df, tx_id
         )
