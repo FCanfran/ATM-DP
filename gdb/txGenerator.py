@@ -214,7 +214,8 @@ def transaction_generator(card, atm_df, tx_id):
         # - based on the max distance between any pair of atms of the subset list
         # Therefore we set the t_min approx to be the time needed to traverse that max_distance at REGULAR_SPEED km/h
         # if |ATM_subset| = 0 -> max_distance_subset = 0 -> t_min = 0
-        t_min = int(((max_distance_subset * 2) / REGULAR_SPEED) * 60 * 60)  # in seconds
+        # t_min = int(((max_distance_subset * 2) / REGULAR_SPEED) * 60 * 60)  # in seconds
+        t_min = int((max_distance_subset / REGULAR_SPEED) * 60 * 60)  # in seconds
         print(max_distance_subset)
         print(f"tx-generation ----- t_min = {t_min}")
 

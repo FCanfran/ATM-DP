@@ -498,7 +498,7 @@ feasible time distance.
 }
 
 \begin{enumerate}
-    \item \textbf{Creation of the ATM subset}: Among all the ATMs of the stable bank database we create a subset of ATMs, so that all the regular transactions generated for this card take place in ATMs of this subset. 
+    \item \textbf{Creation of the ATM subset}: Among all the ATMs of the stable bank database we create a subset of ATMs, such that all the regular transactions generated for this card take place in (randomly selected) ATMs of this subset. 
     \textcolor{red}{TODO: ALIGN THIS}
     $$\texttt{ATM\_subset} = \{\texttt{ATM}\ \\
     |\ \texttt{distance(ATM,residence\_loc)} \leq \texttt{MAX\_DISTANCE\_SUBSET\_THRESHOLD}\}$$
@@ -514,34 +514,30 @@ feasible time distance.
       \caption{\texttt{Neighborhood} ATM subset}
     \end{figure}
 
-    \item \textbf{\texttt{t\_min}}: Minimum threshold time between any two consecutive 
-    transactions of the client. That is, the minimum time distance between the end of 
-    a transaction and the start of the next consecutive transaction of a card. 
-    $$t_{min} = \frac{2 * \texttt{max\_distance}}{\texttt{max\_speed}}$$
-    For the calculation of this minimum time distance:
-    \begin{itemize}
-      \item \texttt{max\_distance}: two options:  
-        \begin{itemize}
-          \item \textcolor{green}{$\Rightarrow$ DEFINETIVELY SELECT THIS, it is simpler and this way we give more margin to respect the min time and avoid undesired anomalous situations\\}In general: taking $2*\texttt{max\_distance}$ kms as the upper bound on 
-          the maximum distance between 2 ATMs of the ATM subset, set the 
-          \textcolor{orange}{\texttt{t\_min}} to be the time needed to traverse that distance 
-          at a selected $\texttt{max\_speed}$. (* So far done like this). 
-          \begin{figure}[H]
-            \centering
-            \includegraphics[scale=0.5]{images/tx-generation-tmin.png}
-            \caption{\texttt{max\_distance} upper bound for the calculation of \texttt{t\_min}}
-        \end{figure}    
-          \item Specifically: Taking the specific maximum distance between all the ATM pairs 
-          in the ATM subset to get the \textcolor{orange}{\texttt{t\_min}}.
-      \end{itemize}  
-      \item \texttt{max\_speed}: maximum speed at which it is possible to travel 
-      (by any possible means of transport) between any pair of ATMs $\in 
-      \ \texttt{Neighborhood}$.
-    \end{itemize}
+    \item \textbf{Calculate \texttt{t\_min}}: Minimum threshold time between any two consecutive transactions of the card. That is, the minimum time distance between the end of a transaction and the start of the next consecutive transaction of a card. For it, we take the time needed to traverse the maximum distance between any pair of ATMs of the \texttt{ATM\_subset}: \texttt{max\_distance\_subset} at an assumed speed that any two points can be traveled for the case of ordinary scenarios: \texttt{REGULAR\_SPEED}.
+    $$\texttt{t\_min} = \frac{\texttt{max\_distance\_subset}}{\texttt{REGULAR\_SPEED}}$$
 
-    \paragraph{NUMBER OF TX AND ITS DISTRIBUTION ALONG TIME:\\}
-    \item \textcolor{red}{$\Rightarrow$ TODO: generate also other kinds of tx?} For each day generate \textcolor{orange}{\texttt{num\_tx}} transactions, random 
-    number drawn from a Poisson distribution of $\lambda = \texttt{withdrawal\_day}$.
+    \item \textbf{Decide the number of transactions \texttt{num\_tx}}:
+    Based on the behavior of the card, we decide the number of transactions (\texttt{num\_tx}) to generate for the card for the selected number of days \texttt{NUM\_DAYS} as:
+
+    $$\texttt{num\_tx} \sim \text{Poisson}(\lambda = \texttt{ops\_day} * \texttt{NUM\_DAYS})$$ where \texttt{ops\_day} is the sum of the average number of all the kinds of operations per day of the particular card: 
+    $$\texttt{ops\_day} = \texttt{withdrawal\_day} + \texttt{ deposit\_day} + \texttt{ inquiry\_day} + \texttt{ transfer\_day}$$
+
+
+    \item \textbf{Decide on the type of transaction}: for each of the \texttt{num\_tx} transactions, the transaction \texttt{type} is decided randomly assigning a transaction \texttt{type} given a probability distribution constructed from the card behavior:
+    
+    
+    $$
+    \begin{cases}
+      P(\texttt{type} =  \texttt{withdrawal}) = \frac{\texttt{withdrawal\_day}}{\texttt{ops\_day}} \\[8pt]
+      P(\texttt{type} =  \texttt{deposit}) = \frac{\texttt{deposit\_day}}{\texttt{ops\_day}} \\[8pt]
+      P(\texttt{type} = \texttt{inquiry}) = \frac{\texttt{inquiry\_day}}{\texttt{ops\_day}} \\[8pt]
+      P(\texttt{type} =  \texttt{transfer}) = \frac{\texttt{transfer\_day}}{\texttt{ops\_day}} 
+    \end{cases}
+    $$
+
+
+
 
     \item \textcolor{red}{$\Rightarrow$ TODO: IMPROVE THE DISTRIBUTION ALONG TIME METHOD.
     Idea: do not do it by days, but for the time interval as a whole of the selected set of days!
