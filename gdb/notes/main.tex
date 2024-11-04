@@ -276,7 +276,7 @@ The \emph{interaction} relation contains as properties: \texttt{id} as the inter
 
 \begin{figure}[h]
     \centering
-    \includegraphics[scale = 0.8]{images/schema-volatile.png}
+    \includegraphics[scale = 0.8]{images/schema-volatile-edit.png}
     \caption{Volatile property graph model}
     \label{img:pg-volatile}
 \end{figure}
@@ -410,15 +410,32 @@ variability.
 
 \end{comment}
 
-The transaction set constitutes the simulated data stream continuously arriving into our system. Each transaction of the set has the form of a \emph{interaction} edge/relation from the volatile subgraph (see \ref{section:volatile-pg}) matching a Card with an ATM entity from the stable bank database.
+The transaction set constitutes the simulated input data stream continuously arriving to the system. Each transaction represents the operation done by a client's card on a ATM of the bank network. Therefore it has the form of a \emph{interaction} edge/relation from the volatile subgraph (see \ref{section:volatile-pg}) matching one Card with one ATM from the stable bank database.
 
-Regarding the purposes of our work, where we want our system to detect the presence of anomalous 
-ATM transactions, we divide the transaction set in two subsets: the regular transaction set and the anomalous transaction set. The regular transaction set consists of \emph{ordinary/correct} transactions, whereas the anomalous transaction set consists of \emph{irregular/incorrect} transactions that are intentionally created to produce anomalous scenarios.
-The main objective under this division is the ability to have the control on the amount of anomalous ATM transactions that we generate so that later we are able 
-to measure the efficiency of our system detecting them, as we have the exact number of anomalous transactions created to compare with, represented by size of the anomalous subset.
-\textcolor{gray}{Otherwise, if we were generating all the transactions together at the same time it would be more difficult to have the control on the amount of anomalous scenarios created, so that later, it will not be possible to measure the efficiency of our system detecting them, since we will not know their amount.}
+Note that, as in our definition of the input data stream of the $DP_{CQE}$, we will generate two edges per transaction -- the \emph{opening} and the \emph{closing} edge -- which both will constitute a single \emph{interaction} relation. The \emph{opening} edge (Figure \ref{img:opening-edge}) will be the indicator of the begining of a new transaction between the matched Card and ATM, it contains the values of the properties related with the starting time \texttt{start}, the transaction \texttt{type} as well as the \texttt{id}. The \emph{closing} edge (Figure \ref{img:closing-edge}) will indicate the end of the transaction, completing the values of the rest of the properties of the \emph{interaction}: \texttt{end} and \texttt{amount}.
 
-\textcolor{blue}{To do the generation of the synthetic set of transactions we provide the Python program \texttt{transactionGenerator.py}. On it we need to enter some parameters needed to customise the generation of the set of transactions.}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale = 0.8]{images/2-edges-tx-tfm.png}
+  \caption{\emph{Opening} interaction edge}
+  \label{img:opening-edge}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale = 0.8]{images/2-edges-tx-tfm-1.png}
+  \caption{\emph{Closing} interaction edge}
+  \label{img:closing-edge}
+\end{figure}
+
+We divide the generation of the transaction set in two subsets: the regular transaction set and the anomalous transaction set. The regular transaction set consists of the \emph{ordinary/correct} transactions, whereas the anomalous transaction set is composed of the \emph{irregular/anomalous} transactions that are intentionally created to produce anomalous scenarios.
+The main objective under this division is the ability to have the control on the exact number of anomalous ATM transactions that we generate so that we can later measure the efficiency of our system detecting them. \textcolor{gray}{as we have the exact number of anomalous transactions created to compare with, represented by size of the anomalous subset. Otherwise, if we were generating all the transactions together at the same time it would be more difficult to have the control on the amount of anomalous scenarios created, so that later, it will not be possible to measure the efficiency of our system detecting them, since we will not know their amount.}
+
+
+\textcolor{blue}{To do the generation of the synthetic set of transactions we created the Python program \texttt{transactionGenerator.py}. On it we need to specify the value of the parameters needed to customise the generation of the set of transactions.}
+
+\textcolor{red}{TODO: DEFINE HOW TO RUN IT AND WHICH ARE THE PARAMETERS THAT WE NEED TO INTRODUCE}.
 
 \paragraph{Regular Transaction Set\\}
 
@@ -465,15 +482,12 @@ on the possible anomalous scenarios for the generated transactions of each of th
   \end{itemize}
 \end{tcolorbox}
 
-More detailed explanation follows.
-\\
+The key idea of the transactions of this set is to avoid the creation of anomalous scenarios among them, so to have a close-to-reality simulation of a bank transaction stream flow free of anomalies. After this set is created, the transactions producing anomalous scenarios related with each specific fraud pattern will be produced.
 
 
-The transaction generator is done to be able to generate transactions for 
-each of the cards based on the gathered client transaction behavior of each of the cards 
-for a customisable \textcolor{orange}{\texttt{d}} number of days starting in a 
-\textcolor{orange}{\texttt{start\_date}}. 
+We generate transactions for each of the generated cards on our bank network, based on each of the gathered card transaction behavior. The regular transaction data stream is generated for a customisable \texttt{NUM\_DAYS} number of days starting in a \texttt{START\_DATE}. On what follows we give the details on the procedure done for each of the cards:
 
+\textcolor{gray}{
 For a card, the idea is to create a certain 
 number of transactions per day, by linking the card to a certain ATM that is no farther 
 than \textcolor{orange}{\texttt{max\_distance}} kms from the residence location of the 
@@ -481,22 +495,18 @@ client of the card. Also, we will limit the time distance between two consecutiv
 transactions so that the final set of created transactions can not produce a potential 
 fraud related with having two transactions in different ATM locations with an insufficient 
 feasible time distance.
+}
 
-For each card:  
+\begin{enumerate}
+    \item \textbf{Creation of the ATM subset}: Among all the ATMs of the stable bank database we create a subset of ATMs, so that all the regular transactions generated for this card take place in ATMs of this subset. 
+    \textcolor{red}{TODO: ALIGN THIS}
+    $$\texttt{ATM\_subset} = \{\texttt{ATM}\ \\
+    |\ \texttt{distance(ATM,residence\_loc)} \leq \texttt{MAX\_DISTANCE\_SUBSET\_THRESHOLD}\}$$
 
-\begin{itemize}
-    \item \textbf{ATM subset}: Create a subset of ATMs that are considered to be \textit{usual} for 
-    the card client, so that they are all at a distance inferior or equal to 
-    \textcolor{orange}{\texttt{max\_distance}} kms to the residence location of the client 
-    of the card. We limit the size of this subset to be of \textcolor{orange}{\texttt{max\_size\_atm\_subset}}, so that we take only a maximum of \textcolor{orange}{\texttt{max\_size\_atm\_subset}} of the closest ATMs.\\
-    \textcolor{blue}{$\rightarrow$ Tomar como valor de esta variable un \% / ratio del total de ATMs en el banco - 100 ATMs pues tomo como valor de la variable max el 5\% del total de los ATMs -> 5 as max.}\\
-    \textcolor{red}{$\rightarrow$ (Quitar, con lo del ATM subset es más que suficiente. No nos liemos.)} \textcolor{gray}{In addition, among the ATMs in this subset, preference is given to 
-    those that are the closest to the residence location of the client and those that 
-    belong to the same bank company as the client's card.\\}
-    The transactions generated for this card will be linked only to ATMs of this subset called 
-    \texttt{Neighborhood}.
+    \texttt{ATM\_subset} consists of the ATMs that are considered to be \textit{usual} for the card, considering the ATMs that are at a distance lower or equal to a customisable maximum distance threshold \texttt{MAX\_DISTANCE\_SUBSET\_THRESHOLD} to the registered residence location \texttt{residence\_loc} on the card. We also limit the size of this subset, considering only a maximum ratio of the total number of ATMs (\texttt{MAX\_SIZE\_ATM\_SUBSET\_RATIO} $\in [0,1]$), so that only a certain ratio of the closest ATMs are included on it.
 
-    $$\texttt{Neighborhood} = \{\texttt{ATM}\ | \texttt{dist(ATM, residence\_loc)} \leq \texttt{max\_distance}\}$$
+    $$|\texttt{ATM\_subset}| = \texttt{MAX\_SIZE\_ATM\_SUBSET\_RATIO} * |\texttt{ATM}|$$
+
 
     \begin{figure}[H]
       \centering
@@ -579,7 +589,7 @@ For each card:
     from a normal distribution
     $\mathcal{N}(\texttt{amount\_avg},\,\texttt{amount\_std})$. If negative amount, drawn 
     from a uniform distribution $\mathcal{U}(0,\ \texttt{amount\_avg}*2)$.
-\end{itemize}
+\end{enumerate}
 
 Note that this approach is done with the focus on avoiding the production of potential
 fraud scenarios. By taking into account the previous generated transaction: both for the
