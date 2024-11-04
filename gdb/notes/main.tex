@@ -526,7 +526,6 @@ feasible time distance.
 
     \item \textbf{Decide on the type of transaction}: for each of the \texttt{num\_tx} transactions, the transaction \texttt{type} is decided randomly assigning a transaction \texttt{type} given a probability distribution constructed from the card behavior:
     
-    
     $$
     \begin{cases}
       P(\texttt{type} =  \texttt{withdrawal}) = \frac{\texttt{withdrawal\_day}}{\texttt{ops\_day}} \\[8pt]
@@ -536,61 +535,57 @@ feasible time distance.
     \end{cases}
     $$
 
-
-
-
-    \item \textcolor{red}{$\Rightarrow$ TODO: IMPROVE THE DISTRIBUTION ALONG TIME METHOD.
-    Idea: do not do it by days, but for the time interval as a whole of the selected set of days!
-    }Distribution of the \texttt{num\_tx} transaction times 
-    (\texttt{transaction\_start}), doing a uniform distribution of the \texttt{num\_tx}
-    for each of the days: 
+    \item \textbf{Distribution of the \texttt{num\_tx} transaction times}: along the selected number of days \texttt{NUM\_DAYS} time interval.
     
-    We create an ordered list of  \texttt{num\_tx} start moments in seconds in a day 
-    (in the range $[\texttt{t\_min}/2, 86400-(\texttt{t\_min}/2)-\texttt{max\_duration}]$) so that all of them are at a minimum time distance of $\texttt{t\_min} + \texttt{max\_duration}$. See Figure \ref{img:tx-distribution}.
-    \textit{\texttt{max\_duration} limits the maximum duration of an ordinary transaction. 
-    For the moment it was set to be of 10 minutes (600s)}.\\
-    Note that the interval bounds for the transaction start moments are designed in such 
-    a way that the \texttt{t\_min} minimum time distance between the end of a transaction 
-    and the start of the next transaction is also respected between transactions belonging 
-    to different consecutive days. See Figure \ref{img:tx-distribution-day}. 
-    \textcolor{red}{Note that this way of generation (day by day) we are not allowing 
-    transactions to occur in the interval marked among the two red dotted lines of the 
-    Figure \ref{img:tx-distribution-day}.} \textcolor{orange}{NOTE/TODO: This could be 
-    fixed by looking to the start time of the last transaction of the previous day...}. 
-    The start moments are therefore taken to define the \texttt{transaction\_start} of 
-    each of the transactions of that day. \texttt{transaction\_end} is assigned a shifted 
-    time difference with the respective \texttt{transaction\_start}, in particular the 
-    difference is drawn from a normal distribution $\mathcal{N}(300,\,120)$ that defines 
-    the duration of a transaction to be of mean of 5 minutes (300s) and a standard 
-    deviation of 2 minutes (120s), bounding it to be of a maximum time of 
-    \texttt{max\_duration} of 10 minutes (600s) and setting it to the mean if the 
-    distribution sample was negative. 
+    We do a random uniform distribution of the \texttt{num\_tx} transaction times
+    in the time interval starting in \texttt{START\_DATE} and finishing \texttt{NUM\_DAYS} days after, obtaining the \texttt{start} and \texttt{end} times for each of the \texttt{num\_tx} transactions, with the constraint that, for each transaction $i$, the next one $i+1$ is at a minimum time distance of \texttt{t\_min}. Specifically, the transaction times are generated guaranteeing:
 
-    \begin{figure}[H]
-        \centering
-        \includegraphics[scale = 0.45]{images/tx-distribution-1.png}
-        \caption{Time distance limit between two consecutive transactions}
-        \label{img:tx-distribution}
-    \end{figure}
-    \begin{figure}[H]
-        \centering
-        \includegraphics[scale = 0.45]{images/tx-distribution.png}
-        \caption{Time distance limit between two consecutive transactions between two days}
-        \label{img:tx-distribution-day}
-    \end{figure}
-    Note that a limit was set on the duration of the transaction so that we can have the 
-    control avoiding time overlapping transactions, which will be producing irregular 
-    undesired fraud pattern alerts.
-    \item \texttt{transaction\_amount}: based on card behavior parameters, it is drawn 
-    from a normal distribution
-    $\mathcal{N}(\texttt{amount\_avg},\,\texttt{amount\_std})$. If negative amount, drawn 
-    from a uniform distribution $\mathcal{U}(0,\ \texttt{amount\_avg}*2)$.
+    $$i.\texttt{end} + \texttt{t\_min} < (i+1).\texttt{start} \ \forall i \in [1,\texttt{num\_tx})$$
+
+    The \texttt{end} time of a transaction is assigned a shifted time difference with respect to the \texttt{start} time. In particular:
+
+    $$
+    \texttt{end} = \texttt{start} + \texttt{time\_difference}
+    $$
+
+    where:
+
+    $$\texttt{time\_difference} \sim \mathcal{N}(\texttt{MEAN\_DURATION},\,\texttt{STD\_DURATION})$$ with the corrections:
+
+    $$
+    \texttt{time\_difference} =
+    \begin{cases} 
+        \texttt{MEAN\_DURATION} & \text{if } \texttt{time\_difference} < 0 \\
+        \texttt{MAX\_DURATION} & \text{if } \texttt{time\_difference} > \texttt{MAX\_DURATION} \\
+        \texttt{time\_difference} & \text{otherwise}
+    \end{cases}
+    $$
+
+\textcolor{red}{TODO: PONER UN DIBUJITO!, explicar lo del checking de los fitting holes? --> yo creo que esto ya no es necesario... demasiado detalle}
+
+\textcolor{red}{TODO: Poner pseudocódigo? del alg}
+
+    \item Assign a transaction \texttt{amount}: assigned depending on the \texttt{type} based on card behavior:
+    
+$$
+\begin{cases}
+    \mathcal{N}(\texttt{amount\_avg\_withdrawal},\, \texttt{amount\_std\_withdrawal}) & \text{if } \texttt{type} = \texttt{withdrawal} \\[10pt]
+    
+    \mathcal{N}(\texttt{amount\_avg\_deposit},\, \texttt{amount\_std\_deposit}) & \text{if } \texttt{type} = \texttt{deposit} \\[10pt]
+
+    0 & \text{if } \texttt{type} = \texttt{inquiry} \\[10pt]
+    
+    \mathcal{N}(\texttt{amount\_avg\_deposit},\, \texttt{amount\_std\_transfer}) & \text{if } \texttt{type} = \texttt{transfer}
+\end{cases}
+$$
+
+$$
+\text{If } \texttt{amount} < 0, \text{ then re-draw from } U(0, 2 \cdot \texttt{amount\_avg\_type}).
+$$
+
+with \texttt{amount\_avg\_type} as \texttt{amount\_avg\_withdrawal}, \texttt{amount\_avg\_deposit} or \texttt{amount\_avg\_deposit} depending on the respective transaction \texttt{type}.
+
 \end{enumerate}
-
-Note that this approach is done with the focus on avoiding the production of potential
-fraud scenarios. By taking into account the previous generated transaction: both for the
-linked ATM of the new transaction and its transaction time (to avoid transactions that 
-are overlapped or that come one directly after the other, since this may be fraudulent!).
 
 \subsubsection{ATM closed subset + Poisson Process}
 

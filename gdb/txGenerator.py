@@ -236,7 +236,7 @@ def transaction_generator(card, atm_df, tx_id):
         ]
 
         if num_tx > 0:
-            # distributed transaction start moments on a day (in seconds)
+            # distributed transaction start moments (in seconds)
             tx_times = distribute_tx(num_tx, t_min)
             for tx_time in tx_times:
                 # 0. ATM id
