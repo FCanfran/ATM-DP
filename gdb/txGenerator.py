@@ -32,7 +32,7 @@ MAX_DURATION = 600  # max duration of a transaction - 600s (10min)
 MEAN_DURATION = 300  # mean duration of a transaction- 300s (5min)
 STD_DURATION = 120  # std duration of a transaction - 120s  (2min)
 REGULAR_SPEED = 50  # (km/h) REGULAR_SPEED: for the creation of the regular tx
-# - needed to calculate the t_min: time needed to traverse the distance between 2 geographical points at SPEED km/h
+# - needed to calculate the t_min_subset: time needed to traverse the distance between 2 geographical points at SPEED km/h
 # - speed at which we consider the client travels NORMALY (by any means of transport) between 2 points
 ANOMALOUS_SPEED = 500  # (km/h)  NOMALOUS_SPEED: Assumption on the maximum ANOMALOUS speed (km/h) at which the distance between two geographical points
 # can be traveled
@@ -129,19 +129,19 @@ def get_ordered_atms(card_loc_latitude, card_loc_longitude, atm_df):
 
 # Distribute n transactions over the interval of all the given days
 # Returns a ordered list of start moments in seconds, respecting that all of the moments
-# are at a minimum time distance of TMIN
-def distribute_tx(n, t_min):
+# are at a minimum time distance of t_min_subset
+def distribute_tx(n, t_min_subset):
     # in seconds of a day: (86400s in a day)
     lower_bound = 0
     upper_bound = (86400 * NUM_DAYS) - 1
 
     num_holes = upper_bound - lower_bound
-    needed_holes = (MAX_DURATION + t_min) * (n - 1) + MAX_DURATION
+    needed_holes = (MAX_DURATION + t_min_subset) * (n - 1) + MAX_DURATION
     # print(f"num_holes: {num_holes}, needed_holes: {needed_holes}")
 
     if num_holes < needed_holes:
         raise ValueError(
-            f"Impossible to distribute {n} transactions over the given interval time with tmin = {t_min}"
+            f"Impossible to distribute {n} transactions over the given interval time with t_min_subset = {t_min_subset}"
         )
 
     tx_ordered_times = []
@@ -172,9 +172,9 @@ def distribute_tx(n, t_min):
         # Access the next element if it exists
         next = tx_ordered_times[index] if index < len(tx_ordered_times) else None
         # Check if insertion is possible with prev and next
-        if (prev == None or get_end(prev) + t_min < get_start(candidate_tx)) and (
-            next == None or get_end(candidate_tx) + t_min < get_start(next)
-        ):
+        if (
+            prev == None or get_end(prev) + t_min_subset < get_start(candidate_tx)
+        ) and (next == None or get_end(candidate_tx) + t_min_subset < get_start(next)):
             # Insert in this position
             bisect.insort(tx_ordered_times, candidate_tx)
 
@@ -210,14 +210,16 @@ def transaction_generator(card, atm_df, tx_id):
     if len(atm_df_regular) > 0:
         # Calculate max_distance_subset for each specific ATM_subset
         max_distance_subset = calculate_max_distance_subset(atm_df_regular)
-        # t_min: minimum threshold time in between 2 transactions of this client
+        # t_min_subset: minimum threshold time in between 2 transactions of this client
         # - based on the max distance between any pair of atms of the subset list
-        # Therefore we set the t_min approx to be the time needed to traverse that max_distance at REGULAR_SPEED km/h
-        # if |ATM_subset| = 0 -> max_distance_subset = 0 -> t_min = 0
-        # t_min = int(((max_distance_subset * 2) / REGULAR_SPEED) * 60 * 60)  # in seconds
-        t_min = int((max_distance_subset / REGULAR_SPEED) * 60 * 60)  # in seconds
+        # Therefore we set the t_min_subset approx to be the time needed to traverse that max_distance at REGULAR_SPEED km/h
+        # if |ATM_subset| = 0 -> max_distance_subset = 0 -> t_min_subset = 0
+        # t_min_subset = int(((max_distance_subset * 2) / REGULAR_SPEED) * 60 * 60)  # in seconds
+        t_min_subset = int(
+            (max_distance_subset / REGULAR_SPEED) * 60 * 60
+        )  # in seconds
         print(max_distance_subset)
-        print(f"tx-generation ----- t_min = {t_min}")
+        print(f"tx-generation ----- t_min_subset = {t_min_subset}")
 
         # Generation of transactions
         withdrawal_day = card["withdrawal_day"]
@@ -237,7 +239,7 @@ def transaction_generator(card, atm_df, tx_id):
 
         if num_tx > 0:
             # distributed transaction start moments (in seconds)
-            tx_times = distribute_tx(num_tx, t_min)
+            tx_times = distribute_tx(num_tx, t_min_subset)
             for tx_time in tx_times:
                 # 0. ATM id
                 # randomly among the subset of ATMs -> all of them satisfy the constraints

@@ -469,8 +469,6 @@ on the possible anomalous scenarios for the generated transactions of each of th
   \end{itemize}
 \end{itemize}
 
-\subsubsection{ATM closed subset + Uniform time distribution}
-
 \textcolor{red}{TODOS:
 \begin{itemize}
 \item Cambiar/Actualizar dibujos
@@ -598,7 +596,7 @@ As a summary we show a pseudocode of the transaction generator in Algorithm \ref
     \STATE $\texttt{ATM\_subset}, \overline{\texttt{ATM\_subset}} \gets \text{createATMsubset(\texttt{residence\_loc})}$
     \STATE $\texttt{t\_min} \gets \text{calculate\_t\_min(\texttt{ATM\_subset})}$
     \STATE $\texttt{num\_tx} \gets \text{decide\_num\_tx()}$
-    \STATE $T \gets \texttt{distribute}(\texttt{num\_tx})$
+    \STATE $T \gets \texttt{distribute}(\texttt{num\_tx}, \texttt{t\_min})$
     \FOR{$t_i$ in $T$}
         \STATE $\texttt{ATM}_{i} \sim \texttt{ATM\_subset}$
         \STATE $\texttt{start}_{i} \gets t_i.start$
@@ -615,8 +613,15 @@ As a summary we show a pseudocode of the transaction generator in Algorithm \ref
   \label{alg:regular-tx-generator}
 \end{algorithm}
 
+\paragraph{Anomalous Transaction Set\\}
 
-\paragraph{\textcolor{orange}{ANOMALOUS TX GENERATION}}
+After the generation of regular transactions we perform an injection of transactions to produce anomalous scenarios. The injection is taylored depending on the specific kind of 
+anomalous scenarios that we want to produce. In what follows we explain the injection process depending on each of the types of frauds that we have considered.
+
+\paragraph{Fraud Pattern I}
+
+To produce anomalous scenarios related to this type of fraud, we produce the injection
+of transactions that violate 
   
 \begin{figure}[H]
     \centering
