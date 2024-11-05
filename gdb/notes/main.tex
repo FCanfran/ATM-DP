@@ -592,21 +592,22 @@ As a summary we show a pseudocode of the transaction generator in Algorithm \ref
 \begin{algorithm}[H]
   \small
   \begin{algorithmic}[1]
+  \STATE $\texttt{id} \gets 0$
   \FOR{\text{card} in \text{cards}}
     \STATE $\texttt{ATM\_subset}, \overline{\texttt{ATM\_subset}} \gets \text{createATMsubset(\texttt{residence\_loc})}$
     \STATE $\texttt{t\_min\_subset} \gets \text{calculate\_t\_min\_subset(\texttt{ATM\_subset})}$
     \STATE $\texttt{num\_tx} \gets \text{decide\_num\_tx()}$
-    \STATE $T \gets \texttt{distribute}(\texttt{num\_tx}, \texttt{t\_min\_subset})$
+    \STATE $T \gets \text{distribute}(\texttt{num\_tx}, \texttt{t\_min\_subset})$
     \FOR{$t_i$ in $T$}
         \STATE $\texttt{ATM}_{i} \sim \texttt{ATM\_subset}$
         \STATE $\texttt{start}_{i} \gets t_i.start$
         \STATE $\texttt{end}_{i} \gets t_i.end$
-        \STATE $\texttt{type}_{i} \gets \texttt{getType()}$
-        \STATE $\texttt{amount}_{i} \gets \texttt{getAmount()}$
-        \STATE $\texttt{id}_{i} \gets \texttt{id}; \ \texttt{id} = \texttt{id} + 1$
-        \STATE $\texttt{createTransaction}(\texttt{id}_{i}, \texttt{ATM}_i, \texttt{start}_{i},\texttt{end}_{i}, \texttt{type}_{i}, \texttt{amount}_i)$
+        \STATE $\texttt{type}_{i} \gets \text{getType()}$
+        \STATE $\texttt{amount}_{i} \gets \text{getAmount()}$
+        \STATE $\texttt{id}_{i} \gets \texttt{id}; \ \texttt{id} \gets \texttt{id} + 1$
+        \STATE $\text{createTransaction}(\texttt{id}_{i}, \texttt{ATM}_i, \texttt{start}_{i},\texttt{end}_{i}, \texttt{type}_{i}, \texttt{amount}_i)$
     \ENDFOR
-    \STATE $\texttt{introduceAnomalous()}$
+    \STATE $\text{introduceAnomalous}(\texttt{ATM\_subset}, \overline{\texttt{ATM\_subset}})$
   \ENDFOR
   \end{algorithmic}
   \caption{Regular Transactions Generation}
@@ -655,22 +656,52 @@ Some assumptions related with the generation of anomalous transactions for this 
   \end{figure}  
 \end{itemize}
 
-We generate $\texttt{ANOMALOUS\_RATIO\_1} * \texttt{num\_tx}$ anomalous transactions related with the fraud pattern I, where $\texttt{ANOMALOUS\_RATIO\_1} \in [0,1]$ defines the ratio of anomalous transactions of this kind over the total number of regular transactions \texttt{num\_tx}. In Algorithm \ref{} we describe at a high level the process of the generation of anomalous transactions for this kind of fraud pattern. 
+We generate $\texttt{ANOMALOUS\_RATIO\_1} * \texttt{num\_tx}$ anomalous transactions for each of the cards related with the fraud pattern I, where $\texttt{ANOMALOUS\_RATIO\_1} \in [0,1]$ defines the ratio of anomalous transactions of this kind over the total number of regular transactions \texttt{num\_tx} for each of the cards. In Algorithm \ref{alg:anomalous-tx-generator-1} we describe at a high level the process of the generation of anomalous transactions for this kind of fraud pattern. 
+
+
+\textcolor{red}{Preconditions:
+\begin{itemize}
+  \item ATMsubset, and the compl. are given by param, from the tx regular generator
+\end{itemize}
+}
 
 \begin{algorithm}[H]
   \small
+  $\textbf{introduceAnomalous}(\texttt{ATM\_subset}, \overline{\texttt{ATM\_subset}})$
   \begin{algorithmic}[1]
-  \WHILE{$a \leq (\texttt{ratio} * \texttt{num\_tx})$}
-      \STATE $\texttt{ATM}_{a} \gets \texttt{Rest}$
-      \STATE $T_i \gets \texttt{randomUniquePosition(\texttt{num\_tx})}$
-      \STATE $T_a \gets \texttt{getAnomalousInitTime}(T_i, \Delta_i, \texttt{t}_{min}(\texttt{ATM}_i, \texttt{ATM}_a))$
-      \STATE $\Delta_a \gets \texttt{getDuration}(\Delta_{max})$
-      \STATE $\texttt{amount}_{a} \gets \texttt{getAmount()}$
-      \STATE $\texttt{createTransaction}(\texttt{ATM}_a, T_a, \Delta_a, \texttt{amount}_a)$
+  \STATE $\texttt{num\_anomalous} \gets \texttt{num\_tx} * \texttt{ANOMALOUS\_RATIO\_1}$
+  \STATE $i \gets 0$
+  \WHILE{$i < \texttt{num\_anomalous}$}
+      \STATE $\texttt{ATM}_{i} \sim \overline{\texttt{ATM\_subset}}$
+      \STATE $prev_i, next_i \gets \text{randomUniquePosition(\texttt{num\_tx})}$
+      \STATE $t_i \gets \text{getTime}(prev_i, next_i)$
+      \STATE $\texttt{start}_{i} \gets t_i.start$
+      \STATE $\texttt{end}_{i} \gets t_i.end$
+      \STATE $\texttt{type}_{i} \gets \texttt{getRandomType()}$
+      \STATE $\texttt{amount}_{i} \gets \texttt{getAmount()}$
+      \STATE $\texttt{id}_{i} \gets \texttt{id}; \ \texttt{id} \gets \texttt{id} + 1$
+      \STATE $\texttt{createTransaction}(\texttt{id}_{i}, \texttt{ATM}_i, \texttt{start}_{i},\texttt{end}_{i}, \texttt{type}_{i}, \texttt{amount}_i)$
+      \STATE $i \gets i + 1$
   \ENDWHILE
   \end{algorithmic}
-  \caption{Introduction of Anomalous Scenario (I)}
+  \caption{Introduction of Anomalous Transactions for Fraud Pattern I}
+  \label{alg:anomalous-tx-generator-1}
 \end{algorithm}
+
+
+\begin{enumerate}
+  \item \textbf{Assignment of ATMs not belonging to the \texttt{ATM\_subset}}: the anomalous transactions are linked to ATMs that are part of the complementary of the \texttt{ATM\_subset}.
+  \item \textbf{Each anomalous transaction has a unique insertion position}: As described previously, we do not allow the case of two or more consecutive anomalous transactions injection. Each anomalous transaction occupies a unique position among all the possible injection positions defined by the set of regular transactions generated for the card. As it can be seen on Figure \ref{img:anomalous-type-1-insertion-points}, considering that we have three regular transactions, we will consider three unique possible insertion points for the anomalous transactions. The procedure of assigning a unique insertion position for each anomalous transaction to be generated is achieved with the function \text{randomUniquePosition(\texttt{num\_tx})}, that given the number of regular transactions of the card \texttt{num\_tx} returns the previous and the next regular transaction to the assigned unique position.
+  \item \textbf{Assign transaction times such that respecting the needed time constraints}: in particular there are two time constraints to be satisfied:
+  \begin{itemize}
+    \item Production of fraud pattern with prev\_i
+    \item No overlapping with prev\_i nor with next\_i
+  \end{itemize}
+  This is summarized in the pseudocode as the procedure getTime(prev\_i, next\_i), which returns $t_i$, as the tuple of (\texttt{start},\texttt{end}) times.
+  \item \textbf{Random transaction type}
+  \item \textbf{Arbitrary amount}
+ 
+\end{enumerate}
 
 
 \textcolor{red}{TODO: MENCIONAR MÁS COSAS EN UN LISTADO, COMO EN LA GENERACIÓN DE TX REGULARES?!}
