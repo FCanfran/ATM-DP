@@ -37,7 +37,7 @@ REGULAR_SPEED = 50  # (km/h) REGULAR_SPEED: for the creation of the regular tx
 ANOMALOUS_SPEED = 500  # (km/h)  NOMALOUS_SPEED: Assumption on the maximum ANOMALOUS speed (km/h) at which the distance between two geographical points
 # can be traveled
 ANOMALOUS_TX_DURATION = 5  # (segs)
-ANOMALOUS_RATIO = (
+ANOMALOUS_RATIO_1 = (
     0.1  # ratio of anomalous tx (per card) over the total amount of generated withdrawal transactions
     # argument must be a float in [0,1]
 )
@@ -329,7 +329,7 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
     # UPDATE: Filter the tx of type withdrawal ---> (No -> the fraud can be produced with and by any type of tx)
     # regular_withdrawals_df = regular_tx_card[regular_tx_card["transaction_type"] == 0]
     num_regular = len(regular_tx_card)
-    num_anomalous = round(num_regular * ANOMALOUS_RATIO)
+    num_anomalous = round(num_regular * ANOMALOUS_RATIO_1)
     print("..........................................")
     print(f"num_regular_tx = {num_regular}, num_anomalous = {num_anomalous}")
 

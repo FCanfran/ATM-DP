@@ -515,8 +515,8 @@ feasible time distance.
       \caption{\texttt{Neighborhood} ATM subset}
     \end{figure}
 
-    \item \textbf{Calculate \texttt{t\_min}}: Minimum threshold time between any two consecutive transactions of the card. That is, the minimum time distance between the end of a transaction and the start of the next consecutive transaction of a card. For it, we take the time needed to traverse the maximum distance between any pair of ATMs of the \texttt{ATM\_subset}: \texttt{max\_distance\_subset} at an assumed speed that any two points can be traveled for the case of ordinary scenarios: \texttt{REGULAR\_SPEED}.
-    $$\texttt{t\_min} = \frac{\texttt{max\_distance\_subset}}{\texttt{REGULAR\_SPEED}}$$
+    \item \textbf{Calculate \texttt{t\_min\_subset}}: Minimum threshold time between any two consecutive transactions of the card. That is, the minimum time distance between the end of a transaction and the start of the next consecutive transaction of a card. For it, we take the time needed to traverse the maximum distance between any pair of ATMs of the \texttt{ATM\_subset}: \texttt{max\_distance\_subset} at an assumed speed that any two points can be traveled for the case of ordinary scenarios: \texttt{REGULAR\_SPEED}.
+    $$\texttt{t\_min\_subset} = \frac{\texttt{max\_distance\_subset}}{\texttt{REGULAR\_SPEED}}$$
 
     \item \textbf{Decide the number of transactions \texttt{num\_tx}}:
     Based on the behavior of the card, we decide the number of transactions (\texttt{num\_tx}) to generate for the card for the selected number of days \texttt{NUM\_DAYS} as:
@@ -539,9 +539,9 @@ feasible time distance.
     \item \textbf{Distribution of the \texttt{num\_tx} transaction times}: along the selected number of days \texttt{NUM\_DAYS} time interval.
     
     We do a random uniform distribution of the \texttt{num\_tx} transaction times
-    in the time interval starting in \texttt{START\_DATE} and finishing \texttt{NUM\_DAYS} days after, obtaining the \texttt{start} and \texttt{end} times for each of the \texttt{num\_tx} transactions, with the constraint that, for each transaction $i$, the next one $i+1$ is at a minimum time distance of \texttt{t\_min}. Specifically, the transaction times are generated guaranteeing:
+    in the time interval starting in \texttt{START\_DATE} and finishing \texttt{NUM\_DAYS} days after, obtaining the \texttt{start} and \texttt{end} times for each of the \texttt{num\_tx} transactions, with the constraint that, for each transaction $i$, the next one $i+1$ is at a minimum time distance of \texttt{t\_min\_subset}. Specifically, the transaction times are generated guaranteeing:
 
-    $$i.\texttt{end} + \texttt{t\_min} < (i+1).\texttt{start} \ \forall i \in [1,\texttt{num\_tx})$$
+    $$i.\texttt{end} + \texttt{t\_min\_subset} < (i+1).\texttt{start} \ \forall i \in [1,\texttt{num\_tx})$$
 
     The \texttt{end} time of a transaction is assigned a shifted time difference with respect to the \texttt{start} time. In particular:
 
@@ -594,9 +594,9 @@ As a summary we show a pseudocode of the transaction generator in Algorithm \ref
   \begin{algorithmic}[1]
   \FOR{\text{card} in \text{cards}}
     \STATE $\texttt{ATM\_subset}, \overline{\texttt{ATM\_subset}} \gets \text{createATMsubset(\texttt{residence\_loc})}$
-    \STATE $\texttt{t\_min} \gets \text{calculate\_t\_min(\texttt{ATM\_subset})}$
+    \STATE $\texttt{t\_min\_subset} \gets \text{calculate\_t\_min\_subset(\texttt{ATM\_subset})}$
     \STATE $\texttt{num\_tx} \gets \text{decide\_num\_tx()}$
-    \STATE $T \gets \texttt{distribute}(\texttt{num\_tx}, \texttt{t\_min})$
+    \STATE $T \gets \texttt{distribute}(\texttt{num\_tx}, \texttt{t\_min\_subset})$
     \FOR{$t_i$ in $T$}
         \STATE $\texttt{ATM}_{i} \sim \texttt{ATM\_subset}$
         \STATE $\texttt{start}_{i} \gets t_i.start$
@@ -621,25 +621,41 @@ anomalous scenarios that we want to produce. In what follows we explain the inje
 \paragraph{Fraud Pattern I}
 
 To produce anomalous scenarios related to this type of fraud, we produce the injection
-of transactions that violate 
-  
+of transactions that will produce the satisfaction of this fraud pattern. In other words,
+we inject transactions that violate the minimum \emph{time-distance} constraint between transactions performed with the same card. Therefore, as we can see in Figure \ref{img:anomalous-type-1}, if we consider a set of regular transacions for a certain card, where $y_1$ and $y_2$ are regular consecutive transactions, we will introduce an anomalous transaction $a_{12}$ such that: 
+
+$$(y_1.\texttt{ATM\_id} \ne a_{12}.\texttt{ATM\_id}) \land (a_{12}.\texttt{start} - 
+y_1.\texttt{end} < T_{min}(y_1.\texttt{ATM\_loc}, a_{12}.\texttt{ATM\_loc}))$$
+
+where \texttt{ATM\_loc} is the tuple of coordinates (loc\_latitude,loc\_longitude) of the corresponding ATM. This injection will produce an anomalous scenario of this kind of fraud with at least the $y_1$ previous transaction. Note that, it could possibly trigger more anomalous fraud scenarios with the subsequent transactions ($y_2$ and on...).
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/tx-generation.png}
-    \caption{Creation of anomalous scenario - type 1}
+    \caption{Creation of anomalous scenario - type I}
+    \label{img:anomalous-type-1}
 \end{figure}
 
+Some assumptions related with the generation of anomalous transactions for this kind of fraud pattern are:
 \begin{itemize}
-    \item $\texttt{ratio} \in [0,1]$ s.t. $\texttt{ratio} * \texttt{num\_tx}$ is the number of anomalous scenarios created for a card in the considered time interval $[0,t]$.
-    \item No overlapping of the transaction introduced $a$ with the regular ones $i, i+1$: $T_i + \Delta_i < T_a < T_a + \Delta_a < T_{i+1}$
-\end{itemize}
-
-\begin{figure}[H]
+  \item \textbf{Overlapping of transactions is not possible}:
+  Appart from guaranteeing that this injection causes at least one anomalous scenario, we also respect the additional constraint of ensuring that the anomalous transaction injected does not cause overlapping with any of the transactions, in particular neither with the previous nor the next one. \textcolor{orange}{This constraint is added based on the assumption that the bank itself does not allow to open a transaction whenever another one is still open.} Therefore considering that $a_{12}$ is the anomalous injected transaction in between the regular consecutive transactions $y_1$ and $y_2$, when generating $a_{12}$ we guarantee that:
+  $$
+  \begin{cases}
+    a_{12}.\texttt{start} > y_{1}.\texttt{end} \\
+    a_{12}.\texttt{end} < y_{2}.\texttt{start}
+  \end{cases}
+  $$
+  \item \textbf{There are no two consecutive anomalous transactions}: For simplicity in our practical purposes, we do the generation of anomalous transactions for this kind of fraud pattern assuming that an anomalous transaction can only be in between two regular consecutive transactions, so that we do not consider the case of the injection of two or more consecutive anomalous transactions for this kind of fraud. See Figure \ref{img:anomalous-type-1-insertion-points}.
+  \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/tx-generation-anomalous-1.png}
-\end{figure}
-  
-  
+    \caption{Considered possible injection points of anomalous transactions of fraud type I}
+    \label{img:anomalous-type-1-insertion-points}
+  \end{figure}  
+\end{itemize}
+
+We generate $\texttt{ANOMALOUS\_RATIO\_1} * \texttt{num\_tx}$ anomalous transactions related with the fraud pattern I, where $\texttt{ANOMALOUS\_RATIO\_1} \in [0,1]$ defines the ratio of anomalous transactions of this kind over the total number of regular transactions \texttt{num\_tx}. In Algorithm \ref{} we describe at a high level the process of the generation of anomalous transactions for this kind of fraud pattern. 
 
 \begin{algorithm}[H]
   \small
@@ -656,6 +672,8 @@ of transactions that violate
   \caption{Introduction of Anomalous Scenario (I)}
 \end{algorithm}
 
+
+\textcolor{red}{TODO: MENCIONAR MÁS COSAS EN UN LISTADO, COMO EN LA GENERACIÓN DE TX REGULARES?!}
 
 \begin{comment}
 \subsubsection{ATM closed subset + Poisson Process}
