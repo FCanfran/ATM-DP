@@ -321,16 +321,15 @@ def transaction_generator(card, atm_df, tx_id):
 
 
 # Generation of anomalous tx to cause the fraud pattern 1
-# transaction_type: 0 -> withdrawal
 # Per each of the generated card tx
 def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_id):
 
-    # Filter the tx of type withdrawal
-    regular_withdrawals_df = regular_tx_card[regular_tx_card["transaction_type"] == 0]
-    num_regular = len(regular_withdrawals_df)
+    # UPDATE: Filter the tx of type withdrawal ---> (No -> the fraud can be produced with and by any type of tx)
+    # regular_withdrawals_df = regular_tx_card[regular_tx_card["transaction_type"] == 0]
+    num_regular = len(regular_tx_card)
     num_anomalous = round(num_regular * ANOMALOUS_RATIO)
     print("..........................................")
-    print(f"num_regular_withdrawals = {num_regular}, num_anomalous = {num_anomalous}")
+    print(f"num_regular_tx = {num_regular}, num_anomalous = {num_anomalous}")
 
     # randomly select in between which tx the anomalous are introduced
 
@@ -360,14 +359,13 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
         if holes[hole_index] == 0:
             # not occupied, mark as occupied
             holes[hole_index] = 1
-            # NOTE: Assume that it can be overlapping with the next regular tx
-            tx_prev = regular_withdrawals_df.iloc[hole_index]
+            tx_prev = regular_tx_card.iloc[hole_index]
 
             print("----------------------- prev -----------------------")
             print(tx_prev)
             if hole_index + 1 < num_regular:
                 print("----------------------- next -----------------------")
-                print(regular_withdrawals_df.iloc[hole_index + 1])
+                print(regular_tx_card.iloc[hole_index + 1])
 
             # select one ATM at random from atm_non_regular
             rand_index = np.random.choice(atm_non_regular.index)
@@ -400,12 +398,15 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
                 seconds=ANOMALOUS_TX_DURATION
             )
 
+            # transaction_type: randomly assign a type: [0,3]
+            transaction_type = np.random.randint(0, 4)
+
             # create the tx and insert it in the dataframe
             tx_new = {
                 "transaction_id": tx_id,
                 "number_id": tx_prev["number_id"],  # card id
                 "ATM_id": ATM_new["ATM_id"],
-                "transaction_type": 0,  # withdrawal
+                "transaction_type": transaction_type,
                 "transaction_start": tx_new_start,
                 "transaction_end": tx_new_end,
                 "transaction_amount": tx_prev["transaction_amount"] * 2,

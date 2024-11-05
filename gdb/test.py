@@ -1,6 +1,8 @@
 import datetime
 import numpy as np
 import bisect
+import random
+from bitarray import bitarray
 
 max_duration = 600  # max duration - 600s (10min)
 mean_duration = 300  # mean duration - 300s (5min)
@@ -12,6 +14,41 @@ num_days = 5  # num of days for which transactions are generated (init start_dat
 
 
 def main():
+
+    anomalous = 0
+    num_anomalous = 2
+    num_regular = 4
+    holes = bitarray(num_regular)
+    holes.setall(0)
+
+    while anomalous < num_anomalous:
+        print("................... ANOMALOUS: ", anomalous, "...................")
+        # random hole selection in [0, num_regular-1]
+        hole_index = np.random.randint(0, num_regular)
+        if holes[hole_index] == 0:
+            # not occupied, mark as occupied
+            holes[hole_index] = 1
+            tx_prev = hole_index
+            print(f"tx_prev: {tx_prev}")
+
+            # Generate (start_time,end_time)
+            fit_time = False
+            while not fit_time:
+                # Generate s_time
+                # start and end time
+                # check end time - only if there is a next tx
+                if hole_index + 1 < num_regular:
+                    tx_next = hole_index + 1
+                    print(f"tx_next: {tx_next}")
+                    # check that tx_end < next.start
+                    if true:
+                        fit_time = True
+                    else: 
+                        # try to assign another time
+                else:
+                    fit_time = True  # no next tx
+
+    exit(1)
 
     # fix a constant seed so that experiments are reproducible
     key = 37
