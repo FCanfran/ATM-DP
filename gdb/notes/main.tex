@@ -471,16 +471,19 @@ on the possible anomalous scenarios for the generated transactions of each of th
 
 \subsubsection{ATM closed subset + Uniform time distribution}
 
-\begin{tcolorbox}
-  \begin{itemize}
-    \item[$\rightarrow$] \textbf{ATM selection}: Closed ATM subset.
-    \item[$\rightarrow$] \textbf{Time distribution}: Uniform distribution of the $num\_tx$ transactions 
-    for a card on a certain day ($num\_tx$ is drawn from a Poisson distribution of 
-    $\lambda = \texttt{withdrawal\_day}$, based on the behavior of the \emph{Wisabi} clients).\\
-    \textcolor{red}{$\rightarrow$ TODO: Ahora genero no solo withdrawals, sino también los otros 
-    tipos de transacciones... cuidado con esto. Dejo por el momento solo withdrawals? o de todo pero con cuidado para no solapar?.... PENSAR BIEN!}
-  \end{itemize}
-\end{tcolorbox}
+\textcolor{red}{TODOS:
+\begin{itemize}
+\item Cambiar/Actualizar dibujos
+\item Poner lista de params y explicar (tabla) como y qué se puede configurar
+\item Prerequisitos: csv directory has to exist - create it beforehand better
+\item Output files that are generated: regular, anomalous and all csvs.
+\item Anomalous generator:
+\begin{itemize}
+  \item NO-Overlapping assumption - Explain
+  \item Any type of tx to produce the fraud -> does not matter the type for the FP1.
+\end{itemize}
+\end{itemize}
+}
 
 The key idea of the transactions of this set is to avoid the creation of anomalous scenarios among them, so to have a close-to-reality simulation of a bank transaction stream flow free of anomalies. After this set is created, the transactions producing anomalous scenarios related with each specific fraud pattern will be produced.
 
@@ -507,7 +510,7 @@ feasible time distance.
 
     $$|\texttt{ATM\_subset}| = \texttt{MAX\_SIZE\_ATM\_SUBSET\_RATIO} * |\texttt{ATM}|$$
 
-
+\textcolor{red}{TODO: CAMBIAR ESTA IMAGEN}
     \begin{figure}[H]
       \centering
       \includegraphics[scale=1.1]{images/tx-generation-1-named.png}
@@ -563,12 +566,11 @@ feasible time distance.
 
 \textcolor{red}{TODO: PONER UN DIBUJITO!, explicar lo del checking de los fitting holes? --> yo creo que esto ya no es necesario... demasiado detalle}
 
-\textcolor{red}{TODO: Poner pseudocódigo? del alg}
 
-    \item Assign a transaction \texttt{amount}: assigned depending on the \texttt{type} based on card behavior:
+  \item Assign a transaction \texttt{amount}: assigned depending on the \texttt{type} based on card behavior:
     
-$$
-\begin{cases}
+  $$
+  \begin{cases}
     \mathcal{N}(\texttt{amount\_avg\_withdrawal},\, \texttt{amount\_std\_withdrawal}) & \text{if } \texttt{type} = \texttt{withdrawal} \\[10pt]
     
     \mathcal{N}(\texttt{amount\_avg\_deposit},\, \texttt{amount\_std\_deposit}) & \text{if } \texttt{type} = \texttt{deposit} \\[10pt]
@@ -576,17 +578,81 @@ $$
     0 & \text{if } \texttt{type} = \texttt{inquiry} \\[10pt]
     
     \mathcal{N}(\texttt{amount\_avg\_deposit},\, \texttt{amount\_std\_transfer}) & \text{if } \texttt{type} = \texttt{transfer}
-\end{cases}
-$$
+  \end{cases}
+  $$
 
-$$
-\text{If } \texttt{amount} < 0, \text{ then re-draw from } U(0, 2 \cdot \texttt{amount\_avg\_type}).
-$$
+  $$
+  \text{If } \texttt{amount} < 0, \text{ then re-draw from } U(0, 2 \cdot \texttt{amount\_avg\_type}).
+  $$
 
-with \texttt{amount\_avg\_type} as \texttt{amount\_avg\_withdrawal}, \texttt{amount\_avg\_deposit} or \texttt{amount\_avg\_deposit} depending on the respective transaction \texttt{type}.
+  with \texttt{amount\_avg\_type} as \texttt{amount\_avg\_withdrawal}, \texttt{amount\_avg\_deposit} or \texttt{amount\_avg\_deposit} depending on the respective transaction \texttt{type}.
 
 \end{enumerate}
 
+As a summary we show a pseudocode of the transaction generator in Algorithm \ref{alg:regular-tx-generator}.
+
+\begin{algorithm}[H]
+  \small
+  \begin{algorithmic}[1]
+  \FOR{\text{card} in \text{cards}}
+    \STATE $\texttt{ATM\_subset}, \overline{\texttt{ATM\_subset}} \gets \text{createATMsubset(\texttt{residence\_loc})}$
+    \STATE $\texttt{t\_min} \gets \text{calculate\_t\_min(\texttt{ATM\_subset})}$
+    \STATE $\texttt{num\_tx} \gets \text{decide\_num\_tx()}$
+    \STATE $T \gets \texttt{distribute}(\texttt{num\_tx})$
+    \FOR{$t_i$ in $T$}
+        \STATE $\texttt{ATM}_{i} \sim \texttt{ATM\_subset}$
+        \STATE $\texttt{start}_{i} \gets t_i.start$
+        \STATE $\texttt{end}_{i} \gets t_i.end$
+        \STATE $\texttt{type}_{i} \gets \texttt{getType()}$
+        \STATE $\texttt{amount}_{i} \gets \texttt{getAmount()}$
+        \STATE $\texttt{id}_{i} \gets \texttt{id}; \ \texttt{id} = \texttt{id} + 1$
+        \STATE $\texttt{createTransaction}(\texttt{id}_{i}, \texttt{ATM}_i, \texttt{start}_{i},\texttt{end}_{i}, \texttt{type}_{i}, \texttt{amount}_i)$
+    \ENDFOR
+    \STATE $\texttt{introduceAnomalous()}$
+  \ENDFOR
+  \end{algorithmic}
+  \caption{Regular Transactions Generation}
+  \label{alg:regular-tx-generator}
+\end{algorithm}
+
+
+\paragraph{\textcolor{orange}{ANOMALOUS TX GENERATION}}
+  
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/tx-generation.png}
+    \caption{Creation of anomalous scenario - type 1}
+\end{figure}
+
+\begin{itemize}
+    \item $\texttt{ratio} \in [0,1]$ s.t. $\texttt{ratio} * \texttt{num\_tx}$ is the number of anomalous scenarios created for a card in the considered time interval $[0,t]$.
+    \item No overlapping of the transaction introduced $a$ with the regular ones $i, i+1$: $T_i + \Delta_i < T_a < T_a + \Delta_a < T_{i+1}$
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/tx-generation-anomalous-1.png}
+\end{figure}
+  
+  
+
+\begin{algorithm}[H]
+  \small
+  \begin{algorithmic}[1]
+  \WHILE{$a \leq (\texttt{ratio} * \texttt{num\_tx})$}
+      \STATE $\texttt{ATM}_{a} \gets \texttt{Rest}$
+      \STATE $T_i \gets \texttt{randomUniquePosition(\texttt{num\_tx})}$
+      \STATE $T_a \gets \texttt{getAnomalousInitTime}(T_i, \Delta_i, \texttt{t}_{min}(\texttt{ATM}_i, \texttt{ATM}_a))$
+      \STATE $\Delta_a \gets \texttt{getDuration}(\Delta_{max})$
+      \STATE $\texttt{amount}_{a} \gets \texttt{getAmount()}$
+      \STATE $\texttt{createTransaction}(\texttt{ATM}_a, T_a, \Delta_a, \texttt{amount}_a)$
+  \ENDWHILE
+  \end{algorithmic}
+  \caption{Introduction of Anomalous Scenario (I)}
+\end{algorithm}
+
+
+\begin{comment}
 \subsubsection{ATM closed subset + Poisson Process}
 
 \begin{tcolorbox}
@@ -713,6 +779,7 @@ References:
   \end{itemize}
 \end{itemize}
 \end{itemize}
+\end{comment}
 
 
 \subsection{Population of the Graph Database}
