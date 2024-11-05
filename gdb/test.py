@@ -44,7 +44,7 @@ def main():
                     if true:
                         fit_time = True
                     else: 
-                        # try to assign another time
+                        # try to assign another time - no overlapping with next
                 else:
                     fit_time = True  # no next tx
 

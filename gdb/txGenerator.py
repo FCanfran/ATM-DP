@@ -360,12 +360,8 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
             # not occupied, mark as occupied
             holes[hole_index] = 1
             tx_prev = regular_tx_card.iloc[hole_index]
-
             print("----------------------- prev -----------------------")
             print(tx_prev)
-            if hole_index + 1 < num_regular:
-                print("----------------------- next -----------------------")
-                print(regular_tx_card.iloc[hole_index + 1])
 
             # select one ATM at random from atm_non_regular
             rand_index = np.random.choice(atm_non_regular.index)
@@ -383,20 +379,42 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
             # 2. t = e / v ---> (km)/(km/h) --> in seconds (*60*60)
             distance_km = calculate_distance_points(ATM_prev_loc, ATM_new_loc)
             t_min = int((distance_km / ANOMALOUS_SPEED) * 60 * 60)  # in seconds
-            # Make t_diff(tx_prev, tx_new) < t_min(ATM_prev, ATM_new)
-            # tx_new.start = tx_prev.end + s_time s.t. s_time < t_min (in seconds) & s_time > 0
-            # (so that tx_new.start > tx_prev.end)
-            # take a random number of seconds s_time in [1, t_min)
-            s_time = np.random.randint(1, t_min)
-            tx_new_start = tx_prev["transaction_end"] + datetime.timedelta(
-                seconds=s_time
-            )
 
-            # transaction_end:
-            # tx_end = tx_start + ANOMALOUS_TX_DURATION segs, for all the anomalous tx
-            tx_new_end = tx_new_start + datetime.timedelta(
-                seconds=ANOMALOUS_TX_DURATION
-            )
+            # Generate (start, end) times - avoiding overlapping with prev and next tx
+            fit_time = False
+            while not fit_time:
+                # Make t_diff(tx_prev, tx_new) < t_min(ATM_prev, ATM_new)
+                # - tx_new.start = tx_prev.end + s_time s.t. s_time < t_min (in seconds) & s_time > 0
+                # (so that tx_new.start > tx_prev.end)
+                # take a random number of seconds s_time in [1, t_min)
+                s_time = np.random.randint(1, t_min)
+                tx_new_start = tx_prev["transaction_end"] + datetime.timedelta(
+                    seconds=s_time
+                )
+                # - tx_new.end < tx_next.start
+                # transaction_end:
+                # tx_end = tx_start + ANOMALOUS_TX_DURATION segs, for all the anomalous tx
+                tx_new_end = tx_new_start + datetime.timedelta(
+                    seconds=ANOMALOUS_TX_DURATION
+                )
+
+                if hole_index + 1 < num_regular:
+                    print("----------------------- next -----------------------")
+                    tx_next = regular_tx_card.iloc[hole_index + 1]
+                    print(tx_next)
+                    # Check tx_new.end < tx_next.start
+                    print(tx_new_end)
+                    print(tx_next["transaction_start"])
+
+                    if tx_new_end < tx_next["transaction_start"]:
+                        fit_time = True
+                    else:
+                        # else -> try again with another (start, end) times
+                        print("NOT FIT - Trying again with another (start, end) times")
+
+                else:
+                    # no next tx
+                    fit_time = True
 
             # transaction_type: randomly assign a type: [0,3]
             transaction_type = np.random.randint(0, 4)
