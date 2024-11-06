@@ -13,6 +13,8 @@ import (
 	"github.com/umahmood/haversine"
 )
 
+const ChannelSize = 5000
+
 // https://yourbasic.org/golang/format-parse-string-time-date-example/
 const Time_layout = "2006-01-02 15:04:05"
 
@@ -231,11 +233,15 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	return int(t_min), nil
 }
 
+// TODO: CHECK -> When do we stop checking, when we detect the first anomalous scenario,
+// or when we have traversed the full list of edges - all possible scenarios...
+// -------> for the moment, stop when we discover the first. Only 1 at most is reported.º
 // Parameters:
 // - new_e: the new edge that we check the FP against
-// - out_alert: the output alert channel to directly emit the alerts from this method when they
-// are detected
-func (g *Graph) CheckFraud(new_e Edge, out_alert chan<- Alert) {
+// Returns:
+// - bool: indicating the presence of a positive Alert (true) or not (false)
+// - Alert: the Alert itself, only in the case it is true. Empty if false.
+func (g *Graph) CheckFraud(new_e Edge) (bool, Alert) {
 
 	fmt.Println("-------------- CHECKFRAUD()--------------")
 	// New root context for the connections to the gdb that are going to be done here
@@ -244,9 +250,12 @@ func (g *Graph) CheckFraud(new_e Edge, out_alert chan<- Alert) {
 	session := connection.CreateSession(context)
 	defer connection.CloseSession(context, session)
 
+	fraudIndicator := false
+	var fraud1Alert Alert // Default 0-value initialization
+
 	// 1. Obtain last added edge of the subgraph
 	// TODO: FIX ---> I think the backward traversal is incorrect!
-	for prev := g.edges.Back(); prev != nil; prev = prev.Prev() {
+	for prev := g.edges.Back(); prev != nil && !fraudIndicator; prev = prev.Prev() {
 
 		prev_e := *(prev.Value.(*Edge)) // asserts eg.Value to type Edge
 
@@ -286,17 +295,17 @@ func (g *Graph) CheckFraud(new_e Edge, out_alert chan<- Alert) {
 			fmt.Println("TRUE FP1: ")
 			subgraph.Print()
 			fmt.Println("...........................................................")
-			// emit the alert through the channel
-			fraud1Alert := Alert{
-				Label:    "1",
-				Info:     "fraud pattern",
-				Subgraph: *subgraph,
-			}
-			out_alert <- fraud1Alert
+			// Construct the corresponding Alert properly
+			fraud1Alert.Label = "1"
+			fraud1Alert.Info = "fraud pattern"
+			fraud1Alert.Subgraph = *subgraph
+			fraudIndicator = true
 		} else {
 			fmt.Println("FALSE FP1")
 		}
 	}
+
+	return fraudIndicator, fraud1Alert
 }
 
 // Returns true if the tx edge is start.

@@ -22,10 +22,38 @@ type in_comm struct {
 	Front_Channel <-chan in_comm  // in_comm channel
 }
 
-func generator(in <-chan cmn.Edge) {
+func Sink(in_alerts <-chan cmn.Alert, in_log <-chan cmn.Edge) {
+	fmt.Println("SINK PROCESS - LAUNCHED")
+	// TOCHECK: Create results output files: one for each kind of fraud pattern (?)
+	// TODO: For the moment only 1 kind of pattern
+	file_fp_1, err := os.Create("../output/outPattern1.txt")
+	cmn.CheckError(err)
+	defer file_fp_1.Close()
+
+	// Logging file
+	file_log, err := os.Create("../output/log.txt")
+	cmn.CheckError(err)
+	defer file_log.Close()
+
+	for {
+		select {
+		case alert, ok := <-in_alerts:
+			if ok {
+				fmt.Println("Sink - alert!: ", alert)
+				cmn.PrintAlertVerbose(alert)
+				cmn.PrintAlertOnFile(alert, file_fp_1)
+			}
+		case event, ok := <-in_log:
+			if ok {
+				cmn.PrintEventOnFile(event, file_log)
+			}
+		}
+	}
+}
+
+func Generator(in_edges <-chan cmn.Edge, out_alerts chan<- cmn.Alert, out_log chan<- cmn.Edge) {
 	fmt.Println("G - creation")
 	// Generate input channels
-	alerts := make(chan cmn.Alert, channelSize)
 	// Note: by default channels created by "make" create bidirectional
 	// channels by default. To make it receive-only channel, we perform
 	// the type conversion as shown
@@ -33,28 +61,16 @@ func generator(in <-chan cmn.Edge) {
 	var front_channels <-chan in_comm // read only channel
 	front_channels = tmp
 
-	// Log channel: to register all the events generated in the engine. Bidirectional.
-	// Registering in the sink (generator for the moment)
-	// TOCHECK: For the moment only edges through it
-	log_ch := make(chan cmn.Edge, channelSize)
-
-	// TOCHECK: Create results output files: one for each kind of fraud pattern (?)
-	// TODO: For the moment only 1 kind of pattern
-	file_fp_1, err := os.Create("../output/outPattern1.txt")
-	cmn.CheckError(err)
-	defer file_fp_1.Close()
-
-	file_log, err := os.Create("../output/gen-log.txt")
-	cmn.CheckError(err)
-	defer file_log.Close()
+	// Internal log channel
+	internal_log_ch := make(chan cmn.Edge, cmn.ChannelSize)
 
 	for {
 		select {
-		case edge := <-in:
+		case edge := <-in_edges:
 			//cmn.PrintEdge("G - edge arrived: ", edge)
 			// spawn a filter
 			// - input channels: the input channels of the generator:
-			//					* in - Edge
+			//					* in_edges - Edge
 			// 					* front_channels - Front
 			// - output channels:
 			// 					* new_edge_ch - Edge (new)
@@ -63,20 +79,30 @@ func generator(in <-chan cmn.Edge) {
 			// creation of new bidirectional needed channels
 			new_edge_ch := make(chan cmn.Edge, channelSize)
 			new_front_ch := make(chan in_comm, channelSize)
-			go filter(edge, in, front_channels, new_edge_ch, alerts, log_ch, new_front_ch)
+			go filter(edge, in_edges, front_channels, new_edge_ch, out_alerts, internal_log_ch, new_front_ch)
 			// set the new input channels of the generator
-			in = new_edge_ch
+			in_edges = new_edge_ch
 			front_channels = new_front_ch
-		case alert := <-alerts:
-			fmt.Println("G - alert!: ", alert)
-			cmn.PrintAlertVerbose(alert)
-			cmn.PrintAlertOnFile(alert, file_fp_1)
-		case event := <-log_ch:
-			cmn.PrintEventOnFile(event, file_log)
+		/*	// TODO/TOCHECK: For the moment alerts are only read in the Sink, and they are sent
+			// directly to the Sink and do not pass by the Generator!
+			case alert := <-out_alerts:
+				fmt.Println("G - alert!: ", alert)
+				cmn.PrintAlertVerbose(alert)
+				cmn.PrintAlertOnFile(alert, file_fp_1)
+		*/
+		// TOCHECK:
+		// Internal log channel
+		// Filters write here events. Sent directly to the Generator, which takes them and
+		// gives them to the Sink...
+		// Generator actua como una pasarela... T
+		// DOUBT(TOCHECK) -> Podría ir el canal directamente conectado al Sink y no al Generator
+		// como se tiene hasta el momento el canal de alerts?
+		case event := <-internal_log_ch:
+			out_log <- event
 		case input := <-front_channels:
 			// Reconnection of the pipeline (case of a filter having died)
 			fmt.Println("G - reconnection")
-			in = input.Edge
+			in_edges = input.Edge
 			front_channels = input.Front_Channel
 		}
 	}
@@ -87,7 +113,7 @@ func generator(in <-chan cmn.Edge) {
 // to kill a filter and do the reconnection with the pipeline properly
 // out_log: to register logging messages that are sent to the generator
 func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
-	out_edge chan<- cmn.Edge, out_alert chan<- cmn.Alert, out_log_ch chan<- cmn.Edge, out_front chan<- in_comm) {
+	out_edge chan<- cmn.Edge, out_alerts chan<- cmn.Alert, out_internal_log_ch chan<- cmn.Edge, out_front chan<- in_comm) {
 
 	// filter id: is the Card unique identifier
 	var id string = edge.Number_id
@@ -99,7 +125,7 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	// TOCHECK: Avoid this channel being blocking (?) Does it make sense?
 	int_stop := make(chan bool) // synchronous
 
-	go filter_worker(edge, int_edge, int_time, int_stop, out_alert, out_log_ch)
+	go filter_worker(edge, int_edge, int_time, int_stop, out_alerts, out_internal_log_ch)
 
 	for {
 		select {
@@ -141,7 +167,7 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 // FUTURE: Unused channels - for the future filter's lifetime management - to be able
 // to kill a filter and do the reconnection with the pipeline properly
 func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-chan time.Time, int_stop chan<- bool,
-	out_alert chan<- cmn.Alert, out_log_ch chan<- cmn.Edge) {
+	out_alerts chan<- cmn.Alert, out_internal_log_ch chan<- cmn.Edge) {
 
 	cmn.PrintEdge("FW creation - edge arrived: ", initial_edge)
 	var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
@@ -174,7 +200,10 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 			if isStart {
 				// start edge
 				// 1. Check fraud
-				subgraph.CheckFraud(new_edge, out_alert)
+				isFraud, alert := subgraph.CheckFraud(new_edge)
+				if isFraud {
+					out_alerts <- alert
+				}
 				fmt.Println("........................................")
 				// 2. Add to the subgraph
 				subgraph.AddEdge(new_edge)
@@ -207,28 +236,21 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 	}
 }
 
-// Source Stage
-func Start(istream string) {
-
-	// Creation of edges channel to pass from the read input to the pipeline
-	edges_input := make(chan cmn.Edge, channelSize)
+func Source(istream string, out_edges chan<- cmn.Edge) {
 
 	// log file to registering the events arriving to the system
 	file_log, err := os.Create("../output/in-log.txt")
 	cmn.CheckError(err)
 	defer file_log.Close()
 
-	go generator(edges_input)
-
+	// input stream file
 	file, err := os.Open(istream)
 	cmn.CheckError(err)
 	// closes the file after read from it no matter if there is error or not
 	defer file.Close()
 	cmn.CheckError(err)
-
 	// csv reader
 	reader := csv.NewReader(bufio.NewReader(file))
-
 	// Read and discard the header line
 	_, err = reader.Read()
 	cmn.CheckError(err)
@@ -279,7 +301,7 @@ func Start(istream string) {
 		}
 
 		cmn.PrintEdgeComplete("", edge)
-		edges_input <- edge
+		out_edges <- edge
 
 		// the log of events is done here directly on the sink
 		cmn.PrintEdgeCompleteToFile("", edge, file_log)
