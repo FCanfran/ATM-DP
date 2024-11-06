@@ -1,0 +1,161 @@
+Reading stream from:  ../input/transaction-tests.csv
+...generator creation
+generator - edge arrived:  0 ,  c-NIGER-0 -> OGUN-0
+...filter creation  c-NIGER-0
+...filter_worker creation - edge arrived:  0 ,  c-NIGER-0 -> OGUN-0
++ filter:  c-NIGER-0 - addition of edge
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+0
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 1 ,  c-NIGER-0 -> BENUE-4
+filter  c-NIGER-0  - same card edge arrived
++ filter:  c-NIGER-0 - addition of edge
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+0
+1
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 2 ,  c-NIGER-0 -> OGUN-0
+filter  c-NIGER-0  - same card edge arrived
++ filter:  c-NIGER-0 - addition of edge
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+0
+1
+2
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 7 ,  c-NIGER-1 -> OGUN-1
+filter  c-NIGER-0  - diff card edge arrived
+generator - edge arrived:  7 ,  c-NIGER-1 -> OGUN-1
+...filter creation  c-NIGER-1
+...filter_worker creation - edge arrived:  7 ,  c-NIGER-1 -> OGUN-1
++ filter:  c-NIGER-1 - addition of edge
+subgraph:  c-NIGER-1
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+7
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 9 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-0  - diff card edge arrived
+filter  c-NIGER-1  - edge arrived: 9 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-1  - diff card edge arrived
+generator - edge arrived:  9 ,  c-NIGER-2 -> OGUN-1
+...filter creation  c-NIGER-2
+...filter_worker creation - edge arrived:  9 ,  c-NIGER-2 -> OGUN-1
++ filter:  c-NIGER-2 - addition of edge
+subgraph:  c-NIGER-2
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+9
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 10 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-0  - diff card edge arrived
+filter  c-NIGER-1  - edge arrived: 10 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-1  - diff card edge arrived
+filter  c-NIGER-2  - edge arrived: 10 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-2  - same card edge arrived
++ filter:  c-NIGER-2 - addition of edge
+subgraph:  c-NIGER-2
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+9
+10
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 3 ,  c-NIGER-0 -> BENUE-4
+filter  c-NIGER-0  - same card edge arrived
++ filter:  c-NIGER-0 - addition of edge
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+0
+1
+2
+3
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 4 ,  c-NIGER-0 -> BENUE-4
+filter  c-NIGER-0  - same card edge arrived
++ filter:  c-NIGER-0 - addition of edge
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+0
+1
+2
+3
+4
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 5 ,  c-NIGER-0 -> BENUE-4
+filter  c-NIGER-0  - same card edge arrived
++ filter:  c-NIGER-0 - addition of edge
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+0
+1
+2
+3
+4
+5
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 11 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-0  - diff card edge arrived
+filter  c-NIGER-1  - edge arrived: 11 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-1  - diff card edge arrived
+filter  c-NIGER-2  - edge arrived: 11 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-2  - same card edge arrived
++ filter:  c-NIGER-2 - addition of edge
+subgraph:  c-NIGER-2
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+9
+10
+11
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 6 ,  c-NIGER-0 -> OGUN-0
+filter  c-NIGER-0  - same card edge arrived
++ filter:  c-NIGER-0 - addition of edge
+subgraph:  c-NIGER-0
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+0
+1
+2
+3
+4
+5
+6
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 8 ,  c-NIGER-1 -> OGUN-3
+filter  c-NIGER-0  - diff card edge arrived
+filter  c-NIGER-1  - edge arrived: 8 ,  c-NIGER-1 -> OGUN-3
+filter  c-NIGER-1  - same card edge arrived
++ filter:  c-NIGER-1 - addition of edge
+subgraph:  c-NIGER-1
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+7
+8
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 12 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-0  - diff card edge arrived
+filter  c-NIGER-1  - edge arrived: 12 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-1  - diff card edge arrived
+filter  c-NIGER-2  - edge arrived: 12 ,  c-NIGER-2 -> OGUN-1
+filter  c-NIGER-2  - same card edge arrived
++ filter:  c-NIGER-2 - addition of edge
+subgraph:  c-NIGER-2
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+9
+10
+11
+12
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+filter  c-NIGER-0  - edge arrived: 13 ,  c-NIGER-2 -> OGUN-2
+filter  c-NIGER-0  - diff card edge arrived
+filter  c-NIGER-1  - edge arrived: 13 ,  c-NIGER-2 -> OGUN-2
+filter  c-NIGER-1  - diff card edge arrived
+filter  c-NIGER-2  - edge arrived: 13 ,  c-NIGER-2 -> OGUN-2
+filter  c-NIGER-2  - same card edge arrived
++ filter:  c-NIGER-2 - addition of edge
+subgraph:  c-NIGER-2
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+9
+10
+11
+12
+13
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+End of stream...
+End of stream...
