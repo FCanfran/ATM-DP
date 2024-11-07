@@ -55,7 +55,7 @@ func Sink(in_alert <-chan cmn.Alert, in_event <-chan cmn.Event, endchan chan<- s
 func Generator(
 	in_edge <-chan cmn.Edge,
 	in_event <-chan cmn.Event,
-	out_alerts chan<- cmn.Alert,
+	out_alert chan<- cmn.Alert,
 	out_event chan<- cmn.Event) {
 
 	fmt.Println("G - creation")
@@ -74,7 +74,7 @@ func Generator(
 			// spawn a filter
 			new_edge_ch := make(chan cmn.Edge, cmn.ChannelSize)
 			new_event_ch := make(chan cmn.Event, cmn.ChannelSize)
-			go filter(edge, in_edge, in_event, new_edge_ch, new_event_ch, out_alerts)
+			go filter(edge, in_edge, in_event, new_edge_ch, new_event_ch, out_alert)
 			// set the new input channels of the generator
 			in_edge = new_edge_ch
 			in_event = new_event_ch
@@ -91,10 +91,11 @@ func Generator(
 				fmt.Println("G: EOF - event")
 				// TODO: Finish the Generator
 				break
-			case cmn.LOG:
+				/*case cmn.LOG:
 				// TODO
 				fmt.Println("G: LOG - event")
 				// TODO-FUTURE: case: Reconnection case - use this channel?
+				*/
 			}
 
 		}
@@ -108,7 +109,7 @@ func filter(
 	in_event <-chan cmn.Event,
 	out_edge chan<- cmn.Edge,
 	out_event chan<- cmn.Event,
-	out_alerts chan<- cmn.Alert) {
+	out_alert chan<- cmn.Alert) {
 
 	// filter id: is the Card unique identifier
 	var id string = edge.Number_id
