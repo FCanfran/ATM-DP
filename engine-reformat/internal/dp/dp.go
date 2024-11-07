@@ -53,67 +53,24 @@ func Sink(in_alerts <-chan cmn.Alert, in_log <-chan cmn.Edge) {
 
 func Generator(in_edges <-chan cmn.Edge, out_alerts chan<- cmn.Alert, out_log chan<- cmn.Edge) {
 	fmt.Println("G - creation")
-	// Generate input channels
-	// Note: by default channels created by "make" create bidirectional
-	// channels by default. To make it receive-only channel, we perform
-	// the type conversion as shown
-	tmp := make(chan in_comm, channelSize)
-	var front_channels <-chan in_comm // read only channel
-	front_channels = tmp
-
-	// Internal log channel
-	internal_log_ch := make(chan cmn.Edge, cmn.ChannelSize)
-
 	for {
 		select {
 		case edge := <-in_edges:
 			//cmn.PrintEdge("G - edge arrived: ", edge)
 			// spawn a filter
-			// - input channels: the input channels of the generator:
-			//					* in_edges - Edge
-			// 					* front_channels - Front
-			// - output channels:
-			// 					* new_edge_ch - Edge (new)
-			// 					* alerts - Alerts (same)
-			//					* new_front_ch - Front (new)
-			// creation of new bidirectional needed channels
 			new_edge_ch := make(chan cmn.Edge, channelSize)
-			new_front_ch := make(chan in_comm, channelSize)
-			go filter(edge, in_edges, front_channels, new_edge_ch, out_alerts, internal_log_ch, new_front_ch)
+			go filter(edge, in_edges, new_edge_ch, out_alerts)
 			// set the new input channels of the generator
 			in_edges = new_edge_ch
-			front_channels = new_front_ch
-		/*	// TODO/TOCHECK: For the moment alerts are only read in the Sink, and they are sent
-			// directly to the Sink and do not pass by the Generator!
-			case alert := <-out_alerts:
-				fmt.Println("G - alert!: ", alert)
-				cmn.PrintAlertVerbose(alert)
-				cmn.PrintAlertOnFile(alert, file_fp_1)
-		*/
-		// TOCHECK:
-		// Internal log channel
-		// Filters write here events. Sent directly to the Generator, which takes them and
-		// gives them to the Sink...
-		// Generator actua como una pasarela... T
-		// DOUBT(TOCHECK) -> Podría ir el canal directamente conectado al Sink y no al Generator
-		// como se tiene hasta el momento el canal de alerts?
-		case event := <-internal_log_ch:
-			out_log <- event
-		case input := <-front_channels:
-			// Reconnection of the pipeline (case of a filter having died)
-			fmt.Println("G - reconnection")
-			in_edges = input.Edge
-			front_channels = input.Front_Channel
+		default:
+			// TODO
+			fmt.Println("G: Default case")
 		}
 	}
+	// TODO: Close channels
 }
 
-// FUTURE: Unused channels
-// in_front, out_front - for the future filter's lifetime management - to be able
-// to kill a filter and do the reconnection with the pipeline properly
-// out_log: to register logging messages that are sent to the generator
-func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
-	out_edge chan<- cmn.Edge, out_alerts chan<- cmn.Alert, out_internal_log_ch chan<- cmn.Edge, out_front chan<- in_comm) {
+func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, out_edge chan<- cmn.Edge, out_alerts chan<- cmn.Alert) {
 
 	// filter id: is the Card unique identifier
 	var id string = edge.Number_id
@@ -125,7 +82,7 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 	// TOCHECK: Avoid this channel being blocking (?) Does it make sense?
 	int_stop := make(chan bool) // synchronous
 
-	go filter_worker(edge, int_edge, int_time, int_stop, out_alerts, out_internal_log_ch)
+	go filter_worker(edge, int_edge, int_time, int_stop, out_alerts)
 
 	for {
 		select {
@@ -135,39 +92,16 @@ func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, in_front <-chan in_comm,
 				int_edge <- edge
 			} else {
 				out_edge <- edge
-				// -------------------------------------------------------------------------------------------------- //
-				// FUTURE: So far, assuming that the we have a single infinite time window - no management of filter's lifetime
-				/*
-					// TODO: Gestion del tiempo de vida del filtro con incoming timestamp de los edges que van pasando
-					// TOCHECK: Tx_end instead of Tx_start: tx come ordered by tx_end, which is the moment when the tx ended
-					// which is when it arrived to our system -> closer to the current real time!
-					int_time <- edge.Tx_end
-					// TODO: avoid this signal (stop) being synchronous! -
-					// allow worker to tell at any moment to stop! instead of blocking
-
-					if stop := <-int_stop; stop {
-						// kill the filter and pass the front channel to do the reconnection
-						out_front <- in_comm{in_edge, in_front}
-						fmt.Println("F ", id, " - kill")
-						return // finish filter
-					}
-				*/
-				// -------------------------------------------------------------------------------------------------- //
-
 			}
-		case input := <-in_front:
-			fmt.Println("F ", id, " - reconnection")
-			// a previous filter died, reconnect pipeline
-			in_edge = input.Edge
-			in_front = input.Front_Channel
+		default:
+			// TODO
+			fmt.Println("F: Default case")
 		}
+		// TODO: Close channels
 	}
 }
 
-// FUTURE: Unused channels - for the future filter's lifetime management - to be able
-// to kill a filter and do the reconnection with the pipeline properly
-func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-chan time.Time, int_stop chan<- bool,
-	out_alerts chan<- cmn.Alert, out_internal_log_ch chan<- cmn.Edge) {
+func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-chan time.Time, int_stop chan<- bool, out_alerts chan<- cmn.Alert) {
 
 	cmn.PrintEdge("FW creation - edge arrived: ", initial_edge)
 	var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
@@ -183,16 +117,6 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 	for {
 		select {
 		case new_edge := <-int_edge:
-			// FUTURE WORK: for multiple window support - so far: Single window support (do not need this)
-			// -------------------------------------------------------------------------------------------------- //
-			// TODO: Check the order of these operations
-			// NOTE: update the subgraph wrt the timestamp of this new edge
-			// first: update the subgraph wrt the timestamp of this new edge and
-			// second: add the new edge
-			// TOCHECK: Tx_end instead of Tx_start: tx come ordered by tx_end, which is the moment when the tx ended
-			// which is when it arrived to our system -> closer to the current real time!
-			//subgraph.Update(new_edge.Tx_end)
-			// -------------------------------------------------------------------------------------------------- //
 			cmn.PrintEdge("FW - edge arrived: ", new_edge)
 			// NOTE: New -> with 2 edges per tx
 			// 1. Identify if it is start or end edge
@@ -212,25 +136,6 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 				subgraph.CompleteEdge(new_edge)
 			}
 			subgraph.Print()
-			// -------------------------------------------------------------------------------------------------- //
-			// FUTURE: So far, assuming that the we have a single infinite time window - no management of filter's lifetime
-			/*
-				case new_time := <-int_time:
-					// 1. Filter Timeout check: test if the filter has to die (with the last edge of the volatile
-					// subgraph), in that case send stop signal to the (father) filter
-					if subgraph.CheckFilterTimeout(new_time) {
-						int_stop <- true
-					} else {
-						int_stop <- false // TODO: CHECK IF THIS CAN COME HERE OR WE HAVE TO WAIT TO DO IT AT
-						// THE END
-						// filter is not killed but we need to update the subgraph to (possibly) eliminate the
-						// outdated edges on the volatile subgraph
-						subgraph.Update(new_time)
-						subgraph.PrintIds()
-						// int_stop <- false
-					}
-			*/
-			// -------------------------------------------------------------------------------------------------- //
 		}
 
 	}
@@ -238,21 +143,15 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 
 func Source(istream string, out_edges chan<- cmn.Edge) {
 
-	// log file to registering the events arriving to the system
-	file_log, err := os.Create("../output/in-log.txt")
-	cmn.CheckError(err)
-	defer file_log.Close()
-
 	// input stream file
 	file, err := os.Open(istream)
 	cmn.CheckError(err)
-	// closes the file after read from it no matter if there is error or not
 	defer file.Close()
 	cmn.CheckError(err)
+
 	// csv reader
 	reader := csv.NewReader(bufio.NewReader(file))
-	// Read and discard the header line
-	_, err = reader.Read()
+	_, err = reader.Read() // Read and discard the header line
 	cmn.CheckError(err)
 
 	for {
@@ -260,6 +159,7 @@ func Source(istream string, out_edges chan<- cmn.Edge) {
 		tx, err := reader.Read()
 		if err == io.EOF {
 			fmt.Println("End of stream...")
+			// TODO: Create op = EOF
 			break
 		}
 		cmn.CheckError(err)
@@ -303,10 +203,8 @@ func Source(istream string, out_edges chan<- cmn.Edge) {
 		cmn.PrintEdgeComplete("", edge)
 		out_edges <- edge
 
-		// the log of events is done here directly on the sink
-		cmn.PrintEdgeCompleteToFile("", edge, file_log)
-
-		// TODO: Sleep time for debugging to slow down the flux of transactions
+		// TODO-REMOVE: -- Only for testing/debugging purposes --
+		//  Sleep time for debugging to slow down the flux of transactions
 		// Leave without this sleep / change it
 		time.Sleep(500 * time.Millisecond)
 

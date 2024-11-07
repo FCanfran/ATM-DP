@@ -18,16 +18,32 @@ const ChannelSize = 5000
 // https://yourbasic.org/golang/format-parse-string-time-date-example/
 const Time_layout = "2006-01-02 15:04:05"
 
+type TxType uint8
+
+const (
+	Withdrawal TxType = 0
+	Deposit           = 1
+	Inquiry           = 2
+	Transfer          = 3
+)
+
+type Operation uint8
+
+const (
+	Tx  Operation = 1
+	EOF           = 2
+)
+
 // An Edge = Transaction: Card ---> ATM
 // It is an edge of the volatile subgraph
 type Edge struct {
 	Number_id string    // Card id
 	ATM_id    string    // ATM id
 	Tx_id     int32     // transaction id
+	Tx_type   TxType    // transaction type (withdrawal/deposit/inquiry/transfer)
 	Tx_start  time.Time // transaction start date time (DD/MM/YYYY HH:MM:SS)
 	Tx_end    time.Time // transaction end date time (DD/MM/YYYY HH:MM:SS)
 	Tx_amount float32   // transaction amount
-	// Tx_type: type of tx (NOTE: for the moment only withdrawals are considered)
 }
 
 type Coordinates struct {
