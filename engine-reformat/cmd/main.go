@@ -25,22 +25,22 @@ func main() {
 	istream := os.Args[1]
 
 	// creation of needed channels
-	// channel to pass from the read input to the pipeline
-	stream_ch := make(chan cmn.Request, cmn.ChannelSize)
+	// dedicated Edge channel to pass tx read from input to the pipeline
+	edge_ch := make(chan cmn.Edge, cmn.ChannelSize)
+	// event channel
+	event_ch := make(chan cmn.Event, cmn.ChannelSize)
 	// alerts channel
-	alerts_ch := make(chan cmn.Alert, cmn.ChannelSize)
-	// Log channel: to register all the events generated in the engine. Bidirectional.
-	// Registering in the sink
-	// TOCHECK: For the moment only edges through it
-	log_ch := make(chan cmn.Edge, cmn.ChannelSize)
+	alert_ch := make(chan cmn.Alert, cmn.ChannelSize)
+	// out_ch channel: direct event channel between Generator and Sink.
+	// --> all kinds of events except the alerts
+	out_ch := make(chan cmn.Event, cmn.ChannelSize)
 	// Ending channel
 	endchan := make(chan struct{})
 
 	// launch Source, Generator and Sink goroutines
-	go dp.Source(istream, stream_ch)
-	go dp.Generator(stream_ch, alerts_ch, log_ch)
-	go dp.Sink(alerts_ch, log_ch, endchan)
+	go dp.Source(istream, edge_ch, event_ch)
+	go dp.Generator(edge_ch, event_ch, alert_ch, out_ch)
+	go dp.Sink(alert_ch, out_ch, endchan)
 
-	// TODO: Crear channel para esperar la terminación
 	<-endchan
 }

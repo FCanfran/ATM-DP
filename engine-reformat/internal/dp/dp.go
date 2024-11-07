@@ -5,7 +5,6 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	cmn "pipeline/internal/common"
 	"strconv"
@@ -16,7 +15,7 @@ import (
 
 const channelSize = 5000
 
-func Sink(in_alerts <-chan cmn.Alert, in_log <-chan cmn.Edge) {
+func Sink(in_alert <-chan cmn.Alert, in_event <-chan cmn.Event, endchan chan<- struct{}) {
 	fmt.Println("SINK PROCESS - LAUNCHED")
 	// TOCHECK: Create results output files: one for each kind of fraud pattern (?)
 	// TODO: For the moment only 1 kind of pattern
@@ -31,70 +30,135 @@ func Sink(in_alerts <-chan cmn.Alert, in_log <-chan cmn.Edge) {
 
 	for {
 		select {
-		case alert, ok := <-in_alerts:
+		case alert, ok := <-in_alert:
 			if ok {
 				fmt.Println("Sink - alert!: ", alert)
 				cmn.PrintAlertVerbose(alert)
 				cmn.PrintAlertOnFile(alert, file_fp_1)
 			}
-		case event, ok := <-in_log:
+		case event, ok := <-in_event:
 			if ok {
-				cmn.PrintEventOnFile(event, file_log)
+				// cmn.PrintEventOnFile(event, file_log)
+			}
+			switch event.Type {
+			case cmn.EOF:
+				fmt.Println("Sink: EOF - event")
+				// TODO: Finish the Sink
+				break
+
 			}
 		}
 	}
+	endchan <- struct{}{}
 }
 
-func Generator(in_stream <-chan cmn.Request, out_alerts chan<- cmn.Alert, out_log chan<- cmn.Edge) {
+func Generator(
+	in_edge <-chan cmn.Edge,
+	in_event <-chan cmn.Event,
+	out_alerts chan<- cmn.Alert,
+	out_event chan<- cmn.Event) {
+
 	fmt.Println("G - creation")
 	for {
+		// NOTE: "select" so to leave it prepared when re-introducing the reconnection channels
+		// --> we want to be able to read from multiple input channels at the same time:
+		// - in_stream
+		// - front_ch (filter reconnection channel)
 		select {
-		case edge := <-in_edges:
+		case edge, ok := <-in_edge:
+			if !ok {
+				// TODO: Manage the error properly
+				fmt.Println("G: !ok in in_edge channel")
+			}
 			//cmn.PrintEdge("G - edge arrived: ", edge)
 			// spawn a filter
-			new_edge_ch := make(chan cmn.Edge, channelSize)
-			go filter(edge, in_edges, new_edge_ch, out_alerts)
+			new_edge_ch := make(chan cmn.Edge, cmn.ChannelSize)
+			new_event_ch := make(chan cmn.Event, cmn.ChannelSize)
+			go filter(edge, in_edge, in_event, new_edge_ch, new_event_ch, out_alerts)
 			// set the new input channels of the generator
-			in_edges = new_edge_ch
-		default:
-			// TODO
-			fmt.Println("G: Default case")
+			in_edge = new_edge_ch
+			in_event = new_event_ch
+
+		case event, ok := <-in_event:
+			if !ok {
+				// TODO: Manage the error properly
+				fmt.Println("G: !ok in in_event channel")
+			}
+			// Send the event to the Sink
+			out_event <- event
+			switch event.Type {
+			case cmn.EOF:
+				fmt.Println("G: EOF - event")
+				// TODO: Finish the Generator
+				break
+			case cmn.LOG:
+				// TODO
+				fmt.Println("G: LOG - event")
+				// TODO-FUTURE: case: Reconnection case - use this channel?
+			}
+
 		}
 	}
 	// TODO: Close channels
 }
 
-func filter(edge cmn.Edge, in_edge <-chan cmn.Edge, out_edge chan<- cmn.Edge, out_alerts chan<- cmn.Alert) {
+func filter(
+	edge cmn.Edge,
+	in_edge <-chan cmn.Edge,
+	in_event <-chan cmn.Event,
+	out_edge chan<- cmn.Edge,
+	out_event chan<- cmn.Event,
+	out_alerts chan<- cmn.Alert) {
 
 	// filter id: is the Card unique identifier
 	var id string = edge.Number_id
 
 	fmt.Println("F ", id, "- creation")
 
-	int_edge := make(chan cmn.Edge, channelSize)
-	int_time := make(chan time.Time) // synchronous
-	// TOCHECK: Avoid this channel being blocking (?) Does it make sense?
-	int_stop := make(chan bool) // synchronous
+	/*
+		// TODO: Revise the goroutines anonimous to have inside this goroutine...
+		int_edge := make(chan cmn.Edge, channelSize)
+		int_time := make(chan time.Time) // synchronous
+		// TOCHECK: Avoid this channel being blocking (?) Does it make sense?
+		int_stop := make(chan bool) // synchronous
 
-	go filter_worker(edge, int_edge, int_time, int_stop, out_alerts)
+		go filter_worker(edge, int_edge, int_time, int_stop, out_alerts)
+	*/
 
 	for {
 		select {
-		case edge := <-in_edge:
+		case edge, ok := <-in_edge:
+			if !ok {
+				// TODO: Manage the error properly
+				fmt.Println("F: !ok in in_edge channel")
+			}
 			cmn.PrintEdge("F - edge arrived: ", edge)
 			if edge.Number_id == id {
-				int_edge <- edge
+				// int_edge <- edge
+				cmn.PrintEdge("F - belonging edge: ", edge)
 			} else {
 				out_edge <- edge
 			}
-		default:
-			// TODO
-			fmt.Println("F: Default case")
+		case event, ok := <-in_event:
+			if !ok {
+				// TODO: Manage the error properly
+				fmt.Println("F: !ok in in_event channel")
+			}
+			// Send the event to the next
+			out_event <- event
+			switch event.Type {
+			case cmn.EOF:
+				fmt.Println("F: EOF - event")
+				// TODO: Finish the Filter
+				break
+				// TODO-FUTURE: case: Reconnection case - use this channel?
+			}
 		}
 		// TODO: Close channels
 	}
 }
 
+/*
 func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-chan time.Time, int_stop chan<- bool, out_alerts chan<- cmn.Alert) {
 
 	cmn.PrintEdge("FW creation - edge arrived: ", initial_edge)
@@ -134,8 +198,9 @@ func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-c
 
 	}
 }
+*/
 
-func Source(istream string, out_stream chan<- cmn.Request) {
+func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event) {
 
 	// input stream file
 	file, err := os.Open(istream)
@@ -148,7 +213,7 @@ func Source(istream string, out_stream chan<- cmn.Request) {
 	_, err = reader.Read() // Read and discard the header line
 	cmn.CheckError(err)
 
-	var r cmn.Request
+	var r cmn.Event
 	for {
 
 		tx, err := reader.Read()
@@ -156,9 +221,9 @@ func Source(istream string, out_stream chan<- cmn.Request) {
 
 		if err == io.EOF {
 			fmt.Println("End of stream...")
-			r.Op = cmn.EOF
+			r.Type = cmn.EOF
 			r.E = cmn.Edge{}
-			out_stream <- r
+			out_event <- r
 			break
 		}
 
@@ -214,11 +279,10 @@ func Source(istream string, out_stream chan<- cmn.Request) {
 		cmn.PrintEdgeComplete("", edge)
 
 		// TODO/TOCHECK:
+		// Do a type for the Edges, instead of Edge do a type!?
 		// - Differentiate between Tx_start and Tx_end type of TX
 		// - Differentiate between the different types of TX (withdrawal/deposit...)
-		r.Op = cmn.TX
-		r.E = edge
-		out_stream <- r
+		out_edge <- edge
 
 		// TODO-REMOVE: -- Only for testing/debugging purposes --
 		//  Sleep time for debugging to slow down the flux of transactions

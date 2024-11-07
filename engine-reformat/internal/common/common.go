@@ -28,11 +28,11 @@ const (
 	Other             = 4
 )
 
-type Operation uint8
+type EventType uint8
 
 const (
-	TX  Operation = 1
-	EOF           = 2
+	EOF EventType = 1
+	LOG           = 2
 )
 
 // An Edge = Transaction: Card ---> ATM
@@ -47,9 +47,9 @@ type Edge struct {
 	Tx_amount float32   // transaction amount
 }
 
-type Request struct {
-	Op Operation
-	E  Edge
+type Event struct {
+	Type EventType
+	E    Edge
 }
 
 type Coordinates struct {
