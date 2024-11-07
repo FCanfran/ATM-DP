@@ -25,12 +25,13 @@ const (
 	Deposit           = 1
 	Inquiry           = 2
 	Transfer          = 3
+	Other             = 4
 )
 
 type Operation uint8
 
 const (
-	Tx  Operation = 1
+	TX  Operation = 1
 	EOF           = 2
 )
 
@@ -44,6 +45,11 @@ type Edge struct {
 	Tx_start  time.Time // transaction start date time (DD/MM/YYYY HH:MM:SS)
 	Tx_end    time.Time // transaction end date time (DD/MM/YYYY HH:MM:SS)
 	Tx_amount float32   // transaction amount
+}
+
+type Request struct {
+	Op Operation
+	E  Edge
 }
 
 type Coordinates struct {
