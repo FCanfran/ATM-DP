@@ -401,7 +401,7 @@ func PrintEdgeComplete(msg string, e Edge) {
 			e.Tx_end.Format(Time_layout),
 			e.Tx_amount)
 	} else {
-		fmt.Printf("%s:   %d,%s,%s,%s,%s,%.2f\n",
+		fmt.Printf("%s  %d,%s,%s,%s,%s,%.2f\n",
 			msg,
 			e.Tx_id,
 			e.Number_id,

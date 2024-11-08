@@ -1,180 +1,131 @@
 Connection established.
-SINK PROCESS - LAUNCHED
-tx_id:  42
-tx_type:  2
-tx_start:  2018-04-01 03:57:05 +0000 UTC
-42,c-NIGER-11,EXT-2,2018-04-01 03:57:05,0001-01-01 00:00:00,0.00
-tx_id:  42
-tx_type:  2
-tx_start:  2018-04-01 03:57:05 +0000 UTC
-42,c-NIGER-11,EXT-2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
-tx_id:  10
-tx_type:  2
-tx_start:  2018-04-01 04:45:22 +0000 UTC
-10,c-NIGER-2,NIGER-5,2018-04-01 04:45:22,0001-01-01 00:00:00,0.00
-tx_id:  10
-tx_type:  2
-tx_start:  2018-04-01 04:45:22 +0000 UTC
-10,c-NIGER-2,NIGER-5,2018-04-01 04:45:22,2018-04-01 04:49:37,0.00
-tx_id:  29
-tx_type:  0
-tx_start:  2018-04-01 05:39:23 +0000 UTC
-29,c-NIGER-7,NIGER-3,2018-04-01 05:39:23,0001-01-01 00:00:00,0.00
-tx_id:  29
-tx_type:  0
-tx_start:  2018-04-01 05:39:23 +0000 UTC
-29,c-NIGER-7,NIGER-3,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
-tx_id:  24
-tx_type:  1
-tx_start:  2018-04-01 06:10:30 +0000 UTC
-24,c-NIGER-6,NIGER-4,2018-04-01 06:10:30,0001-01-01 00:00:00,0.00
-tx_id:  24
-tx_type:  1
-tx_start:  2018-04-01 06:10:30 +0000 UTC
-24,c-NIGER-6,NIGER-4,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
-tx_id:  43
-tx_type:  1
-tx_start:  2018-04-01 10:54:38 +0000 UTC
-43,c-NIGER-11,EXT-0,2018-04-01 10:54:38,0001-01-01 00:00:00,0.00
-tx_id:  43
-tx_type:  1
-tx_start:  2018-04-01 10:54:38 +0000 UTC
-43,c-NIGER-11,EXT-0,2018-04-01 10:54:38,2018-04-01 11:03:16,7654.30
-tx_id:  25
-tx_type:  0
-tx_start:  2018-04-01 17:14:08 +0000 UTC
-25,c-NIGER-6,NIGER-6,2018-04-01 17:14:08,0001-01-01 00:00:00,0.00
-tx_id:  25
-tx_type:  0
-tx_start:  2018-04-01 17:14:08 +0000 UTC
+Sink - creation
+Source -   42,c-NIGER-11,EXT-2,2018-04-01 03:57:05,0001-01-01 00:00:00,0.00
 G - creation
-25,c-NIGER-6,NIGER-6,2018-04-01 17:14:08,2018-04-01 17:20:14,28546.60
-F  c-NIGER-11 - creation
-F - edge arrived:   42, c-NIGER-11 -> EXT-2
-F - belonging edge:   42, c-NIGER-11 -> EXT-2
-F - edge arrived:   10, c-NIGER-2 -> NIGER-5
-F - edge arrived:   10, c-NIGER-2 -> NIGER-5
-F - edge arrived:   29, c-NIGER-7 -> NIGER-3
-F - edge arrived:   29, c-NIGER-7 -> NIGER-3
-F - edge arrived:   24, c-NIGER-6 -> NIGER-4
-F - edge arrived:   24, c-NIGER-6 -> NIGER-4
-F - edge arrived:   43, c-NIGER-11 -> EXT-0
-F - belonging edge:   43, c-NIGER-11 -> EXT-0
-F - edge arrived:   43, c-NIGER-11 -> EXT-0
-F - belonging edge:   43, c-NIGER-11 -> EXT-0
-F - edge arrived:   25, c-NIGER-6 -> NIGER-6
-F - edge arrived:   25, c-NIGER-6 -> NIGER-6
-tx_id:  44
-tx_type:  0
-tx_start:  2018-04-02 16:02:28 +0000 UTC
-44,c-NIGER-11,EXT-0,2018-04-02 16:02:28,0001-01-01 00:00:00,0.00
-tx_id:  44
-tx_type:  0
-tx_start:  2018-04-02 16:02:28 +0000 UTC
-44,c-NIGER-11,EXT-0,2018-04-02 16:02:28,2018-04-02 16:06:56,31158.52
-tx_id:  11
-tx_type:  0
-tx_start:  2018-04-02 16:19:25 +0000 UTC
-11,c-NIGER-2,NIGER-3,2018-04-02 16:19:25,0001-01-01 00:00:00,0.00
-tx_id:  11
-tx_type:  0
-tx_start:  2018-04-02 16:19:25 +0000 UTC
-11,c-NIGER-2,NIGER-3,2018-04-02 16:19:25,2018-04-02 16:25:06,50789.21
-tx_id:  45
-tx_type:  0
-tx_start:  2018-04-02 22:57:51 +0000 UTC
-45,c-NIGER-11,NIGER-8,2018-04-02 22:57:51,0001-01-01 00:00:00,0.00
-tx_id:  45
-tx_type:  0
-tx_start:  2018-04-02 22:57:51 +0000 UTC
-45,c-NIGER-11,NIGER-8,2018-04-02 22:57:51,2018-04-02 22:59:14,35441.71
-tx_id:  30
-tx_type:  3
-F - edge arrived:   44, c-NIGER-11 -> EXT-0
-F - belonging edge:   44, c-NIGER-11 -> EXT-0
-F - edge arrived:   44, c-NIGER-11 -> EXT-0
-F - belonging edge:   44, c-NIGER-11 -> EXT-0
-F - edge arrived:   11, c-NIGER-2 -> NIGER-3
-F - edge arrived:   11, c-NIGER-2 -> NIGER-3
-F - edge arrived:   45, c-NIGER-11 -> NIGER-8
-F - belonging edge:   45, c-NIGER-11 -> NIGER-8
-F - edge arrived:   45, c-NIGER-11 -> NIGER-8
-F - belonging edge:   45, c-NIGER-11 -> NIGER-8
-tx_start:  2018-04-03 01:06:18 +0000 UTC
-F  c-NIGER-2 - creation
-F - edge arrived:   10, c-NIGER-2 -> NIGER-5
-F - belonging edge:   10, c-NIGER-2 -> NIGER-5
-F - edge arrived:   29, c-NIGER-7 -> NIGER-3
-F - edge arrived:   29, c-NIGER-7 -> NIGER-3
-F - edge arrived:   24, c-NIGER-6 -> NIGER-4
-F - edge arrived:   24, c-NIGER-6 -> NIGER-4
-30,c-NIGER-7,NIGER-1,2018-04-03 01:06:18,0001-01-01 00:00:00,0.00
-F - edge arrived:   25, c-NIGER-6 -> NIGER-6
-F - edge arrived:   25, c-NIGER-6 -> NIGER-6
-F - edge arrived:   11, c-NIGER-2 -> NIGER-3
-F - belonging edge:   11, c-NIGER-2 -> NIGER-3
-F - edge arrived:   11, c-NIGER-2 -> NIGER-3
-F - belonging edge:   11, c-NIGER-2 -> NIGER-3
-F - edge arrived:   30, c-NIGER-7 -> NIGER-1
-F - edge arrived:   30, c-NIGER-7 -> NIGER-1
-tx_id:  30
-tx_type:  3
-tx_start:  2018-04-03 01:06:18 +0000 UTC
-30,c-NIGER-7,NIGER-1,2018-04-03 01:06:18,2018-04-03 01:14:34,15293.52
-tx_id:  12
-tx_type:  0
-tx_start:  2018-04-03 23:42:08 +0000 UTC
-12,c-NIGER-2,NIGER-5,2018-04-03 23:42:08,0001-01-01 00:00:00,0.00
-tx_id:  12
-tx_type:  0
-tx_start:  2018-04-03 23:42:08 +0000 UTC
-12,c-NIGER-2,NIGER-5,2018-04-03 23:42:08,2018-04-03 23:43:39,33252.26
-tx_id:  31
-tx_type:  0
-tx_start:  2018-04-04 01:54:48 +0000 UTC
-31,c-NIGER-7,EXT-3,2018-04-04 01:54:48,0001-01-01 00:00:00,0.00
-tx_id:  31
-tx_type:  0
-tx_start:  2018-04-04 01:54:48 +0000 UTC
-31,c-NIGER-7,EXT-3,2018-04-04 01:54:48,2018-04-04 02:03:22,15784.28
-End of stream...
-Input finished
-Close ch - Source - out_edge
-Close ch - Source - out_event
-F  c-NIGER-7 - creation
-F - edge arrived:   29, c-NIGER-7 -> NIGER-3
-F - belonging edge:   29, c-NIGER-7 -> NIGER-3
-F - edge arrived:   24, c-NIGER-6 -> NIGER-4
-F - edge arrived:   24, c-NIGER-6 -> NIGER-4
-F - edge arrived:   25, c-NIGER-6 -> NIGER-6
-F - edge arrived:   25, c-NIGER-6 -> NIGER-6
-F - edge arrived:   30, c-NIGER-7 -> NIGER-1
-F - belonging edge:   30, c-NIGER-7 -> NIGER-1
-F - edge arrived:   30, c-NIGER-7 -> NIGER-1
-F - edge arrived:   12, c-NIGER-2 -> NIGER-5
-F - edge arrived:   30, c-NIGER-7 -> NIGER-1
-F: EOF - event
-Filter finished
-Close ch - Filter - out_edge
-Close ch - Filter - out_event
-F - edge arrived:   30, c-NIGER-7 -> NIGER-1
-F - belonging edge:   30, c-NIGER-7 -> NIGER-1
-F: EOF - event
-Filter finished
-Close ch - Filter - out_edge
-Close ch - Filter - out_event
-F  c-NIGER-6 - creation
-F: EOF - event
-Filter finished
-Close ch - Filter - out_edge
-Close ch - Filter - out_event
-F: EOF - event
-Filter finished
-Close ch - Filter - out_edge
-Close ch - Filter - out_event
-Sink: EOF - event
-G: EOF - event
-Generator finished
-Close ch - Generator - out_alert
-Close ch - Generator - out_event
+G - edge arrived:   42, c-NIGER-11 -> EXT-2
+F-[c-NIGER-11] - creation
+Source -   42,c-NIGER-11,EXT-2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
+F-[c-NIGER-11] - edge arrived  42, c-NIGER-11 -> EXT-2
+F-[c-NIGER-11] - belonging edge:   42, c-NIGER-11 -> EXT-2
+Source -   10,c-NIGER-2,NIGER-5,2018-04-01 04:45:22,0001-01-01 00:00:00,0.00
+F-[c-NIGER-11] - edge arrived  10, c-NIGER-2 -> NIGER-5
+G - edge arrived:   10, c-NIGER-2 -> NIGER-5
+F-[c-NIGER-2] - creation
+Source -   10,c-NIGER-2,NIGER-5,2018-04-01 04:45:22,2018-04-01 04:49:37,0.00
+F-[c-NIGER-11] - edge arrived  10, c-NIGER-2 -> NIGER-5
+F-[c-NIGER-2] - edge arrived  10, c-NIGER-2 -> NIGER-5
+F-[c-NIGER-2] - belonging edge:   10, c-NIGER-2 -> NIGER-5
+Source -   29,c-NIGER-7,NIGER-3,2018-04-01 05:39:23,0001-01-01 00:00:00,0.00
+F-[c-NIGER-11] - edge arrived  29, c-NIGER-7 -> NIGER-3
+F-[c-NIGER-2] - edge arrived  29, c-NIGER-7 -> NIGER-3
+G - edge arrived:   29, c-NIGER-7 -> NIGER-3
+F-[c-NIGER-7] - creation
+Source -   29,c-NIGER-7,NIGER-3,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
+F-[c-NIGER-11] - edge arrived  29, c-NIGER-7 -> NIGER-3
+F-[c-NIGER-2] - edge arrived  29, c-NIGER-7 -> NIGER-3
+F-[c-NIGER-7] - edge arrived  29, c-NIGER-7 -> NIGER-3
+F-[c-NIGER-7] - belonging edge:   29, c-NIGER-7 -> NIGER-3
+Source -   24,c-NIGER-6,NIGER-4,2018-04-01 06:10:30,0001-01-01 00:00:00,0.00
+F-[c-NIGER-11] - edge arrived  24, c-NIGER-6 -> NIGER-4
+F-[c-NIGER-2] - edge arrived  24, c-NIGER-6 -> NIGER-4
+F-[c-NIGER-7] - edge arrived  24, c-NIGER-6 -> NIGER-4
+G - edge arrived:   24, c-NIGER-6 -> NIGER-4
+F-[c-NIGER-6] - creation
+Source -   24,c-NIGER-6,NIGER-4,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
+F-[c-NIGER-11] - edge arrived  24, c-NIGER-6 -> NIGER-4
+F-[c-NIGER-2] - edge arrived  24, c-NIGER-6 -> NIGER-4
+F-[c-NIGER-7] - edge arrived  24, c-NIGER-6 -> NIGER-4
+F-[c-NIGER-6] - edge arrived  24, c-NIGER-6 -> NIGER-4
+F-[c-NIGER-6] - belonging edge:   24, c-NIGER-6 -> NIGER-4
+Source -   43,c-NIGER-11,EXT-0,2018-04-01 10:54:38,0001-01-01 00:00:00,0.00
+F-[c-NIGER-11] - edge arrived  43, c-NIGER-11 -> EXT-0
+F-[c-NIGER-11] - belonging edge:   43, c-NIGER-11 -> EXT-0
+Source -   43,c-NIGER-11,EXT-0,2018-04-01 10:54:38,2018-04-01 11:03:16,7654.30
+F-[c-NIGER-11] - edge arrived  43, c-NIGER-11 -> EXT-0
+F-[c-NIGER-11] - belonging edge:   43, c-NIGER-11 -> EXT-0
+Source -   25,c-NIGER-6,NIGER-6,2018-04-01 17:14:08,0001-01-01 00:00:00,0.00
+F-[c-NIGER-11] - edge arrived  25, c-NIGER-6 -> NIGER-6
+F-[c-NIGER-2] - edge arrived  25, c-NIGER-6 -> NIGER-6
+F-[c-NIGER-7] - edge arrived  25, c-NIGER-6 -> NIGER-6
+F-[c-NIGER-6] - edge arrived  25, c-NIGER-6 -> NIGER-6
+F-[c-NIGER-6] - belonging edge:   25, c-NIGER-6 -> NIGER-6
+Source -   25,c-NIGER-6,NIGER-6,2018-04-01 17:14:08,2018-04-01 17:20:14,28546.60
+F-[c-NIGER-11] - edge arrived  25, c-NIGER-6 -> NIGER-6
+F-[c-NIGER-2] - edge arrived  25, c-NIGER-6 -> NIGER-6
+F-[c-NIGER-7] - edge arrived  25, c-NIGER-6 -> NIGER-6
+F-[c-NIGER-6] - edge arrived  25, c-NIGER-6 -> NIGER-6
+F-[c-NIGER-6] - belonging edge:   25, c-NIGER-6 -> NIGER-6
+Source -   44,c-NIGER-11,EXT-0,2018-04-02 16:02:28,0001-01-01 00:00:00,0.00
+F-[c-NIGER-11] - edge arrived  44, c-NIGER-11 -> EXT-0
+F-[c-NIGER-11] - belonging edge:   44, c-NIGER-11 -> EXT-0
+Source -   44,c-NIGER-11,EXT-0,2018-04-02 16:02:28,2018-04-02 16:06:56,31158.52
+F-[c-NIGER-11] - edge arrived  44, c-NIGER-11 -> EXT-0
+F-[c-NIGER-11] - belonging edge:   44, c-NIGER-11 -> EXT-0
+Source -   11,c-NIGER-2,NIGER-3,2018-04-02 16:19:25,0001-01-01 00:00:00,0.00
+F-[c-NIGER-11] - edge arrived  11, c-NIGER-2 -> NIGER-3
+F-[c-NIGER-2] - edge arrived  11, c-NIGER-2 -> NIGER-3
+F-[c-NIGER-2] - belonging edge:   11, c-NIGER-2 -> NIGER-3
+Source -   11,c-NIGER-2,NIGER-3,2018-04-02 16:19:25,2018-04-02 16:25:06,50789.21
+F-[c-NIGER-11] - edge arrived  11, c-NIGER-2 -> NIGER-3
+F-[c-NIGER-2] - edge arrived  11, c-NIGER-2 -> NIGER-3
+F-[c-NIGER-2] - belonging edge:   11, c-NIGER-2 -> NIGER-3
+Source -   45,c-NIGER-11,NIGER-8,2018-04-02 22:57:51,0001-01-01 00:00:00,0.00
+F-[c-NIGER-11] - edge arrived  45, c-NIGER-11 -> NIGER-8
+F-[c-NIGER-11] - belonging edge:   45, c-NIGER-11 -> NIGER-8
+Source -   45,c-NIGER-11,NIGER-8,2018-04-02 22:57:51,2018-04-02 22:59:14,35441.71
+F-[c-NIGER-11] - edge arrived  45, c-NIGER-11 -> NIGER-8
+F-[c-NIGER-11] - belonging edge:   45, c-NIGER-11 -> NIGER-8
+Source -   30,c-NIGER-7,NIGER-1,2018-04-03 01:06:18,0001-01-01 00:00:00,0.00
+F-[c-NIGER-11] - edge arrived  30, c-NIGER-7 -> NIGER-1
+F-[c-NIGER-2] - edge arrived  30, c-NIGER-7 -> NIGER-1
+F-[c-NIGER-7] - edge arrived  30, c-NIGER-7 -> NIGER-1
+F-[c-NIGER-7] - belonging edge:   30, c-NIGER-7 -> NIGER-1
+Source -   30,c-NIGER-7,NIGER-1,2018-04-03 01:06:18,2018-04-03 01:14:34,15293.52
+F-[c-NIGER-11] - edge arrived  30, c-NIGER-7 -> NIGER-1
+F-[c-NIGER-2] - edge arrived  30, c-NIGER-7 -> NIGER-1
+F-[c-NIGER-7] - edge arrived  30, c-NIGER-7 -> NIGER-1
+F-[c-NIGER-7] - belonging edge:   30, c-NIGER-7 -> NIGER-1
+Source -   12,c-NIGER-2,NIGER-5,2018-04-03 23:42:08,0001-01-01 00:00:00,0.00
+F-[c-NIGER-11] - edge arrived  12, c-NIGER-2 -> NIGER-5
+F-[c-NIGER-2] - edge arrived  12, c-NIGER-2 -> NIGER-5
+F-[c-NIGER-2] - belonging edge:   12, c-NIGER-2 -> NIGER-5
+Source -   12,c-NIGER-2,NIGER-5,2018-04-03 23:42:08,2018-04-03 23:43:39,33252.26
+F-[c-NIGER-11] - edge arrived  12, c-NIGER-2 -> NIGER-5
+F-[c-NIGER-2] - edge arrived  12, c-NIGER-2 -> NIGER-5
+F-[c-NIGER-2] - belonging edge:   12, c-NIGER-2 -> NIGER-5
+Source -   31,c-NIGER-7,EXT-3,2018-04-04 01:54:48,0001-01-01 00:00:00,0.00
+F-[c-NIGER-11] - edge arrived  31, c-NIGER-7 -> EXT-3
+F-[c-NIGER-2] - edge arrived  31, c-NIGER-7 -> EXT-3
+F-[c-NIGER-7] - edge arrived  31, c-NIGER-7 -> EXT-3
+F-[c-NIGER-7] - belonging edge:   31, c-NIGER-7 -> EXT-3
+Source -   31,c-NIGER-7,EXT-3,2018-04-04 01:54:48,2018-04-04 02:03:22,15784.28
+F-[c-NIGER-11] - edge arrived  31, c-NIGER-7 -> EXT-3
+F-[c-NIGER-2] - edge arrived  31, c-NIGER-7 -> EXT-3
+F-[c-NIGER-7] - edge arrived  31, c-NIGER-7 -> EXT-3
+F-[c-NIGER-7] - belonging edge:   31, c-NIGER-7 -> EXT-3
+Source - End of stream...
+Source - Input finished
+Source - Close ch - out_edge
+Source - Close ch - out_event
+F-[c-NIGER-11] - EOF event
+F-[c-NIGER-2] - EOF event
+F-[c-NIGER-11] - Filter finished
+F-[c-NIGER-11] - Close ch - out_edge
+F-[c-NIGER-11] - Close ch - out_event
+G - EOF event
+G finished
+G - Close ch - out_alert
+G - Close ch - out_event
+F-[c-NIGER-2] - Filter finished
+F-[c-NIGER-2] - Close ch - out_edge
+F-[c-NIGER-2] - Close ch - out_event
+F-[c-NIGER-6] - EOF event
+F-[c-NIGER-6] - Filter finished
+F-[c-NIGER-6] - Close ch - out_edge
+F-[c-NIGER-6] - Close ch - out_event
+F-[c-NIGER-7] - EOF event
+F-[c-NIGER-7] - Filter finished
+F-[c-NIGER-7] - Close ch - out_edge
+F-[c-NIGER-7] - Close ch - out_event
+Sink - EOF event
 Finish Program

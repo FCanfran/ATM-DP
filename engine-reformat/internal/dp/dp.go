@@ -16,7 +16,7 @@ import (
 const channelSize = 5000
 
 func Sink(in_alert <-chan cmn.Alert, in_event <-chan cmn.Event, endchan chan<- struct{}) {
-	fmt.Println("SINK PROCESS - LAUNCHED")
+	fmt.Println("Sink - creation")
 	// TOCHECK: Create results output files: one for each kind of fraud pattern (?)
 	// TODO: For the moment only 1 kind of pattern
 	file_fp_1, err := os.Create("../output/outPattern1.txt")
@@ -44,7 +44,7 @@ Loop:
 			}
 			switch event.Type {
 			case cmn.EOF:
-				fmt.Println("Sink: EOF - event")
+				fmt.Println("Sink - EOF event")
 				// finish the Sink
 				break Loop
 
@@ -69,9 +69,9 @@ Loop:
 		case edge, ok := <-in_edge:
 			if !ok {
 				// TODO: Manage the error properly
-				fmt.Println("G: !ok in in_edge channel")
+				fmt.Println("G - !ok in in_edge channel")
 			}
-			//cmn.PrintEdge("G - edge arrived: ", edge)
+			cmn.PrintEdge("G - edge arrived: ", edge)
 			// spawn a filter
 			new_edge_ch := make(chan cmn.Edge, cmn.ChannelSize)
 			new_event_ch := make(chan cmn.Event, cmn.ChannelSize)
@@ -83,14 +83,14 @@ Loop:
 		case event, ok := <-in_event:
 			if !ok {
 				// TODO: Manage the error properly
-				fmt.Println("G: !ok in in_event channel")
+				fmt.Println("G - !ok in in_event channel")
 			}
 			// Send the event to the Sink
 			// TOCHECK: Send all events to the sink or only some? - filter them?
 			out_event <- event
 			switch event.Type {
 			case cmn.EOF:
-				fmt.Println("G: EOF - event")
+				fmt.Println("G - EOF event")
 				// end the generator
 				break Loop
 				/*case cmn.LOG:
@@ -102,10 +102,10 @@ Loop:
 		}
 	}
 
-	fmt.Println("Generator finished")
-	fmt.Println("Close ch - Generator - out_alert")
+	fmt.Println("G finished")
+	fmt.Println("G - Close ch - out_alert")
 	close(out_alert)
-	fmt.Println("Close ch - Generator - out_event")
+	fmt.Println("G - Close ch - out_event")
 	close(out_event)
 }
 
@@ -119,8 +119,9 @@ func filter(
 
 	// filter id: is the Card unique identifier
 	var id string = edge.Number_id
+	var msg_id string = "F-[" + id + "]"
 
-	fmt.Println("F ", id, "- creation")
+	fmt.Println(msg_id + " - creation")
 
 	/*
 		// TODO: Revise the goroutines anonimous to have inside this goroutine...
@@ -139,33 +140,33 @@ Loop:
 				// TODO: Manage the error properly
 				fmt.Println("F: !ok in in_edge channel")
 			}
-			cmn.PrintEdge("F - edge arrived: ", edge)
+			cmn.PrintEdge(msg_id+" - edge arrived", edge)
 			if edge.Number_id == id {
 				// int_edge <- edge
-				cmn.PrintEdge("F - belonging edge: ", edge)
+				cmn.PrintEdge(msg_id+" - belonging edge: ", edge)
 			} else {
 				out_edge <- edge
 			}
 		case event, ok := <-in_event:
 			if !ok {
 				// TODO: Manage the error properly
-				fmt.Println("F: !ok in in_event channel")
+				fmt.Println(msg_id + "- !ok in in_event channel")
 			}
 			// Send the event to the next
 			out_event <- event
 			switch event.Type {
 			case cmn.EOF:
-				fmt.Println("F: EOF - event")
+				fmt.Println(msg_id + " - EOF event")
 				// finish the Filter
 				break Loop
 				// TODO-FUTURE: case: Reconnection case - use this channel?
 			}
 		}
 	}
-	fmt.Println("Filter finished")
-	fmt.Println("Close ch - Filter - out_edge")
+	fmt.Println(msg_id + " - Filter finished")
+	fmt.Println(msg_id + " - Close ch - out_edge")
 	close(out_edge)
-	fmt.Println("Close ch - Filter - out_event")
+	fmt.Println(msg_id + " - Close ch - out_event")
 	close(out_event)
 }
 
@@ -229,7 +230,7 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 
 		tx, err := reader.Read()
 		if err == io.EOF {
-			fmt.Println("End of stream...")
+			fmt.Println("Source - End of stream...")
 			r.Type = cmn.EOF
 			r.E = cmn.Edge{}
 			out_event <- r
@@ -243,8 +244,6 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 		cmn.CheckError(err)
 		tx_id := int32(tx_id_64) // still the type returned is int64 -> convert to int32
 
-		fmt.Println("tx_id: ", tx_id)
-
 		// type
 		var tx_type cmn.TxType
 		tx_type_64, err := strconv.ParseInt(tx[3], 10, 8) // int8
@@ -255,13 +254,9 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 			tx_type = cmn.TxType(tx_type_64)
 		}
 
-		fmt.Println("tx_type: ", tx_type)
-
 		// start
 		tx_start, err := time.Parse(cmn.Time_layout, tx[4])
 		cmn.CheckError(err)
-
-		fmt.Println("tx_start: ", tx_start)
 
 		// end
 		// Check if tx_end field is empty
@@ -292,7 +287,7 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 			Tx_amount: tx_amount_32,
 		}
 
-		cmn.PrintEdgeComplete("", edge)
+		cmn.PrintEdgeComplete("Source - ", edge)
 
 		// TODO/TOCHECK:
 		// Do a type for the Edges, instead of Edge do a type!?
@@ -303,13 +298,13 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 		// TODO-REMOVE: -- Only for testing/debugging purposes --
 		//  Sleep time for debugging to slow down the flux of transactions
 		// Leave without this sleep / change it
-		//time.Sleep(500 * time.Millisecond)
+		time.Sleep(200 * time.Millisecond)
 	}
 
-	fmt.Println("Input finished")
-	fmt.Println("Close ch - Source - out_edge")
+	fmt.Println("Source - Input finished")
+	fmt.Println("Source - Close ch - out_edge")
 	close(out_edge)
-	fmt.Println("Close ch - Source - out_event")
+	fmt.Println("Source - Close ch - out_event")
 	close(out_event)
 
 }
