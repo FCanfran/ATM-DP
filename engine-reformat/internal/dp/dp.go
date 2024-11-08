@@ -28,6 +28,7 @@ func Sink(in_alert <-chan cmn.Alert, in_event <-chan cmn.Event, endchan chan<- s
 	cmn.CheckError(err)
 	defer file_log.Close()
 
+Loop:
 	for {
 		select {
 		case alert, ok := <-in_alert:
@@ -38,13 +39,14 @@ func Sink(in_alert <-chan cmn.Alert, in_event <-chan cmn.Event, endchan chan<- s
 			}
 		case event, ok := <-in_event:
 			if ok {
-				// cmn.PrintEventOnFile(event, file_log)
+				// TODO: Print the event and not (only) the edge associated?
+				cmn.PrintEventOnFile(event.E, file_log)
 			}
 			switch event.Type {
 			case cmn.EOF:
 				fmt.Println("Sink: EOF - event")
-				// TODO: Finish the Sink
-				break
+				// finish the Sink
+				break Loop
 
 			}
 		}
@@ -59,11 +61,10 @@ func Generator(
 	out_event chan<- cmn.Event) {
 
 	fmt.Println("G - creation")
+Loop:
 	for {
 		// NOTE: "select" so to leave it prepared when re-introducing the reconnection channels
-		// --> we want to be able to read from multiple input channels at the same time:
-		// - in_stream
-		// - front_ch (filter reconnection channel)
+		// --> we want to be able to read from multiple input channels at the same time
 		select {
 		case edge, ok := <-in_edge:
 			if !ok {
@@ -85,22 +86,27 @@ func Generator(
 				fmt.Println("G: !ok in in_event channel")
 			}
 			// Send the event to the Sink
+			// TOCHECK: Send all events to the sink or only some? - filter them?
 			out_event <- event
 			switch event.Type {
 			case cmn.EOF:
 				fmt.Println("G: EOF - event")
-				// TODO: Finish the Generator
-				break
+				// end the generator
+				break Loop
 				/*case cmn.LOG:
 				// TODO
 				fmt.Println("G: LOG - event")
 				// TODO-FUTURE: case: Reconnection case - use this channel?
 				*/
 			}
-
 		}
 	}
-	// TODO: Close channels
+
+	fmt.Println("Generator finished")
+	fmt.Println("Close ch - Generator - out_alert")
+	close(out_alert)
+	fmt.Println("Close ch - Generator - out_event")
+	close(out_event)
 }
 
 func filter(
@@ -125,7 +131,7 @@ func filter(
 
 		go filter_worker(edge, int_edge, int_time, int_stop, out_alerts)
 	*/
-
+Loop:
 	for {
 		select {
 		case edge, ok := <-in_edge:
@@ -150,13 +156,17 @@ func filter(
 			switch event.Type {
 			case cmn.EOF:
 				fmt.Println("F: EOF - event")
-				// TODO: Finish the Filter
-				break
+				// finish the Filter
+				break Loop
 				// TODO-FUTURE: case: Reconnection case - use this channel?
 			}
 		}
-		// TODO: Close channels
 	}
+	fmt.Println("Filter finished")
+	fmt.Println("Close ch - Filter - out_edge")
+	close(out_edge)
+	fmt.Println("Close ch - Filter - out_event")
+	close(out_event)
 }
 
 /*
@@ -218,8 +228,6 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 	for {
 
 		tx, err := reader.Read()
-		cmn.CheckError(err)
-
 		if err == io.EOF {
 			fmt.Println("End of stream...")
 			r.Type = cmn.EOF
@@ -227,12 +235,15 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 			out_event <- r
 			break
 		}
+		cmn.CheckError(err)
 
 		// conversions
 		// id
 		tx_id_64, err := strconv.ParseInt(tx[0], 10, 32) // 10: base (decimal) & 32: bit-size (int32)
 		cmn.CheckError(err)
 		tx_id := int32(tx_id_64) // still the type returned is int64 -> convert to int32
+
+		fmt.Println("tx_id: ", tx_id)
 
 		// type
 		var tx_type cmn.TxType
@@ -244,9 +255,13 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 			tx_type = cmn.TxType(tx_type_64)
 		}
 
+		fmt.Println("tx_type: ", tx_type)
+
 		// start
 		tx_start, err := time.Parse(cmn.Time_layout, tx[4])
 		cmn.CheckError(err)
+
+		fmt.Println("tx_start: ", tx_start)
 
 		// end
 		// Check if tx_end field is empty
@@ -256,13 +271,13 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 		// a time that has not been initialized explicitly.
 		var tx_end time.Time
 		if tx[5] != "" {
-			tx_end, err = time.Parse(cmn.Time_layout, tx[4])
+			tx_end, err = time.Parse(cmn.Time_layout, tx[5])
 			cmn.CheckError(err)
 		}
 
 		var tx_amount_32 float32
 		if tx[6] != "" {
-			tx_amount, err := strconv.ParseFloat(tx[5], 32)
+			tx_amount, err := strconv.ParseFloat(tx[6], 32)
 			cmn.CheckError(err)
 			tx_amount_32 = float32(tx_amount)
 		}
@@ -288,8 +303,13 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 		// TODO-REMOVE: -- Only for testing/debugging purposes --
 		//  Sleep time for debugging to slow down the flux of transactions
 		// Leave without this sleep / change it
-		time.Sleep(500 * time.Millisecond)
-
+		//time.Sleep(500 * time.Millisecond)
 	}
+
+	fmt.Println("Input finished")
+	fmt.Println("Close ch - Source - out_edge")
+	close(out_edge)
+	fmt.Println("Close ch - Source - out_event")
+	close(out_event)
 
 }
