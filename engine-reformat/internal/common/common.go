@@ -99,7 +99,7 @@ func NewGraph() *Graph {
 
 // For adding a general edge or a tx-start edge at the end of the volatile subgraph ds
 func (g *Graph) AddEdge(e Edge) {
-	fmt.Println(":::: AddEdge ::::")
+	//fmt.Println(":::: AddEdge ::::")
 	g.edges.PushBack(&e) // Adding edge as pointer to the list (list of pointers to edges)
 	// TODO: Needs to be updated?
 	// g.last_timestamp = e.Tx_start
@@ -107,7 +107,7 @@ func (g *Graph) AddEdge(e Edge) {
 
 // Complete an edge in the subgraph with the tx-end edge
 func (g *Graph) CompleteEdge(e Edge) {
-	fmt.Println(":::: CompleteEdge ::::")
+	//fmt.Println(":::: CompleteEdge ::::")
 	// Get the last edge of the list and complete it
 	// we are getting a reference of the object, so any change directly modifies it
 	prev := g.edges.Back()
@@ -244,10 +244,10 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	// Calculate the distance between the two locations
 	loc1 := haversine.Coord{Lat: location1.Latitude, Lon: location1.Longitude}
 	loc2 := haversine.Coord{Lat: location2.Latitude, Lon: location2.Longitude}
-	fmt.Println(loc1)
-	fmt.Println(loc2)
+	//fmt.Println(loc1)
+	//fmt.Println(loc2)
 	_, distance_km := haversine.Distance(loc1, loc2)
-	fmt.Println("Kilometers:", distance_km)
+	//fmt.Println("Kilometers:", distance_km)
 
 	// t = e / v ---> (km)/(km/h) --> in seconds (*60*60)
 	t_min := (distance_km / maxSpeed) * 60 * 60 // in seconds
@@ -304,8 +304,8 @@ func (g *Graph) CheckFraud(new_e Edge) (bool, Alert) {
 
 		t_diff := int((new_e.Tx_start.Sub(prev_e.Tx_end)).Seconds())
 
-		fmt.Println("t_min", t_min)
-		fmt.Println("t_diff", t_diff)
+		//fmt.Println("t_min", t_min)
+		//fmt.Println("t_diff", t_diff)
 
 		if t_diff < t_min {
 			// print fraud pattern with this edge
@@ -314,16 +314,16 @@ func (g *Graph) CheckFraud(new_e Edge) (bool, Alert) {
 			subgraph := NewGraph()
 			subgraph.AddEdge(prev_e)
 			subgraph.AddEdge(new_e)
-			fmt.Println("TRUE FP1: ")
+			//fmt.Println("TRUE FP1: ")
 			subgraph.Print()
-			fmt.Println("...........................................................")
+			//fmt.Println("...........................................................")
 			// Construct the corresponding Alert properly
 			fraud1Alert.Label = "1"
 			fraud1Alert.Info = "fraud pattern"
 			fraud1Alert.Subgraph = *subgraph
 			fraudIndicator = true
 		} else {
-			fmt.Println("FALSE FP1")
+			//fmt.Println("FALSE FP1")
 		}
 	}
 

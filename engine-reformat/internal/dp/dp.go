@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	cmn "pipeline/internal/common"
 	"strconv"
@@ -56,6 +57,7 @@ Loop:
 		}
 	}
 	endchan <- struct{}{}
+	fmt.Println("Sink - Finished")
 }
 
 func Generator(
@@ -106,11 +108,11 @@ Loop:
 		}
 	}
 
-	fmt.Println("G finished")
 	fmt.Println("G - Close ch - out_alert")
 	close(out_alert)
 	fmt.Println("G - Close ch - out_event")
 	close(out_event)
+	fmt.Println("G finished")
 }
 
 func filter(
@@ -128,6 +130,7 @@ func filter(
 	fmt.Println(msg_id + " - creation")
 
 	internal_edge := make(chan cmn.Edge, channelSize)
+
 	//int_time := make(chan time.Time) // synchronous
 	// TOCHECK: Avoid this channel being blocking (?) Does it make sense?
 	// int_stop := make(chan bool) // synchronous
@@ -139,21 +142,21 @@ func filter(
 		// TODO/TOCHECK - Declare here or in the filter directly?
 		var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
 		fmt.Println(msg_id + " - creation")
-		/*
-			isStart := initial_edge.IsStart()
-			if !isStart {
-				log.Fatalf("Error: AddEdge ->  Initial edge of the filter is not of type tx-start")
-			}
-			subgraph.AddEdge(initial_edge)
-			subgraph.PrintIds()
-		*/
+		cmn.PrintEdge(msg_id+" - initial edge:", edge)
+		isStart := edge.IsStart()
+		if !isStart {
+			log.Fatalf("Error: AddEdge ->  Initial edge of the filter is not of type tx-start")
+		}
+		subgraph.AddEdge(edge)
+		// subgraph.PrintIds()
+
 		// TODO: this goroutine dies alone after its father (the filter) dies?
 		// -> it is the only process with which it has communication / is connected
 		for {
 			new_edge, ok := <-internal_edge
 			if !ok {
 				// TODO: Check what to do here better
-				fmt.Println(msg_id + "- ERROR -> read in internal_edge channel")
+				fmt.Println(msg_id + "- closed internal_edge channel")
 				break
 			}
 			cmn.PrintEdge(msg_id+"- edge arrived: ", new_edge)
@@ -162,20 +165,23 @@ func filter(
 			isStart := new_edge.IsStart()
 			if isStart {
 				// start edge
+				fmt.Println(msg_id + "- edge is start")
 				// 1. Check fraud
 				isFraud, alert := subgraph.CheckFraud(new_edge)
 				if isFraud {
 					out_alert <- alert
 				}
-				fmt.Println("........................................")
+				//fmt.Println(msg_id + "................... SUBGRAPH ........................")
 				// 2. Add to the subgraph
 				subgraph.AddEdge(new_edge)
 			} else {
-				fmt.Println("Is end")
+				fmt.Println(msg_id + "- edge is end")
 				subgraph.CompleteEdge(new_edge)
 			}
-			subgraph.Print()
+			//subgraph.Print()
 		}
+
+		fmt.Println(msg_id + " - Filter worker finished")
 	}() // () here to not only define it but also run it
 
 Loop:
@@ -209,54 +215,14 @@ Loop:
 			}
 		}
 	}
-	fmt.Println(msg_id + " - Filter finished")
+	fmt.Println(msg_id + " - Close ch - internal_edge")
+	close(internal_edge)
 	fmt.Println(msg_id + " - Close ch - out_edge")
 	close(out_edge)
 	fmt.Println(msg_id + " - Close ch - out_event")
 	close(out_event)
+	fmt.Println(msg_id + " - Filter finished")
 }
-
-/*
-func filter_worker(initial_edge cmn.Edge, int_edge <-chan cmn.Edge, int_time <-chan time.Time, int_stop chan<- bool, out_alerts chan<- cmn.Alert) {
-
-	cmn.PrintEdge("FW creation - edge arrived: ", initial_edge)
-	var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
-	isStart := initial_edge.IsStart()
-	if !isStart {
-		log.Fatalf("Error: AddEdge ->  Initial edge of the filter is not of type tx-start")
-	}
-	subgraph.AddEdge(initial_edge)
-	subgraph.PrintIds()
-
-	// TODO: this goroutine dies alone after its father (the filter) dies?
-	// -> it is the only process with which it has communication / is connected
-	for {
-		select {
-		case new_edge := <-int_edge:
-			cmn.PrintEdge("FW - edge arrived: ", new_edge)
-			// NOTE: New -> with 2 edges per tx
-			// 1. Identify if it is start or end edge
-			isStart := new_edge.IsStart()
-			if isStart {
-				// start edge
-				// 1. Check fraud
-				isFraud, alert := subgraph.CheckFraud(new_edge)
-				if isFraud {
-					out_alerts <- alert
-				}
-				fmt.Println("........................................")
-				// 2. Add to the subgraph
-				subgraph.AddEdge(new_edge)
-			} else {
-				fmt.Println("Is end")
-				subgraph.CompleteEdge(new_edge)
-			}
-			subgraph.Print()
-		}
-
-	}
-}
-*/
 
 func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event) {
 
@@ -347,10 +313,9 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 		time.Sleep(200 * time.Millisecond)
 	}
 
-	fmt.Println("Source - Input finished")
 	fmt.Println("Source - Close ch - out_edge")
 	close(out_edge)
 	fmt.Println("Source - Close ch - out_event")
 	close(out_event)
-
+	fmt.Println("Source - Finished")
 }
