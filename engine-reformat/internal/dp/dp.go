@@ -15,7 +15,11 @@ import (
 
 const channelSize = 5000
 
-func Sink(in_alert <-chan cmn.Alert, in_event <-chan cmn.Event, endchan chan<- struct{}) {
+func Sink(
+	in_alert <-chan cmn.Alert,
+	in_event <-chan cmn.Event,
+	endchan chan<- struct{}) {
+
 	fmt.Println("Sink - creation")
 	// TOCHECK: Create results output files: one for each kind of fraud pattern (?)
 	// TODO: For the moment only 1 kind of pattern
@@ -123,15 +127,57 @@ func filter(
 
 	fmt.Println(msg_id + " - creation")
 
-	/*
-		// TODO: Revise the goroutines anonimous to have inside this goroutine...
-		int_edge := make(chan cmn.Edge, channelSize)
-		int_time := make(chan time.Time) // synchronous
-		// TOCHECK: Avoid this channel being blocking (?) Does it make sense?
-		int_stop := make(chan bool) // synchronous
+	internal_edge := make(chan cmn.Edge, channelSize)
+	//int_time := make(chan time.Time) // synchronous
+	// TOCHECK: Avoid this channel being blocking (?) Does it make sense?
+	// int_stop := make(chan bool) // synchronous
 
-		go filter_worker(edge, int_edge, int_time, int_stop, out_alerts)
-	*/
+	//go filter_worker(edge, int_edge, int_time, int_stop, out_alerts)
+	// Worker - Anonymous function
+	go func() {
+		var msg_id string = "FW-[" + id + "]"
+		// TODO/TOCHECK - Declare here or in the filter directly?
+		var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
+		fmt.Println(msg_id + " - creation")
+		/*
+			isStart := initial_edge.IsStart()
+			if !isStart {
+				log.Fatalf("Error: AddEdge ->  Initial edge of the filter is not of type tx-start")
+			}
+			subgraph.AddEdge(initial_edge)
+			subgraph.PrintIds()
+		*/
+		// TODO: this goroutine dies alone after its father (the filter) dies?
+		// -> it is the only process with which it has communication / is connected
+		for {
+			new_edge, ok := <-internal_edge
+			if !ok {
+				// TODO: Check what to do here better
+				fmt.Println(msg_id + "- ERROR -> read in internal_edge channel")
+				break
+			}
+			cmn.PrintEdge(msg_id+"- edge arrived: ", new_edge)
+			// NOTE: New -> with 2 edges per tx
+			// 1. Identify if it is start or end edge
+			isStart := new_edge.IsStart()
+			if isStart {
+				// start edge
+				// 1. Check fraud
+				isFraud, alert := subgraph.CheckFraud(new_edge)
+				if isFraud {
+					out_alert <- alert
+				}
+				fmt.Println("........................................")
+				// 2. Add to the subgraph
+				subgraph.AddEdge(new_edge)
+			} else {
+				fmt.Println("Is end")
+				subgraph.CompleteEdge(new_edge)
+			}
+			subgraph.Print()
+		}
+	}() // () here to not only define it but also run it
+
 Loop:
 	for {
 		select {
@@ -142,8 +188,8 @@ Loop:
 			}
 			cmn.PrintEdge(msg_id+" - edge arrived", edge)
 			if edge.Number_id == id {
-				// int_edge <- edge
 				cmn.PrintEdge(msg_id+" - belonging edge: ", edge)
+				internal_edge <- edge
 			} else {
 				out_edge <- edge
 			}
