@@ -186,7 +186,18 @@ func populateCards(session neo4j.SessionWithContext) {
 		CVC: toInteger(row.CVC), 
 		extract_limit: toFloat(row.extract_limit), 
 		loc_latitude: toFloat(row.loc_latitude), 
-		loc_longitude: toFloat(row.loc_longitude)});
+		loc_longitude: toFloat(row.loc_longitude),
+		amount_avg_withdrawal: toFloat(row.amount_avg_withdrawal),
+		amount_std_withdrawal: toFloat(row.amount_std_withdrawal),
+		withdrawal_day: toFloat(row.withdrawal_day),
+		amount_avg_deposit: toFloat(row.amount_avg_deposit),
+		amount_std_deposit: toFloat(row.amount_std_deposit),
+		deposit_day: toFloat(row.deposit_day),
+		inquiry_day: toFloat(row.inquiry_day),
+		amount_avg_transfer: toFloat(row.amount_avg_transfer),
+		amount_std_transfer: toFloat(row.amount_std_transfer),
+		transfer_day: toFloat(row.transfer_day)
+		});
 	`
 	err := writeQuery(session, query, nil)
 	if err != nil {
@@ -510,7 +521,17 @@ func populateCardsAlt(session neo4j.SessionWithContext, csvPath string) {
 			CVC: $CVC,
 			extract_limit: $extract_limit, 
 			loc_latitude: $loc_latitude, 
-			loc_longitude: $loc_longitude
+			loc_longitude: $loc_longitude,
+			amount_avg_withdrawal: $amount_avg_withdrawal,
+			amount_std_withdrawal: $amount_std_withdrawal,
+			withdrawal_day: $withdrawal_day,
+			amount_avg_deposit: $amount_avg_deposit,
+			amount_std_deposit: $amount_std_deposit,
+			deposit_day: $deposit_day,
+			inquiry_day: $inquiry_day,
+			amount_avg_transfer: $amount_avg_transfer,
+			amount_std_transfer: $amount_std_transfer,
+			transfer_day: $transfer_day
 		});
 	`
 	// To do datetime conversion
@@ -543,30 +564,90 @@ func populateCardsAlt(session neo4j.SessionWithContext, csvPath string) {
 			continue
 		}
 		// float
-		extract_limit, err := strconv.ParseFloat(row[4], 64)
-		if err != nil {
-			fmt.Printf("invalid extract_limit value at row %d: %v\n", i+2, err)
-			continue
-		}
-		loc_latitude, err := strconv.ParseFloat(row[5], 64)
+		loc_latitude, err := strconv.ParseFloat(row[4], 64)
 		if err != nil {
 			fmt.Printf("invalid latitude value at row %d: %v\n", i+2, err)
 			continue
 		}
-		loc_longitude, err := strconv.ParseFloat(row[6], 64)
+		loc_longitude, err := strconv.ParseFloat(row[5], 64)
 		if err != nil {
 			fmt.Printf("invalid longitude value at row %d: %v\n", i+2, err)
 			continue
 		}
+		extract_limit, err := strconv.ParseFloat(row[6], 64)
+		if err != nil {
+			fmt.Printf("invalid extract_limit value at row %d: %v\n", i+2, err)
+			continue
+		}
+		amount_avg_withdrawal, err := strconv.ParseFloat(row[7], 64)
+		if err != nil {
+			fmt.Printf("invalid amount_avg_withdrawal value at row %d: %v\n", i+2, err)
+			continue
+		}
+		amount_std_withdrawal, err := strconv.ParseFloat(row[8], 64)
+		if err != nil {
+			fmt.Printf("invalid amount_std_withdrawal value at row %d: %v\n", i+2, err)
+			continue
+		}
+		withdrawal_day, err := strconv.ParseFloat(row[9], 64)
+		if err != nil {
+			fmt.Printf("invalid withdrawal_day value at row %d: %v\n", i+2, err)
+			continue
+		}
+		amount_avg_deposit, err := strconv.ParseFloat(row[10], 64)
+		if err != nil {
+			fmt.Printf("invalid amount_avg_deposit value at row %d: %v\n", i+2, err)
+			continue
+		}
+		amount_std_deposit, err := strconv.ParseFloat(row[11], 64)
+		if err != nil {
+			fmt.Printf("invalid amount_std_deposit value at row %d: %v\n", i+2, err)
+			continue
+		}
+		deposit_day, err := strconv.ParseFloat(row[12], 64)
+		if err != nil {
+			fmt.Printf("invalid deposit_day value at row %d: %v\n", i+2, err)
+			continue
+		}
+		inquiry_day, err := strconv.ParseFloat(row[13], 64)
+		if err != nil {
+			fmt.Printf("invalid inquiry_day value at row %d: %v\n", i+2, err)
+			continue
+		}
+		amount_avg_transfer, err := strconv.ParseFloat(row[14], 64)
+		if err != nil {
+			fmt.Printf("invalid amount_avg_transfer value at row %d: %v\n", i+2, err)
+			continue
+		}
+		amount_std_transfer, err := strconv.ParseFloat(row[15], 64)
+		if err != nil {
+			fmt.Printf("invalid amount_std_transfer value at row %d: %v\n", i+2, err)
+			continue
+		}
+		transfer_day, err := strconv.ParseFloat(row[16], 64)
+		if err != nil {
+			fmt.Printf("invalid transfer_day value at row %d: %v\n", i+2, err)
+			continue
+		}
 
 		params := map[string]interface{}{
-			"number_id":     number_id,
-			"client_id":     client_id,
-			"expiration":    expiration,
-			"CVC":           CVC,
-			"extract_limit": extract_limit,
-			"loc_latitude":  loc_latitude,
-			"loc_longitude": loc_longitude,
+			"number_id":             number_id,
+			"client_id":             client_id,
+			"expiration":            expiration,
+			"CVC":                   CVC,
+			"extract_limit":         extract_limit,
+			"loc_latitude":          loc_latitude,
+			"loc_longitude":         loc_longitude,
+			"amount_avg_withdrawal": amount_avg_withdrawal,
+			"amount_std_withdrawal": amount_std_withdrawal,
+			"withdrawal_day":        withdrawal_day,
+			"amount_avg_deposit":    amount_avg_deposit,
+			"amount_std_deposit":    amount_std_deposit,
+			"deposit_day":           deposit_day,
+			"inquiry_day":           inquiry_day,
+			"amount_avg_transfer":   amount_avg_transfer,
+			"amount_std_transfer":   amount_std_transfer,
+			"transfer_day":          transfer_day,
 		}
 
 		err = writeQuery(session, query, params)
