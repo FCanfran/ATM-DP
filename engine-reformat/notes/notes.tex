@@ -185,7 +185,32 @@ So far, the algorithm (pseudocode) to detect this kind of fraud pattern is the o
     \label{alg:check-fraud-1}
 \end{algorithm}
 
-\paragraph{Other options \& justification}
+There are some aspects and decisions of this algorithm that are worth to describe:
+
+\begin{itemize}
+    \item \textbf{Pairwise detection}. The checking of the anomalous fraud scenario is done doing the check between the new incoming edge $e_{new}$ and each of the edges $e_i$ of the filter's subgraph $S$.
+    \item \textbf{Backwards order checking}. The pairs $(e_{new}, e_i)$ are checked in a backwards traversal order of the edge list of the subgraph $S$, starting with the most recent edge of the subgraph and ending with the oldest.  
+    \item \textbf{Stop the checking whenever the first anomalous scenario is detected}. Whenever an anomalous scenario corresponding to a pair ($e_{new}, e_i)$, then we stop the checking at this point and emit the corresponding alert. Therefore we do not continue the checking with previous edges of $S$. In what follows we argument the reason why it is sufficient to stop the checking at this point, not having to traverse the full list of edges.
+    Assume that we have a subgraph as depicted in Figure x, and that we do not know if there have been anomalous scenarios produced between previous pairs of edges of the subgraph. Name $F_I(X,Y)$ a boolean function that is able to say whether it exists an anomalous fraud scenario of this type between the pair of edges $(X,Y)$ or not. 
+    
+    We can have that:
+    \begin{itemize}
+        \item $F_I(B,C)$: ...
+        \item $\neg F_I(B,C)$: \dots, 2 possible cases:
+        \begin{itemize}
+            \item $F_I(A,B)$
+            \item $\neg F_I(A,B)$
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Emission of the pair $(e_{new}, e_i)$ as the alert}. The alert is composed by the pair $(e_{new}, e_i)$ that is detected to cause the anomalous scenario. Both edges are emitted in the alert since we do not know which is the one that is the anomalous. On the one hand, it can be $e_i$, which is previous to $e_{new}$, in the case that $e_i$ at the moment it arrived it did not cause any alert with the previous edges/transactions of the subgraph and it causes it now with a new incoming edge $e_{new}$ which is a regular transaction of the client. On the other hand, it can be $e_{new}$, which is the last having arrived to the system, that it directly causes the alert with the last (ordinary) transaction of the card.
+    
+    
+\end{itemize}
+
+Others -- not so much related with the CheckFraud algorithm, but in general with the filter's algorithm --:
+\begin{itemize}
+    \item Save all the edges in the subgraph $S$, even though they are the reason of the creation of an anomalous scenario.
+\end{itemize}
 
 
 %\bibliographystyle{plain} % Choose a style (plain, abbrv, unsrt, etc.)
