@@ -266,6 +266,9 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 func (g *Graph) CheckFraud(new_e Edge) (bool, Alert) {
 
 	fmt.Println("-------------- CHECKFRAUD()--------------")
+	// TODO/TOCHECK: Have a session continuosly open for each filter instead of
+	// opening/closing it at each time it needs to do the checkFraud() operation!!
+	// ---> MIRAR LO QUE COMENTÓ DANI!
 	// New root context for the connections to the gdb that are going to be done here
 	context := context.Background()
 	// 0. Open a session to connect to the gdb
