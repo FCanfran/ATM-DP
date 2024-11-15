@@ -45,7 +45,7 @@ Loop:
 		case event, ok := <-in_event:
 			if ok {
 				// TODO: Print the event and not (only) the edge associated?
-				cmn.PrintEventOnFile(event.E, file_log)
+				cmn.PrintEventOnFile(event, file_log)
 			}
 			switch event.Type {
 			case cmn.EOF:
@@ -150,8 +150,8 @@ func filter(
 		subgraph.AddEdge(edge)
 		// subgraph.PrintIds()
 
-		// TODO: this goroutine dies alone after its father (the filter) dies?
-		// -> it is the only process with which it has communication / is connected
+		// this goroutine dies alone after its father closes the internal_edge channel
+		// (it is the only process with which it has communication / is connected)
 		for {
 			new_edge, ok := <-internal_edge
 			if !ok {

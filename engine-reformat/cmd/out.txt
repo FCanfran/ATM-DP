@@ -181,9 +181,6 @@ Source - Close ch - out_event
 Source - Finished
 F-[c-NIGER-11] - EOF event
 F-[c-NIGER-11] - Close ch - internal_edge
-F-[c-NIGER-11] - Close ch - out_edge
-F-[c-NIGER-11] - Close ch - out_event
-F-[c-NIGER-11] - Filter finished
 FW-[c-NIGER-11]- closed internal_edge channel
 FW-[c-NIGER-11] - Filter worker finished
 F-[c-NIGER-2] - EOF event
@@ -191,6 +188,20 @@ F-[c-NIGER-2] - Close ch - internal_edge
 F-[c-NIGER-2] - Close ch - out_edge
 F-[c-NIGER-2] - Close ch - out_event
 F-[c-NIGER-2] - Filter finished
+FW-[c-NIGER-2]- closed internal_edge channel
+FW-[c-NIGER-2] - Filter worker finished
+F-[c-NIGER-11] - Close ch - out_edge
+F-[c-NIGER-11] - Close ch - out_event
+F-[c-NIGER-7] - EOF event
+F-[c-NIGER-7] - Close ch - internal_edge
+F-[c-NIGER-7] - Close ch - out_edge
+F-[c-NIGER-7] - Close ch - out_event
+F-[c-NIGER-7] - Filter finished
+G - EOF event
+G - Close ch - out_alert
+G - Close ch - out_event
+G finished
+F-[c-NIGER-11] - Filter finished
 F-[c-NIGER-6] - EOF event
 F-[c-NIGER-6] - Close ch - internal_edge
 F-[c-NIGER-6] - Close ch - out_edge
@@ -198,19 +209,8 @@ F-[c-NIGER-6] - Close ch - out_event
 F-[c-NIGER-6] - Filter finished
 FW-[c-NIGER-6]- closed internal_edge channel
 FW-[c-NIGER-6] - Filter worker finished
-F-[c-NIGER-7] - EOF event
-Sink - EOF event
-F-[c-NIGER-7] - Close ch - internal_edge
-G - EOF event
-Sink - Finished
-FW-[c-NIGER-2]- closed internal_edge channel
-FW-[c-NIGER-2] - Filter worker finished
-G - Close ch - out_alert
-G - Close ch - out_event
-G finished
-F-[c-NIGER-7] - Close ch - out_edge
-F-[c-NIGER-7] - Close ch - out_event
-F-[c-NIGER-7] - Filter finished
 FW-[c-NIGER-7]- closed internal_edge channel
 FW-[c-NIGER-7] - Filter worker finished
+Sink - EOF event
+Sink - Finished
 Finish Program

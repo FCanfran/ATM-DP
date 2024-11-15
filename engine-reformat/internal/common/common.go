@@ -85,6 +85,12 @@ type Graph struct {
 	edges          *list.List // a list of pointers to edges
 }
 
+/*
+Alert labels:
+- 0: Overlapping alert - tx_i+1 starts before tx_i ends (interaction starts before previous has ended)
+- 1: Fraud pattern I
+*/
+
 type Alert struct {
 	Label    string // it can also be set as integer - for each kind of fraud pattern put a int
 	Info     string // optional additional information of the alert to be passed
@@ -255,10 +261,8 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	return int(t_min), nil
 }
 
-// TODO: CHECK -> When do we stop checking, when we detect the first anomalous scenario,
-// or when we have traversed the full list of edges - all possible scenarios...
-// -------> for the moment, stop when we discover the first. Only 1 at most is reported.º
-// Parameters:
+// checkfraud I - old version
+/*
 // - new_e: the new edge that we check the FP against
 // Returns:
 // - bool: indicating the presence of a positive Alert (true) or not (false)
@@ -331,6 +335,79 @@ func (g *Graph) CheckFraud(new_e Edge) (bool, Alert) {
 	}
 
 	return fraudIndicator, fraud1Alert
+}
+*/
+
+// - new_e: the new edge that we check the FP against
+// Returns:
+// - bool: indicating the presence of a positive Alert (true) or not (false)
+// - Alert: the Alert itself, only in the case it is true. Empty if false.
+func (g *Graph) CheckFraud(new_e Edge) (bool, Alert) {
+
+	fmt.Println("-------------- CHECKFRAUD()--------------")
+	// TODO/TOCHECK: Have a session continuosly open for each filter instead of
+	// opening/closing it at each time it needs to do the checkFraud() operation!!
+	// ---> MIRAR LO QUE COMENTÓ DANI!
+	// New root context for the connections to the gdb that are going to be done here
+	context := context.Background()
+	// 0. Open a session to connect to the gdb
+	session := connection.CreateSession(context)
+	defer connection.CloseSession(context, session)
+
+	var fraudAlert Alert // Default 0-value initialization
+	fraudIndicator := false
+
+	// 1. Obtain last added edge of the subgraph
+	last := g.edges.Back()
+
+	if last != nil {
+		last_e := *(last.Value.(*Edge)) // asserts eg.Value to type Edge
+		// Case new_e.tx_start < last_e.tx_end
+		// -> it can not happen that a transaction starts before the previous is finished
+		if new_e.Tx_start.Before(last_e.Tx_end) {
+			fmt.Println("tx starts before the previous ends!")
+			// TODO: It is a TRUE fraud, but not of this kind! - other kind
+			// do not consider it here so far
+			// print fraud pattern with this edge
+			PrintEdge("Fraud pattern with: ", last_e)
+			fraudIndicator = true
+			// fraud1Alert = ... // TODO: Poner/Separar como otro tipo de fraude/alert
+			subgraph := NewGraph()
+			subgraph.AddEdge(last_e)
+			subgraph.AddEdge(new_e)
+			fraudAlert.Label = "0"
+			fraudAlert.Info = "fraud pattern"
+			fraudAlert.Subgraph = *subgraph
+			fraudIndicator = true
+		} else {
+			if last_e.ATM_id != new_e.ATM_id {
+				// time feasibility check: (new_e.tx_start - last_e.tx_end) < Tmin(last_e.loc, new_e.loc)
+				// obtain Tmin(last_e.loc, new_e.loc)
+				t_min, err := obtainTmin(context, session, last_e.ATM_id, new_e.ATM_id)
+				CheckError(err)
+				t_diff := int((new_e.Tx_start.Sub(last_e.Tx_end)).Seconds())
+				//fmt.Println("t_min", t_min)
+				//fmt.Println("t_diff", t_diff)
+				if t_diff < t_min {
+					// create alert
+					PrintEdge("Fraud pattern with: ", last_e)
+					// subgraph
+					subgraph := NewGraph()
+					subgraph.AddEdge(last_e)
+					subgraph.AddEdge(new_e)
+					//fmt.Println("TRUE FP1: ")
+					//subgraph.Print()
+					fraudAlert.Label = "1"
+					fraudAlert.Info = "fraud pattern"
+					fraudAlert.Subgraph = *subgraph
+					fraudIndicator = true
+				}
+			}
+		}
+	}
+
+	return fraudIndicator, fraudAlert
+
 }
 
 // Returns true if the tx edge is start.
@@ -437,10 +514,10 @@ func PrintEdgeCompleteToFile(msg string, e Edge, file *os.File) {
 }
 
 func PrintAlertVerbose(alert Alert) {
-	fmt.Printf("Alert!: %s, %s\n", alert.Label, alert.Info)
 
+	fmt.Printf("Alert - label: %s, info: %s\n", alert.Label, alert.Info)
 	switch alert.Label {
-	case "1":
+	case "0", "1":
 		alert.Subgraph.Print()
 	}
 	fmt.Println("______________________________________________________________________________")
@@ -448,23 +525,46 @@ func PrintAlertVerbose(alert Alert) {
 
 // So far, to print the anomalous tx subgraph on a dedicated log file for each kind of fraud
 func PrintAlertOnFile(alert Alert, file *os.File) {
+	fmt.Fprintf(file, "Alert - label: %s, info: %s\n", alert.Label, alert.Info)
 	switch alert.Label {
-	case "1":
+	case "0", "1":
 		alert.Subgraph.PrintToFile(file)
 	}
 }
 
-// TODO: For the moment the events are ONLY edges
-func PrintEventOnFile(e Edge, file *os.File) {
-	// transaction_id,number_id,ATM_id,transaction_start,transaction_end,transaction_amount
-	out_string := fmt.Sprintf("%d,%s,%s,%s,%s,%.2f\n",
-		e.Tx_id,
-		e.Number_id,
-		e.ATM_id,
-		e.Tx_start.Format(Time_layout),
-		e.Tx_end.Format(Time_layout),
-		e.Tx_amount)
-	file.WriteString(out_string)
+// TODO: Put properly event printing
+func PrintEventOnFile(e Event, file *os.File) {
+
+	switch e.Type {
+	case EOF:
+		fmt.Fprintf(file, "Event - type: EOF\n")
+	case LOG:
+		fmt.Fprintf(file, "Event - type: LOG\n")
+		fmt.Fprintf(file, "Event - edge: ")
+		edge := e.E
+		// transaction_id,number_id,ATM_id,transaction_start,transaction_end,transaction_amount
+		out_string := fmt.Sprintf("%d,%s,%s,%s,%s,%.2f\n",
+			edge.Tx_id,
+			edge.Number_id,
+			edge.ATM_id,
+			edge.Tx_start.Format(Time_layout),
+			edge.Tx_end.Format(Time_layout),
+			edge.Tx_amount)
+		file.WriteString(out_string)
+	default:
+		fmt.Fprintf(file, "Event - type: OTHER\n")
+		fmt.Fprintf(file, "Event - edge: ")
+		edge := e.E
+		// transaction_id,number_id,ATM_id,transaction_start,transaction_end,transaction_amount
+		out_string := fmt.Sprintf("%d,%s,%s,%s,%s,%.2f\n",
+			edge.Tx_id,
+			edge.Number_id,
+			edge.ATM_id,
+			edge.Tx_start.Format(Time_layout),
+			edge.Tx_end.Format(Time_layout),
+			edge.Tx_amount)
+		file.WriteString(out_string)
+	}
 
 }
 
