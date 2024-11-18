@@ -16,7 +16,7 @@ import (
 const ChannelSize = 5000
 
 // max number of cards per filter
-const MaxFilterSize = 1000
+const MaxFilterSize = 4
 
 // https://yourbasic.org/golang/format-parse-string-time-date-example/
 const Time_layout = "2006-01-02 15:04:05"
@@ -475,19 +475,21 @@ func PrintEdge(msg string, e Edge) {
 
 func PrintEdgeComplete(msg string, e Edge) {
 	if msg == "" {
-		fmt.Printf("%d,%s,%s,%s,%s,%.2f\n",
+		fmt.Printf("%d,%s,%s,%d,%s,%s,%.2f\n",
 			e.Tx_id,
 			e.Number_id,
 			e.ATM_id,
+			e.Tx_type,
 			e.Tx_start.Format(Time_layout),
 			e.Tx_end.Format(Time_layout),
 			e.Tx_amount)
 	} else {
-		fmt.Printf("%s  %d,%s,%s,%s,%s,%.2f\n",
+		fmt.Printf("%s  %d,%s,%s,%d,%s,%s,%.2f\n",
 			msg,
 			e.Tx_id,
 			e.Number_id,
 			e.ATM_id,
+			e.Tx_type,
 			e.Tx_start.Format(Time_layout),
 			e.Tx_end.Format(Time_layout),
 			e.Tx_amount)
@@ -496,19 +498,21 @@ func PrintEdgeComplete(msg string, e Edge) {
 
 func PrintEdgeCompleteToFile(msg string, e Edge, file *os.File) {
 	if msg == "" {
-		fmt.Fprintf(file, "%d,%s,%s,%s,%s,%.2f\n",
+		fmt.Fprintf(file, "%d,%s,%s,%d,%s,%s,%.2f\n",
 			e.Tx_id,
 			e.Number_id,
 			e.ATM_id,
+			e.Tx_type,
 			e.Tx_start.Format(Time_layout),
 			e.Tx_end.Format(Time_layout),
 			e.Tx_amount)
 	} else {
-		fmt.Fprintf(file, "%s:   %d,%s,%s,%s,%s,%.2f\n",
+		fmt.Fprintf(file, "%s:   %d,%s,%s,%d,%s,%s,%.2f\n",
 			msg,
 			e.Tx_id,
 			e.Number_id,
 			e.ATM_id,
+			e.Tx_type,
 			e.Tx_start.Format(Time_layout),
 			e.Tx_end.Format(Time_layout),
 			e.Tx_amount)
@@ -545,10 +549,11 @@ func PrintEventOnFile(e Event, file *os.File) {
 		fmt.Fprintf(file, "Event - edge: ")
 		edge := e.E
 		// transaction_id,number_id,ATM_id,transaction_start,transaction_end,transaction_amount
-		out_string := fmt.Sprintf("%d,%s,%s,%s,%s,%.2f\n",
+		out_string := fmt.Sprintf("%d,%s,%s,%d,%s,%s,%.2f\n",
 			edge.Tx_id,
 			edge.Number_id,
 			edge.ATM_id,
+			edge.Tx_type,
 			edge.Tx_start.Format(Time_layout),
 			edge.Tx_end.Format(Time_layout),
 			edge.Tx_amount)
@@ -558,10 +563,11 @@ func PrintEventOnFile(e Event, file *os.File) {
 		fmt.Fprintf(file, "Event - edge: ")
 		edge := e.E
 		// transaction_id,number_id,ATM_id,transaction_start,transaction_end,transaction_amount
-		out_string := fmt.Sprintf("%d,%s,%s,%s,%s,%.2f\n",
+		out_string := fmt.Sprintf("%d,%s,%s,%d,%s,%s,%.2f\n",
 			edge.Tx_id,
 			edge.Number_id,
 			edge.ATM_id,
+			edge.Tx_type,
 			edge.Tx_start.Format(Time_layout),
 			edge.Tx_end.Format(Time_layout),
 			edge.Tx_amount)

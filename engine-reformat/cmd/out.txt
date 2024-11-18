@@ -1,7 +1,7 @@
 Connection established.
 Sink - creation
-Source -   42,c-NIGER-11,EXT-2,2018-04-01 03:57:05,0001-01-01 00:00:00,0.00
 G - creation
+Source -   42,c-NIGER-11,EXT-2,2018-04-01 03:57:05,0001-01-01 00:00:00,0.00
 G - edge arrived:   42, c-NIGER-11 -> EXT-2
 F-[c-NIGER-11] - creation
 FW-[c-NIGER-11] - creation
@@ -181,36 +181,36 @@ Source - Close ch - out_event
 Source - Finished
 F-[c-NIGER-11] - EOF event
 F-[c-NIGER-11] - Close ch - internal_edge
+F-[c-NIGER-11] - Close ch - out_edge
+F-[c-NIGER-11] - Close ch - out_event
+F-[c-NIGER-11] - Filter finished
 FW-[c-NIGER-11]- closed internal_edge channel
 FW-[c-NIGER-11] - Filter worker finished
 F-[c-NIGER-2] - EOF event
 F-[c-NIGER-2] - Close ch - internal_edge
-F-[c-NIGER-2] - Close ch - out_edge
-F-[c-NIGER-2] - Close ch - out_event
-F-[c-NIGER-2] - Filter finished
-FW-[c-NIGER-2]- closed internal_edge channel
-FW-[c-NIGER-2] - Filter worker finished
-F-[c-NIGER-11] - Close ch - out_edge
-F-[c-NIGER-11] - Close ch - out_event
-F-[c-NIGER-7] - EOF event
-F-[c-NIGER-7] - Close ch - internal_edge
-F-[c-NIGER-7] - Close ch - out_edge
-F-[c-NIGER-7] - Close ch - out_event
-F-[c-NIGER-7] - Filter finished
-G - EOF event
-G - Close ch - out_alert
-G - Close ch - out_event
-G finished
-F-[c-NIGER-11] - Filter finished
 F-[c-NIGER-6] - EOF event
 F-[c-NIGER-6] - Close ch - internal_edge
 F-[c-NIGER-6] - Close ch - out_edge
 F-[c-NIGER-6] - Close ch - out_event
 F-[c-NIGER-6] - Filter finished
+G - EOF event
+FW-[c-NIGER-2]- closed internal_edge channel
 FW-[c-NIGER-6]- closed internal_edge channel
+G - Close ch - out_alert
+G - Close ch - out_event
+G finished
+F-[c-NIGER-7] - EOF event
+F-[c-NIGER-7] - Close ch - internal_edge
+F-[c-NIGER-7] - Close ch - out_edge
+F-[c-NIGER-7] - Close ch - out_event
+F-[c-NIGER-7] - Filter finished
 FW-[c-NIGER-6] - Filter worker finished
+FW-[c-NIGER-2] - Filter worker finished
 FW-[c-NIGER-7]- closed internal_edge channel
 FW-[c-NIGER-7] - Filter worker finished
+F-[c-NIGER-2] - Close ch - out_edge
+F-[c-NIGER-2] - Close ch - out_event
+F-[c-NIGER-2] - Filter finished
 Sink - EOF event
 Sink - Finished
 Finish Program
