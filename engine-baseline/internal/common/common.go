@@ -347,7 +347,6 @@ func (g *Graph) CheckFraud(new_e Edge) (bool, Alert) {
 // - Alert: the Alert itself, only in the case it is true. Empty if false.
 func (g *Graph) CheckFraud(new_e Edge) (bool, Alert) {
 
-	fmt.Println("-------------- CHECKFRAUD()--------------")
 	// TODO/TOCHECK: Have a session continuosly open for each filter instead of
 	// opening/closing it at each time it needs to do the checkFraud() operation!!
 	// ---> MIRAR LO QUE COMENTÓ DANI!

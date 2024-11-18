@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	cmn "pipeline/internal/common"
+	"pipeline/internal/connection"
 	"pipeline/internal/dp"
 )
 
@@ -19,7 +20,7 @@ func main() {
 	}
 	// TODO: DISCOMMENT
 	// start connection to static gdb
-	// connection.SafeConnect()
+	connection.SafeConnect()
 
 	// obtain stream fileName from args
 	istream := os.Args[1]

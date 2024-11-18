@@ -172,37 +172,39 @@ func filter(
 		// this goroutine dies alone after its father closes the internal_edge channel
 		// (it is the only process with which it has communication / is connected)
 		for {
-			new_edge, ok := <-internal_edge
+			edge_worker, ok := <-internal_edge
 			if !ok {
 				// TODO: Check what to do here better
 				fmt.Println(msg_id + "- closed internal_edge channel")
 				break
 			}
-			cmn.PrintEdge(msg_id+"- edge arrived: ", new_edge)
+			cmn.PrintEdge(msg_id+"- edge arrived: ", edge_worker)
 
 			// obtain the corresponding subgraph
-			subgraph, ok = card_map[edge.Number_id]
+			subgraph, ok = card_map[edge_worker.Number_id]
 			if !ok {
 				// TODO: Manage the error properly
-				fmt.Println("FW - not existing entry in map for: ", edge.Number_id)
+				fmt.Println("FW - not existing entry in map for: ", edge_worker.Number_id)
 			}
 
 			// identify if it is start or end edge
-			isStart := new_edge.IsStart()
+			isStart := edge_worker.IsStart()
 			if isStart {
 				// start edge
 				fmt.Println(msg_id + "- edge is start")
 				// 1. Check fraud
-				isFraud, alert := subgraph.CheckFraud(new_edge)
+				fmt.Println("-------------- CHECKFRAUD()-----------------")
+				isFraud, alert := subgraph.CheckFraud(edge_worker)
+				fmt.Println("--------------------------------------------")
 				if isFraud {
 					out_alert <- alert
 				}
 				//fmt.Println(msg_id + "................... SUBGRAPH ........................")
 				// 2. Add to the subgraph
-				subgraph.AddEdge(new_edge)
+				subgraph.AddEdge(edge_worker)
 			} else {
 				fmt.Println(msg_id + "- edge is end")
-				subgraph.CompleteEdge(new_edge)
+				subgraph.CompleteEdge(edge_worker)
 			}
 			subgraph.Print()
 		}
@@ -218,6 +220,7 @@ Loop:
 				// TODO: Manage the error properly
 				fmt.Println("F: !ok in in_edge channel")
 			}
+			fmt.Println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 			cmn.PrintEdge(msg_id+" - edge arrived", edge)
 			fmt.Println(">>>>>>>>>>>>> num-cards: ", len(card_map))
 			// check if edge belongs to filter
