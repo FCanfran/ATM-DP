@@ -122,38 +122,50 @@ func filter(
 	out_event chan<- cmn.Event,
 	out_alert chan<- cmn.Alert) {
 
-	// F: simple test of the new DS to map ids and subgraphs
+	var id string = edge.Number_id
+	var msg_id string = "F-[" + id + "]"
+	fmt.Println(msg_id + " - creation")
 	// hash table to index card ids to card subgraphs
 	// key: card id
 	// value: pointer to Graph
 	// NOTE: maps are inherently dynamic in size. -> control the desired
 	// max size by ourselves
+	/*
+		FILTER:
+			- Reads to check the existance of an entry on the map
+			- Creates the entries on the map (in the corresponding cases)
+		WORKER:
+			- Modifies the entries on the map once they are created
+			(Filter does not modify values after the creation of the entry)
+
+		// Conclusion: Safe to do it with a single map and without mutex, since
+		there can not be concurrent writes on the same map entries. Filter writes
+		on the creation and then it is only the worker who writes on that entry after
+		the creation of the entry by the filter.
+	*/
 	var card_map map[string]*cmn.Graph = make(map[string]*cmn.Graph)
+	card_map[edge.Number_id] = cmn.NewGraph() // first entry creation
 
-	// TODO: Where do I initialize the subgraph? - when creating the entry of
-	// the new card in the map?
-	// var subgraph *cmn.Graph = cmn.NewGraph() // Explicit declaration
-	var id string = edge.Number_id
-	var msg_id string = "F-[" + id + "]"
-
-	fmt.Println(msg_id + " - creation")
-
-	// TODO/TOCHECK: race conditions in the access to the map - filter
-	// & filter-worker.
-	// Do this in the filter or in the worker?
-	card_map[edge.Number_id] = cmn.NewGraph()
-
-	internal_edge := make(chan cmn.Edge, cmn.ChannelSize)
+	internal_edge := make(chan cmn.Edge, cmn.ChannelSize) // internal_edge channel between Filter and Worker
 
 	// Worker - Anonymous function
 	go func() {
 		var msg_id string = "FW-[" + id + "]"
+		var subgraph *cmn.Graph // variable to work with the subgraphs of the different cards
+
 		fmt.Println(msg_id + " - creation")
 		cmn.PrintEdge(msg_id+" - initial edge:", edge)
 		isStart := edge.IsStart()
 		if !isStart {
 			log.Fatalf("Error: AddEdge ->  Initial edge of the filter is not of type tx-start")
 		}
+
+		subgraph, ok := card_map[edge.Number_id]
+		if !ok {
+			// TODO: Manage the error properly
+			fmt.Println("FW - not existing entry in map for: ", edge.Number_id)
+		}
+
 		subgraph.AddEdge(edge)
 		// subgraph.PrintIds()
 
@@ -169,6 +181,12 @@ func filter(
 			cmn.PrintEdge(msg_id+"- edge arrived: ", new_edge)
 
 			// obtain the corresponding subgraph
+			subgraph, ok = card_map[edge.Number_id]
+			if !ok {
+				// TODO: Manage the error properly
+				fmt.Println("FW - not existing entry in map for: ", edge.Number_id)
+			}
+
 			// identify if it is start or end edge
 			isStart := new_edge.IsStart()
 			if isStart {
@@ -186,7 +204,7 @@ func filter(
 				fmt.Println(msg_id + "- edge is end")
 				subgraph.CompleteEdge(new_edge)
 			}
-			//subgraph.Print()
+			subgraph.Print()
 		}
 
 		fmt.Println(msg_id + " - Filter worker finished")
@@ -206,18 +224,12 @@ Loop:
 			_, ok = card_map[edge.Number_id]
 			if ok {
 				cmn.PrintEdge(msg_id+" - belonging edge: ", edge)
-
 				internal_edge <- edge
 			} else if len(card_map) < cmn.MaxFilterSize {
 				// filter is not full yet, assign this filter to this card
-				// TODO/TOCHECK: race conditions in the access to the map - filter
-				// & filter-worker.
-				// Filter should only check if e belongs to filter reading the map
-				// Worker only should access/index the subgraphs of the map
-				// DOUBT: Who creates (writing) the new entries of the map when a new card
-				// is decided to belong to the filter???
+				cmn.PrintEdge(msg_id+" - new belonging edge: ", edge)
 				card_map[edge.Number_id] = cmn.NewGraph()
-
+				internal_edge <- edge
 			} else {
 				out_edge <- edge
 			}

@@ -426,8 +426,8 @@ func (e Edge) IsStart() bool {
 // Print a subgraph
 func (g *Graph) Print() {
 	if g.edges.Front() != nil {
-		filter_id := g.edges.Front().Value.(*Edge).Number_id
-		fmt.Println("subgraph: ", filter_id)
+		card_id := g.edges.Front().Value.(*Edge).Number_id
+		fmt.Println("subgraph: ", card_id)
 		fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
 		for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
 			eg_val := eg.Value.(*Edge)
@@ -439,8 +439,8 @@ func (g *Graph) Print() {
 
 func (g *Graph) PrintToFile(file *os.File) {
 	if g.edges.Front() != nil {
-		filter_id := g.edges.Front().Value.(*Edge).Number_id
-		fmt.Fprintln(file, "subgraph: ", filter_id)
+		card_id := g.edges.Front().Value.(*Edge).Number_id
+		fmt.Fprintln(file, "subgraph: ", card_id)
 		fmt.Fprintln(file, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
 		for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
 			eg_val := eg.Value.(*Edge)
@@ -453,8 +453,8 @@ func (g *Graph) PrintToFile(file *os.File) {
 // Print a subgraph - only the tx ids
 func (g *Graph) PrintIds() {
 	if g.edges.Front() != nil {
-		filter_id := g.edges.Front().Value.(*Edge).Number_id
-		fmt.Println("subgraph: ", filter_id)
+		card_id := g.edges.Front().Value.(*Edge).Number_id
+		fmt.Println("subgraph: ", card_id)
 		fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
 		for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
 			eg_val := eg.Value.(*Edge)
