@@ -234,6 +234,9 @@ NEO4J_USERNAME="neo4j"
 NEO4J_PASSWORD="xxxxxxx"
 ```
 
+- In our case, since the VM is hosted in the cluster of the UPC, we need to connect to the VPN beforehand. Explain more / omit? 
+Separate in another subsection... also explaining where is hosted the gdb and the details of the VM of the UPC cluster...
+
 - Run the golang program in the `cypherimport` subdirectory. It automatically runs the cypher commands needed for the populating process. **Note:** in this case we need to provide the path of the csv files *csvPath* argument on the local machine on which we are running this script.
 
 ```
