@@ -27,8 +27,6 @@ func main() {
 	istream := os.Args[1]
 
 	// creation of needed channels
-	// dedicated Edge channel to pass tx read from input to the pipeline
-	edge_ch := make(chan cmn.Edge, cmn.ChannelSize)
 	// event channel
 	event_ch := make(chan cmn.Event, cmn.ChannelSize)
 	// alerts channel
@@ -41,8 +39,8 @@ func main() {
 
 	start := time.Now()
 	// launch Source, Generator and Sink goroutines
-	go dp.Source(istream, edge_ch, event_ch)
-	go dp.Generator(edge_ch, event_ch, alert_ch, out_event_ch)
+	go dp.Source(istream, event_ch)
+	go dp.Generator(event_ch, alert_ch, out_event_ch)
 	go dp.Sink(alert_ch, out_event_ch, endchan)
 
 	<-endchan

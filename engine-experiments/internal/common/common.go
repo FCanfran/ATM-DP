@@ -34,8 +34,10 @@ const (
 type EventType uint8
 
 const (
-	EOF EventType = 1
-	LOG           = 2
+	EdgeStart EventType = 0
+	EdgeEnd             = 1
+	EOF                 = 2
+	LOG                 = 3
 )
 
 // An Edge = Transaction: Card ---> ATM

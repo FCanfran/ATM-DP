@@ -141,6 +141,8 @@ fill=green!30]
 
 \section{Dynamic Pipeline}
 
+\textcolor{red}{\textbf{TODO: Switch the drawings and the description, edge and event channel merged in 1 single channel}}\\
+
 \begin{figure}[H]
     \centering
     \includegraphics[scale = 0.7]{images/pipeline-schema.png}
@@ -164,6 +166,13 @@ Description of the channels:
   \caption{Pipeline Schema with Filter detail}
   \label{img:pipeline-schema}
 \end{figure}
+
+
+\textcolor{red}{\textbf{Problem detected}\\
+If the EOF event is sent through the event channel then it can happen that this event reaches / is treated before the full stream of edges is fully read / processed, leading to
+the termination of the processes before the processing of all the edges.\\
+Therefore, we decide to merge the edge and the event channel in one single channel!}
+
 
 Some notes on the implementation decisions:
 
