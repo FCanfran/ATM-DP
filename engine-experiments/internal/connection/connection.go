@@ -17,6 +17,8 @@ import (
 
 var (
 	driver neo4j.DriverWithContext
+	// TODO: Leave as global variable or not
+	ctx context.Context
 )
 
 // Connection (safe, with godotenv)
@@ -29,7 +31,7 @@ var (
 func SafeConnect() {
 	// root context: it has no deadline and it can not be cancelled.
 	// used as the base context for connecting to the Neo4j database
-	ctx := context.Background()
+	ctx = context.Background()
 	err := godotenv.Load()
 	if err != nil {
 		panic(err)
@@ -129,7 +131,14 @@ func CloseSession(ctx context.Context, session neo4j.SessionWithContext) {
 	fmt.Println("Session closed.")
 }
 
-func CloseConnection(ctx context.Context) {
+// TODO/TOCHECK: ctx as a global variable or not
+/*
+	func CloseConnection(ctx context.Context) {
+		driver.Close(ctx)
+		fmt.Println("Connection closed.")
+	}
+*/
+func CloseConnection() {
 	driver.Close(ctx)
 	fmt.Println("Connection closed.")
 }

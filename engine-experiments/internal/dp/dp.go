@@ -275,6 +275,7 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 	_, err = reader.Read() // Read and discard the header line
 	cmn.CheckError(err)
 
+	// TODO: Fix! - EOF event is causing the end before the processing is done!
 	var r cmn.Event
 	for {
 
@@ -283,6 +284,8 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 			fmt.Println("Source - End of stream...")
 			r.Type = cmn.EOF
 			r.E = cmn.Edge{}
+			// TODO: Fix! - EOF event is causing the end before the processing is done!
+			time.Sleep(2000 * time.Millisecond)
 			out_event <- r
 			break
 		}
@@ -348,7 +351,7 @@ func Source(istream string, out_edge chan<- cmn.Edge, out_event chan<- cmn.Event
 		// TODO-REMOVE: -- Only for testing/debugging purposes --
 		//  Sleep time for debugging to slow down the flux of transactions
 		// Leave without this sleep / change it
-		time.Sleep(200 * time.Millisecond)
+		//time.Sleep(20 * time.Millisecond)
 	}
 
 	fmt.Println("Source - Close ch - out_edge")

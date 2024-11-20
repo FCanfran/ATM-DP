@@ -10,6 +10,7 @@ import (
 	cmn "pipeline/internal/common"
 	"pipeline/internal/connection"
 	"pipeline/internal/dp"
+	"time"
 )
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
 		fmt.Println("Usage: go run main.go <transactionFileName>")
 		return
 	}
-	// TODO: DISCOMMENT
+
 	// start connection to static gdb
 	connection.SafeConnect()
 
@@ -38,12 +39,18 @@ func main() {
 	// Ending channel
 	endchan := make(chan struct{})
 
+	start := time.Now()
 	// launch Source, Generator and Sink goroutines
 	go dp.Source(istream, edge_ch, event_ch)
 	go dp.Generator(edge_ch, event_ch, alert_ch, out_event_ch)
 	go dp.Sink(alert_ch, out_event_ch, endchan)
 
 	<-endchan
+	t := time.Since(start)
+	fmt.Println("TotalExecutionTime,", t, ",", t.Microseconds(), "μs,", t.Milliseconds(), "ms ,", t.Seconds(), "s")
 	fmt.Println("Finish Program")
+
+	// finish connection to static gdb
+	connection.CloseConnection()
 
 }
