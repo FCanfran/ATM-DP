@@ -227,9 +227,7 @@ Loop:
 		// --> a EdgeEnd should not be able to create an entry on the map
 		// for the moment: ASSUMPTION - tx_end can not arrive before tx_start
 		case cmn.EdgeStart, cmn.EdgeEnd:
-			fmt.Println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-			cmn.PrintEdge(msg_id+" - edge arrived", event.E)
-			fmt.Println(">>>>>>>>>>>>> num-cards: ", len(card_map))
+			//fmt.Println(">>>>>>>>>>>>> num-cards: ", len(card_map))
 			// check if edge belongs to filter
 			_, ok = card_map[event.E.Number_id]
 			if ok {
@@ -241,6 +239,7 @@ Loop:
 				card_map[event.E.Number_id] = cmn.NewGraph()
 				internal_edge <- event
 			} else {
+				cmn.PrintEdge(msg_id+" - NOT belonging edge: ", event.E)
 				out_event <- event
 			}
 		}
@@ -331,7 +330,7 @@ func Source(istream string, out_event chan<- cmn.Event) {
 			Tx_amount: tx_amount_32,
 		}
 
-		cmn.PrintEdgeComplete("Source - ", edge)
+		//cmn.PrintEdgeComplete("Source - ", edge)
 
 		// TODO/TOCHECK:
 		// Do a type for the Edges, instead of Edge do a type!?
