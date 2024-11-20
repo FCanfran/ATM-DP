@@ -22,6 +22,7 @@ func Sink(
 
 	// TOCHECK: Take the initial time here or in the main process before the running of the goroutines...
 	// start := time.Now()
+	var alertCount int
 
 	fmt.Println("Sink - creation")
 	// TOCHECK: Create results output files: one for each kind of fraud pattern (?)
@@ -41,9 +42,10 @@ Loop:
 		case alert, ok := <-in_alert:
 			if ok {
 				t := time.Since(start_time)
+				alertCount += 1
 				fmt.Println("Sink - alert!: ", alert)
-				cmn.PrintAlertVerbose(alert, t)
-				cmn.PrintAlertOnFile(alert, t, file_fp_1)
+				cmn.PrintAlertVerbose(alert, t, alertCount)
+				cmn.PrintAlertOnFile(alert, t, alertCount, file_fp_1)
 			}
 		case event, ok := <-in_event:
 			if ok {

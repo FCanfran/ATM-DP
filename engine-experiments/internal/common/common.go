@@ -521,9 +521,9 @@ func PrintEdgeCompleteToFile(msg string, e Edge, file *os.File) {
 	}
 }
 
-func PrintAlertVerbose(alert Alert, timestamp time.Duration) {
+func PrintAlertVerbose(alert Alert, timestamp time.Duration, alertCount int) {
 
-	fmt.Printf("Alert - label: %s, info: %s, timestamp: %v\n", alert.Label, alert.Info, timestamp)
+	fmt.Printf("Alert - label: %s, info: %s, timestamp: %v, numAlert: %d\n", alert.Label, alert.Info, timestamp, alertCount)
 	switch alert.Label {
 	case "0", "1":
 		alert.Subgraph.Print()
@@ -532,8 +532,8 @@ func PrintAlertVerbose(alert Alert, timestamp time.Duration) {
 }
 
 // So far, to print the anomalous tx subgraph on a dedicated log file for each kind of fraud
-func PrintAlertOnFile(alert Alert, timestamp time.Duration, file *os.File) {
-	fmt.Fprintf(file, "Alert - label: %s, info: %s, timestamp: %v\n", alert.Label, alert.Info, timestamp)
+func PrintAlertOnFile(alert Alert, timestamp time.Duration, alertCount int, file *os.File) {
+	fmt.Fprintf(file, "Alert - label: %s, info: %s, timestamp: %v, numAlert: %d\n", alert.Label, alert.Info, timestamp, alertCount)
 	switch alert.Label {
 	case "0", "1":
 		alert.Subgraph.PrintToFile(file)
