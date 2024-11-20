@@ -1,11 +1,12 @@
 Connection established.
 Sink - creation
-G - creation
 Source -   42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,0001-01-01 00:00:00,0.00
 Source -   42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
 Source -   10,c-NIGER-2,NIGER-5,2,2018-04-01 04:45:22,0001-01-01 00:00:00,0.00
 Source -   10,c-NIGER-2,NIGER-5,2,2018-04-01 04:45:22,2018-04-01 04:49:37,0.00
 Source -   29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,0001-01-01 00:00:00,0.00
+G - creation
+G - edge_start arrived:   42, c-NIGER-11 -> EXT-2
 Source -   29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
 Source -   24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,0001-01-01 00:00:00,0.00
 Source -   24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
@@ -27,46 +28,9 @@ Source -   11,c-NIGER-2,NIGER-3,0,2018-04-02 16:19:25,0001-01-01 00:00:00,0.00
 Source -   11,c-NIGER-2,NIGER-3,0,2018-04-02 16:19:25,2018-04-02 16:25:06,50789.21
 Source -   16,c-NIGER-3,NIGER-1,0,2018-04-02 18:34:38,0001-01-01 00:00:00,0.00
 Source -   16,c-NIGER-3,NIGER-1,0,2018-04-02 18:34:38,2018-04-02 18:42:04,69755.93
-Source -   33,c-NIGER-8,NIGER-1,3,2018-04-02 18:59:37,0001-01-01 00:00:00,0.00
-Source -   33,c-NIGER-8,NIGER-1,3,2018-04-02 18:59:37,2018-04-02 19:03:01,38921.18
-G - edge arrived:   42, c-NIGER-11 -> EXT-2
-Source -   34,c-NIGER-8,NIGER-3,1,2018-04-02 22:09:00,0001-01-01 00:00:00,0.00
-Source -   34,c-NIGER-8,NIGER-3,1,2018-04-02 22:09:00,2018-04-02 22:12:36,1998.01
-Source -   45,c-NIGER-11,NIGER-8,0,2018-04-02 22:57:51,0001-01-01 00:00:00,0.00
-Source -   45,c-NIGER-11,NIGER-8,0,2018-04-02 22:57:51,2018-04-02 22:59:14,35441.71
-Source -   30,c-NIGER-7,NIGER-1,3,2018-04-03 01:06:18,0001-01-01 00:00:00,0.00
-Source -   30,c-NIGER-7,NIGER-1,3,2018-04-03 01:06:18,2018-04-03 01:14:34,15293.52
-Source -   39,c-NIGER-10,EXT-1,0,2018-04-03 03:00:26,0001-01-01 00:00:00,0.00
-Source -   39,c-NIGER-10,EXT-1,0,2018-04-03 03:00:26,2018-04-03 03:02:29,53015.58
-Source -   17,c-NIGER-3,NIGER-5,0,2018-04-03 10:31:14,0001-01-01 00:00:00,0.00
-Source -   17,c-NIGER-3,NIGER-5,0,2018-04-03 10:31:14,2018-04-03 10:36:09,71686.34
-Source -   40,c-NIGER-10,NIGER-1,0,2018-04-03 14:05:24,0001-01-01 00:00:00,0.00
-Source -   40,c-NIGER-10,NIGER-1,0,2018-04-03 14:05:24,2018-04-03 14:07:36,4905.32
-Source -   8,c-NIGER-1,NIGER-8,0,2018-04-03 18:39:56,0001-01-01 00:00:00,0.00
-Source -   8,c-NIGER-1,NIGER-8,0,2018-04-03 18:39:56,2018-04-03 18:42:58,33963.87
-Source -   12,c-NIGER-2,NIGER-5,0,2018-04-03 23:42:08,0001-01-01 00:00:00,0.00
-Source -   12,c-NIGER-2,NIGER-5,0,2018-04-03 23:42:08,2018-04-03 23:43:39,33252.26
-Source -   31,c-NIGER-7,EXT-3,0,2018-04-04 01:54:48,0001-01-01 00:00:00,0.00
-Source -   31,c-NIGER-7,EXT-3,0,2018-04-04 01:54:48,2018-04-04 02:03:22,15784.28
-Source -   1,c-NIGER-0,NIGER-4,3,2018-04-04 03:17:16,0001-01-01 00:00:00,0.00
-Source -   1,c-NIGER-0,NIGER-4,3,2018-04-04 03:17:16,2018-04-04 03:23:18,31720.04
 F-[c-NIGER-11] - creation
-Source -   26,c-NIGER-6,NIGER-4,2,2018-04-04 10:18:54,0001-01-01 00:00:00,0.00
-Source -   26,c-NIGER-6,NIGER-4,2,2018-04-04 10:18:54,2018-04-04 10:20:47,0.00
-FW-[c-NIGER-11] - creation
-FW-[c-NIGER-11] - initial edge:  42, c-NIGER-11 -> EXT-2
-Source -   19,c-NIGER-4,NIGER-9,0,2018-04-04 10:47:34,0001-01-01 00:00:00,0.00
-Source -   13,c-NIGER-2,NIGER-1,1,2018-04-04 10:53:24,0001-01-01 00:00:00,0.00
-Source -   19,c-NIGER-4,NIGER-9,0,2018-04-04 10:47:34,2018-04-04 10:53:31,32525.77
-Source -   13,c-NIGER-2,NIGER-1,1,2018-04-04 10:53:24,2018-04-04 10:55:42,10340.09
-Source -   2,c-NIGER-0,NIGER-4,3,2018-04-04 12:35:37,0001-01-01 00:00:00,0.00
-Source -   2,c-NIGER-0,NIGER-4,3,2018-04-04 12:35:37,2018-04-04 12:44:24,41458.94
-Source -   35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,0001-01-01 00:00:00,0.00
-Source -   35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
-Source -   14,c-NIGER-2,NIGER-1,0,2018-04-04 15:36:19,0001-01-01 00:00:00,0.00
-Source -   14,c-NIGER-2,NIGER-1,0,2018-04-04 15:36:19,2018-04-04 15:43:14,37251.90
-Source -   21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,0001-01-01 00:00:00,0.00
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Source -   33,c-NIGER-8,NIGER-1,3,2018-04-02 18:59:37,0001-01-01 00:00:00,0.00
 F-[c-NIGER-11] - edge arrived  42, c-NIGER-11 -> EXT-2
 >>>>>>>>>>>>> num-cards:  1
 F-[c-NIGER-11] - belonging edge:   42, c-NIGER-11 -> EXT-2
@@ -81,32 +45,8 @@ F-[c-NIGER-11] - belonging edge:   10, c-NIGER-2 -> NIGER-5
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-11] - edge arrived  29, c-NIGER-7 -> NIGER-3
 >>>>>>>>>>>>> num-cards:  2
-Source -   32,c-NIGER-7,NIGER-1,2,2018-04-04 17:14:33,0001-01-01 00:00:00,0.00
-FW-[c-NIGER-11]- edge arrived:   42, c-NIGER-11 -> EXT-2
-FW-[c-NIGER-11]- edge is end
-subgraph:  c-NIGER-11
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 F-[c-NIGER-11] - new belonging edge:   29, c-NIGER-7 -> NIGER-3
-Source -   21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,2018-04-04 17:15:39,723.42
-Source -   32,c-NIGER-7,NIGER-1,2,2018-04-04 17:14:33,2018-04-04 17:19:51,0.00
-Source -   3,c-NIGER-0,NIGER-4,0,2018-04-04 17:27:24,0001-01-01 00:00:00,0.00
-Source -   3,c-NIGER-0,NIGER-4,0,2018-04-04 17:27:24,2018-04-04 17:34:19,8009.67
-Source -   36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,0001-01-01 00:00:00,0.00
-Source -   36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,2018-04-04 18:48:27,18627.07
-Source -   4,c-NIGER-0,NIGER-6,0,2018-04-04 23:07:28,0001-01-01 00:00:00,0.00
-Source -   4,c-NIGER-0,NIGER-6,0,2018-04-04 23:07:28,2018-04-04 23:10:48,13755.34
-Source -   6,c-NIGER-0,NIGER-8,0,2018-04-04 23:38:57,0001-01-01 00:00:00,0.00
-Source -   6,c-NIGER-0,NIGER-8,0,2018-04-04 23:38:57,2018-04-04 23:39:02,27510.68
-Source -   20,c-NIGER-4,NIGER-9,0,2018-04-05 01:31:01,0001-01-01 00:00:00,0.00
-Source -   20,c-NIGER-4,NIGER-9,0,2018-04-05 01:31:01,2018-04-05 01:34:15,1106.44
-Source -   27,c-NIGER-6,NIGER-4,3,2018-04-05 04:22:01,0001-01-01 00:00:00,0.00
-Source -   27,c-NIGER-6,NIGER-4,3,2018-04-05 04:22:01,2018-04-05 04:29:14,53240.71
-Source -   37,c-NIGER-9,EXT-0,0,2018-04-05 04:50:18,0001-01-01 00:00:00,0.00
-Source -   37,c-NIGER-9,EXT-0,0,2018-04-05 04:50:18,2018-04-05 04:54:27,73952.27
-Source -   28,c-NIGER-6,NIGER-6,0,2018-04-05 06:55:29,0001-01-01 00:00:00,0.00
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-Source -   28,c-NIGER-6,NIGER-6,0,2018-04-05 06:55:29,2018-04-05 06:59:03,32833.29
-Source -   46,c-NIGER-11,EXT-0,0,2018-04-05 09:20:23,0001-01-01 00:00:00,0.00
 F-[c-NIGER-11] - edge arrived  29, c-NIGER-7 -> NIGER-3
 >>>>>>>>>>>>> num-cards:  3
 F-[c-NIGER-11] - belonging edge:   29, c-NIGER-7 -> NIGER-3
@@ -141,7 +81,69 @@ F-[c-NIGER-11] - edge arrived  15, c-NIGER-3 -> NIGER-5
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-11] - edge arrived  25, c-NIGER-6 -> NIGER-6
 >>>>>>>>>>>>> num-cards:  4
+Source -   33,c-NIGER-8,NIGER-1,3,2018-04-02 18:59:37,2018-04-02 19:03:01,38921.18
+Source -   34,c-NIGER-8,NIGER-3,1,2018-04-02 22:09:00,0001-01-01 00:00:00,0.00
+Source -   34,c-NIGER-8,NIGER-3,1,2018-04-02 22:09:00,2018-04-02 22:12:36,1998.01
+Source -   45,c-NIGER-11,NIGER-8,0,2018-04-02 22:57:51,0001-01-01 00:00:00,0.00
+Source -   45,c-NIGER-11,NIGER-8,0,2018-04-02 22:57:51,2018-04-02 22:59:14,35441.71
+Source -   30,c-NIGER-7,NIGER-1,3,2018-04-03 01:06:18,0001-01-01 00:00:00,0.00
+Source -   30,c-NIGER-7,NIGER-1,3,2018-04-03 01:06:18,2018-04-03 01:14:34,15293.52
+Source -   39,c-NIGER-10,EXT-1,0,2018-04-03 03:00:26,0001-01-01 00:00:00,0.00
+Source -   39,c-NIGER-10,EXT-1,0,2018-04-03 03:00:26,2018-04-03 03:02:29,53015.58
+Source -   17,c-NIGER-3,NIGER-5,0,2018-04-03 10:31:14,0001-01-01 00:00:00,0.00
+Source -   17,c-NIGER-3,NIGER-5,0,2018-04-03 10:31:14,2018-04-03 10:36:09,71686.34
+Source -   40,c-NIGER-10,NIGER-1,0,2018-04-03 14:05:24,0001-01-01 00:00:00,0.00
+Source -   40,c-NIGER-10,NIGER-1,0,2018-04-03 14:05:24,2018-04-03 14:07:36,4905.32
+Source -   8,c-NIGER-1,NIGER-8,0,2018-04-03 18:39:56,0001-01-01 00:00:00,0.00
+Source -   8,c-NIGER-1,NIGER-8,0,2018-04-03 18:39:56,2018-04-03 18:42:58,33963.87
+G - edge_start arrived:   7, c-NIGER-1 -> EXT-2
+Source -   12,c-NIGER-2,NIGER-5,0,2018-04-03 23:42:08,0001-01-01 00:00:00,0.00
+Source -   12,c-NIGER-2,NIGER-5,0,2018-04-03 23:42:08,2018-04-03 23:43:39,33252.26
+Source -   31,c-NIGER-7,EXT-3,0,2018-04-04 01:54:48,0001-01-01 00:00:00,0.00
+Source -   31,c-NIGER-7,EXT-3,0,2018-04-04 01:54:48,2018-04-04 02:03:22,15784.28
+Source -   1,c-NIGER-0,NIGER-4,3,2018-04-04 03:17:16,0001-01-01 00:00:00,0.00
+Source -   1,c-NIGER-0,NIGER-4,3,2018-04-04 03:17:16,2018-04-04 03:23:18,31720.04
+FW-[c-NIGER-11] - creation
+FW-[c-NIGER-11] - initial edge:  42, c-NIGER-11 -> EXT-2
+Source -   26,c-NIGER-6,NIGER-4,2,2018-04-04 10:18:54,0001-01-01 00:00:00,0.00
+Source -   26,c-NIGER-6,NIGER-4,2,2018-04-04 10:18:54,2018-04-04 10:20:47,0.00
+Source -   19,c-NIGER-4,NIGER-9,0,2018-04-04 10:47:34,0001-01-01 00:00:00,0.00
+Source -   13,c-NIGER-2,NIGER-1,1,2018-04-04 10:53:24,0001-01-01 00:00:00,0.00
+Source -   19,c-NIGER-4,NIGER-9,0,2018-04-04 10:47:34,2018-04-04 10:53:31,32525.77
+Source -   13,c-NIGER-2,NIGER-1,1,2018-04-04 10:53:24,2018-04-04 10:55:42,10340.09
+Source -   2,c-NIGER-0,NIGER-4,3,2018-04-04 12:35:37,0001-01-01 00:00:00,0.00
+Source -   2,c-NIGER-0,NIGER-4,3,2018-04-04 12:35:37,2018-04-04 12:44:24,41458.94
+Source -   35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,0001-01-01 00:00:00,0.00
+Source -   35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
+Source -   14,c-NIGER-2,NIGER-1,0,2018-04-04 15:36:19,0001-01-01 00:00:00,0.00
+Source -   14,c-NIGER-2,NIGER-1,0,2018-04-04 15:36:19,2018-04-04 15:43:14,37251.90
 F-[c-NIGER-11] - belonging edge:   25, c-NIGER-6 -> NIGER-6
+Source -   21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,0001-01-01 00:00:00,0.00
+F-[c-NIGER-1] - creation
+FW-[c-NIGER-11]- edge_end arrived:   42, c-NIGER-11 -> EXT-2
+subgraph:  c-NIGER-11
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_start arrived:   10, c-NIGER-2 -> NIGER-5
+-------------- CHECKFRAUD()-----------------
+Session created.
+Source -   32,c-NIGER-7,NIGER-1,2,2018-04-04 17:14:33,0001-01-01 00:00:00,0.00
+Source -   21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,2018-04-04 17:15:39,723.42
+Source -   32,c-NIGER-7,NIGER-1,2,2018-04-04 17:14:33,2018-04-04 17:19:51,0.00
+Source -   3,c-NIGER-0,NIGER-4,0,2018-04-04 17:27:24,0001-01-01 00:00:00,0.00
+Source -   3,c-NIGER-0,NIGER-4,0,2018-04-04 17:27:24,2018-04-04 17:34:19,8009.67
+FW-[c-NIGER-1] - creation
+FW-[c-NIGER-1] - initial edge:  7, c-NIGER-1 -> EXT-2
+Source -   36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,0001-01-01 00:00:00,0.00
+Source -   36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,2018-04-04 18:48:27,18627.07
+Source -   4,c-NIGER-0,NIGER-6,0,2018-04-04 23:07:28,0001-01-01 00:00:00,0.00
+Source -   4,c-NIGER-0,NIGER-6,0,2018-04-04 23:07:28,2018-04-04 23:10:48,13755.34
+Source -   6,c-NIGER-0,NIGER-8,0,2018-04-04 23:38:57,0001-01-01 00:00:00,0.00
+Source -   6,c-NIGER-0,NIGER-8,0,2018-04-04 23:38:57,2018-04-04 23:39:02,27510.68
+Source -   20,c-NIGER-4,NIGER-9,0,2018-04-05 01:31:01,0001-01-01 00:00:00,0.00
+Source -   20,c-NIGER-4,NIGER-9,0,2018-04-05 01:31:01,2018-04-05 01:34:15,1106.44
+Source -   27,c-NIGER-6,NIGER-4,3,2018-04-05 04:22:01,0001-01-01 00:00:00,0.00
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-11] - edge arrived  25, c-NIGER-6 -> NIGER-6
 >>>>>>>>>>>>> num-cards:  4
@@ -159,188 +161,16 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-11] - edge arrived  0, c-NIGER-0 -> NIGER-7
 >>>>>>>>>>>>> num-cards:  4
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  44, c-NIGER-11 -> EXT-0
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   44, c-NIGER-11 -> EXT-0
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  44, c-NIGER-11 -> EXT-0
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   44, c-NIGER-11 -> EXT-0
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  11, c-NIGER-2 -> NIGER-3
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   11, c-NIGER-2 -> NIGER-3
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  11, c-NIGER-2 -> NIGER-3
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   11, c-NIGER-2 -> NIGER-3
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  16, c-NIGER-3 -> NIGER-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  16, c-NIGER-3 -> NIGER-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  33, c-NIGER-8 -> NIGER-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-F-[c-NIGER-11] - edge arrived  33, c-NIGER-8 -> NIGER-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  34, c-NIGER-8 -> NIGER-3
-FW-[c-NIGER-11]- edge arrived:   10, c-NIGER-2 -> NIGER-5
-FW-[c-NIGER-11]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  34, c-NIGER-8 -> NIGER-3
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  45, c-NIGER-11 -> NIGER-8
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   45, c-NIGER-11 -> NIGER-8
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  45, c-NIGER-11 -> NIGER-8
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   45, c-NIGER-11 -> NIGER-8
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  30, c-NIGER-7 -> NIGER-1
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   30, c-NIGER-7 -> NIGER-1
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  30, c-NIGER-7 -> NIGER-1
->>>>>>>>>>>>> num-cards:  4
-G - edge arrived:   7, c-NIGER-1 -> EXT-2
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-2
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-10,c-NIGER-2,NIGER-5,2,2018-04-01 04:45:22,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   10, c-NIGER-2 -> NIGER-5
-FW-[c-NIGER-11]- edge is end
-subgraph:  c-NIGER-2
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-10,c-NIGER-2,NIGER-5,2,2018-04-01 04:45:22,2018-04-01 04:49:37,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   29, c-NIGER-7 -> NIGER-3
-FW-[c-NIGER-11]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
-Source -   46,c-NIGER-11,EXT-0,0,2018-04-05 09:20:23,2018-04-05 09:24:36,6681.78
-Source -   47,c-NIGER-11,EXT-2,0,2018-04-05 10:46:52,0001-01-01 00:00:00,0.00
-Source -   47,c-NIGER-11,EXT-2,0,2018-04-05 10:46:52,2018-04-05 10:49:39,14529.43
-Source -   5,c-NIGER-0,NIGER-7,3,2018-04-05 11:38:51,0001-01-01 00:00:00,0.00
-Source -   38,c-NIGER-9,NIGER-8,0,2018-04-05 11:40:38,0001-01-01 00:00:00,0.00
-Source -   5,c-NIGER-0,NIGER-7,3,2018-04-05 11:38:51,2018-04-05 11:43:43,28999.46
-Source -   38,c-NIGER-9,NIGER-8,0,2018-04-05 11:40:38,2018-04-05 11:44:58,23606.79
-Source -   22,c-NIGER-5,NIGER-6,0,2018-04-05 14:52:23,0001-01-01 00:00:00,0.00
-Source -   22,c-NIGER-5,NIGER-6,0,2018-04-05 14:52:23,2018-04-05 14:59:38,49982.04
-Source -   9,c-NIGER-1,EXT-0,3,2018-04-05 15:19:24,0001-01-01 00:00:00,0.00
-Source -   9,c-NIGER-1,EXT-0,3,2018-04-05 15:19:24,2018-04-05 15:26:35,35495.86
-Source -   41,c-NIGER-10,EXT-1,0,2018-04-05 16:30:48,0001-01-01 00:00:00,0.00
-Source -   41,c-NIGER-10,EXT-1,0,2018-04-05 16:30:48,2018-04-05 16:38:13,15882.07
-Source -   23,c-NIGER-5,NIGER-6,1,2018-04-05 21:04:17,0001-01-01 00:00:00,0.00
-Source -   23,c-NIGER-5,NIGER-6,1,2018-04-05 21:04:17,2018-04-05 21:09:21,11713.23
-Source -   48,c-NIGER-11,EXT-2,3,2018-04-05 23:54:24,0001-01-01 00:00:00,0.00
-Source -   48,c-NIGER-11,EXT-2,3,2018-04-05 23:54:24,2018-04-06 00:00:00,42276.18
-Source -   49,c-NIGER-11,EXT-3,3,2018-04-06 00:33:10,0001-01-01 00:00:00,0.00
-Source -   49,c-NIGER-11,EXT-3,3,2018-04-06 00:33:10,2018-04-06 00:33:15,84552.36
-Source - End of stream...
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-7
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   29, c-NIGER-7 -> NIGER-3
-FW-[c-NIGER-11]- edge is end
-subgraph:  c-NIGER-7
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   24, c-NIGER-6 -> NIGER-4
-FW-[c-NIGER-11]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
-F-[c-NIGER-11] - belonging edge:   30, c-NIGER-7 -> NIGER-1
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  39, c-NIGER-10 -> EXT-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  39, c-NIGER-10 -> EXT-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  17, c-NIGER-3 -> NIGER-5
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  17, c-NIGER-3 -> NIGER-5
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  40, c-NIGER-10 -> NIGER-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  40, c-NIGER-10 -> NIGER-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  8, c-NIGER-1 -> NIGER-8
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-6
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   24, c-NIGER-6 -> NIGER-4
-FW-[c-NIGER-11]- edge is end
-subgraph:  c-NIGER-6
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   43, c-NIGER-11 -> EXT-0
-FW-[c-NIGER-11]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
-F-[c-NIGER-1] - creation
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  8, c-NIGER-1 -> NIGER-8
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  12, c-NIGER-2 -> NIGER-5
->>>>>>>>>>>>> num-cards:  4
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-1] - edge arrived  7, c-NIGER-1 -> EXT-2
 >>>>>>>>>>>>> num-cards:  1
 F-[c-NIGER-1] - belonging edge:   7, c-NIGER-1 -> EXT-2
-FW-[c-NIGER-1] - creation
-FW-[c-NIGER-1] - initial edge:  7, c-NIGER-1 -> EXT-2
-FW-[c-NIGER-1]- edge arrived:   7, c-NIGER-1 -> EXT-2
-FW-[c-NIGER-1]- edge is end
-subgraph:  c-NIGER-1
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-7,c-NIGER-1,EXT-2,3,2018-04-01 12:38:09,2018-04-01 12:43:39,40028.33
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-F-[c-NIGER-11] - belonging edge:   12, c-NIGER-2 -> NIGER-5
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  12, c-NIGER-2 -> NIGER-5
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   12, c-NIGER-2 -> NIGER-5
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  31, c-NIGER-7 -> EXT-3
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   31, c-NIGER-7 -> EXT-3
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  31, c-NIGER-7 -> EXT-3
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   31, c-NIGER-7 -> EXT-3
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-1] - edge arrived  15, c-NIGER-3 -> NIGER-5
 >>>>>>>>>>>>> num-cards:  1
+Source -   27,c-NIGER-6,NIGER-4,3,2018-04-05 04:22:01,2018-04-05 04:29:14,53240.71
 F-[c-NIGER-1] - new belonging edge:   15, c-NIGER-3 -> NIGER-5
+Source -   37,c-NIGER-9,EXT-0,0,2018-04-05 04:50:18,0001-01-01 00:00:00,0.00
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-1] - edge arrived  15, c-NIGER-3 -> NIGER-5
 >>>>>>>>>>>>> num-cards:  2
@@ -361,9 +191,80 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-1] - edge arrived  0, c-NIGER-0 -> NIGER-7
 >>>>>>>>>>>>> num-cards:  4
 F-[c-NIGER-1] - belonging edge:   0, c-NIGER-0 -> NIGER-7
+Session closed.
+Source -   37,c-NIGER-9,EXT-0,0,2018-04-05 04:50:18,2018-04-05 04:54:27,73952.27
+--------------------------------------------
+subgraph:  c-NIGER-2
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_end arrived:   7, c-NIGER-1 -> EXT-2
+subgraph:  c-NIGER-1
+F-[c-NIGER-11] - edge arrived  44, c-NIGER-11 -> EXT-0
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   44, c-NIGER-11 -> EXT-0
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  44, c-NIGER-11 -> EXT-0
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   44, c-NIGER-11 -> EXT-0
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  11, c-NIGER-2 -> NIGER-3
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   11, c-NIGER-2 -> NIGER-3
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  11, c-NIGER-2 -> NIGER-3
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   11, c-NIGER-2 -> NIGER-3
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  16, c-NIGER-3 -> NIGER-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  16, c-NIGER-3 -> NIGER-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  33, c-NIGER-8 -> NIGER-1
+>>>>>>>>>>>>> num-cards:  4
+Source -   28,c-NIGER-6,NIGER-6,0,2018-04-05 06:55:29,0001-01-01 00:00:00,0.00
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  33, c-NIGER-8 -> NIGER-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  34, c-NIGER-8 -> NIGER-3
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  34, c-NIGER-8 -> NIGER-3
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  45, c-NIGER-11 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   45, c-NIGER-11 -> NIGER-8
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  45, c-NIGER-11 -> NIGER-8
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+>>>>>>>>>>>>> num-cards:  4
+Source -   28,c-NIGER-6,NIGER-6,0,2018-04-05 06:55:29,2018-04-05 06:59:03,32833.29
+Source -   46,c-NIGER-11,EXT-0,0,2018-04-05 09:20:23,0001-01-01 00:00:00,0.00
+Source -   46,c-NIGER-11,EXT-0,0,2018-04-05 09:20:23,2018-04-05 09:24:36,6681.78
+Source -   47,c-NIGER-11,EXT-2,0,2018-04-05 10:46:52,0001-01-01 00:00:00,0.00
+Source -   47,c-NIGER-11,EXT-2,0,2018-04-05 10:46:52,2018-04-05 10:49:39,14529.43
+Source -   5,c-NIGER-0,NIGER-7,3,2018-04-05 11:38:51,0001-01-01 00:00:00,0.00
+Source -   38,c-NIGER-9,NIGER-8,0,2018-04-05 11:40:38,0001-01-01 00:00:00,0.00
+Source -   5,c-NIGER-0,NIGER-7,3,2018-04-05 11:38:51,2018-04-05 11:43:43,28999.46
+Source -   38,c-NIGER-9,NIGER-8,0,2018-04-05 11:40:38,2018-04-05 11:44:58,23606.79
+Source -   22,c-NIGER-5,NIGER-6,0,2018-04-05 14:52:23,0001-01-01 00:00:00,0.00
+Source -   22,c-NIGER-5,NIGER-6,0,2018-04-05 14:52:23,2018-04-05 14:59:38,49982.04
+Source -   9,c-NIGER-1,EXT-0,3,2018-04-05 15:19:24,0001-01-01 00:00:00,0.00
+Source -   9,c-NIGER-1,EXT-0,3,2018-04-05 15:19:24,2018-04-05 15:26:35,35495.86
+Source -   41,c-NIGER-10,EXT-1,0,2018-04-05 16:30:48,0001-01-01 00:00:00,0.00
+Source -   41,c-NIGER-10,EXT-1,0,2018-04-05 16:30:48,2018-04-05 16:38:13,15882.07
+Source -   23,c-NIGER-5,NIGER-6,1,2018-04-05 21:04:17,0001-01-01 00:00:00,0.00
+7,c-NIGER-1,EXT-2,3,2018-04-01 12:38:09,2018-04-01 12:43:39,40028.33
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-1] - edge arrived  16, c-NIGER-3 -> NIGER-1
 >>>>>>>>>>>>> num-cards:  4
+10,c-NIGER-2,NIGER-5,2,2018-04-01 04:45:22,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_end arrived:   10, c-NIGER-2 -> NIGER-5
+subgraph:  c-NIGER-2
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 F-[c-NIGER-1] - belonging edge:   16, c-NIGER-3 -> NIGER-1
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-1] - edge arrived  16, c-NIGER-3 -> NIGER-1
@@ -381,89 +282,154 @@ F-[c-NIGER-1] - edge arrived  34, c-NIGER-8 -> NIGER-3
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-1] - edge arrived  34, c-NIGER-8 -> NIGER-3
 >>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  39, c-NIGER-10 -> EXT-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  39, c-NIGER-10 -> EXT-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  17, c-NIGER-3 -> NIGER-5
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   17, c-NIGER-3 -> NIGER-5
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  17, c-NIGER-3 -> NIGER-5
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   17, c-NIGER-3 -> NIGER-5
-FW-[c-NIGER-1]- edge arrived:   15, c-NIGER-3 -> NIGER-5
-FW-[c-NIGER-1]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  40, c-NIGER-10 -> NIGER-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  40, c-NIGER-10 -> NIGER-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  8, c-NIGER-1 -> NIGER-8
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   8, c-NIGER-1 -> NIGER-8
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  8, c-NIGER-1 -> NIGER-8
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   8, c-NIGER-1 -> NIGER-8
-F-[c-NIGER-11] - edge arrived  1, c-NIGER-0 -> NIGER-4
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  1, c-NIGER-0 -> NIGER-4
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  26, c-NIGER-6 -> NIGER-4
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   26, c-NIGER-6 -> NIGER-4
-G - edge arrived:   33, c-NIGER-8 -> NIGER-1
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-3
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-15,c-NIGER-3,NIGER-5,0,2018-04-01 12:56:54,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   15, c-NIGER-3 -> NIGER-5
-FW-[c-NIGER-1]- edge is end
-subgraph:  c-NIGER-3
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-15,c-NIGER-3,NIGER-5,0,2018-04-01 12:56:54,2018-04-01 13:00:48,41987.59
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   18, c-NIGER-4 -> NIGER-9
-FW-[c-NIGER-1]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  1, c-NIGER-0 -> NIGER-4
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   1, c-NIGER-0 -> NIGER-4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  1, c-NIGER-0 -> NIGER-4
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   1, c-NIGER-0 -> NIGER-4
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-4
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+G - edge_start arrived:   33, c-NIGER-8 -> NIGER-1
 F-[c-NIGER-8] - creation
-18,c-NIGER-4,NIGER-9,3,2018-04-01 20:45:06,0001-01-01 00:00:00,0.00
+Source -   23,c-NIGER-5,NIGER-6,1,2018-04-05 21:04:17,2018-04-05 21:09:21,11713.23
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-FW-[c-NIGER-1]- edge arrived:   18, c-NIGER-4 -> NIGER-9
-FW-[c-NIGER-1]- edge is end
-subgraph:  c-NIGER-4
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_start arrived:   15, c-NIGER-3 -> NIGER-5
+-------------- CHECKFRAUD()-----------------
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-8] - edge arrived  33, c-NIGER-8 -> NIGER-1
 >>>>>>>>>>>>> num-cards:  1
 F-[c-NIGER-8] - belonging edge:   33, c-NIGER-8 -> NIGER-1
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-8] - edge arrived  34, c-NIGER-8 -> NIGER-3
+>>>>>>>>>>>>> num-cards:  1
+F-[c-NIGER-8] - belonging edge:   34, c-NIGER-8 -> NIGER-3
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-8] - edge arrived  34, c-NIGER-8 -> NIGER-3
+>>>>>>>>>>>>> num-cards:  1
+F-[c-NIGER-8] - belonging edge:   34, c-NIGER-8 -> NIGER-3
+F-[c-NIGER-11] - belonging edge:   45, c-NIGER-11 -> NIGER-8
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  30, c-NIGER-7 -> NIGER-1
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   30, c-NIGER-7 -> NIGER-1
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  30, c-NIGER-7 -> NIGER-1
+>>>>>>>>>>>>> num-cards:  4
+10,c-NIGER-2,NIGER-5,2,2018-04-01 04:45:22,2018-04-01 04:49:37,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_start arrived:   29, c-NIGER-7 -> NIGER-3
+FW-[c-NIGER-8] - creation
+FW-[c-NIGER-8] - initial edge:  33, c-NIGER-8 -> NIGER-1
+FW-[c-NIGER-8]- edge_end arrived:   33, c-NIGER-8 -> NIGER-1
+subgraph:  c-NIGER-8
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+33,c-NIGER-8,NIGER-1,3,2018-04-02 18:59:37,2018-04-02 19:03:01,38921.18
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_start arrived:   34, c-NIGER-8 -> NIGER-3
+-------------- CHECKFRAUD()-----------------
+Session created.
+Source -   48,c-NIGER-11,EXT-2,3,2018-04-05 23:54:24,0001-01-01 00:00:00,0.00
+-------------- CHECKFRAUD()-----------------
+Source -   48,c-NIGER-11,EXT-2,3,2018-04-05 23:54:24,2018-04-06 00:00:00,42276.18
+F-[c-NIGER-11] - belonging edge:   30, c-NIGER-7 -> NIGER-1
+Session created.
+Session created.
+Session closed.
+Session closed.
+--------------------------------------------
+subgraph:  c-NIGER-7
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_end arrived:   29, c-NIGER-7 -> NIGER-3
+subgraph:  c-NIGER-7
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_start arrived:   24, c-NIGER-6 -> NIGER-4
+-------------- CHECKFRAUD()-----------------
+Session created.
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  39, c-NIGER-10 -> EXT-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+--------------------------------------------
+subgraph:  c-NIGER-3
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+15,c-NIGER-3,NIGER-5,0,2018-04-01 12:56:54,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_end arrived:   15, c-NIGER-3 -> NIGER-5
+subgraph:  c-NIGER-3
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+15,c-NIGER-3,NIGER-5,0,2018-04-01 12:56:54,2018-04-01 13:00:48,41987.59
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_start arrived:   18, c-NIGER-4 -> NIGER-9
+-------------- CHECKFRAUD()-----------------
+Session created.
+Source -   49,c-NIGER-11,EXT-3,3,2018-04-06 00:33:10,0001-01-01 00:00:00,0.00
+Source -   49,c-NIGER-11,EXT-3,3,2018-04-06 00:33:10,2018-04-06 00:33:15,84552.36
+Source - End of stream...
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  39, c-NIGER-10 -> EXT-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-8] - edge arrived  39, c-NIGER-10 -> EXT-1
+>>>>>>>>>>>>> num-cards:  1
+F-[c-NIGER-8] - new belonging edge:   39, c-NIGER-10 -> EXT-1
+Session closed.
+--------------------------------------------
+subgraph:  c-NIGER-4
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+18,c-NIGER-4,NIGER-9,3,2018-04-01 20:45:06,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_end arrived:   18, c-NIGER-4 -> NIGER-9
+subgraph:  c-NIGER-4
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+18,c-NIGER-4,NIGER-9,3,2018-04-01 20:45:06,2018-04-01 20:51:57,24793.64
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_start arrived:   0, c-NIGER-0 -> NIGER-7
+-------------- CHECKFRAUD()-----------------
+Session created.
+F-[c-NIGER-11] - edge arrived  39, c-NIGER-10 -> EXT-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  17, c-NIGER-3 -> NIGER-5
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  17, c-NIGER-3 -> NIGER-5
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  40, c-NIGER-10 -> NIGER-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  40, c-NIGER-10 -> NIGER-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  8, c-NIGER-1 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  8, c-NIGER-1 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  12, c-NIGER-2 -> NIGER-5
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   12, c-NIGER-2 -> NIGER-5
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  12, c-NIGER-2 -> NIGER-5
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   12, c-NIGER-2 -> NIGER-5
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  31, c-NIGER-7 -> EXT-3
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   31, c-NIGER-7 -> EXT-3
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  31, c-NIGER-7 -> EXT-3
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   31, c-NIGER-7 -> EXT-3
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  1, c-NIGER-0 -> NIGER-4
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  1, c-NIGER-0 -> NIGER-4
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  26, c-NIGER-6 -> NIGER-4
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   26, c-NIGER-6 -> NIGER-4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-11] - edge arrived  26, c-NIGER-6 -> NIGER-4
 >>>>>>>>>>>>> num-cards:  4
 F-[c-NIGER-11] - belonging edge:   26, c-NIGER-6 -> NIGER-4
@@ -537,110 +503,13 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-11] - edge arrived  6, c-NIGER-0 -> NIGER-8
 >>>>>>>>>>>>> num-cards:  4
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-18,c-NIGER-4,NIGER-9,3,2018-04-01 20:45:06,2018-04-01 20:51:57,24793.64
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  19, c-NIGER-4 -> NIGER-9
 F-[c-NIGER-11] - edge arrived  6, c-NIGER-0 -> NIGER-8
 >>>>>>>>>>>>> num-cards:  4
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-8] - edge arrived  34, c-NIGER-8 -> NIGER-3
-F-[c-NIGER-1] - belonging edge:   19, c-NIGER-4 -> NIGER-9
-FW-[c-NIGER-1]- edge arrived:   0, c-NIGER-0 -> NIGER-7
-FW-[c-NIGER-1]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
->>>>>>>>>>>>> num-cards:  1
-F-[c-NIGER-8] - belonging edge:   34, c-NIGER-8 -> NIGER-3
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-8] - edge arrived  34, c-NIGER-8 -> NIGER-3
->>>>>>>>>>>>> num-cards:  1
-F-[c-NIGER-8] - belonging edge:   34, c-NIGER-8 -> NIGER-3
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-8] - edge arrived  39, c-NIGER-10 -> EXT-1
->>>>>>>>>>>>> num-cards:  1
-F-[c-NIGER-8] - new belonging edge:   39, c-NIGER-10 -> EXT-1
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-8] - edge arrived  39, c-NIGER-10 -> EXT-1
->>>>>>>>>>>>> num-cards:  2
-F-[c-NIGER-8] - belonging edge:   39, c-NIGER-10 -> EXT-1
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-8] - edge arrived  40, c-NIGER-10 -> NIGER-1
->>>>>>>>>>>>> num-cards:  2
-F-[c-NIGER-8] - belonging edge:   40, c-NIGER-10 -> NIGER-1
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-8] - edge arrived  40, c-NIGER-10 -> NIGER-1
->>>>>>>>>>>>> num-cards:  2
-F-[c-NIGER-8] - belonging edge:   40, c-NIGER-10 -> NIGER-1
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-0
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   0, c-NIGER-0 -> NIGER-7
-FW-[c-NIGER-1]- edge is end
-subgraph:  c-NIGER-0
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,2018-04-01 23:44:52,7826.58
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   16, c-NIGER-3 -> NIGER-1
-FW-[c-NIGER-1]- edge is start
--------------- CHECKFRAUD()-----------------
-FW-[c-NIGER-8] - creation
-FW-[c-NIGER-8] - initial edge:  33, c-NIGER-8 -> NIGER-1
-FW-[c-NIGER-8]- edge arrived:   33, c-NIGER-8 -> NIGER-1
-FW-[c-NIGER-8]- edge is end
-subgraph:  c-NIGER-8
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-F-[c-NIGER-1] - edge arrived  19, c-NIGER-4 -> NIGER-9
->>>>>>>>>>>>> num-cards:  4
 F-[c-NIGER-11] - edge arrived  20, c-NIGER-4 -> NIGER-9
-Session created.
-33,c-NIGER-8,NIGER-1,3,2018-04-02 18:59:37,2018-04-02 19:03:01,38921.18
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   34, c-NIGER-8 -> NIGER-3
-FW-[c-NIGER-8]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
 >>>>>>>>>>>>> num-cards:  4
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - belonging edge:   19, c-NIGER-4 -> NIGER-9
 F-[c-NIGER-11] - edge arrived  20, c-NIGER-4 -> NIGER-9
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  2, c-NIGER-0 -> NIGER-4
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   2, c-NIGER-0 -> NIGER-4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  2, c-NIGER-0 -> NIGER-4
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   2, c-NIGER-0 -> NIGER-4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  35, c-NIGER-9 -> NIGER-8
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  35, c-NIGER-9 -> NIGER-8
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  21, c-NIGER-5 -> NIGER-4
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  21, c-NIGER-5 -> NIGER-4
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  3, c-NIGER-0 -> NIGER-4
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   3, c-NIGER-0 -> NIGER-4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  3, c-NIGER-0 -> NIGER-4
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   3, c-NIGER-0 -> NIGER-4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  36, c-NIGER-9 -> EXT-2
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 >>>>>>>>>>>>> num-cards:  4
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-11] - edge arrived  27, c-NIGER-6 -> NIGER-4
@@ -654,51 +523,12 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-11] - edge arrived  37, c-NIGER-9 -> EXT-0
 >>>>>>>>>>>>> num-cards:  4
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  36, c-NIGER-9 -> EXT-2
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  4, c-NIGER-0 -> NIGER-6
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   4, c-NIGER-0 -> NIGER-6
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  4, c-NIGER-0 -> NIGER-6
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   4, c-NIGER-0 -> NIGER-6
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  6, c-NIGER-0 -> NIGER-8
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   6, c-NIGER-0 -> NIGER-8
 F-[c-NIGER-11] - edge arrived  37, c-NIGER-9 -> EXT-0
 >>>>>>>>>>>>> num-cards:  4
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-11] - edge arrived  28, c-NIGER-6 -> NIGER-6
 >>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-8] - edge arrived  35, c-NIGER-9 -> NIGER-8
->>>>>>>>>>>>> num-cards:  2
-F-[c-NIGER-8] - new belonging edge:   35, c-NIGER-9 -> NIGER-8
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  6, c-NIGER-0 -> NIGER-8
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   6, c-NIGER-0 -> NIGER-8
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  20, c-NIGER-4 -> NIGER-9
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   20, c-NIGER-4 -> NIGER-9
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  20, c-NIGER-4 -> NIGER-9
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   20, c-NIGER-4 -> NIGER-9
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  37, c-NIGER-9 -> EXT-0
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  37, c-NIGER-9 -> EXT-0
->>>>>>>>>>>>> num-cards:  4
 F-[c-NIGER-11] - belonging edge:   28, c-NIGER-6 -> NIGER-6
-F-[c-NIGER-8] - edge arrived  35, c-NIGER-9 -> NIGER-8
->>>>>>>>>>>>> num-cards:  3
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-11] - edge arrived  28, c-NIGER-6 -> NIGER-6
 >>>>>>>>>>>>> num-cards:  4
@@ -726,6 +556,246 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-11] - edge arrived  38, c-NIGER-9 -> NIGER-8
 >>>>>>>>>>>>> num-cards:  4
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  5, c-NIGER-0 -> NIGER-7
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  38, c-NIGER-9 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  22, c-NIGER-5 -> NIGER-6
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  22, c-NIGER-5 -> NIGER-6
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  9, c-NIGER-1 -> EXT-0
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  9, c-NIGER-1 -> EXT-0
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  41, c-NIGER-10 -> EXT-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  41, c-NIGER-10 -> EXT-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  23, c-NIGER-5 -> NIGER-6
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  23, c-NIGER-5 -> NIGER-6
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  48, c-NIGER-11 -> EXT-2
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   48, c-NIGER-11 -> EXT-2
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  48, c-NIGER-11 -> EXT-2
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   48, c-NIGER-11 -> EXT-2
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  49, c-NIGER-11 -> EXT-3
+Session closed.
+--------------------------------------------
+subgraph:  c-NIGER-6
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_end arrived:   24, c-NIGER-6 -> NIGER-4
+subgraph:  c-NIGER-6
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_start arrived:   43, c-NIGER-11 -> EXT-0
+-------------- CHECKFRAUD()-----------------
+Session created.
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  39, c-NIGER-10 -> EXT-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  17, c-NIGER-3 -> NIGER-5
+>>>>>>>>>>>>> num-cards:  4
+Session closed.
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-8] - edge arrived  39, c-NIGER-10 -> EXT-1
+>>>>>>>>>>>>> num-cards:  2
+F-[c-NIGER-8] - belonging edge:   39, c-NIGER-10 -> EXT-1
+Source - Close ch - out_event
+Source - Finished
+F-[c-NIGER-11] - belonging edge:   49, c-NIGER-11 -> EXT-3
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-11] - edge arrived  49, c-NIGER-11 -> EXT-3
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-11] - belonging edge:   49, c-NIGER-11 -> EXT-3
+F-[c-NIGER-11] - EOF event
+--------------------------------------------
+subgraph:  c-NIGER-0
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_end arrived:   0, c-NIGER-0 -> NIGER-7
+subgraph:  c-NIGER-0
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,2018-04-01 23:44:52,7826.58
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_start arrived:   16, c-NIGER-3 -> NIGER-1
+-------------- CHECKFRAUD()-----------------
+Session created.
+F-[c-NIGER-1] - belonging edge:   17, c-NIGER-3 -> NIGER-5
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  17, c-NIGER-3 -> NIGER-5
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   17, c-NIGER-3 -> NIGER-5
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  40, c-NIGER-10 -> NIGER-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  40, c-NIGER-10 -> NIGER-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  8, c-NIGER-1 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   8, c-NIGER-1 -> NIGER-8
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  8, c-NIGER-1 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   8, c-NIGER-1 -> NIGER-8
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  1, c-NIGER-0 -> NIGER-4
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   1, c-NIGER-0 -> NIGER-4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  1, c-NIGER-0 -> NIGER-4
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   1, c-NIGER-0 -> NIGER-4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  19, c-NIGER-4 -> NIGER-9
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   19, c-NIGER-4 -> NIGER-9
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  19, c-NIGER-4 -> NIGER-9
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   19, c-NIGER-4 -> NIGER-9
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  2, c-NIGER-0 -> NIGER-4
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   2, c-NIGER-0 -> NIGER-4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  2, c-NIGER-0 -> NIGER-4
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   2, c-NIGER-0 -> NIGER-4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  35, c-NIGER-9 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  35, c-NIGER-9 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  21, c-NIGER-5 -> NIGER-4
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  21, c-NIGER-5 -> NIGER-4
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  3, c-NIGER-0 -> NIGER-4
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   3, c-NIGER-0 -> NIGER-4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  3, c-NIGER-0 -> NIGER-4
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   3, c-NIGER-0 -> NIGER-4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  36, c-NIGER-9 -> EXT-2
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  36, c-NIGER-9 -> EXT-2
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  4, c-NIGER-0 -> NIGER-6
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   4, c-NIGER-0 -> NIGER-6
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  4, c-NIGER-0 -> NIGER-6
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   4, c-NIGER-0 -> NIGER-6
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  6, c-NIGER-0 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   6, c-NIGER-0 -> NIGER-8
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  6, c-NIGER-0 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   6, c-NIGER-0 -> NIGER-8
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  20, c-NIGER-4 -> NIGER-9
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   20, c-NIGER-4 -> NIGER-9
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  20, c-NIGER-4 -> NIGER-9
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   20, c-NIGER-4 -> NIGER-9
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  37, c-NIGER-9 -> EXT-0
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  37, c-NIGER-9 -> EXT-0
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  5, c-NIGER-0 -> NIGER-7
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   5, c-NIGER-0 -> NIGER-7
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  38, c-NIGER-9 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  5, c-NIGER-0 -> NIGER-7
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   5, c-NIGER-0 -> NIGER-7
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  38, c-NIGER-9 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  22, c-NIGER-5 -> NIGER-6
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  22, c-NIGER-5 -> NIGER-6
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  9, c-NIGER-1 -> EXT-0
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   9, c-NIGER-1 -> EXT-0
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  9, c-NIGER-1 -> EXT-0
+>>>>>>>>>>>>> num-cards:  4
+F-[c-NIGER-1] - belonging edge:   9, c-NIGER-1 -> EXT-0
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  41, c-NIGER-10 -> EXT-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  41, c-NIGER-10 -> EXT-1
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  23, c-NIGER-5 -> NIGER-6
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-1] - edge arrived  23, c-NIGER-5 -> NIGER-6
+>>>>>>>>>>>>> num-cards:  4
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-8] - edge arrived  40, c-NIGER-10 -> NIGER-1
+>>>>>>>>>>>>> num-cards:  2
+F-[c-NIGER-8] - belonging edge:   40, c-NIGER-10 -> NIGER-1
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-8] - edge arrived  40, c-NIGER-10 -> NIGER-1
+>>>>>>>>>>>>> num-cards:  2
+F-[c-NIGER-8] - belonging edge:   40, c-NIGER-10 -> NIGER-1
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-8] - edge arrived  35, c-NIGER-9 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  2
+F-[c-NIGER-8] - new belonging edge:   35, c-NIGER-9 -> NIGER-8
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+F-[c-NIGER-8] - edge arrived  35, c-NIGER-9 -> NIGER-8
+>>>>>>>>>>>>> num-cards:  3
 F-[c-NIGER-8] - belonging edge:   35, c-NIGER-9 -> NIGER-8
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-8] - edge arrived  21, c-NIGER-5 -> NIGER-4
@@ -752,71 +822,9 @@ F-[c-NIGER-8] - edge arrived  37, c-NIGER-9 -> EXT-0
 >>>>>>>>>>>>> num-cards:  4
 F-[c-NIGER-8] - belonging edge:   37, c-NIGER-9 -> EXT-0
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  5, c-NIGER-0 -> NIGER-7
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   5, c-NIGER-0 -> NIGER-7
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  38, c-NIGER-9 -> NIGER-8
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-8] - edge arrived  38, c-NIGER-9 -> NIGER-8
 >>>>>>>>>>>>> num-cards:  4
 F-[c-NIGER-8] - belonging edge:   38, c-NIGER-9 -> NIGER-8
-F-[c-NIGER-11] - edge arrived  5, c-NIGER-0 -> NIGER-7
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  38, c-NIGER-9 -> NIGER-8
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  22, c-NIGER-5 -> NIGER-6
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  22, c-NIGER-5 -> NIGER-6
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  9, c-NIGER-1 -> EXT-0
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  9, c-NIGER-1 -> EXT-0
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  41, c-NIGER-10 -> EXT-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  41, c-NIGER-10 -> EXT-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  23, c-NIGER-5 -> NIGER-6
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  23, c-NIGER-5 -> NIGER-6
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  48, c-NIGER-11 -> EXT-2
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   48, c-NIGER-11 -> EXT-2
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  48, c-NIGER-11 -> EXT-2
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   48, c-NIGER-11 -> EXT-2
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  49, c-NIGER-11 -> EXT-3
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   49, c-NIGER-11 -> EXT-3
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-11] - edge arrived  49, c-NIGER-11 -> EXT-3
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-11] - belonging edge:   49, c-NIGER-11 -> EXT-3
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  5, c-NIGER-0 -> NIGER-7
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   5, c-NIGER-0 -> NIGER-7
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  38, c-NIGER-9 -> NIGER-8
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  22, c-NIGER-5 -> NIGER-6
->>>>>>>>>>>>> num-cards:  4
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-8] - edge arrived  38, c-NIGER-9 -> NIGER-8
 >>>>>>>>>>>>> num-cards:  4
@@ -825,29 +833,6 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-8] - edge arrived  22, c-NIGER-5 -> NIGER-6
 >>>>>>>>>>>>> num-cards:  4
 F-[c-NIGER-8] - belonging edge:   22, c-NIGER-5 -> NIGER-6
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  22, c-NIGER-5 -> NIGER-6
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  9, c-NIGER-1 -> EXT-0
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   9, c-NIGER-1 -> EXT-0
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  9, c-NIGER-1 -> EXT-0
->>>>>>>>>>>>> num-cards:  4
-F-[c-NIGER-1] - belonging edge:   9, c-NIGER-1 -> EXT-0
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  41, c-NIGER-10 -> EXT-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  41, c-NIGER-10 -> EXT-1
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  23, c-NIGER-5 -> NIGER-6
->>>>>>>>>>>>> num-cards:  4
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-F-[c-NIGER-1] - edge arrived  23, c-NIGER-5 -> NIGER-6
->>>>>>>>>>>>> num-cards:  4
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-8] - edge arrived  22, c-NIGER-5 -> NIGER-6
 >>>>>>>>>>>>> num-cards:  4
@@ -868,24 +853,6 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 F-[c-NIGER-8] - edge arrived  23, c-NIGER-5 -> NIGER-6
 >>>>>>>>>>>>> num-cards:  4
 F-[c-NIGER-8] - belonging edge:   23, c-NIGER-5 -> NIGER-6
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-11
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
-43,c-NIGER-11,EXT-0,1,2018-04-01 10:54:38,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   43, c-NIGER-11 -> EXT-0
-FW-[c-NIGER-11]- edge is end
-subgraph:  c-NIGER-11
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
-43,c-NIGER-11,EXT-0,1,2018-04-01 10:54:38,2018-04-01 11:03:16,7654.30
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   25, c-NIGER-6 -> NIGER-6
-FW-[c-NIGER-11]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
 Session closed.
 --------------------------------------------
 subgraph:  c-NIGER-8
@@ -893,33 +860,13 @@ subgraph:  c-NIGER-8
 33,c-NIGER-8,NIGER-1,3,2018-04-02 18:59:37,2018-04-02 19:03:01,38921.18
 34,c-NIGER-8,NIGER-3,1,2018-04-02 22:09:00,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   34, c-NIGER-8 -> NIGER-3
-FW-[c-NIGER-8]- edge is end
+FW-[c-NIGER-8]- edge_end arrived:   34, c-NIGER-8 -> NIGER-3
 subgraph:  c-NIGER-8
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 33,c-NIGER-8,NIGER-1,3,2018-04-02 18:59:37,2018-04-02 19:03:01,38921.18
 34,c-NIGER-8,NIGER-3,1,2018-04-02 22:09:00,2018-04-02 22:12:36,1998.01
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   39, c-NIGER-10 -> EXT-1
-FW-[c-NIGER-8]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-3
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-15,c-NIGER-3,NIGER-5,0,2018-04-01 12:56:54,2018-04-01 13:00:48,41987.59
-16,c-NIGER-3,NIGER-1,0,2018-04-02 18:34:38,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   16, c-NIGER-3 -> NIGER-1
-FW-[c-NIGER-1]- edge is end
-subgraph:  c-NIGER-3
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-15,c-NIGER-3,NIGER-5,0,2018-04-01 12:56:54,2018-04-01 13:00:48,41987.59
-16,c-NIGER-3,NIGER-1,0,2018-04-02 18:34:38,2018-04-02 18:42:04,69755.93
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   17, c-NIGER-3 -> NIGER-5
-FW-[c-NIGER-1]- edge is start
+FW-[c-NIGER-8]- edge_start arrived:   39, c-NIGER-10 -> EXT-1
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -928,52 +875,44 @@ subgraph:  c-NIGER-10
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 39,c-NIGER-10,EXT-1,0,2018-04-03 03:00:26,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   39, c-NIGER-10 -> EXT-1
-FW-[c-NIGER-8]- edge is end
+FW-[c-NIGER-8]- edge_end arrived:   39, c-NIGER-10 -> EXT-1
 subgraph:  c-NIGER-10
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 39,c-NIGER-10,EXT-1,0,2018-04-03 03:00:26,2018-04-03 03:02:29,53015.58
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   40, c-NIGER-10 -> NIGER-1
-FW-[c-NIGER-8]- edge is start
+FW-[c-NIGER-8]- edge_start arrived:   40, c-NIGER-10 -> NIGER-1
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
 --------------------------------------------
-subgraph:  c-NIGER-6
+subgraph:  c-NIGER-3
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
-25,c-NIGER-6,NIGER-6,0,2018-04-01 17:14:08,0001-01-01 00:00:00,0.00
+Session closed.
+15,c-NIGER-3,NIGER-5,0,2018-04-01 12:56:54,2018-04-01 13:00:48,41987.59
+16,c-NIGER-3,NIGER-1,0,2018-04-02 18:34:38,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   25, c-NIGER-6 -> NIGER-6
-FW-[c-NIGER-11]- edge is end
-subgraph:  c-NIGER-6
+FW-[c-NIGER-1]- edge_end arrived:   16, c-NIGER-3 -> NIGER-1
+subgraph:  c-NIGER-3
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
-25,c-NIGER-6,NIGER-6,0,2018-04-01 17:14:08,2018-04-01 17:20:14,28546.60
+15,c-NIGER-3,NIGER-5,0,2018-04-01 12:56:54,2018-04-01 13:00:48,41987.59
+16,c-NIGER-3,NIGER-1,0,2018-04-02 18:34:38,2018-04-02 18:42:04,69755.93
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   44, c-NIGER-11 -> EXT-0
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-1]- edge_start arrived:   17, c-NIGER-3 -> NIGER-5
 -------------- CHECKFRAUD()-----------------
 Session created.
-Session closed.
 --------------------------------------------
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
-43,c-NIGER-11,EXT-0,1,2018-04-01 10:54:38,2018-04-01 11:03:16,7654.30
-44,c-NIGER-11,EXT-0,0,2018-04-02 16:02:28,0001-01-01 00:00:00,0.00
+43,c-NIGER-11,EXT-0,1,2018-04-01 10:54:38,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   44, c-NIGER-11 -> EXT-0
-FW-[c-NIGER-11]- edge is end
+FW-[c-NIGER-11]- edge_end arrived:   43, c-NIGER-11 -> EXT-0
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
 43,c-NIGER-11,EXT-0,1,2018-04-01 10:54:38,2018-04-01 11:03:16,7654.30
-44,c-NIGER-11,EXT-0,0,2018-04-02 16:02:28,2018-04-02 16:06:56,31158.52
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   11, c-NIGER-2 -> NIGER-3
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   25, c-NIGER-6 -> NIGER-6
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -983,15 +922,41 @@ subgraph:  c-NIGER-10
 39,c-NIGER-10,EXT-1,0,2018-04-03 03:00:26,2018-04-03 03:02:29,53015.58
 40,c-NIGER-10,NIGER-1,0,2018-04-03 14:05:24,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   40, c-NIGER-10 -> NIGER-1
-FW-[c-NIGER-8]- edge is end
+FW-[c-NIGER-8]- edge_end arrived:   40, c-NIGER-10 -> NIGER-1
 subgraph:  c-NIGER-10
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 39,c-NIGER-10,EXT-1,0,2018-04-03 03:00:26,2018-04-03 03:02:29,53015.58
 40,c-NIGER-10,NIGER-1,0,2018-04-03 14:05:24,2018-04-03 14:07:36,4905.32
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   35, c-NIGER-9 -> NIGER-8
-FW-[c-NIGER-8]- edge is start
+FW-[c-NIGER-8]- edge_start arrived:   35, c-NIGER-9 -> NIGER-8
+-------------- CHECKFRAUD()-----------------
+Session created.
+Session closed.
+--------------------------------------------
+subgraph:  c-NIGER-9
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_end arrived:   35, c-NIGER-9 -> NIGER-8
+subgraph:  c-NIGER-9
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_start arrived:   21, c-NIGER-5 -> NIGER-4
+-------------- CHECKFRAUD()-----------------
+Session created.
+Session closed.
+--------------------------------------------
+subgraph:  c-NIGER-5
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_end arrived:   21, c-NIGER-5 -> NIGER-4
+subgraph:  c-NIGER-5
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,2018-04-04 17:15:39,723.42
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_start arrived:   36, c-NIGER-9 -> EXT-2
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1002,66 +967,48 @@ subgraph:  c-NIGER-3
 16,c-NIGER-3,NIGER-1,0,2018-04-02 18:34:38,2018-04-02 18:42:04,69755.93
 17,c-NIGER-3,NIGER-5,0,2018-04-03 10:31:14,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   17, c-NIGER-3 -> NIGER-5
-FW-[c-NIGER-1]- edge is end
+FW-[c-NIGER-1]- edge_end arrived:   17, c-NIGER-3 -> NIGER-5
 subgraph:  c-NIGER-3
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 15,c-NIGER-3,NIGER-5,0,2018-04-01 12:56:54,2018-04-01 13:00:48,41987.59
 16,c-NIGER-3,NIGER-1,0,2018-04-02 18:34:38,2018-04-02 18:42:04,69755.93
 17,c-NIGER-3,NIGER-5,0,2018-04-03 10:31:14,2018-04-03 10:36:09,71686.34
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   8, c-NIGER-1 -> NIGER-8
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-9
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   35, c-NIGER-9 -> NIGER-8
-FW-[c-NIGER-8]- edge is end
-subgraph:  c-NIGER-9
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   21, c-NIGER-5 -> NIGER-4
-FW-[c-NIGER-8]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
-FW-[c-NIGER-1]- edge is start
+FW-[c-NIGER-1]- edge_start arrived:   8, c-NIGER-1 -> NIGER-8
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
 --------------------------------------------
-subgraph:  c-NIGER-5
+subgraph:  c-NIGER-6
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,0001-01-01 00:00:00,0.00
+24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
+25,c-NIGER-6,NIGER-6,0,2018-04-01 17:14:08,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   21, c-NIGER-5 -> NIGER-4
-FW-[c-NIGER-8]- edge is end
-subgraph:  c-NIGER-5
+FW-[c-NIGER-11]- edge_end arrived:   25, c-NIGER-6 -> NIGER-6
+subgraph:  c-NIGER-6
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,2018-04-04 17:15:39,723.42
+24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
+25,c-NIGER-6,NIGER-6,0,2018-04-01 17:14:08,2018-04-01 17:20:14,28546.60
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   36, c-NIGER-9 -> EXT-2
-FW-[c-NIGER-8]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   44, c-NIGER-11 -> EXT-0
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
 --------------------------------------------
-subgraph:  c-NIGER-2
+subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-10,c-NIGER-2,NIGER-5,2,2018-04-01 04:45:22,2018-04-01 04:49:37,0.00
-11,c-NIGER-2,NIGER-3,0,2018-04-02 16:19:25,0001-01-01 00:00:00,0.00
+42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
+43,c-NIGER-11,EXT-0,1,2018-04-01 10:54:38,2018-04-01 11:03:16,7654.30
+44,c-NIGER-11,EXT-0,0,2018-04-02 16:02:28,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   11, c-NIGER-2 -> NIGER-3
-FW-[c-NIGER-11]- edge is end
-subgraph:  c-NIGER-2
+FW-[c-NIGER-11]- edge_end arrived:   44, c-NIGER-11 -> EXT-0
+subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-10,c-NIGER-2,NIGER-5,2,2018-04-01 04:45:22,2018-04-01 04:49:37,0.00
-11,c-NIGER-2,NIGER-3,0,2018-04-02 16:19:25,2018-04-02 16:25:06,50789.21
+42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
+43,c-NIGER-11,EXT-0,1,2018-04-01 10:54:38,2018-04-01 11:03:16,7654.30
+44,c-NIGER-11,EXT-0,0,2018-04-02 16:02:28,2018-04-02 16:06:56,31158.52
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   45, c-NIGER-11 -> NIGER-8
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   11, c-NIGER-2 -> NIGER-3
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1071,15 +1018,29 @@ subgraph:  c-NIGER-9
 35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
 36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   36, c-NIGER-9 -> EXT-2
-FW-[c-NIGER-8]- edge is end
+FW-[c-NIGER-8]- edge_end arrived:   36, c-NIGER-9 -> EXT-2
 subgraph:  c-NIGER-9
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
 36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,2018-04-04 18:48:27,18627.07
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   37, c-NIGER-9 -> EXT-0
-FW-[c-NIGER-8]- edge is start
+FW-[c-NIGER-8]- edge_start arrived:   37, c-NIGER-9 -> EXT-0
+-------------- CHECKFRAUD()-----------------
+Session created.
+Session closed.
+--------------------------------------------
+subgraph:  c-NIGER-2
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+10,c-NIGER-2,NIGER-5,2,2018-04-01 04:45:22,2018-04-01 04:49:37,0.00
+11,c-NIGER-2,NIGER-3,0,2018-04-02 16:19:25,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_end arrived:   11, c-NIGER-2 -> NIGER-3
+subgraph:  c-NIGER-2
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+10,c-NIGER-2,NIGER-5,2,2018-04-01 04:45:22,2018-04-01 04:49:37,0.00
+11,c-NIGER-2,NIGER-3,0,2018-04-02 16:19:25,2018-04-02 16:25:06,50789.21
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_start arrived:   45, c-NIGER-11 -> NIGER-8
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1089,28 +1050,43 @@ subgraph:  c-NIGER-1
 7,c-NIGER-1,EXT-2,3,2018-04-01 12:38:09,2018-04-01 12:43:39,40028.33
 8,c-NIGER-1,NIGER-8,0,2018-04-03 18:39:56,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   8, c-NIGER-1 -> NIGER-8
-FW-[c-NIGER-1]- edge is end
+FW-[c-NIGER-1]- edge_end arrived:   8, c-NIGER-1 -> NIGER-8
 subgraph:  c-NIGER-1
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 7,c-NIGER-1,EXT-2,3,2018-04-01 12:38:09,2018-04-01 12:43:39,40028.33
 8,c-NIGER-1,NIGER-8,0,2018-04-03 18:39:56,2018-04-03 18:42:58,33963.87
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   1, c-NIGER-0 -> NIGER-4
-FW-[c-NIGER-1]- edge is start
+FW-[c-NIGER-1]- edge_start arrived:   1, c-NIGER-0 -> NIGER-4
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
 --------------------------------------------
+Session closed.
+--------------------------------------------
+subgraph:  c-NIGER-9
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
+36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,2018-04-04 18:48:27,18627.07
+37,c-NIGER-9,EXT-0,0,2018-04-05 04:50:18,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_end arrived:   37, c-NIGER-9 -> EXT-0
+subgraph:  c-NIGER-9
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
+36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,2018-04-04 18:48:27,18627.07
+37,c-NIGER-9,EXT-0,0,2018-04-05 04:50:18,2018-04-05 04:54:27,73952.27
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_start arrived:   38, c-NIGER-9 -> NIGER-8
+-------------- CHECKFRAUD()-----------------
+Session created.
 42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
 43,c-NIGER-11,EXT-0,1,2018-04-01 10:54:38,2018-04-01 11:03:16,7654.30
 44,c-NIGER-11,EXT-0,0,2018-04-02 16:02:28,2018-04-02 16:06:56,31158.52
 45,c-NIGER-11,NIGER-8,0,2018-04-02 22:57:51,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   45, c-NIGER-11 -> NIGER-8
-FW-[c-NIGER-11]- edge is end
+FW-[c-NIGER-11]- edge_end arrived:   45, c-NIGER-11 -> NIGER-8
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
@@ -1118,14 +1094,9 @@ subgraph:  c-NIGER-11
 44,c-NIGER-11,EXT-0,0,2018-04-02 16:02:28,2018-04-02 16:06:56,31158.52
 45,c-NIGER-11,NIGER-8,0,2018-04-02 22:57:51,2018-04-02 22:59:14,35441.71
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   30, c-NIGER-7 -> NIGER-1
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   30, c-NIGER-7 -> NIGER-1
 -------------- CHECKFRAUD()-----------------
 Session created.
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-9
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Session closed.
 --------------------------------------------
 subgraph:  c-NIGER-0
@@ -1133,18 +1104,15 @@ subgraph:  c-NIGER-0
 0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,2018-04-01 23:44:52,7826.58
 1,c-NIGER-0,NIGER-4,3,2018-04-04 03:17:16,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   1, c-NIGER-0 -> NIGER-4
-FW-[c-NIGER-1]- edge is end
+FW-[c-NIGER-1]- edge_end arrived:   1, c-NIGER-0 -> NIGER-4
 subgraph:  c-NIGER-0
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,2018-04-01 23:44:52,7826.58
 1,c-NIGER-0,NIGER-4,3,2018-04-04 03:17:16,2018-04-04 03:23:18,31720.04
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   19, c-NIGER-4 -> NIGER-9
-FW-[c-NIGER-1]- edge is start
+FW-[c-NIGER-1]- edge_start arrived:   19, c-NIGER-4 -> NIGER-9
 -------------- CHECKFRAUD()-----------------
 Session created.
-35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
 Session closed.
 --------------------------------------------
 subgraph:  c-NIGER-4
@@ -1152,30 +1120,13 @@ subgraph:  c-NIGER-4
 18,c-NIGER-4,NIGER-9,3,2018-04-01 20:45:06,2018-04-01 20:51:57,24793.64
 19,c-NIGER-4,NIGER-9,0,2018-04-04 10:47:34,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   19, c-NIGER-4 -> NIGER-9
-FW-[c-NIGER-1]- edge is end
+FW-[c-NIGER-1]- edge_end arrived:   19, c-NIGER-4 -> NIGER-9
 subgraph:  c-NIGER-4
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 18,c-NIGER-4,NIGER-9,3,2018-04-01 20:45:06,2018-04-01 20:51:57,24793.64
 19,c-NIGER-4,NIGER-9,0,2018-04-04 10:47:34,2018-04-04 10:53:31,32525.77
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   2, c-NIGER-0 -> NIGER-4
-FW-[c-NIGER-1]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
-36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,2018-04-04 18:48:27,18627.07
-37,c-NIGER-9,EXT-0,0,2018-04-05 04:50:18,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   37, c-NIGER-9 -> EXT-0
-FW-[c-NIGER-8]- edge is end
-subgraph:  c-NIGER-9
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
-36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,2018-04-04 18:48:27,18627.07
-37,c-NIGER-9,EXT-0,0,2018-04-05 04:50:18,2018-04-05 04:54:27,73952.27
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   38, c-NIGER-9 -> NIGER-8
-FW-[c-NIGER-8]- edge is start
+FW-[c-NIGER-1]- edge_start arrived:   2, c-NIGER-0 -> NIGER-4
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1186,16 +1137,14 @@ subgraph:  c-NIGER-0
 1,c-NIGER-0,NIGER-4,3,2018-04-04 03:17:16,2018-04-04 03:23:18,31720.04
 2,c-NIGER-0,NIGER-4,3,2018-04-04 12:35:37,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   2, c-NIGER-0 -> NIGER-4
-FW-[c-NIGER-1]- edge is end
+FW-[c-NIGER-1]- edge_end arrived:   2, c-NIGER-0 -> NIGER-4
 subgraph:  c-NIGER-0
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,2018-04-01 23:44:52,7826.58
 1,c-NIGER-0,NIGER-4,3,2018-04-04 03:17:16,2018-04-04 03:23:18,31720.04
 2,c-NIGER-0,NIGER-4,3,2018-04-04 12:35:37,2018-04-04 12:44:24,41458.94
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   3, c-NIGER-0 -> NIGER-4
-FW-[c-NIGER-1]- edge is start
+FW-[c-NIGER-1]- edge_start arrived:   3, c-NIGER-0 -> NIGER-4
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1207,8 +1156,7 @@ subgraph:  c-NIGER-0
 2,c-NIGER-0,NIGER-4,3,2018-04-04 12:35:37,2018-04-04 12:44:24,41458.94
 3,c-NIGER-0,NIGER-4,0,2018-04-04 17:27:24,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   3, c-NIGER-0 -> NIGER-4
-FW-[c-NIGER-1]- edge is end
+FW-[c-NIGER-1]- edge_end arrived:   3, c-NIGER-0 -> NIGER-4
 subgraph:  c-NIGER-0
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,2018-04-01 23:44:52,7826.58
@@ -1216,26 +1164,27 @@ subgraph:  c-NIGER-0
 2,c-NIGER-0,NIGER-4,3,2018-04-04 12:35:37,2018-04-04 12:44:24,41458.94
 3,c-NIGER-0,NIGER-4,0,2018-04-04 17:27:24,2018-04-04 17:34:19,8009.67
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   4, c-NIGER-0 -> NIGER-6
-FW-[c-NIGER-1]- edge is start
+FW-[c-NIGER-1]- edge_start arrived:   4, c-NIGER-0 -> NIGER-6
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
 --------------------------------------------
-subgraph:  c-NIGER-7
+subgraph:  c-NIGER-9
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
-30,c-NIGER-7,NIGER-1,3,2018-04-03 01:06:18,0001-01-01 00:00:00,0.00
+35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
+36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,2018-04-04 18:48:27,18627.07
+37,c-NIGER-9,EXT-0,0,2018-04-05 04:50:18,2018-04-05 04:54:27,73952.27
+38,c-NIGER-9,NIGER-8,0,2018-04-05 11:40:38,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   30, c-NIGER-7 -> NIGER-1
-FW-[c-NIGER-11]- edge is end
-subgraph:  c-NIGER-7
+FW-[c-NIGER-8]- edge_end arrived:   38, c-NIGER-9 -> NIGER-8
+subgraph:  c-NIGER-9
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
-30,c-NIGER-7,NIGER-1,3,2018-04-03 01:06:18,2018-04-03 01:14:34,15293.52
+35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
+36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,2018-04-04 18:48:27,18627.07
+37,c-NIGER-9,EXT-0,0,2018-04-05 04:50:18,2018-04-05 04:54:27,73952.27
+38,c-NIGER-9,NIGER-8,0,2018-04-05 11:40:38,2018-04-05 11:44:58,23606.79
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   12, c-NIGER-2 -> NIGER-5
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-8]- edge_start arrived:   22, c-NIGER-5 -> NIGER-6
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1248,8 +1197,7 @@ subgraph:  c-NIGER-0
 3,c-NIGER-0,NIGER-4,0,2018-04-04 17:27:24,2018-04-04 17:34:19,8009.67
 4,c-NIGER-0,NIGER-6,0,2018-04-04 23:07:28,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   4, c-NIGER-0 -> NIGER-6
-FW-[c-NIGER-1]- edge is end
+FW-[c-NIGER-1]- edge_end arrived:   4, c-NIGER-0 -> NIGER-6
 subgraph:  c-NIGER-0
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,2018-04-01 23:44:52,7826.58
@@ -1258,30 +1206,90 @@ subgraph:  c-NIGER-0
 3,c-NIGER-0,NIGER-4,0,2018-04-04 17:27:24,2018-04-04 17:34:19,8009.67
 4,c-NIGER-0,NIGER-6,0,2018-04-04 23:07:28,2018-04-04 23:10:48,13755.34
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   6, c-NIGER-0 -> NIGER-8
-FW-[c-NIGER-1]- edge is start
+FW-[c-NIGER-1]- edge_start arrived:   6, c-NIGER-0 -> NIGER-8
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
 --------------------------------------------
-subgraph:  c-NIGER-9
+subgraph:  c-NIGER-7
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
-36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,2018-04-04 18:48:27,18627.07
-37,c-NIGER-9,EXT-0,0,2018-04-05 04:50:18,2018-04-05 04:54:27,73952.27
-38,c-NIGER-9,NIGER-8,0,2018-04-05 11:40:38,0001-01-01 00:00:00,0.00
+29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
+30,c-NIGER-7,NIGER-1,3,2018-04-03 01:06:18,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   38, c-NIGER-9 -> NIGER-8
-FW-[c-NIGER-8]- edge is end
-subgraph:  c-NIGER-9
+FW-[c-NIGER-11]- edge_end arrived:   30, c-NIGER-7 -> NIGER-1
+subgraph:  c-NIGER-7
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-35,c-NIGER-9,NIGER-8,0,2018-04-04 15:12:42,2018-04-04 15:15:28,64643.52
-36,c-NIGER-9,EXT-2,1,2018-04-04 18:43:01,2018-04-04 18:48:27,18627.07
-37,c-NIGER-9,EXT-0,0,2018-04-05 04:50:18,2018-04-05 04:54:27,73952.27
-38,c-NIGER-9,NIGER-8,0,2018-04-05 11:40:38,2018-04-05 11:44:58,23606.79
+29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
+30,c-NIGER-7,NIGER-1,3,2018-04-03 01:06:18,2018-04-03 01:14:34,15293.52
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   22, c-NIGER-5 -> NIGER-6
-FW-[c-NIGER-8]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   12, c-NIGER-2 -> NIGER-5
+-------------- CHECKFRAUD()-----------------
+Session created.
+Fraud pattern with:   4, c-NIGER-0 -> NIGER-6
+Session closed.
+--------------------------------------------
+subgraph:  c-NIGER-5
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Session closed.
+--------------------------------------------
+21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,2018-04-04 17:15:39,723.42
+22,c-NIGER-5,NIGER-6,0,2018-04-05 14:52:23,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_end arrived:   22, c-NIGER-5 -> NIGER-6
+subgraph:  c-NIGER-5
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,2018-04-04 17:15:39,723.42
+22,c-NIGER-5,NIGER-6,0,2018-04-05 14:52:23,2018-04-05 14:59:38,49982.04
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_start arrived:   41, c-NIGER-10 -> EXT-1
+-------------- CHECKFRAUD()-----------------
+subgraph:  c-NIGER-0
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Session created.
+Sink - alert!:  {1 fraud pattern {{0 0 <nil>} 0xc0005ba660}}
+Alert - label: 1, info: fraud pattern
+subgraph:  c-NIGER-0
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+4,c-NIGER-0,NIGER-6,0,2018-04-04 23:07:28,2018-04-04 23:10:48,13755.34
+0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,2018-04-01 23:44:52,7826.58
+1,c-NIGER-0,NIGER-4,3,2018-04-04 03:17:16,2018-04-04 03:23:18,31720.04
+2,c-NIGER-0,NIGER-4,3,2018-04-04 12:35:37,2018-04-04 12:44:24,41458.94
+3,c-NIGER-0,NIGER-4,0,2018-04-04 17:27:24,2018-04-04 17:34:19,8009.67
+4,c-NIGER-0,NIGER-6,0,2018-04-04 23:07:28,2018-04-04 23:10:48,13755.34
+6,c-NIGER-0,NIGER-8,0,2018-04-04 23:38:57,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_end arrived:   6, c-NIGER-0 -> NIGER-8
+subgraph:  c-NIGER-0
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,2018-04-01 23:44:52,7826.58
+1,c-NIGER-0,NIGER-4,3,2018-04-04 03:17:16,2018-04-04 03:23:18,31720.04
+2,c-NIGER-0,NIGER-4,3,2018-04-04 12:35:37,2018-04-04 12:44:24,41458.94
+3,c-NIGER-0,NIGER-4,0,2018-04-04 17:27:24,2018-04-04 17:34:19,8009.67
+4,c-NIGER-0,NIGER-6,0,2018-04-04 23:07:28,2018-04-04 23:10:48,13755.34
+6,c-NIGER-0,NIGER-8,0,2018-04-04 23:38:57,2018-04-04 23:39:02,27510.68
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_start arrived:   20, c-NIGER-4 -> NIGER-9
+-------------- CHECKFRAUD()-----------------
+Session created.
+6,c-NIGER-0,NIGER-8,0,2018-04-04 23:38:57,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+______________________________________________________________________________
+Session closed.
+--------------------------------------------
+subgraph:  c-NIGER-4
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+18,c-NIGER-4,NIGER-9,3,2018-04-01 20:45:06,2018-04-01 20:51:57,24793.64
+19,c-NIGER-4,NIGER-9,0,2018-04-04 10:47:34,2018-04-04 10:53:31,32525.77
+20,c-NIGER-4,NIGER-9,0,2018-04-05 01:31:01,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_end arrived:   20, c-NIGER-4 -> NIGER-9
+subgraph:  c-NIGER-4
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+18,c-NIGER-4,NIGER-9,3,2018-04-01 20:45:06,2018-04-01 20:51:57,24793.64
+19,c-NIGER-4,NIGER-9,0,2018-04-04 10:47:34,2018-04-04 10:53:31,32525.77
+20,c-NIGER-4,NIGER-9,0,2018-04-05 01:31:01,2018-04-05 01:34:15,1106.44
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_start arrived:   5, c-NIGER-0 -> NIGER-7
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1292,109 +1300,32 @@ subgraph:  c-NIGER-2
 11,c-NIGER-2,NIGER-3,0,2018-04-02 16:19:25,2018-04-02 16:25:06,50789.21
 12,c-NIGER-2,NIGER-5,0,2018-04-03 23:42:08,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   12, c-NIGER-2 -> NIGER-5
-FW-[c-NIGER-11]- edge is end
+FW-[c-NIGER-11]- edge_end arrived:   12, c-NIGER-2 -> NIGER-5
 subgraph:  c-NIGER-2
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 10,c-NIGER-2,NIGER-5,2,2018-04-01 04:45:22,2018-04-01 04:49:37,0.00
 11,c-NIGER-2,NIGER-3,0,2018-04-02 16:19:25,2018-04-02 16:25:06,50789.21
 12,c-NIGER-2,NIGER-5,0,2018-04-03 23:42:08,2018-04-03 23:43:39,33252.26
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   31, c-NIGER-7 -> EXT-3
-FW-[c-NIGER-11]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
-Fraud pattern with:   4, c-NIGER-0 -> NIGER-6
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-5
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-0
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,2018-04-01 23:44:52,7826.58
-1,c-NIGER-0,NIGER-4,3,2018-04-04 03:17:16,2018-04-04 03:23:18,31720.04
-2,c-NIGER-0,NIGER-4,3,2018-04-04 12:35:37,2018-04-04 12:44:24,41458.94
-3,c-NIGER-0,NIGER-4,0,2018-04-04 17:27:24,2018-04-04 17:34:19,8009.67
-4,c-NIGER-0,NIGER-6,0,2018-04-04 23:07:28,2018-04-04 23:10:48,13755.34
-6,c-NIGER-0,NIGER-8,0,2018-04-04 23:38:57,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   6, c-NIGER-0 -> NIGER-8
-21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,2018-04-04 17:15:39,723.42
-22,c-NIGER-5,NIGER-6,0,2018-04-05 14:52:23,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   22, c-NIGER-5 -> NIGER-6
-FW-[c-NIGER-8]- edge is end
-FW-[c-NIGER-1]- edge is end
-subgraph:  c-NIGER-0
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,2018-04-01 23:44:52,7826.58
-1,c-NIGER-0,NIGER-4,3,2018-04-04 03:17:16,2018-04-04 03:23:18,31720.04
-2,c-NIGER-0,NIGER-4,3,2018-04-04 12:35:37,2018-04-04 12:44:24,41458.94
-3,c-NIGER-0,NIGER-4,0,2018-04-04 17:27:24,2018-04-04 17:34:19,8009.67
-4,c-NIGER-0,NIGER-6,0,2018-04-04 23:07:28,2018-04-04 23:10:48,13755.34
-6,c-NIGER-0,NIGER-8,0,2018-04-04 23:38:57,2018-04-04 23:39:02,27510.68
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   20, c-NIGER-4 -> NIGER-9
-FW-[c-NIGER-1]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
-subgraph:  c-NIGER-5
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Sink - alert!:  {1 fraud pattern {{0 0 <nil>} 0xc0001a5c80}}
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-4
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-18,c-NIGER-4,NIGER-9,3,2018-04-01 20:45:06,2018-04-01 20:51:57,24793.64
-19,c-NIGER-4,NIGER-9,0,2018-04-04 10:47:34,2018-04-04 10:53:31,32525.77
-20,c-NIGER-4,NIGER-9,0,2018-04-05 01:31:01,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,2018-04-04 17:15:39,723.42
-22,c-NIGER-5,NIGER-6,0,2018-04-05 14:52:23,2018-04-05 14:59:38,49982.04
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   41, c-NIGER-10 -> EXT-1
-FW-[c-NIGER-8]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
-FW-[c-NIGER-1]- edge arrived:   20, c-NIGER-4 -> NIGER-9
-FW-[c-NIGER-1]- edge is end
-Alert - label: 1, info: fraud pattern
-subgraph:  c-NIGER-0
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-4,c-NIGER-0,NIGER-6,0,2018-04-04 23:07:28,2018-04-04 23:10:48,13755.34
-6,c-NIGER-0,NIGER-8,0,2018-04-04 23:38:57,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-______________________________________________________________________________
-subgraph:  c-NIGER-4
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-18,c-NIGER-4,NIGER-9,3,2018-04-01 20:45:06,2018-04-01 20:51:57,24793.64
-19,c-NIGER-4,NIGER-9,0,2018-04-04 10:47:34,2018-04-04 10:53:31,32525.77
-20,c-NIGER-4,NIGER-9,0,2018-04-05 01:31:01,2018-04-05 01:34:15,1106.44
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   5, c-NIGER-0 -> NIGER-7
-FW-[c-NIGER-1]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   31, c-NIGER-7 -> EXT-3
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
 --------------------------------------------
-subgraph:  c-NIGER-7
+subgraph:  c-NIGER-10
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
-30,c-NIGER-7,NIGER-1,3,2018-04-03 01:06:18,2018-04-03 01:14:34,15293.52
-31,c-NIGER-7,EXT-3,0,2018-04-04 01:54:48,0001-01-01 00:00:00,0.00
+39,c-NIGER-10,EXT-1,0,2018-04-03 03:00:26,2018-04-03 03:02:29,53015.58
+40,c-NIGER-10,NIGER-1,0,2018-04-03 14:05:24,2018-04-03 14:07:36,4905.32
+41,c-NIGER-10,EXT-1,0,2018-04-05 16:30:48,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   31, c-NIGER-7 -> EXT-3
-FW-[c-NIGER-11]- edge is end
-subgraph:  c-NIGER-7
+FW-[c-NIGER-8]- edge_end arrived:   41, c-NIGER-10 -> EXT-1
+subgraph:  c-NIGER-10
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
-30,c-NIGER-7,NIGER-1,3,2018-04-03 01:06:18,2018-04-03 01:14:34,15293.52
-31,c-NIGER-7,EXT-3,0,2018-04-04 01:54:48,2018-04-04 02:03:22,15784.28
+39,c-NIGER-10,EXT-1,0,2018-04-03 03:00:26,2018-04-03 03:02:29,53015.58
+40,c-NIGER-10,NIGER-1,0,2018-04-03 14:05:24,2018-04-03 14:07:36,4905.32
+41,c-NIGER-10,EXT-1,0,2018-04-05 16:30:48,2018-04-05 16:38:13,15882.07
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   26, c-NIGER-6 -> NIGER-4
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-8]- edge_start arrived:   23, c-NIGER-5 -> NIGER-6
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1409,52 +1340,29 @@ subgraph:  c-NIGER-0
 6,c-NIGER-0,NIGER-8,0,2018-04-04 23:38:57,2018-04-04 23:39:02,27510.68
 5,c-NIGER-0,NIGER-7,3,2018-04-05 11:38:51,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   5, c-NIGER-0 -> NIGER-7
-FW-[c-NIGER-1]- edge is end
+FW-[c-NIGER-1]- edge_end arrived:   5, c-NIGER-0 -> NIGER-7
 subgraph:  c-NIGER-0
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 0,c-NIGER-0,NIGER-7,0,2018-04-01 23:36:59,2018-04-01 23:44:52,7826.58
 1,c-NIGER-0,NIGER-4,3,2018-04-04 03:17:16,2018-04-04 03:23:18,31720.04
 2,c-NIGER-0,NIGER-4,3,2018-04-04 12:35:37,2018-04-04 12:44:24,41458.94
+Session closed.
+--------------------------------------------
 3,c-NIGER-0,NIGER-4,0,2018-04-04 17:27:24,2018-04-04 17:34:19,8009.67
 4,c-NIGER-0,NIGER-6,0,2018-04-04 23:07:28,2018-04-04 23:10:48,13755.34
 6,c-NIGER-0,NIGER-8,0,2018-04-04 23:38:57,2018-04-04 23:39:02,27510.68
 5,c-NIGER-0,NIGER-7,3,2018-04-05 11:38:51,2018-04-05 11:43:43,28999.46
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   9, c-NIGER-1 -> EXT-0
-FW-[c-NIGER-1]- edge is start
+FW-[c-NIGER-1]- edge_start arrived:   9, c-NIGER-1 -> EXT-0
 -------------- CHECKFRAUD()-----------------
 Session created.
-Session closed.
---------------------------------------------
-subgraph:  c-NIGER-10
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-39,c-NIGER-10,EXT-1,0,2018-04-03 03:00:26,2018-04-03 03:02:29,53015.58
-40,c-NIGER-10,NIGER-1,0,2018-04-03 14:05:24,2018-04-03 14:07:36,4905.32
-41,c-NIGER-10,EXT-1,0,2018-04-05 16:30:48,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   41, c-NIGER-10 -> EXT-1
-FW-[c-NIGER-8]- edge is end
-subgraph:  c-NIGER-10
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-39,c-NIGER-10,EXT-1,0,2018-04-03 03:00:26,2018-04-03 03:02:29,53015.58
-40,c-NIGER-10,NIGER-1,0,2018-04-03 14:05:24,2018-04-03 14:07:36,4905.32
-41,c-NIGER-10,EXT-1,0,2018-04-05 16:30:48,2018-04-05 16:38:13,15882.07
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   23, c-NIGER-5 -> NIGER-6
-FW-[c-NIGER-8]- edge is start
--------------- CHECKFRAUD()-----------------
-Session created.
-Session closed.
---------------------------------------------
 subgraph:  c-NIGER-5
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,2018-04-04 17:15:39,723.42
 22,c-NIGER-5,NIGER-6,0,2018-04-05 14:52:23,2018-04-05 14:59:38,49982.04
 23,c-NIGER-5,NIGER-6,1,2018-04-05 21:04:17,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge arrived:   23, c-NIGER-5 -> NIGER-6
-FW-[c-NIGER-8]- edge is end
+FW-[c-NIGER-8]- edge_end arrived:   23, c-NIGER-5 -> NIGER-6
 subgraph:  c-NIGER-5
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 21,c-NIGER-5,NIGER-4,3,2018-04-04 17:14:26,2018-04-04 17:15:39,723.42
@@ -1463,22 +1371,20 @@ subgraph:  c-NIGER-5
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Session closed.
 --------------------------------------------
-subgraph:  c-NIGER-6
+subgraph:  c-NIGER-7
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
-25,c-NIGER-6,NIGER-6,0,2018-04-01 17:14:08,2018-04-01 17:20:14,28546.60
-26,c-NIGER-6,NIGER-4,2,2018-04-04 10:18:54,0001-01-01 00:00:00,0.00
+29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
+30,c-NIGER-7,NIGER-1,3,2018-04-03 01:06:18,2018-04-03 01:14:34,15293.52
+31,c-NIGER-7,EXT-3,0,2018-04-04 01:54:48,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   26, c-NIGER-6 -> NIGER-4
-FW-[c-NIGER-11]- edge is end
-subgraph:  c-NIGER-6
+FW-[c-NIGER-11]- edge_end arrived:   31, c-NIGER-7 -> EXT-3
+subgraph:  c-NIGER-7
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
-25,c-NIGER-6,NIGER-6,0,2018-04-01 17:14:08,2018-04-01 17:20:14,28546.60
-26,c-NIGER-6,NIGER-4,2,2018-04-04 10:18:54,2018-04-04 10:20:47,0.00
+29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
+30,c-NIGER-7,NIGER-1,3,2018-04-03 01:06:18,2018-04-03 01:14:34,15293.52
+31,c-NIGER-7,EXT-3,0,2018-04-04 01:54:48,2018-04-04 02:03:22,15784.28
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   13, c-NIGER-2 -> NIGER-1
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   26, c-NIGER-6 -> NIGER-4
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1489,14 +1395,31 @@ subgraph:  c-NIGER-1
 8,c-NIGER-1,NIGER-8,0,2018-04-03 18:39:56,2018-04-03 18:42:58,33963.87
 9,c-NIGER-1,EXT-0,3,2018-04-05 15:19:24,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge arrived:   9, c-NIGER-1 -> EXT-0
-FW-[c-NIGER-1]- edge is end
+FW-[c-NIGER-1]- edge_end arrived:   9, c-NIGER-1 -> EXT-0
 subgraph:  c-NIGER-1
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 7,c-NIGER-1,EXT-2,3,2018-04-01 12:38:09,2018-04-01 12:43:39,40028.33
 8,c-NIGER-1,NIGER-8,0,2018-04-03 18:39:56,2018-04-03 18:42:58,33963.87
 9,c-NIGER-1,EXT-0,3,2018-04-05 15:19:24,2018-04-05 15:26:35,35495.86
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Session closed.
+--------------------------------------------
+subgraph:  c-NIGER-6
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
+25,c-NIGER-6,NIGER-6,0,2018-04-01 17:14:08,2018-04-01 17:20:14,28546.60
+26,c-NIGER-6,NIGER-4,2,2018-04-04 10:18:54,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_end arrived:   26, c-NIGER-6 -> NIGER-4
+subgraph:  c-NIGER-6
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
+25,c-NIGER-6,NIGER-6,0,2018-04-01 17:14:08,2018-04-01 17:20:14,28546.60
+26,c-NIGER-6,NIGER-4,2,2018-04-04 10:18:54,2018-04-04 10:20:47,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_start arrived:   13, c-NIGER-2 -> NIGER-1
+-------------- CHECKFRAUD()-----------------
+Session created.
 Session closed.
 --------------------------------------------
 subgraph:  c-NIGER-2
@@ -1506,8 +1429,7 @@ subgraph:  c-NIGER-2
 12,c-NIGER-2,NIGER-5,0,2018-04-03 23:42:08,2018-04-03 23:43:39,33252.26
 13,c-NIGER-2,NIGER-1,1,2018-04-04 10:53:24,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   13, c-NIGER-2 -> NIGER-1
-FW-[c-NIGER-11]- edge is end
+FW-[c-NIGER-11]- edge_end arrived:   13, c-NIGER-2 -> NIGER-1
 subgraph:  c-NIGER-2
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 10,c-NIGER-2,NIGER-5,2,2018-04-01 04:45:22,2018-04-01 04:49:37,0.00
@@ -1515,8 +1437,7 @@ subgraph:  c-NIGER-2
 12,c-NIGER-2,NIGER-5,0,2018-04-03 23:42:08,2018-04-03 23:43:39,33252.26
 13,c-NIGER-2,NIGER-1,1,2018-04-04 10:53:24,2018-04-04 10:55:42,10340.09
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   14, c-NIGER-2 -> NIGER-1
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   14, c-NIGER-2 -> NIGER-1
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1529,8 +1450,7 @@ subgraph:  c-NIGER-2
 13,c-NIGER-2,NIGER-1,1,2018-04-04 10:53:24,2018-04-04 10:55:42,10340.09
 14,c-NIGER-2,NIGER-1,0,2018-04-04 15:36:19,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   14, c-NIGER-2 -> NIGER-1
-FW-[c-NIGER-11]- edge is end
+FW-[c-NIGER-11]- edge_end arrived:   14, c-NIGER-2 -> NIGER-1
 subgraph:  c-NIGER-2
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 10,c-NIGER-2,NIGER-5,2,2018-04-01 04:45:22,2018-04-01 04:49:37,0.00
@@ -1539,8 +1459,7 @@ subgraph:  c-NIGER-2
 13,c-NIGER-2,NIGER-1,1,2018-04-04 10:53:24,2018-04-04 10:55:42,10340.09
 14,c-NIGER-2,NIGER-1,0,2018-04-04 15:36:19,2018-04-04 15:43:14,37251.90
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   32, c-NIGER-7 -> NIGER-1
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   32, c-NIGER-7 -> NIGER-1
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1552,8 +1471,7 @@ subgraph:  c-NIGER-7
 31,c-NIGER-7,EXT-3,0,2018-04-04 01:54:48,2018-04-04 02:03:22,15784.28
 32,c-NIGER-7,NIGER-1,2,2018-04-04 17:14:33,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   32, c-NIGER-7 -> NIGER-1
-FW-[c-NIGER-11]- edge is end
+FW-[c-NIGER-11]- edge_end arrived:   32, c-NIGER-7 -> NIGER-1
 subgraph:  c-NIGER-7
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 29,c-NIGER-7,NIGER-3,0,2018-04-01 05:39:23,2018-04-01 05:46:40,46953.33
@@ -1561,8 +1479,7 @@ subgraph:  c-NIGER-7
 31,c-NIGER-7,EXT-3,0,2018-04-04 01:54:48,2018-04-04 02:03:22,15784.28
 32,c-NIGER-7,NIGER-1,2,2018-04-04 17:14:33,2018-04-04 17:19:51,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   27, c-NIGER-6 -> NIGER-4
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   27, c-NIGER-6 -> NIGER-4
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1574,8 +1491,7 @@ subgraph:  c-NIGER-6
 26,c-NIGER-6,NIGER-4,2,2018-04-04 10:18:54,2018-04-04 10:20:47,0.00
 27,c-NIGER-6,NIGER-4,3,2018-04-05 04:22:01,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   27, c-NIGER-6 -> NIGER-4
-FW-[c-NIGER-11]- edge is end
+FW-[c-NIGER-11]- edge_end arrived:   27, c-NIGER-6 -> NIGER-4
 subgraph:  c-NIGER-6
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
@@ -1583,8 +1499,7 @@ subgraph:  c-NIGER-6
 26,c-NIGER-6,NIGER-4,2,2018-04-04 10:18:54,2018-04-04 10:20:47,0.00
 27,c-NIGER-6,NIGER-4,3,2018-04-05 04:22:01,2018-04-05 04:29:14,53240.71
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   28, c-NIGER-6 -> NIGER-6
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   28, c-NIGER-6 -> NIGER-6
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1597,8 +1512,7 @@ subgraph:  c-NIGER-6
 27,c-NIGER-6,NIGER-4,3,2018-04-05 04:22:01,2018-04-05 04:29:14,53240.71
 28,c-NIGER-6,NIGER-6,0,2018-04-05 06:55:29,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   28, c-NIGER-6 -> NIGER-6
-FW-[c-NIGER-11]- edge is end
+FW-[c-NIGER-11]- edge_end arrived:   28, c-NIGER-6 -> NIGER-6
 subgraph:  c-NIGER-6
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 24,c-NIGER-6,NIGER-4,1,2018-04-01 06:10:30,2018-04-01 06:18:07,19275.44
@@ -1607,8 +1521,7 @@ subgraph:  c-NIGER-6
 27,c-NIGER-6,NIGER-4,3,2018-04-05 04:22:01,2018-04-05 04:29:14,53240.71
 28,c-NIGER-6,NIGER-6,0,2018-04-05 06:55:29,2018-04-05 06:59:03,32833.29
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   46, c-NIGER-11 -> EXT-0
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   46, c-NIGER-11 -> EXT-0
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1621,8 +1534,7 @@ subgraph:  c-NIGER-11
 45,c-NIGER-11,NIGER-8,0,2018-04-02 22:57:51,2018-04-02 22:59:14,35441.71
 46,c-NIGER-11,EXT-0,0,2018-04-05 09:20:23,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   46, c-NIGER-11 -> EXT-0
-FW-[c-NIGER-11]- edge is end
+FW-[c-NIGER-11]- edge_end arrived:   46, c-NIGER-11 -> EXT-0
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
@@ -1631,8 +1543,7 @@ subgraph:  c-NIGER-11
 45,c-NIGER-11,NIGER-8,0,2018-04-02 22:57:51,2018-04-02 22:59:14,35441.71
 46,c-NIGER-11,EXT-0,0,2018-04-05 09:20:23,2018-04-05 09:24:36,6681.78
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   47, c-NIGER-11 -> EXT-2
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   47, c-NIGER-11 -> EXT-2
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1646,8 +1557,7 @@ subgraph:  c-NIGER-11
 46,c-NIGER-11,EXT-0,0,2018-04-05 09:20:23,2018-04-05 09:24:36,6681.78
 47,c-NIGER-11,EXT-2,0,2018-04-05 10:46:52,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   47, c-NIGER-11 -> EXT-2
-FW-[c-NIGER-11]- edge is end
+FW-[c-NIGER-11]- edge_end arrived:   47, c-NIGER-11 -> EXT-2
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
@@ -1657,8 +1567,7 @@ subgraph:  c-NIGER-11
 46,c-NIGER-11,EXT-0,0,2018-04-05 09:20:23,2018-04-05 09:24:36,6681.78
 47,c-NIGER-11,EXT-2,0,2018-04-05 10:46:52,2018-04-05 10:49:39,14529.43
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   48, c-NIGER-11 -> EXT-2
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   48, c-NIGER-11 -> EXT-2
 -------------- CHECKFRAUD()-----------------
 Session created.
 Session closed.
@@ -1673,8 +1582,7 @@ subgraph:  c-NIGER-11
 47,c-NIGER-11,EXT-2,0,2018-04-05 10:46:52,2018-04-05 10:49:39,14529.43
 48,c-NIGER-11,EXT-2,3,2018-04-05 23:54:24,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   48, c-NIGER-11 -> EXT-2
-FW-[c-NIGER-11]- edge is end
+FW-[c-NIGER-11]- edge_end arrived:   48, c-NIGER-11 -> EXT-2
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
@@ -1685,8 +1593,7 @@ subgraph:  c-NIGER-11
 47,c-NIGER-11,EXT-2,0,2018-04-05 10:46:52,2018-04-05 10:49:39,14529.43
 48,c-NIGER-11,EXT-2,3,2018-04-05 23:54:24,2018-04-06 00:00:00,42276.18
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   49, c-NIGER-11 -> EXT-3
-FW-[c-NIGER-11]- edge is start
+FW-[c-NIGER-11]- edge_start arrived:   49, c-NIGER-11 -> EXT-3
 -------------- CHECKFRAUD()-----------------
 Session created.
 Fraud pattern with:   48, c-NIGER-11 -> EXT-2
@@ -1694,12 +1601,15 @@ Session closed.
 --------------------------------------------
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Sink - alert!:  {1 fraud pattern {{0 0 <nil>} 0xc00015af00}}
+42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
+Sink - alert!:  {1 fraud pattern {{0 0 <nil>} 0xc0000ba690}}
 Alert - label: 1, info: fraud pattern
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 48,c-NIGER-11,EXT-2,3,2018-04-05 23:54:24,2018-04-06 00:00:00,42276.18
-42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
+49,c-NIGER-11,EXT-3,3,2018-04-06 00:33:10,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+______________________________________________________________________________
 43,c-NIGER-11,EXT-0,1,2018-04-01 10:54:38,2018-04-01 11:03:16,7654.30
 44,c-NIGER-11,EXT-0,0,2018-04-02 16:02:28,2018-04-02 16:06:56,31158.52
 45,c-NIGER-11,NIGER-8,0,2018-04-02 22:57:51,2018-04-02 22:59:14,35441.71
@@ -1708,8 +1618,7 @@ subgraph:  c-NIGER-11
 48,c-NIGER-11,EXT-2,3,2018-04-05 23:54:24,2018-04-06 00:00:00,42276.18
 49,c-NIGER-11,EXT-3,3,2018-04-06 00:33:10,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge arrived:   49, c-NIGER-11 -> EXT-3
-FW-[c-NIGER-11]- edge is end
+FW-[c-NIGER-11]- edge_end arrived:   49, c-NIGER-11 -> EXT-3
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:58:29,0.00
@@ -1721,23 +1630,26 @@ subgraph:  c-NIGER-11
 48,c-NIGER-11,EXT-2,3,2018-04-05 23:54:24,2018-04-06 00:00:00,42276.18
 49,c-NIGER-11,EXT-3,3,2018-04-06 00:33:10,2018-04-06 00:33:15,84552.36
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-49,c-NIGER-11,EXT-3,3,2018-04-06 00:33:10,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-______________________________________________________________________________
-Source - Close ch - out_edge
-Source - Close ch - out_event
-Source - Finished
-F-[c-NIGER-11] - EOF event
-F-[c-NIGER-8] - EOF event
+FW-[c-NIGER-11] - Filter worker finished
 F-[c-NIGER-11] - Close ch - internal_edge
-F-[c-NIGER-8] - Close ch - internal_edge
-F-[c-NIGER-11] - Close ch - out_edge
 F-[c-NIGER-11] - Close ch - out_event
 F-[c-NIGER-11] - Filter finished
-FW-[c-NIGER-8]- closed internal_edge channel
+F-[c-NIGER-1] - EOF event
+FW-[c-NIGER-1] - Filter worker finished
+F-[c-NIGER-1] - Close ch - internal_edge
+F-[c-NIGER-1] - Close ch - out_event
+F-[c-NIGER-1] - Filter finished
+F-[c-NIGER-8] - EOF event
 FW-[c-NIGER-8] - Filter worker finished
+F-[c-NIGER-8] - Close ch - internal_edge
+F-[c-NIGER-8] - Close ch - out_event
+F-[c-NIGER-8] - Filter finished
+G - EOF event
+G - Close ch - out_alert
+G - Close ch - out_event
+G finished
 Sink - EOF event
 Sink - Finished
-TotalExecutionTime, 2.002750401s , 2002750 μs, 2002 ms , 2.002750401 s
+TotalExecutionTime, 79.085492ms , 79085 μs, 79 ms , 0.079085492 s
 Finish Program
 Connection closed.

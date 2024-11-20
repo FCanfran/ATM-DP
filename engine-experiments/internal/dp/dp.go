@@ -136,6 +136,8 @@ func filter(
 
 	// internal_edge channel between Filter and Worker - only pass events of type Edge (EdgeStart or EdgeEnd)
 	internal_edge := make(chan cmn.Event, cmn.ChannelSize)
+	// synchronization channel between Filter and Worker, to let Filter know whenever Worker is done
+	endchan := make(chan struct{})
 
 	// Worker - Anonymous function
 	go func() {
@@ -156,27 +158,28 @@ func filter(
 
 		// this goroutine dies alone after its father closes the internal_edge channel
 		// (it is the only process with which it has communication / is connected)
+	Worker_Loop:
 		for {
 			event_worker, ok := <-internal_edge
 			if !ok {
 				// TODO: Check what to do here better
 				fmt.Println(msg_id + "- closed internal_edge channel")
-				break
-			}
-			cmn.PrintEdge(msg_id+"- edge arrived: ", event_worker.E)
-
-			// obtain the corresponding subgraph
-			subgraph, ok = card_map[event_worker.E.Number_id]
-			if !ok {
-				// TODO: Manage the error properly
-				fmt.Println("FW - not existing entry in map for: ", event_worker.E.Number_id)
+				break Worker_Loop
 			}
 
-			// identify if it is start or end edge
 			switch event_worker.Type {
+			case cmn.EOF:
+				// finish the worker
+				endchan <- struct{}{}
+				break Worker_Loop
 			case cmn.EdgeStart:
 				// start edge
-				fmt.Println(msg_id + "- edge is start")
+				cmn.PrintEdge(msg_id+"- edge_start arrived: ", event_worker.E)
+				subgraph, ok = card_map[event_worker.E.Number_id]
+				if !ok {
+					// TODO: Manage the error properly
+					fmt.Println("FW - not existing entry in map for: ", event_worker.E.Number_id)
+				}
 				// 1. Check fraud
 				fmt.Println("-------------- CHECKFRAUD()-----------------")
 				isFraud, alert := subgraph.CheckFraud(event_worker.E)
@@ -187,13 +190,18 @@ func filter(
 				//fmt.Println(msg_id + "................... SUBGRAPH ........................")
 				// 2. Add to the subgraph
 				subgraph.AddEdge(event_worker.E)
+				subgraph.Print()
 			case cmn.EdgeEnd:
-				fmt.Println(msg_id + "- edge is end")
+				cmn.PrintEdge(msg_id+"- edge_end arrived: ", event_worker.E)
+				subgraph, ok = card_map[event_worker.E.Number_id]
+				if !ok {
+					// TODO: Manage the error properly
+					fmt.Println("FW - not existing entry in map for: ", event_worker.E.Number_id)
+				}
 				subgraph.CompleteEdge(event_worker.E)
+				subgraph.Print()
 			}
-			subgraph.Print()
 		}
-
 		fmt.Println(msg_id + " - Filter worker finished")
 	}() // () here to not only define it but also run it
 
@@ -207,9 +215,12 @@ Loop:
 		switch event.Type {
 		case cmn.EOF:
 			fmt.Println(msg_id + " - EOF event")
-			// pass the finish event to next process
-			out_event <- event
 			// finish the Filter
+			// pass the EOF event to the worker & wait until its worker is done
+			internal_edge <- event
+			<-endchan
+			// pass the finish event to next process
+			out_event <- event // TOCHECK: This before worker is done or here?
 			break Loop
 			// TODO-FUTURE: case: Reconnection case - use this channel?
 		// TODO: Separate in 2 different cases: EdgeStart and EdgeEnd cases ?
@@ -332,7 +343,7 @@ func Source(istream string, out_event chan<- cmn.Event) {
 		// TODO-REMOVE: -- Only for testing/debugging purposes --
 		//  Sleep time for debugging to slow down the flux of transactions
 		// Leave without this sleep / change it
-		time.Sleep(200 * time.Millisecond)
+		//time.Sleep(200 * time.Millisecond)
 	}
 
 	fmt.Println("Source - Close ch - out_event")
