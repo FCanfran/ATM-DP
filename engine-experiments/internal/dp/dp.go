@@ -74,6 +74,7 @@ Loop:
 		switch event.Type {
 		case cmn.EOF:
 			fmt.Println("G - EOF event")
+			out_event <- event
 			// end the generator
 			break Loop
 			/*case cmn.LOG:
@@ -82,8 +83,8 @@ Loop:
 			// TODO-FUTURE: case: Reconnection case - use this channel?
 			*/
 		case cmn.EdgeEnd:
-			// TODO: cant happen!
-
+			// TODO: decide how to manage better?
+			log.Fatalf("Error: edge_end arrived before edge_start")
 		case cmn.EdgeStart:
 			cmn.PrintEdge("G - edge_start arrived: ", event.E)
 			// spawn a filter
@@ -102,7 +103,6 @@ Loop:
 }
 
 // TODO: pass a counter to use as filter-id instead of the id of the card that spawns it?
-
 func filter(
 	event cmn.Event,
 	in_event <-chan cmn.Event,
@@ -144,9 +144,6 @@ func filter(
 
 		fmt.Println(msg_id + " - creation")
 		cmn.PrintEdge(msg_id+" - initial edge:", edge)
-		if event.Type != cmn.EdgeStart {
-			log.Fatalf("Error: AddEdge ->  Initial edge of the filter is not of type tx-start")
-		}
 
 		subgraph, ok := card_map[edge.Number_id]
 		if !ok {
