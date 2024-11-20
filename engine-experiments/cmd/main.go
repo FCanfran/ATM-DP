@@ -41,7 +41,7 @@ func main() {
 	// launch Source, Generator and Sink goroutines
 	go dp.Source(istream, event_ch)
 	go dp.Generator(event_ch, alert_ch, out_event_ch)
-	go dp.Sink(alert_ch, out_event_ch, endchan)
+	go dp.Sink(start, alert_ch, out_event_ch, endchan)
 
 	<-endchan
 	t := time.Since(start)

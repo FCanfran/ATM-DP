@@ -15,9 +15,13 @@ import (
 )
 
 func Sink(
+	start_time time.Time,
 	in_alert <-chan cmn.Alert,
 	in_event <-chan cmn.Event,
 	endchan chan<- struct{}) {
+
+	// TOCHECK: Take the initial time here or in the main process before the running of the goroutines...
+	// start := time.Now()
 
 	fmt.Println("Sink - creation")
 	// TOCHECK: Create results output files: one for each kind of fraud pattern (?)
@@ -36,9 +40,10 @@ Loop:
 		select {
 		case alert, ok := <-in_alert:
 			if ok {
+				t := time.Since(start_time)
 				fmt.Println("Sink - alert!: ", alert)
-				cmn.PrintAlertVerbose(alert)
-				cmn.PrintAlertOnFile(alert, file_fp_1)
+				cmn.PrintAlertVerbose(alert, t)
+				cmn.PrintAlertOnFile(alert, t, file_fp_1)
 			}
 		case event, ok := <-in_event:
 			if ok {
