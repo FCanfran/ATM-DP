@@ -2,12 +2,14 @@ package dp
 
 import (
 	"bufio"
+	"context"
 	"encoding/csv"
 	"fmt"
 	"io"
 	"log"
 	"os"
 	cmn "pipeline/internal/common"
+	"pipeline/internal/connection"
 	"strconv"
 
 	//"strings"
@@ -146,6 +148,11 @@ func filter(
 	// synchronization channel between Filter and Worker, to let Filter know whenever Worker is done
 	endchan := make(chan struct{})
 
+	// Session creation - 1 session per filter - to connect to the gdb
+	context := context.Background() // TOCHECK: Use a different new ctx per filter or the same in all?
+	session := connection.CreateSession(context)
+	defer connection.CloseSession(context, session)
+
 	// Worker - Anonymous function
 	go func() {
 		var msg_id string = "FW-[" + id + "]"
@@ -189,7 +196,7 @@ func filter(
 				}
 				// 1. Check fraud
 				fmt.Println("-------------- CHECKFRAUD()-----------------")
-				isFraud, alert := subgraph.CheckFraud(event_worker.E)
+				isFraud, alert := subgraph.CheckFraud(context, session, event_worker.E)
 				fmt.Println("--------------------------------------------")
 				if isFraud {
 					out_alert <- alert

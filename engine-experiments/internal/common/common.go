@@ -347,16 +347,16 @@ func (g *Graph) CheckFraud(new_e Edge) (bool, Alert) {
 // Returns:
 // - bool: indicating the presence of a positive Alert (true) or not (false)
 // - Alert: the Alert itself, only in the case it is true. Empty if false.
-func (g *Graph) CheckFraud(new_e Edge) (bool, Alert) {
+func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext, new_e Edge) (bool, Alert) {
 
 	// TODO/TOCHECK: Have a session continuosly open for each filter instead of
 	// opening/closing it at each time it needs to do the checkFraud() operation!!
 	// ---> MIRAR LO QUE COMENTÓ DANI!
 	// New root context for the connections to the gdb that are going to be done here
-	context := context.Background()
+	//context := context.Background()
 	// 0. Open a session to connect to the gdb
-	session := connection.CreateSession(context)
-	defer connection.CloseSession(context, session)
+	//session := connection.CreateSession(context)
+	//defer connection.CloseSession(context, session)
 
 	var fraudAlert Alert // Default 0-value initialization
 	fraudIndicator := false
@@ -387,7 +387,7 @@ func (g *Graph) CheckFraud(new_e Edge) (bool, Alert) {
 			if last_e.ATM_id != new_e.ATM_id {
 				// time feasibility check: (new_e.tx_start - last_e.tx_end) < Tmin(last_e.loc, new_e.loc)
 				// obtain Tmin(last_e.loc, new_e.loc)
-				t_min, err := obtainTmin(context, session, last_e.ATM_id, new_e.ATM_id)
+				t_min, err := obtainTmin(ctx, session, last_e.ATM_id, new_e.ATM_id)
 				CheckError(err)
 				t_diff := int((new_e.Tx_start.Sub(last_e.Tx_end)).Seconds())
 				//fmt.Println("t_min", t_min)
