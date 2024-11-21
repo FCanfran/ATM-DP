@@ -27,12 +27,12 @@ func Sink(
 	fmt.Println("Sink - creation")
 	// TOCHECK: Create results output files: one for each kind of fraud pattern (?)
 	// TODO: For the moment only 1 kind of pattern
-	file_fp_1, err := os.Create("../output/outPattern1.txt")
+	file_fp_1, err := os.Create("./out-pattern1.txt")
 	cmn.CheckError(err)
 	defer file_fp_1.Close()
 
 	// Logging file
-	file_log, err := os.Create("../output/log.txt")
+	file_log, err := os.Create("./out-log.txt")
 	cmn.CheckError(err)
 	defer file_log.Close()
 
