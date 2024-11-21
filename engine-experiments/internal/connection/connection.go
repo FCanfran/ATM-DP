@@ -9,6 +9,7 @@ Connection management with the static graph database (gdb).
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -18,7 +19,7 @@ import (
 var (
 	driver neo4j.DriverWithContext
 	// TODO: Leave as global variable or not
-	ctx context.Context
+	//ctx context.Context
 )
 
 // Connection (safe, with godotenv)
@@ -28,10 +29,10 @@ var (
 // and creation of sessions) sessions can be created from it and are cheap
 // DriverWithContext objects are immutable, thread-safe, and fairly expensive to
 // create, so your application should only create one instance
-func SafeConnect() {
+func SafeConnect() context.Context {
 	// root context: it has no deadline and it can not be cancelled.
 	// used as the base context for connecting to the Neo4j database
-	ctx = context.Background()
+	ctx := context.Background()
 	err := godotenv.Load()
 	if err != nil {
 		panic(err)
@@ -39,6 +40,12 @@ func SafeConnect() {
 	dbUri := os.Getenv("NEO4J_URI")
 	dbUser := os.Getenv("NEO4J_USERNAME")
 	dbPassword := os.Getenv("NEO4J_PASSWORD")
+
+	// Validate that the variables are set
+	if dbUri == "" || dbUser == "" || dbPassword == "" {
+		log.Fatal("Missing required environment variables: NEO4J_URI, NEO4J_USERNAME, or NEO4J_PASSWORD - use a .env file to specify them")
+	}
+
 	driver, err = neo4j.NewDriverWithContext(
 		dbUri,
 		neo4j.BasicAuth(dbUser, dbPassword, ""))
@@ -51,6 +58,8 @@ func SafeConnect() {
 		panic(err)
 	}
 	fmt.Println("Connection established.")
+
+	return ctx
 }
 
 func WriteQuery(ctx context.Context,
@@ -132,13 +141,15 @@ func CloseSession(ctx context.Context, session neo4j.SessionWithContext) {
 }
 
 // TODO/TOCHECK: ctx as a global variable or not
+
+func CloseConnection(ctx context.Context) {
+	driver.Close(ctx)
+	fmt.Println("Connection closed.")
+}
+
 /*
-	func CloseConnection(ctx context.Context) {
-		driver.Close(ctx)
-		fmt.Println("Connection closed.")
-	}
-*/
 func CloseConnection() {
 	driver.Close(ctx)
 	fmt.Println("Connection closed.")
 }
+*/

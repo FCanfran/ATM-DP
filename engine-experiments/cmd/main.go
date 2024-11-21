@@ -21,7 +21,7 @@ func main() {
 	}
 
 	// start connection to static gdb
-	connection.SafeConnect()
+	ctx := connection.SafeConnect()
 
 	// obtain stream fileName from args
 	istream := os.Args[1]
@@ -48,7 +48,7 @@ func main() {
 	fmt.Println("TotalExecutionTime,", t, ",", t.Microseconds(), "μs,", t.Milliseconds(), "ms ,", t.Seconds(), "s")
 	fmt.Println("Finish Program")
 
-	// finish connection to static gdb
-	connection.CloseConnection()
+	// TODO: finish connection to static gdb
+	connection.CloseConnection(ctx)
 
 }
