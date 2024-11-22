@@ -38,6 +38,35 @@ func Sink(
 	cmn.CheckError(err)
 	defer file_log.Close()
 
+	// Results files: diefpy format
+	// - trace.csv
+	// - metrics.csv
+
+	// trace.csv
+	file_trace, err := os.Create("./trace.csv")
+	cmn.CheckError(err)
+	defer file_trace.Close()
+	// csv writer
+	writer_trace := csv.NewWriter(file_trace)
+	defer writer_trace.Flush()
+	// headers
+	headers := []string{"test", "approach", "answer", "time"}
+	err = writer_trace.Write(headers)
+	cmn.CheckError(err)
+
+	// metrics.csv
+	file_metrics, err := os.Create("./metrics.csv")
+	cmn.CheckError(err)
+	defer file_metrics.Close()
+	writer_metrics := csv.NewWriter(file_trace)
+	defer writer_metrics.Flush()
+	headers = []string{"test", "approach", "tfft", "totaltime", "comp"}
+	err = writer_metrics.Write(headers)
+	cmn.CheckError(err)
+
+	var timeFirst time.Duration // variable to keep the time to first answer
+	var timeLast time.Duration  // keep the time to last answer
+
 Loop:
 	for {
 		select {
@@ -45,9 +74,15 @@ Loop:
 			if ok {
 				t := time.Since(start_time)
 				alertCount += 1
+				// save the tfft - metrics.csv
+				if alertCount == 1 {
+					timeFirst = t
+				}
+				timeLast = t
 				fmt.Println("Sink - alert!: ", alert)
 				cmn.PrintAlertVerbose(alert, t, alertCount)
 				cmn.PrintAlertOnFile(alert, t, alertCount, file_fp_1)
+				cmn.PrintAlertOnResultsTrace(t, alertCount, writer_trace)
 			}
 		case event, ok := <-in_event:
 			if ok {
@@ -63,6 +98,9 @@ Loop:
 			}
 		}
 	}
+
+	cmn.PrintMetricsResults(timeFirst, timeLast, alertCount, writer_metrics)
+
 	endchan <- struct{}{}
 	fmt.Println("Sink - Finished")
 }

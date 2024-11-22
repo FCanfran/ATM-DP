@@ -339,6 +339,17 @@ However, note that many multiple parallel sessions may cause overhead to the dat
 to think of the pool of connections.
 
 
+Some notes on this:
+
+\begin{itemize}
+  \item \href{https://neo4j.com/docs/operations-manual/current/performance/bolt-thread-pool-configuration/}{Bolt thread pool configuration}: Since each active transaction will borrow a thread from the pool until the transaction is closed, it is basically the minimum and maximum active transaction at any given time that determine the values for pool configuration options: 
+  \begin{itemize}
+    \item \texttt{server.bolt.thread\_pool\_min\_size}: 5 by default.
+    \item \texttt{server.bolt.thread\_pool\_max\_size}: 400 by default.
+  \end{itemize}
+\end{itemize}
+
+
 
 %\bibliographystyle{plain} % Choose a style (plain, abbrv, unsrt, etc.)
 %\bibliography{references} % This points to references.bib  

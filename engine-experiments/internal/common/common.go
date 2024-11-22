@@ -3,10 +3,12 @@ package common
 import (
 	"container/list"
 	"context"
+	"encoding/csv"
 	"fmt"
 	"log"
 	"os"
 	"pipeline/internal/connection"
+	"strconv"
 	"time"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
@@ -15,8 +17,15 @@ import (
 
 const ChannelSize = 5000
 
+// TODO: Parameterize!
 // max number of cards per filter
 const MaxFilterSize = 4
+
+// TODO: Parameterize! - get from input and define a setter to be able to set
+// them accordingly
+// diefpy csv result files
+const TEST = "dp"
+const APPROACH = "1-core"
 
 // https://yourbasic.org/golang/format-parse-string-time-date-example/
 const Time_layout = "2006-01-02 15:04:05"
@@ -576,6 +585,31 @@ func PrintEventOnFile(e Event, file *os.File) {
 		file.WriteString(out_string)
 	}
 
+}
+
+func PrintAlertOnResultsTrace(timestamp time.Duration, alertCount int, csv_writer *csv.Writer) {
+	dataRow := []string{
+		TEST,                     // test
+		APPROACH,                 // approach
+		strconv.Itoa(alertCount), // answer
+		strconv.FormatFloat(timestamp.Seconds(), 'f', 2, 64), // time (in seconds)
+	}
+
+	err := csv_writer.Write(dataRow)
+	CheckError(err)
+}
+
+func PrintMetricsResults(timeFirst time.Duration, timeLast time.Duration, alertCount int, csv_writer *csv.Writer) {
+	dataRow := []string{
+		TEST,     // test
+		APPROACH, // approach
+		strconv.FormatFloat(timeFirst.Seconds(), 'f', 2, 64), // tfft time (in seconds)
+		strconv.FormatFloat(timeLast.Seconds(), 'f', 2, 64),  // totaltime time (in seconds)
+		strconv.Itoa(alertCount),                             // comp
+	}
+
+	err := csv_writer.Write(dataRow)
+	CheckError(err)
 }
 
 // --------------------------------------------------------------------------------------
