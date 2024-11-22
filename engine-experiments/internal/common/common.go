@@ -597,6 +597,8 @@ func PrintAlertOnResultsTrace(timestamp time.Duration, alertCount int, csv_write
 
 	err := csv_writer.Write(dataRow)
 	CheckError(err)
+
+	csv_writer.Flush() // Ensure data is written to file
 }
 
 func PrintMetricsResults(timeFirst time.Duration, timeLast time.Duration, alertCount int, csv_writer *csv.Writer) {
@@ -610,6 +612,8 @@ func PrintMetricsResults(timeFirst time.Duration, timeLast time.Duration, alertC
 
 	err := csv_writer.Write(dataRow)
 	CheckError(err)
+
+	csv_writer.Flush() // Ensure data is written to file
 }
 
 // --------------------------------------------------------------------------------------
