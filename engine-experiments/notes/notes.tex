@@ -349,7 +349,42 @@ Some notes on this:
   \end{itemize}
 \end{itemize}
 
+\section{Experiments - Simulation with time-event stream}
 
+Note that, since the way we did the transaction generator, the average number of transactions per day per card is $\sim1$, and therefore to be able to generate a transaction set with anomalous situations more close to reality, a reasonable size for the generated transaction stream would be having $t$ around some weeks or month(s).
+
+\subsection{1st option: reduced time scaling}
+
+Take the stream of a certain time interval size $t$ and map it into a smaller time interval
+$t'$ where $t' << t$ so that:
+\begin{itemize}
+  \item \textbf{Shorter experimental time}: Reduced time to test the system behavior. Instead of $t$, only $t'$ time to test it. 
+  \item \textbf{Stress testing}: We do not test the system under a real-case scenario considering its number of cards $c$, instead we are testing it under a higher load to what it would correspond, but having $c$ cards, and therefore $c$ filter's subgraph.
+  \item \textbf{Graph database size VS amount of filters' subgraphs}: Although we simulate a higher load, the number of filters' subgraph corresponds to $c$ the number of cards. The benefit is that we do not need to have such a big graph database.
+\end{itemize}
+
+The consequences for the experiments and metrics:
+
+\begin{itemize}
+  \item \textbf{Diefficiency metrics} (continuous delivery of results): If we give the input stream to the system respecting the temporal timestamps, note that no matter the system characteristics, that a result (an alert in our case), will not be possible to be produced until the event causing it arrives to the system. Therefore the emission of events is expected to be really similar in this case, for any system variation. Only in the case when the stream load is high enough we expect to see the differences.
+  \item \textbf{Response time}: having in mind the previous considerations, we think in measuring the possible differences of behavior of the different system capabilities in terms of the mean response time. The mean response time (\texttt{mrt}) would be the average time that the system spends since it receives the transactions involved in an alert until the time it emits the alert.
+\end{itemize}
+
+\subsection{2nd option: real timestamp omission}
+
+Do not consider the real-time simulation, by omitting the transaction timestamps in the sense that we do not consider them to simulate a real case scenario where each transaction arrives to the system at the time indicated by its timestamp. 
+Instead all the stream comes (ordered by timestamp) but directly (almost) at the same time to the system. With this approach:
+\begin{itemize}
+  \item \textbf{No real case simulation}
+  \item \textbf{Measure the load the system can take}: for the different system variations given a same stream.
+  \item \textbf{Diefficiency metrics}: since time arrival of the transactions to the system is now ignored, and all the transactions come one after the other, a result to be produced do not need to wait for the real timestamp of the transaction. Therefore, we could see the differences in continuously delivering results of the different systems under the same input stream load (more clear than before).
+\end{itemize}
+
+Some (other) references:
+
+\begin{itemize}
+  \item \href{https://www.confluent.io/es-es/learn/apache-flink/}{Apache Flink}: distributed processing engine for stateful computation of data streams.
+\end{itemize}
 
 %\bibliographystyle{plain} % Choose a style (plain, abbrv, unsrt, etc.)
 %\bibliography{references} % This points to references.bib  
