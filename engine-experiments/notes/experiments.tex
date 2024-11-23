@@ -81,6 +81,11 @@ The consequences for the experiments and metrics:
   \item \textbf{Response time}: having in mind the previous considerations, we think in measuring the possible differences of behavior of the different system capabilities in terms of the mean response time. The mean response time (\texttt{mrt}) would be the average time that the system spends since it receives the transactions involved in an alert until the time it emits the alert.
 \end{itemize}
 
+\textcolor{red}{Problems derived to pay attention to}:
+\begin{itemize}
+  \item Shrinking the timestamps to a smaller time interval, produces the emergence of not real fraud patterns that before did not exist due to their real and "correct" larger time distance. $\rightarrow$ a solution for this is to conserve the original timestamps, and consider the mapped-shrunk-reduced timestamps for simulating the arrival times of the transactions into the system while taking the original timestamps for the checking of the frauds.
+\end{itemize}
+
 \subsection{2nd option: real timestamp omission}
 
 Do not consider the real-time simulation, by omitting the transaction timestamps in the sense that we do not consider them to simulate a real case scenario where each transaction arrives to the system at the time indicated by its timestamp. 
