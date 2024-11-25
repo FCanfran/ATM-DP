@@ -75,7 +75,7 @@ $T'$ where $T' << T$. Then, we do a real-time event simulation, providing the ev
 The consequences for the experiments and metrics:
 
 \begin{itemize}
-  \item \textbf{Diefficiency metrics} (continuous delivery of results): If we give the input stream to the system respecting the temporal timestamps, note that no matter the system characteristics, that a result (an alert in our case), will not be possible to be produced until the event causing it arrives to the system. Therefore the emission of events is expected to be really similar in this case, for any system variation. Only in the case when the stream load is high enough we expect to see some differences??
+  \item \textbf{Diefficiency metrics} (continuous delivery of results): If we give the input stream to the system respecting the temporal timestamps, note that no matter the system characteristics, that a result (an alert in our case), will not be possible to be produced until the event causing it arrives to the system. Therefore the emission of events is expected to be really similar in this case, for any system variation. Only in the case when the stream load is high enough we expect to see some differences?? \textcolor{orange}{$\rightarrow$ HABRÁ QUE IR VIÉNDOLO...}
   \item \textbf{Response time}: having in mind the previous considerations, we think in measuring the possible differences of behavior of the different system capabilities in terms of the mean response time. The mean response time (\texttt{mrt}) would be the average time that the system spends since it receives the transactions involved in an alert until the time it emits the alert.
 \end{itemize}
 
@@ -87,7 +87,7 @@ The consequences for the experiments and metrics:
   \item Consider two consecutive regular transactions of a certain client performed in two different ATMs \texttt{ATM-x} and \texttt{ATM-y} with \texttt{t\_min}$=8$h (minimum time difference to traverse the distance from \texttt{ATM-x} to \texttt{ATM-y}) and \texttt{t\_diff}$=24$h (time difference between the first and the second transaction). 
   \item \textcolor{red}{$\rightarrow$ Note that with the scaling the time difference \texttt{t\_diff} would be of 5 times less, that is, $\texttt{t\_diff}=4.8h$. Therefore this will make $\texttt{t\_diff'}=4.8h < \texttt{t\_min}=8h$}.
   \end{itemize}
-  \item $\rightarrow$ (*) Solution A: \textbf{introduce the scaling factor as a input parameter} and consider it also for the fraud checking so to properly \textbf{scale the $\texttt{t\_min}$ variable} ($\texttt{t\_min}=8h \rightarrow \texttt{t\_min'}=\frac{8}{5}h=1.6h$) and therefor: 
+  \item $\rightarrow$ (*) Solution A: \textbf{introduce the scaling factor as a input parameter} and consider it also for the fraud checking so to properly \textbf{scale the $\texttt{t\_min}$ variable} ($\texttt{t\_min}=8h \rightarrow \texttt{t\_min'}=\frac{8}{5}h=1.6h$) and therefore: 
   \begin{itemize}
     \item Before scaling: $\texttt{t\_diff}=24h > \texttt{t\_min}=8h$.
     \item After scaling (scale factor $=\frac{1}{5}$): $\texttt{t\_diff}=\frac{24}{5}=4.8h > \texttt{t\_min}=\frac{8}{5}=1.6h$.
