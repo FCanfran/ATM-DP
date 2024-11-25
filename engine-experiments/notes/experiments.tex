@@ -64,14 +64,12 @@ Note that, since the way we did the transaction generator (coming from wisabi da
 
 \subsection{1st option: Real time-event stream simulation}
 
-Since we do not have the material time to run each experiment for a interval time $T$ of some weeks or a month the idea is to do time scaling of the time event stream.
+Since we do not have the material time to run each experiment for a interval time $T$ of some weeks or a month the idea is to do time scaling of the time event stream. We take the stream of a certain time interval size $T$ and map it into a smaller time interval
+$T'$ where $T' << T$. Then, we do a real-time event simulation, providing the events of the input stream to the system at the times they actually occur (in reality possibly with a small certain delay!) using their timestamps.
 
-Take the stream of a certain time interval size $T$ and map it into a smaller time interval
-$T'$ where $T' << T$ so that:
 \begin{itemize}
   \item \textbf{Shorter experimental time}: Reduced time to test the system behavior. Instead of $T$, only $T'$ time to test it. 
-  \item \textbf{Stress testing}: We do not test the system under a real-case scenario considering its number of cards $c$, instead we are testing it under a higher load to what it would correspond, but having $c$ cards, and therefore $c$ filter's subgraph.
-  \item \textbf{Graph database size VS amount of filters' subgraphs}: Although we simulate a higher load, the number of filters' subgraph corresponds to $c$ the number of cards. The benefit is that we do not need to have such a big graph database.
+  \item \textbf{Stress testing - Graph database size - amount of filters' subgraphs}: We do not test the system under a real-case scenario considering its number of cards $c$, instead we are testing it under a higher load to what it would correspond, but having $c$ cards, and therefore $c$ filter's subgraph. The benefit is that we do not need to have such a big graph database.
 \end{itemize}
 
 The consequences for the experiments and metrics:
