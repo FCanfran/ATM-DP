@@ -10,7 +10,6 @@ import (
 	"os"
 	cmn "pipeline/internal/common"
 	"pipeline/internal/connection"
-	"strconv"
 
 	//"strings"
 	"time"
@@ -304,6 +303,8 @@ Loop:
 	fmt.Println(msg_id + " - Filter finished")
 }
 
+// Source - reading itself from file
+/*
 func Source(istream string, out_event chan<- cmn.Event) {
 
 	// input stream file
@@ -330,65 +331,15 @@ func Source(istream string, out_event chan<- cmn.Event) {
 		}
 		cmn.CheckError(err)
 
-		// conversions
-		// id
-		tx_id_64, err := strconv.ParseInt(tx[0], 10, 32) // 10: base (decimal) & 32: bit-size (int32)
-		cmn.CheckError(err)
-		tx_id := int32(tx_id_64) // still the type returned is int64 -> convert to int32
+		r = cmn.ReadEdge(tx)
 
-		// type
-		var tx_type cmn.TxType
-		tx_type_64, err := strconv.ParseInt(tx[3], 10, 8) // int8
-		cmn.CheckError(err)
-		if tx_type_64 < 0 || tx_type_64 > 3 {
-			tx_type = cmn.Other
-		} else {
-			tx_type = cmn.TxType(tx_type_64)
-		}
-
-		// start
-		tx_start, err := time.Parse(cmn.Time_layout, tx[4])
-		cmn.CheckError(err)
-
-		// end
-		// Check if tx_end field is empty
-		// From: https://pkg.go.dev/time#Time
-		// The zero value of type Time is January 1, year 1, 00:00:00.000000000 UTC. As this time
-		// is unlikely to come up in practice, the Time.IsZero method gives a simple way of detecting
-		// a time that has not been initialized explicitly.
-		var tx_end time.Time
-		if tx[5] != "" {
-			tx_end, err = time.Parse(cmn.Time_layout, tx[5])
-			cmn.CheckError(err)
-			r.Type = cmn.EdgeEnd
-		} else {
-			r.Type = cmn.EdgeStart // tx_end field is empty
-		}
-
-		var tx_amount_32 float32
-		if tx[6] != "" {
-			tx_amount, err := strconv.ParseFloat(tx[6], 32)
-			cmn.CheckError(err)
-			tx_amount_32 = float32(tx_amount)
-		}
-
-		edge := cmn.Edge{
-			Number_id: tx[1],
-			ATM_id:    tx[2],
-			Tx_id:     tx_id,
-			Tx_type:   tx_type,
-			Tx_start:  tx_start,
-			Tx_end:    tx_end,
-			Tx_amount: tx_amount_32,
-		}
-
-		//cmn.PrintEdgeComplete("Source - ", edge)
+		//cmn.PrintEdgeComplete("Source - ", r.E)
 
 		// TODO/TOCHECK:
 		// Do a type for the Edges, instead of Edge do a type!?
 		// - Differentiate between Tx_start and Tx_end type of TX
 		// - Differentiate between the different types of TX (withdrawal/deposit...)
-		r.E = edge
+
 		out_event <- r
 
 		// TODO-REMOVE: -- Only for testing/debugging purposes --
@@ -400,4 +351,120 @@ func Source(istream string, out_event chan<- cmn.Event) {
 	fmt.Println("Source - Close ch - out_event")
 	close(out_event)
 	fmt.Println("Source - Finished")
+}
+*/
+
+// Source: reads edges given by Stream process
+func Source(in_stream <-chan cmn.Event, out_event chan<- cmn.Event) {
+
+Loop:
+	for {
+		event, ok := <-in_stream
+		if !ok {
+			// TODO: Manage the error properly
+			fmt.Println("Source - !ok in in_stream channel")
+		}
+
+		switch event.Type {
+		case cmn.EOF:
+			fmt.Println("Source - EOF event")
+			out_event <- event
+			// end the generator
+			break Loop
+			/*case cmn.LOG:
+			// TODO
+			fmt.Println("G: LOG - event")
+			// TODO-FUTURE: case: Reconnection case - use this channel?
+			*/
+		case cmn.EdgeEnd:
+			// TODO: decide how to manage better?
+			log.Fatalf("Error: edge_end arrived before edge_start")
+		case cmn.EdgeStart:
+			cmn.PrintEdge("G - edge_start arrived: ", event.E)
+			// spawn a filter
+			new_event_ch := make(chan cmn.Event, cmn.ChannelSize)
+			go filter(event, in_event, new_event_ch, out_alert)
+			// set the new input channels of the generator
+			in_event = new_event_ch
+		}
+		out_event <- r
+
+		// TODO-REMOVE: -- Only for testing/debugging purposes --
+		//  Sleep time for debugging to slow down the flux of transactions
+		// Leave without this sleep / change it
+		//time.Sleep(200 * time.Millisecond)
+	}
+
+	fmt.Println("Source - Close ch - out_event")
+	close(out_event)
+	fmt.Println("Source - Finished")
+}
+
+// TODO: Read by chunks so that the reading is not the bottleneck
+func Stream(istream string) {
+
+	// input stream file
+	file, err := os.Open(istream)
+	cmn.CheckError(err)
+	defer file.Close()
+	cmn.CheckError(err)
+
+	// csv reader
+	reader := csv.NewReader(bufio.NewReader(file))
+	_, err = reader.Read() // Read and discard the header line
+	cmn.CheckError(err)
+
+	tx1, err := reader.Read()
+	if err != io.EOF {
+		var tx1_ts, tx2_ts time.Time
+		r := cmn.ReadEdge(tx1)
+		// if tx_end use as timestamp ------> tx_end
+		// else: use as timestamp     ------> tx_start
+		if r.Type == cmn.EdgeEnd {
+			tx1_ts = r.E.Tx_end
+		} else if r.Type == cmn.EdgeStart {
+			// take tx_start as timestamp
+			tx1_ts = r.E.Tx_start
+		} else {
+			fmt.Println("Incorrect Edge type - stop ")
+			log.Fatalf("Fatal error --- %s\n", "Incorrect Edge type - stop")
+		}
+
+		for {
+			tx2, err := reader.Read()
+			if err == io.EOF {
+				//r.Type = cmn.EOF
+				//r.E = cmn.Edge{}
+				// out_event <- r
+				break
+			}
+			cmn.CheckError(err)
+
+			r = cmn.ReadEdge(tx2)
+			if r.Type == cmn.EdgeEnd {
+				tx2_ts = r.E.Tx_end
+			} else if r.Type == cmn.EdgeStart {
+				// take tx_start as timestamp
+				tx2_ts = r.E.Tx_start
+			} else {
+				fmt.Println("Incorrect Edge type - stop ")
+				log.Fatalf("Fatal error --- %s\n", "Incorrect Edge type - stop")
+			}
+
+			// diff between tx2_ts and tx1_ts - in seconds
+			// NOTE: If we want more precision we will need to set the timestamps
+			// with more than seconds precision!
+			ts_diff := tx2_ts.Sub(tx1_ts)
+			fmt.Println(ts_diff)
+			time.Sleep(ts_diff)
+			tx1_ts = tx2_ts
+
+		}
+	}
+
+	fmt.Println("Source - End of stream...")
+
+	//fmt.Println("Source - Close ch - out_event")
+	//close(out_event)
+	//fmt.Println("Source - Finished")
 }
