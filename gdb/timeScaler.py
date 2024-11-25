@@ -45,7 +45,7 @@ def main():
 
     # scaling timestamps
     # t' = t0 + ((t' - t0) x scale_factor)
-    scale_factor = T_new / T_original
+    scale_factor = round(T_new / T_original, 6)
     print(scale_factor)
 
     tx_df["transaction_start"] = tx_df["transaction_start"].apply(

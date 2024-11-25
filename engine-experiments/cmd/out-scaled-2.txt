@@ -28,28 +28,28 @@ F-[c-NIGER-11] - NOT belonging edge:   0, c-NIGER-0 -> NIGER-7
 F-[c-NIGER-11] - NOT belonging edge:   0, c-NIGER-0 -> NIGER-7
 F-[c-NIGER-11] - belonging edge:   44, c-NIGER-11 -> EXT-0
 F-[c-NIGER-11] - belonging edge:   44, c-NIGER-11 -> EXT-0
+G - edge_start arrived:   7, c-NIGER-1 -> EXT-2
 F-[c-NIGER-11] - belonging edge:   11, c-NIGER-2 -> NIGER-3
 F-[c-NIGER-11] - belonging edge:   11, c-NIGER-2 -> NIGER-3
 F-[c-NIGER-11] - NOT belonging edge:   16, c-NIGER-3 -> NIGER-1
-F-[c-NIGER-11] - NOT belonging edge:   16, c-NIGER-3 -> NIGER-1
-F-[c-NIGER-11] - NOT belonging edge:   33, c-NIGER-8 -> NIGER-1
-F-[c-NIGER-11] - NOT belonging edge:   33, c-NIGER-8 -> NIGER-1
-F-[c-NIGER-11] - NOT belonging edge:   34, c-NIGER-8 -> NIGER-3
-F-[c-NIGER-11] - NOT belonging edge:   34, c-NIGER-8 -> NIGER-3
-F-[c-NIGER-11] - belonging edge:   45, c-NIGER-11 -> NIGER-8
-F-[c-NIGER-11] - belonging edge:   45, c-NIGER-11 -> NIGER-8
-F-[c-NIGER-11] - belonging edge:   30, c-NIGER-7 -> NIGER-1
-F-[c-NIGER-11] - belonging edge:   30, c-NIGER-7 -> NIGER-1
-F-[c-NIGER-11] - NOT belonging edge:   39, c-NIGER-10 -> EXT-1
-F-[c-NIGER-11] - NOT belonging edge:   39, c-NIGER-10 -> EXT-1
-F-[c-NIGER-11] - NOT belonging edge:   17, c-NIGER-3 -> NIGER-5
 FW-[c-NIGER-11] - creation
-FW-[c-NIGER-11] - initial edge:  42, c-NIGER-11 -> EXT-2
+F-[c-NIGER-11] - NOT belonging edge:   16, c-NIGER-3 -> NIGER-1
+F-[c-NIGER-11] - NOT belonging edge:   33, c-NIGER-8 -> NIGER-1
+F-[c-NIGER-11] - NOT belonging edge:   33, c-NIGER-8 -> NIGER-1
+F-[c-NIGER-11] - NOT belonging edge:   34, c-NIGER-8 -> NIGER-3
+F-[c-NIGER-11] - NOT belonging edge:   34, c-NIGER-8 -> NIGER-3
+F-[c-NIGER-11] - belonging edge:   45, c-NIGER-11 -> NIGER-8
+F-[c-NIGER-11] - belonging edge:   45, c-NIGER-11 -> NIGER-8
+F-[c-NIGER-11] - belonging edge:   30, c-NIGER-7 -> NIGER-1
+F-[c-NIGER-11] - belonging edge:   30, c-NIGER-7 -> NIGER-1
+F-[c-NIGER-11] - NOT belonging edge:   39, c-NIGER-10 -> EXT-1
+F-[c-NIGER-11] - NOT belonging edge:   39, c-NIGER-10 -> EXT-1
 F-[c-NIGER-11] - NOT belonging edge:   17, c-NIGER-3 -> NIGER-5
+F-[c-NIGER-11] - NOT belonging edge:   17, c-NIGER-3 -> NIGER-5
+FW-[c-NIGER-11] - initial edge:  42, c-NIGER-11 -> EXT-2
 FW-[c-NIGER-11]- edge_end arrived:   42, c-NIGER-11 -> EXT-2
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-G - edge_start arrived:   7, c-NIGER-1 -> EXT-2
 42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:57:22,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-11]- edge_start arrived:   10, c-NIGER-2 -> NIGER-5
@@ -57,8 +57,41 @@ FW-[c-NIGER-11]- edge_start arrived:   10, c-NIGER-2 -> NIGER-5
 --------------------------------------------
 subgraph:  c-NIGER-2
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+F-[c-NIGER-11] - NOT belonging edge:   40, c-NIGER-10 -> NIGER-1
+F-[c-NIGER-11] - NOT belonging edge:   40, c-NIGER-10 -> NIGER-1
+F-[c-NIGER-11] - NOT belonging edge:   8, c-NIGER-1 -> NIGER-8
+F-[c-NIGER-11] - NOT belonging edge:   8, c-NIGER-1 -> NIGER-8
+F-[c-NIGER-11] - belonging edge:   12, c-NIGER-2 -> NIGER-5
+F-[c-NIGER-11] - belonging edge:   12, c-NIGER-2 -> NIGER-5
+F-[c-NIGER-11] - belonging edge:   31, c-NIGER-7 -> EXT-3
+F-[c-NIGER-11] - belonging edge:   31, c-NIGER-7 -> EXT-3
+F-[c-NIGER-11] - NOT belonging edge:   1, c-NIGER-0 -> NIGER-4
+F-[c-NIGER-11] - NOT belonging edge:   1, c-NIGER-0 -> NIGER-4
+F-[c-NIGER-11] - belonging edge:   26, c-NIGER-6 -> NIGER-4
+F-[c-NIGER-11] - belonging edge:   26, c-NIGER-6 -> NIGER-4
+F-[c-NIGER-11] - NOT belonging edge:   19, c-NIGER-4 -> NIGER-9
+F-[c-NIGER-11] - belonging edge:   13, c-NIGER-2 -> NIGER-1
+F-[c-NIGER-11] - NOT belonging edge:   19, c-NIGER-4 -> NIGER-9
+F-[c-NIGER-11] - belonging edge:   13, c-NIGER-2 -> NIGER-1
+F-[c-NIGER-11] - NOT belonging edge:   2, c-NIGER-0 -> NIGER-4
+F-[c-NIGER-11] - NOT belonging edge:   2, c-NIGER-0 -> NIGER-4
+F-[c-NIGER-11] - NOT belonging edge:   35, c-NIGER-9 -> NIGER-8
+F-[c-NIGER-11] - NOT belonging edge:   35, c-NIGER-9 -> NIGER-8
+F-[c-NIGER-11] - belonging edge:   14, c-NIGER-2 -> NIGER-1
+F-[c-NIGER-11] - belonging edge:   14, c-NIGER-2 -> NIGER-1
+F-[c-NIGER-11] - NOT belonging edge:   21, c-NIGER-5 -> NIGER-4
+F-[c-NIGER-11] - belonging edge:   32, c-NIGER-7 -> NIGER-1
+F-[c-NIGER-11] - NOT belonging edge:   21, c-NIGER-5 -> NIGER-4
+F-[c-NIGER-11] - belonging edge:   32, c-NIGER-7 -> NIGER-1
+F-[c-NIGER-11] - NOT belonging edge:   3, c-NIGER-0 -> NIGER-4
+F-[c-NIGER-11] - NOT belonging edge:   3, c-NIGER-0 -> NIGER-4
+F-[c-NIGER-11] - NOT belonging edge:   36, c-NIGER-9 -> EXT-2
+F-[c-NIGER-11] - NOT belonging edge:   36, c-NIGER-9 -> EXT-2
+F-[c-NIGER-11] - NOT belonging edge:   4, c-NIGER-0 -> NIGER-6
+F-[c-NIGER-11] - NOT belonging edge:   4, c-NIGER-0 -> NIGER-6
 10,c-NIGER-2,NIGER-5,2,2018-04-01 04:07:01,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+F-[c-NIGER-11] - NOT belonging edge:   6, c-NIGER-0 -> NIGER-8
 FW-[c-NIGER-11]- edge_end arrived:   10, c-NIGER-2 -> NIGER-5
 subgraph:  c-NIGER-2
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,8 +100,42 @@ subgraph:  c-NIGER-2
 FW-[c-NIGER-11]- edge_start arrived:   29, c-NIGER-7 -> NIGER-3
 -------------- CHECKFRAUD()-----------------
 --------------------------------------------
+F-[c-NIGER-11] - NOT belonging edge:   6, c-NIGER-0 -> NIGER-8
+F-[c-NIGER-1] - creation
+F-[c-NIGER-11] - NOT belonging edge:   20, c-NIGER-4 -> NIGER-9
+F-[c-NIGER-11] - NOT belonging edge:   20, c-NIGER-4 -> NIGER-9
+F-[c-NIGER-11] - belonging edge:   27, c-NIGER-6 -> NIGER-4
+F-[c-NIGER-11] - belonging edge:   27, c-NIGER-6 -> NIGER-4
+F-[c-NIGER-11] - NOT belonging edge:   37, c-NIGER-9 -> EXT-0
+F-[c-NIGER-11] - NOT belonging edge:   37, c-NIGER-9 -> EXT-0
+F-[c-NIGER-11] - belonging edge:   28, c-NIGER-6 -> NIGER-6
+F-[c-NIGER-11] - belonging edge:   28, c-NIGER-6 -> NIGER-6
+Session created.
+F-[c-NIGER-1] - belonging edge:   7, c-NIGER-1 -> EXT-2
+F-[c-NIGER-1] - new belonging edge:   15, c-NIGER-3 -> NIGER-5
+F-[c-NIGER-1] - belonging edge:   15, c-NIGER-3 -> NIGER-5
+F-[c-NIGER-1] - new belonging edge:   18, c-NIGER-4 -> NIGER-9
+F-[c-NIGER-11] - belonging edge:   46, c-NIGER-11 -> EXT-0
+FW-[c-NIGER-1] - creation
+F-[c-NIGER-1] - belonging edge:   18, c-NIGER-4 -> NIGER-9
+F-[c-NIGER-1] - new belonging edge:   0, c-NIGER-0 -> NIGER-7
+F-[c-NIGER-1] - belonging edge:   0, c-NIGER-0 -> NIGER-7
+F-[c-NIGER-1] - belonging edge:   16, c-NIGER-3 -> NIGER-1
+F-[c-NIGER-1] - belonging edge:   16, c-NIGER-3 -> NIGER-1
+F-[c-NIGER-1] - NOT belonging edge:   33, c-NIGER-8 -> NIGER-1
+F-[c-NIGER-1] - NOT belonging edge:   33, c-NIGER-8 -> NIGER-1
+F-[c-NIGER-1] - NOT belonging edge:   34, c-NIGER-8 -> NIGER-3
+F-[c-NIGER-1] - NOT belonging edge:   34, c-NIGER-8 -> NIGER-3
+F-[c-NIGER-1] - NOT belonging edge:   39, c-NIGER-10 -> EXT-1
+F-[c-NIGER-1] - NOT belonging edge:   39, c-NIGER-10 -> EXT-1
+F-[c-NIGER-1] - belonging edge:   17, c-NIGER-3 -> NIGER-5
+F-[c-NIGER-1] - belonging edge:   17, c-NIGER-3 -> NIGER-5
+F-[c-NIGER-1] - NOT belonging edge:   40, c-NIGER-10 -> NIGER-1
+F-[c-NIGER-1] - NOT belonging edge:   40, c-NIGER-10 -> NIGER-1
+F-[c-NIGER-1] - belonging edge:   8, c-NIGER-1 -> NIGER-8
 subgraph:  c-NIGER-7
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+G - edge_start arrived:   33, c-NIGER-8 -> NIGER-1
 29,c-NIGER-7,NIGER-3,0,2018-04-01 04:18:08,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-11]- edge_end arrived:   29, c-NIGER-7 -> NIGER-3
@@ -86,54 +153,11 @@ subgraph:  c-NIGER-6
 FW-[c-NIGER-11]- edge_end arrived:   24, c-NIGER-6 -> NIGER-4
 subgraph:  c-NIGER-6
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+F-[c-NIGER-11] - belonging edge:   46, c-NIGER-11 -> EXT-0
 24,c-NIGER-6,NIGER-4,1,2018-04-01 04:24:32,2018-04-01 04:26:06,19275.44
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-11]- edge_start arrived:   43, c-NIGER-11 -> EXT-0
 -------------- CHECKFRAUD()-----------------
-F-[c-NIGER-11] - NOT belonging edge:   40, c-NIGER-10 -> NIGER-1
-F-[c-NIGER-11] - NOT belonging edge:   40, c-NIGER-10 -> NIGER-1
-F-[c-NIGER-11] - NOT belonging edge:   8, c-NIGER-1 -> NIGER-8
-F-[c-NIGER-11] - NOT belonging edge:   8, c-NIGER-1 -> NIGER-8
-F-[c-NIGER-11] - belonging edge:   12, c-NIGER-2 -> NIGER-5
-F-[c-NIGER-11] - belonging edge:   12, c-NIGER-2 -> NIGER-5
-F-[c-NIGER-11] - belonging edge:   31, c-NIGER-7 -> EXT-3
-F-[c-NIGER-11] - belonging edge:   31, c-NIGER-7 -> EXT-3
-F-[c-NIGER-11] - NOT belonging edge:   1, c-NIGER-0 -> NIGER-4
-F-[c-NIGER-11] - NOT belonging edge:   1, c-NIGER-0 -> NIGER-4
-F-[c-NIGER-11] - belonging edge:   26, c-NIGER-6 -> NIGER-4
-F-[c-NIGER-11] - belonging edge:   26, c-NIGER-6 -> NIGER-4
-F-[c-NIGER-11] - NOT belonging edge:   19, c-NIGER-4 -> NIGER-9
-F-[c-NIGER-11] - belonging edge:   13, c-NIGER-2 -> NIGER-1
-F-[c-NIGER-11] - NOT belonging edge:   19, c-NIGER-4 -> NIGER-9
-F-[c-NIGER-11] - belonging edge:   13, c-NIGER-2 -> NIGER-1
-F-[c-NIGER-11] - NOT belonging edge:   2, c-NIGER-0 -> NIGER-4
-F-[c-NIGER-11] - NOT belonging edge:   2, c-NIGER-0 -> NIGER-4
-F-[c-NIGER-11] - NOT belonging edge:   35, c-NIGER-9 -> NIGER-8
-F-[c-NIGER-11] - NOT belonging edge:   35, c-NIGER-9 -> NIGER-8
-F-[c-NIGER-11] - belonging edge:   14, c-NIGER-2 -> NIGER-1
-F-[c-NIGER-11] - belonging edge:   14, c-NIGER-2 -> NIGER-1
-F-[c-NIGER-11] - NOT belonging edge:   21, c-NIGER-5 -> NIGER-4
-F-[c-NIGER-11] - belonging edge:   32, c-NIGER-7 -> NIGER-1
-F-[c-NIGER-11] - NOT belonging edge:   21, c-NIGER-5 -> NIGER-4
-F-[c-NIGER-11] - belonging edge:   32, c-NIGER-7 -> NIGER-1
-F-[c-NIGER-11] - NOT belonging edge:   3, c-NIGER-0 -> NIGER-4
-F-[c-NIGER-11] - NOT belonging edge:   3, c-NIGER-0 -> NIGER-4
-F-[c-NIGER-11] - NOT belonging edge:   36, c-NIGER-9 -> EXT-2
-F-[c-NIGER-11] - NOT belonging edge:   36, c-NIGER-9 -> EXT-2
-F-[c-NIGER-11] - NOT belonging edge:   4, c-NIGER-0 -> NIGER-6
-F-[c-NIGER-11] - NOT belonging edge:   4, c-NIGER-0 -> NIGER-6
-F-[c-NIGER-11] - NOT belonging edge:   6, c-NIGER-0 -> NIGER-8
-F-[c-NIGER-11] - NOT belonging edge:   6, c-NIGER-0 -> NIGER-8
-F-[c-NIGER-11] - NOT belonging edge:   20, c-NIGER-4 -> NIGER-9
-F-[c-NIGER-11] - NOT belonging edge:   20, c-NIGER-4 -> NIGER-9
-F-[c-NIGER-11] - belonging edge:   27, c-NIGER-6 -> NIGER-4
-F-[c-NIGER-11] - belonging edge:   27, c-NIGER-6 -> NIGER-4
-F-[c-NIGER-11] - NOT belonging edge:   37, c-NIGER-9 -> EXT-0
-F-[c-NIGER-11] - NOT belonging edge:   37, c-NIGER-9 -> EXT-0
-F-[c-NIGER-11] - belonging edge:   28, c-NIGER-6 -> NIGER-6
-F-[c-NIGER-11] - belonging edge:   28, c-NIGER-6 -> NIGER-6
-F-[c-NIGER-11] - belonging edge:   46, c-NIGER-11 -> EXT-0
-F-[c-NIGER-11] - belonging edge:   46, c-NIGER-11 -> EXT-0
 F-[c-NIGER-11] - belonging edge:   47, c-NIGER-11 -> EXT-2
 F-[c-NIGER-11] - belonging edge:   47, c-NIGER-11 -> EXT-2
 F-[c-NIGER-11] - NOT belonging edge:   5, c-NIGER-0 -> NIGER-7
@@ -145,7 +169,6 @@ F-[c-NIGER-11] - NOT belonging edge:   22, c-NIGER-5 -> NIGER-6
 F-[c-NIGER-11] - NOT belonging edge:   9, c-NIGER-1 -> EXT-0
 F-[c-NIGER-11] - NOT belonging edge:   9, c-NIGER-1 -> EXT-0
 F-[c-NIGER-11] - NOT belonging edge:   41, c-NIGER-10 -> EXT-1
-F-[c-NIGER-1] - creation
 F-[c-NIGER-11] - NOT belonging edge:   41, c-NIGER-10 -> EXT-1
 F-[c-NIGER-11] - NOT belonging edge:   23, c-NIGER-5 -> NIGER-6
 F-[c-NIGER-11] - NOT belonging edge:   23, c-NIGER-5 -> NIGER-6
@@ -154,60 +177,26 @@ F-[c-NIGER-11] - belonging edge:   48, c-NIGER-11 -> EXT-2
 F-[c-NIGER-11] - belonging edge:   49, c-NIGER-11 -> EXT-3
 F-[c-NIGER-11] - belonging edge:   49, c-NIGER-11 -> EXT-3
 F-[c-NIGER-11] - EOF event
-Session created.
-F-[c-NIGER-1] - belonging edge:   7, c-NIGER-1 -> EXT-2
-F-[c-NIGER-1] - new belonging edge:   15, c-NIGER-3 -> NIGER-5
-F-[c-NIGER-1] - belonging edge:   15, c-NIGER-3 -> NIGER-5
-F-[c-NIGER-1] - new belonging edge:   18, c-NIGER-4 -> NIGER-9
-F-[c-NIGER-1] - belonging edge:   18, c-NIGER-4 -> NIGER-9
-F-[c-NIGER-1] - new belonging edge:   0, c-NIGER-0 -> NIGER-7
-F-[c-NIGER-1] - belonging edge:   0, c-NIGER-0 -> NIGER-7
-F-[c-NIGER-1] - belonging edge:   16, c-NIGER-3 -> NIGER-1
-F-[c-NIGER-1] - belonging edge:   16, c-NIGER-3 -> NIGER-1
-F-[c-NIGER-1] - NOT belonging edge:   33, c-NIGER-8 -> NIGER-1
-F-[c-NIGER-1] - NOT belonging edge:   33, c-NIGER-8 -> NIGER-1
-FW-[c-NIGER-1] - creation
-G - edge_start arrived:   33, c-NIGER-8 -> NIGER-1
+F-[c-NIGER-1] - belonging edge:   8, c-NIGER-1 -> NIGER-8
 F-[c-NIGER-8] - creation
 Session created.
 F-[c-NIGER-8] - belonging edge:   33, c-NIGER-8 -> NIGER-1
-FW-[c-NIGER-8] - creation
-FW-[c-NIGER-8] - initial edge:  33, c-NIGER-8 -> NIGER-1
-FW-[c-NIGER-8]- edge_end arrived:   33, c-NIGER-8 -> NIGER-1
-subgraph:  c-NIGER-8
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-33,c-NIGER-8,NIGER-1,3,2018-04-01 11:59:14,2018-04-01 11:59:56,38921.18
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1] - initial edge:  7, c-NIGER-1 -> EXT-2
-F-[c-NIGER-1] - NOT belonging edge:   34, c-NIGER-8 -> NIGER-3
-F-[c-NIGER-1] - NOT belonging edge:   34, c-NIGER-8 -> NIGER-3
-F-[c-NIGER-1] - NOT belonging edge:   39, c-NIGER-10 -> EXT-1
-F-[c-NIGER-1] - NOT belonging edge:   39, c-NIGER-10 -> EXT-1
-F-[c-NIGER-1] - belonging edge:   17, c-NIGER-3 -> NIGER-5
-F-[c-NIGER-1] - belonging edge:   17, c-NIGER-3 -> NIGER-5
-F-[c-NIGER-1] - NOT belonging edge:   40, c-NIGER-10 -> NIGER-1
-F-[c-NIGER-1] - NOT belonging edge:   40, c-NIGER-10 -> NIGER-1
-F-[c-NIGER-1] - belonging edge:   8, c-NIGER-1 -> NIGER-8
-F-[c-NIGER-1] - belonging edge:   8, c-NIGER-1 -> NIGER-8
-F-[c-NIGER-1] - belonging edge:   1, c-NIGER-0 -> NIGER-4
-F-[c-NIGER-1] - belonging edge:   1, c-NIGER-0 -> NIGER-4
-F-[c-NIGER-1] - belonging edge:   19, c-NIGER-4 -> NIGER-9
-F-[c-NIGER-1] - belonging edge:   19, c-NIGER-4 -> NIGER-9
-F-[c-NIGER-1] - belonging edge:   2, c-NIGER-0 -> NIGER-4
-F-[c-NIGER-1] - belonging edge:   2, c-NIGER-0 -> NIGER-4
-F-[c-NIGER-1] - NOT belonging edge:   35, c-NIGER-9 -> NIGER-8
-FW-[c-NIGER-1]- edge_end arrived:   7, c-NIGER-1 -> EXT-2
-subgraph:  c-NIGER-1
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 F-[c-NIGER-8] - belonging edge:   34, c-NIGER-8 -> NIGER-3
 F-[c-NIGER-8] - belonging edge:   34, c-NIGER-8 -> NIGER-3
 F-[c-NIGER-8] - new belonging edge:   39, c-NIGER-10 -> EXT-1
 F-[c-NIGER-8] - belonging edge:   39, c-NIGER-10 -> EXT-1
 F-[c-NIGER-8] - belonging edge:   40, c-NIGER-10 -> NIGER-1
 F-[c-NIGER-8] - belonging edge:   40, c-NIGER-10 -> NIGER-1
-F-[c-NIGER-8] - new belonging edge:   35, c-NIGER-9 -> NIGER-8
-FW-[c-NIGER-8]- edge_start arrived:   34, c-NIGER-8 -> NIGER-3
--------------- CHECKFRAUD()-----------------
+FW-[c-NIGER-8] - creation
+FW-[c-NIGER-8] - initial edge:  33, c-NIGER-8 -> NIGER-1
+FW-[c-NIGER-8]- edge_end arrived:   33, c-NIGER-8 -> NIGER-1
+subgraph:  c-NIGER-8
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+F-[c-NIGER-1] - belonging edge:   1, c-NIGER-0 -> NIGER-4
+FW-[c-NIGER-1] - initial edge:  7, c-NIGER-1 -> EXT-2
+FW-[c-NIGER-1]- edge_end arrived:   7, c-NIGER-1 -> EXT-2
+subgraph:  c-NIGER-1
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 7,c-NIGER-1,EXT-2,3,2018-04-01 05:44:19,2018-04-01 05:45:27,40028.33
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-1]- edge_start arrived:   15, c-NIGER-3 -> NIGER-5
@@ -225,34 +214,13 @@ subgraph:  c-NIGER-3
 FW-[c-NIGER-1]- edge_start arrived:   18, c-NIGER-4 -> NIGER-9
 -------------- CHECKFRAUD()-----------------
 --------------------------------------------
+33,c-NIGER-8,NIGER-1,3,2018-04-01 11:59:14,2018-04-01 11:59:56,38921.18
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_start arrived:   34, c-NIGER-8 -> NIGER-3
+-------------- CHECKFRAUD()-----------------
 subgraph:  c-NIGER-4
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 18,c-NIGER-4,NIGER-9,3,2018-04-01 07:24:33,0001-01-01 00:00:00,0.00
-F-[c-NIGER-1] - NOT belonging edge:   35, c-NIGER-9 -> NIGER-8
-F-[c-NIGER-1] - NOT belonging edge:   21, c-NIGER-5 -> NIGER-4
-F-[c-NIGER-1] - NOT belonging edge:   21, c-NIGER-5 -> NIGER-4
-F-[c-NIGER-1] - belonging edge:   3, c-NIGER-0 -> NIGER-4
-F-[c-NIGER-1] - belonging edge:   3, c-NIGER-0 -> NIGER-4
-F-[c-NIGER-1] - NOT belonging edge:   36, c-NIGER-9 -> EXT-2
-F-[c-NIGER-1] - NOT belonging edge:   36, c-NIGER-9 -> EXT-2
-F-[c-NIGER-1] - belonging edge:   4, c-NIGER-0 -> NIGER-6
-F-[c-NIGER-1] - belonging edge:   4, c-NIGER-0 -> NIGER-6
-F-[c-NIGER-1] - belonging edge:   6, c-NIGER-0 -> NIGER-8
-F-[c-NIGER-1] - belonging edge:   6, c-NIGER-0 -> NIGER-8
-F-[c-NIGER-1] - belonging edge:   20, c-NIGER-4 -> NIGER-9
-F-[c-NIGER-1] - belonging edge:   20, c-NIGER-4 -> NIGER-9
-F-[c-NIGER-1] - NOT belonging edge:   37, c-NIGER-9 -> EXT-0
-F-[c-NIGER-1] - NOT belonging edge:   37, c-NIGER-9 -> EXT-0
-F-[c-NIGER-1] - belonging edge:   5, c-NIGER-0 -> NIGER-7
-F-[c-NIGER-1] - NOT belonging edge:   38, c-NIGER-9 -> NIGER-8
-F-[c-NIGER-8] - belonging edge:   35, c-NIGER-9 -> NIGER-8
-F-[c-NIGER-8] - new belonging edge:   21, c-NIGER-5 -> NIGER-4
-F-[c-NIGER-8] - belonging edge:   21, c-NIGER-5 -> NIGER-4
-F-[c-NIGER-8] - belonging edge:   36, c-NIGER-9 -> EXT-2
-F-[c-NIGER-8] - belonging edge:   36, c-NIGER-9 -> EXT-2
-F-[c-NIGER-8] - belonging edge:   37, c-NIGER-9 -> EXT-0
-F-[c-NIGER-8] - belonging edge:   37, c-NIGER-9 -> EXT-0
-F-[c-NIGER-8] - belonging edge:   38, c-NIGER-9 -> NIGER-8
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-1]- edge_end arrived:   18, c-NIGER-4 -> NIGER-9
 subgraph:  c-NIGER-4
@@ -273,19 +241,51 @@ subgraph:  c-NIGER-0
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-1]- edge_start arrived:   16, c-NIGER-3 -> NIGER-1
 -------------- CHECKFRAUD()-----------------
+F-[c-NIGER-1] - belonging edge:   1, c-NIGER-0 -> NIGER-4
+F-[c-NIGER-1] - belonging edge:   19, c-NIGER-4 -> NIGER-9
+F-[c-NIGER-1] - belonging edge:   19, c-NIGER-4 -> NIGER-9
+F-[c-NIGER-1] - belonging edge:   2, c-NIGER-0 -> NIGER-4
+F-[c-NIGER-1] - belonging edge:   2, c-NIGER-0 -> NIGER-4
+F-[c-NIGER-1] - NOT belonging edge:   35, c-NIGER-9 -> NIGER-8
+F-[c-NIGER-1] - NOT belonging edge:   35, c-NIGER-9 -> NIGER-8
+F-[c-NIGER-1] - NOT belonging edge:   21, c-NIGER-5 -> NIGER-4
+F-[c-NIGER-1] - NOT belonging edge:   21, c-NIGER-5 -> NIGER-4
+F-[c-NIGER-1] - belonging edge:   3, c-NIGER-0 -> NIGER-4
+F-[c-NIGER-1] - belonging edge:   3, c-NIGER-0 -> NIGER-4
+F-[c-NIGER-1] - NOT belonging edge:   36, c-NIGER-9 -> EXT-2
+F-[c-NIGER-1] - NOT belonging edge:   36, c-NIGER-9 -> EXT-2
+F-[c-NIGER-1] - belonging edge:   4, c-NIGER-0 -> NIGER-6
+F-[c-NIGER-1] - belonging edge:   4, c-NIGER-0 -> NIGER-6
+F-[c-NIGER-1] - belonging edge:   6, c-NIGER-0 -> NIGER-8
+F-[c-NIGER-1] - belonging edge:   6, c-NIGER-0 -> NIGER-8
+F-[c-NIGER-1] - belonging edge:   20, c-NIGER-4 -> NIGER-9
+F-[c-NIGER-1] - belonging edge:   20, c-NIGER-4 -> NIGER-9
+F-[c-NIGER-1] - NOT belonging edge:   37, c-NIGER-9 -> EXT-0
+F-[c-NIGER-1] - NOT belonging edge:   37, c-NIGER-9 -> EXT-0
+F-[c-NIGER-1] - belonging edge:   5, c-NIGER-0 -> NIGER-7
+F-[c-NIGER-1] - NOT belonging edge:   38, c-NIGER-9 -> NIGER-8
 F-[c-NIGER-1] - belonging edge:   5, c-NIGER-0 -> NIGER-7
 F-[c-NIGER-1] - NOT belonging edge:   38, c-NIGER-9 -> NIGER-8
 F-[c-NIGER-1] - NOT belonging edge:   22, c-NIGER-5 -> NIGER-6
 F-[c-NIGER-1] - NOT belonging edge:   22, c-NIGER-5 -> NIGER-6
+F-[c-NIGER-1] - belonging edge:   9, c-NIGER-1 -> EXT-0
+F-[c-NIGER-1] - belonging edge:   9, c-NIGER-1 -> EXT-0
+F-[c-NIGER-1] - NOT belonging edge:   41, c-NIGER-10 -> EXT-1
+F-[c-NIGER-1] - NOT belonging edge:   41, c-NIGER-10 -> EXT-1
+F-[c-NIGER-1] - NOT belonging edge:   23, c-NIGER-5 -> NIGER-6
+F-[c-NIGER-1] - NOT belonging edge:   23, c-NIGER-5 -> NIGER-6
+F-[c-NIGER-8] - new belonging edge:   35, c-NIGER-9 -> NIGER-8
+F-[c-NIGER-8] - belonging edge:   35, c-NIGER-9 -> NIGER-8
+F-[c-NIGER-8] - new belonging edge:   21, c-NIGER-5 -> NIGER-4
+F-[c-NIGER-8] - belonging edge:   21, c-NIGER-5 -> NIGER-4
+F-[c-NIGER-8] - belonging edge:   36, c-NIGER-9 -> EXT-2
+F-[c-NIGER-8] - belonging edge:   36, c-NIGER-9 -> EXT-2
+F-[c-NIGER-8] - belonging edge:   37, c-NIGER-9 -> EXT-0
+F-[c-NIGER-8] - belonging edge:   37, c-NIGER-9 -> EXT-0
+F-[c-NIGER-8] - belonging edge:   38, c-NIGER-9 -> NIGER-8
 F-[c-NIGER-8] - belonging edge:   38, c-NIGER-9 -> NIGER-8
 F-[c-NIGER-8] - belonging edge:   22, c-NIGER-5 -> NIGER-6
 F-[c-NIGER-8] - belonging edge:   22, c-NIGER-5 -> NIGER-6
-F-[c-NIGER-1] - belonging edge:   9, c-NIGER-1 -> EXT-0
-F-[c-NIGER-1] - belonging edge:   9, c-NIGER-1 -> EXT-0
-F-[c-NIGER-1] - NOT belonging edge:   41, c-NIGER-10 -> EXT-1
-F-[c-NIGER-1] - NOT belonging edge:   41, c-NIGER-10 -> EXT-1
-F-[c-NIGER-1] - NOT belonging edge:   23, c-NIGER-5 -> NIGER-6
-F-[c-NIGER-1] - NOT belonging edge:   23, c-NIGER-5 -> NIGER-6
 F-[c-NIGER-8] - belonging edge:   41, c-NIGER-10 -> EXT-1
 F-[c-NIGER-8] - belonging edge:   41, c-NIGER-10 -> EXT-1
 F-[c-NIGER-8] - belonging edge:   23, c-NIGER-5 -> NIGER-6
@@ -312,11 +312,28 @@ t_min before 98.43243485636911
 t_min after 20.260052769181886
 t_min 20.260052769181886
 t_diff 2297
+--------------------------------------------
+subgraph:  c-NIGER-8
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+33,c-NIGER-8,NIGER-1,3,2018-04-01 11:59:14,2018-04-01 11:59:56,38921.18
+34,c-NIGER-8,NIGER-3,1,2018-04-01 12:38:13,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 t_min before 123.70179883177278
 t_min after 25.461170148147296
 t_min 25.461170148147296
 t_diff 21906
 --------------------------------------------
+FW-[c-NIGER-8]- edge_end arrived:   34, c-NIGER-8 -> NIGER-3
+subgraph:  c-NIGER-8
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+33,c-NIGER-8,NIGER-1,3,2018-04-01 11:59:14,2018-04-01 11:59:56,38921.18
+34,c-NIGER-8,NIGER-3,1,2018-04-01 12:38:13,2018-04-01 12:38:57,1998.01
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_start arrived:   39, c-NIGER-10 -> EXT-1
+-------------- CHECKFRAUD()-----------------
+--------------------------------------------
+subgraph:  c-NIGER-10
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 subgraph:  c-NIGER-3
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 15,c-NIGER-3,NIGER-5,0,2018-04-01 05:48:11,2018-04-01 05:48:59,41987.59
@@ -330,23 +347,6 @@ subgraph:  c-NIGER-3
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-1]- edge_start arrived:   17, c-NIGER-3 -> NIGER-5
 -------------- CHECKFRAUD()-----------------
---------------------------------------------
-subgraph:  c-NIGER-8
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-33,c-NIGER-8,NIGER-1,3,2018-04-01 11:59:14,2018-04-01 11:59:56,38921.18
-34,c-NIGER-8,NIGER-3,1,2018-04-01 12:38:13,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge_end arrived:   34, c-NIGER-8 -> NIGER-3
-subgraph:  c-NIGER-8
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-33,c-NIGER-8,NIGER-1,3,2018-04-01 11:59:14,2018-04-01 11:59:56,38921.18
-34,c-NIGER-8,NIGER-3,1,2018-04-01 12:38:13,2018-04-01 12:38:57,1998.01
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge_start arrived:   39, c-NIGER-10 -> EXT-1
--------------- CHECKFRAUD()-----------------
---------------------------------------------
-subgraph:  c-NIGER-10
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 39,c-NIGER-10,EXT-1,0,2018-04-01 13:38:12,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-8]- edge_end arrived:   39, c-NIGER-10 -> EXT-1
@@ -360,6 +360,8 @@ t_min before 197.5056440040988
 t_min after 40.651994188431644
 t_min 40.651994188431644
 t_diff 8102
+t_min before 160.19378966524374
+t_min after 32.97220714542812
 --------------------------------------------
 subgraph:  c-NIGER-6
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -390,13 +392,6 @@ subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-11]- edge_start arrived:   11, c-NIGER-2 -> NIGER-3
 -------------- CHECKFRAUD()-----------------
-t_min before 160.19378966524374
-t_min after 32.97220714542812
-t_min 32.97220714542812
-t_diff 8187
---------------------------------------------
-subgraph:  c-NIGER-10
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 t_min before 123.70179883177278
 t_min after 25.461170148147296
 t_min 25.461170148147296
@@ -408,15 +403,11 @@ subgraph:  c-NIGER-3
 16,c-NIGER-3,NIGER-1,0,2018-04-01 11:54:05,2018-04-01 11:55:37,69755.93
 17,c-NIGER-3,NIGER-5,0,2018-04-01 15:10:59,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge_end arrived:   17, c-NIGER-3 -> NIGER-5
-subgraph:  c-NIGER-3
+t_min 32.97220714542812
+t_diff 8187
+--------------------------------------------
+subgraph:  c-NIGER-10
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-15,c-NIGER-3,NIGER-5,0,2018-04-01 05:48:11,2018-04-01 05:48:59,41987.59
-16,c-NIGER-3,NIGER-1,0,2018-04-01 11:54:05,2018-04-01 11:55:37,69755.93
-17,c-NIGER-3,NIGER-5,0,2018-04-01 15:10:59,2018-04-01 15:12:00,71686.34
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge_start arrived:   8, c-NIGER-1 -> NIGER-8
--------------- CHECKFRAUD()-----------------
 39,c-NIGER-10,EXT-1,0,2018-04-01 13:38:12,2018-04-01 13:38:37,53015.58
 40,c-NIGER-10,NIGER-1,0,2018-04-01 15:55:04,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -441,6 +432,15 @@ subgraph:  c-NIGER-9
 FW-[c-NIGER-8]- edge_start arrived:   21, c-NIGER-5 -> NIGER-4
 -------------- CHECKFRAUD()-----------------
 --------------------------------------------
+FW-[c-NIGER-1]- edge_end arrived:   17, c-NIGER-3 -> NIGER-5
+subgraph:  c-NIGER-3
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+15,c-NIGER-3,NIGER-5,0,2018-04-01 05:48:11,2018-04-01 05:48:59,41987.59
+16,c-NIGER-3,NIGER-1,0,2018-04-01 11:54:05,2018-04-01 11:55:37,69755.93
+17,c-NIGER-3,NIGER-5,0,2018-04-01 15:10:59,2018-04-01 15:12:00,71686.34
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_start arrived:   8, c-NIGER-1 -> NIGER-8
+-------------- CHECKFRAUD()-----------------
 subgraph:  c-NIGER-5
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 21,c-NIGER-5,NIGER-4,3,2018-04-01 21:30:22,0001-01-01 00:00:00,0.00
@@ -452,6 +452,13 @@ subgraph:  c-NIGER-5
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-8]- edge_start arrived:   36, c-NIGER-9 -> EXT-2
 -------------- CHECKFRAUD()-----------------
+t_min before 212.16697326244025
+t_min after 43.66969160568829
+t_min 43.66969160568829
+t_min before 212.16697326244025
+t_min after 43.66969160568829
+t_min 43.66969160568829
+t_diff 39967
 t_min before 112.42709676720912
 t_min after 23.140532046304354
 t_min 23.140532046304354
@@ -470,24 +477,7 @@ subgraph:  c-NIGER-2
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-11]- edge_start arrived:   45, c-NIGER-11 -> NIGER-8
 -------------- CHECKFRAUD()-----------------
-t_min before 212.16697326244025
-t_min after 43.66969160568829
-t_min 43.66969160568829
-t_diff 2563
 --------------------------------------------
-subgraph:  c-NIGER-9
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-35,c-NIGER-9,NIGER-8,0,2018-04-01 21:05:18,2018-04-01 21:05:53,64643.52
-36,c-NIGER-9,EXT-2,1,2018-04-01 21:48:36,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge_end arrived:   36, c-NIGER-9 -> EXT-2
-t_min before 212.16697326244025
-t_min after 43.66969160568829
-t_min 43.66969160568829
-t_diff 39967
---------------------------------------------
-subgraph:  c-NIGER-9
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 subgraph:  c-NIGER-1
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 7,c-NIGER-1,EXT-2,3,2018-04-01 05:44:19,2018-04-01 05:45:27,40028.33
@@ -501,10 +491,40 @@ subgraph:  c-NIGER-1
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-1]- edge_start arrived:   1, c-NIGER-0 -> NIGER-4
 -------------- CHECKFRAUD()-----------------
+t_diff 2563
+--------------------------------------------
+subgraph:  c-NIGER-9
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+35,c-NIGER-9,NIGER-8,0,2018-04-01 21:05:18,2018-04-01 21:05:53,64643.52
+36,c-NIGER-9,EXT-2,1,2018-04-01 21:48:36,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_end arrived:   36, c-NIGER-9 -> EXT-2
+subgraph:  c-NIGER-9
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 35,c-NIGER-9,NIGER-8,0,2018-04-01 21:05:18,2018-04-01 21:05:53,64643.52
 36,c-NIGER-9,EXT-2,1,2018-04-01 21:48:36,2018-04-01 21:49:43,18627.07
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-8]- edge_start arrived:   37, c-NIGER-9 -> EXT-0
+-------------- CHECKFRAUD()-----------------
+t_min before 190.57698667078785
+t_min after 39.22588943548825
+t_min 39.22588943548825
+t_diff 7433
+--------------------------------------------
+subgraph:  c-NIGER-9
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+35,c-NIGER-9,NIGER-8,0,2018-04-01 21:05:18,2018-04-01 21:05:53,64643.52
+36,c-NIGER-9,EXT-2,1,2018-04-01 21:48:36,2018-04-01 21:49:43,18627.07
+37,c-NIGER-9,EXT-0,0,2018-04-01 23:53:36,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_end arrived:   37, c-NIGER-9 -> EXT-0
+subgraph:  c-NIGER-9
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+35,c-NIGER-9,NIGER-8,0,2018-04-01 21:05:18,2018-04-01 21:05:53,64643.52
+36,c-NIGER-9,EXT-2,1,2018-04-01 21:48:36,2018-04-01 21:49:43,18627.07
+37,c-NIGER-9,EXT-0,0,2018-04-01 23:53:36,2018-04-01 23:54:27,73952.27
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-8]- edge_start arrived:   38, c-NIGER-9 -> NIGER-8
 -------------- CHECKFRAUD()-----------------
 t_min before 25.120505819359067
 t_min after 5.170478351281219
@@ -514,20 +534,6 @@ t_diff 5075
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:57:22,0.00
-43,c-NIGER-11,EXT-0,1,2018-04-01 05:23:01,2018-04-01 05:24:48,7654.30
-44,c-NIGER-11,EXT-0,0,2018-04-01 11:22:46,2018-04-01 11:23:41,31158.52
-45,c-NIGER-11,NIGER-8,0,2018-04-01 12:48:16,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge_end arrived:   45, c-NIGER-11 -> NIGER-8
-subgraph:  c-NIGER-11
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:57:22,0.00
-43,c-NIGER-11,EXT-0,1,2018-04-01 05:23:01,2018-04-01 05:24:48,7654.30
-44,c-NIGER-11,EXT-0,0,2018-04-01 11:22:46,2018-04-01 11:23:41,31158.52
-45,c-NIGER-11,NIGER-8,0,2018-04-01 12:48:16,2018-04-01 12:48:33,35441.71
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge_start arrived:   30, c-NIGER-7 -> NIGER-1
--------------- CHECKFRAUD()-----------------
 t_min before 54.27380306817673
 t_min after 11.171014064113614
 t_min 11.171014064113614
@@ -545,6 +551,20 @@ subgraph:  c-NIGER-0
 1,c-NIGER-0,NIGER-4,3,2018-04-01 18:38:03,2018-04-01 18:39:18,31720.04
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-1]- edge_start arrived:   19, c-NIGER-4 -> NIGER-9
+-------------- CHECKFRAUD()-----------------
+43,c-NIGER-11,EXT-0,1,2018-04-01 05:23:01,2018-04-01 05:24:48,7654.30
+44,c-NIGER-11,EXT-0,0,2018-04-01 11:22:46,2018-04-01 11:23:41,31158.52
+45,c-NIGER-11,NIGER-8,0,2018-04-01 12:48:16,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_end arrived:   45, c-NIGER-11 -> NIGER-8
+subgraph:  c-NIGER-11
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:57:22,0.00
+43,c-NIGER-11,EXT-0,1,2018-04-01 05:23:01,2018-04-01 05:24:48,7654.30
+44,c-NIGER-11,EXT-0,0,2018-04-01 11:22:46,2018-04-01 11:23:41,31158.52
+45,c-NIGER-11,NIGER-8,0,2018-04-01 12:48:16,2018-04-01 12:48:33,35441.71
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_start arrived:   30, c-NIGER-7 -> NIGER-1
 -------------- CHECKFRAUD()-----------------
 --------------------------------------------
 subgraph:  c-NIGER-4
@@ -594,44 +614,8 @@ subgraph:  c-NIGER-0
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-1]- edge_start arrived:   4, c-NIGER-0 -> NIGER-6
 -------------- CHECKFRAUD()-----------------
-t_min before 190.57698667078785
-t_min after 39.22588943548825
-t_min 39.22588943548825
-t_diff 7433
---------------------------------------------
-subgraph:  c-NIGER-9
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-35,c-NIGER-9,NIGER-8,0,2018-04-01 21:05:18,2018-04-01 21:05:53,64643.52
-36,c-NIGER-9,EXT-2,1,2018-04-01 21:48:36,2018-04-01 21:49:43,18627.07
-37,c-NIGER-9,EXT-0,0,2018-04-01 23:53:36,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge_end arrived:   37, c-NIGER-9 -> EXT-0
-subgraph:  c-NIGER-9
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-35,c-NIGER-9,NIGER-8,0,2018-04-01 21:05:18,2018-04-01 21:05:53,64643.52
-36,c-NIGER-9,EXT-2,1,2018-04-01 21:48:36,2018-04-01 21:49:43,18627.07
-37,c-NIGER-9,EXT-0,0,2018-04-01 23:53:36,2018-04-01 23:54:27,73952.27
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-8]- edge_start arrived:   38, c-NIGER-9 -> NIGER-8
--------------- CHECKFRAUD()-----------------
-t_min before 98.43243485636911
-t_min after 20.260052769181886
-t_min 20.260052769181886
-t_diff 32104
---------------------------------------------
-subgraph:  c-NIGER-7
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-29,c-NIGER-7,NIGER-3,0,2018-04-01 04:18:08,2018-04-01 04:19:38,46953.33
-30,c-NIGER-7,NIGER-1,3,2018-04-01 13:14:42,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge_end arrived:   30, c-NIGER-7 -> NIGER-1
-subgraph:  c-NIGER-7
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-29,c-NIGER-7,NIGER-3,0,2018-04-01 04:18:08,2018-04-01 04:19:38,46953.33
-30,c-NIGER-7,NIGER-1,3,2018-04-01 13:14:42,2018-04-01 13:16:24,15293.52
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge_start arrived:   12, c-NIGER-2 -> NIGER-5
--------------- CHECKFRAUD()-----------------
+t_min before 197.5056440040988
+t_min after 40.651994188431644
 t_min before 25.120505819359067
 t_min after 5.170478351281219
 t_min 5.170478351281219
@@ -647,6 +631,8 @@ subgraph:  c-NIGER-9
 FW-[c-NIGER-8]- edge_end arrived:   38, c-NIGER-9 -> NIGER-8
 subgraph:  c-NIGER-9
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+t_min 40.651994188431644
+t_diff 4115
 35,c-NIGER-9,NIGER-8,0,2018-04-01 21:05:18,2018-04-01 21:05:53,64643.52
 36,c-NIGER-9,EXT-2,1,2018-04-01 21:48:36,2018-04-01 21:49:43,18627.07
 37,c-NIGER-9,EXT-0,0,2018-04-01 23:53:36,2018-04-01 23:54:27,73952.27
@@ -654,15 +640,16 @@ subgraph:  c-NIGER-9
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-8]- edge_start arrived:   22, c-NIGER-5 -> NIGER-6
 -------------- CHECKFRAUD()-----------------
-t_min before 197.5056440040988
-t_min after 40.651994188431644
-t_min 40.651994188431644
-t_diff 4115
 --------------------------------------------
 subgraph:  c-NIGER-0
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 0,c-NIGER-0,NIGER-7,0,2018-04-01 07:59:56,2018-04-01 08:01:33,7826.58
 1,c-NIGER-0,NIGER-4,3,2018-04-01 18:38:03,2018-04-01 18:39:18,31720.04
+t_min before 98.43243485636911
+t_min after 20.260052769181886
+t_min 20.260052769181886
+t_diff 32104
+--------------------------------------------
 2,c-NIGER-0,NIGER-4,3,2018-04-01 20:32:59,2018-04-01 20:34:47,41458.94
 3,c-NIGER-0,NIGER-4,0,2018-04-01 21:33:02,2018-04-01 21:34:27,8009.67
 4,c-NIGER-0,NIGER-6,0,2018-04-01 22:43:02,0001-01-01 00:00:00,0.00
@@ -678,31 +665,19 @@ subgraph:  c-NIGER-0
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-1]- edge_start arrived:   6, c-NIGER-0 -> NIGER-8
 -------------- CHECKFRAUD()-----------------
-t_min before 112.42709676720912
-t_min after 23.140532046304354
-t_min 23.140532046304354
-t_diff 23180
---------------------------------------------
-subgraph:  c-NIGER-2
+subgraph:  c-NIGER-7
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-10,c-NIGER-2,NIGER-5,2,2018-04-01 04:07:01,2018-04-01 04:07:53,0.00
-11,c-NIGER-2,NIGER-3,0,2018-04-01 11:26:15,2018-04-01 11:27:26,50789.21
-12,c-NIGER-2,NIGER-5,0,2018-04-01 17:53:46,0001-01-01 00:00:00,0.00
+29,c-NIGER-7,NIGER-3,0,2018-04-01 04:18:08,2018-04-01 04:19:38,46953.33
+30,c-NIGER-7,NIGER-1,3,2018-04-01 13:14:42,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge_end arrived:   12, c-NIGER-2 -> NIGER-5
-subgraph:  c-NIGER-2
+FW-[c-NIGER-11]- edge_end arrived:   30, c-NIGER-7 -> NIGER-1
+subgraph:  c-NIGER-7
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-10,c-NIGER-2,NIGER-5,2,2018-04-01 04:07:01,2018-04-01 04:07:53,0.00
-11,c-NIGER-2,NIGER-3,0,2018-04-01 11:26:15,2018-04-01 11:27:26,50789.21
-12,c-NIGER-2,NIGER-5,0,2018-04-01 17:53:46,2018-04-01 17:54:05,33252.26
+29,c-NIGER-7,NIGER-3,0,2018-04-01 04:18:08,2018-04-01 04:19:38,46953.33
+30,c-NIGER-7,NIGER-1,3,2018-04-01 13:14:42,2018-04-01 13:16:24,15293.52
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge_start arrived:   31, c-NIGER-7 -> EXT-3
+FW-[c-NIGER-11]- edge_start arrived:   12, c-NIGER-2 -> NIGER-5
 -------------- CHECKFRAUD()-----------------
-t_min before 3353.4839318230447
-t_min after 690.2375372353418
-t_min 690.2375372353418
-t_diff 347
-Fraud pattern with:   4, c-NIGER-0 -> NIGER-6
 t_min before 197.5056440040988
 t_min after 40.651994188431644
 t_min 40.651994188431644
@@ -721,6 +696,11 @@ subgraph:  c-NIGER-5
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-8]- edge_start arrived:   41, c-NIGER-10 -> EXT-1
 -------------- CHECKFRAUD()-----------------
+t_min before 3353.4839318230447
+t_min after 690.2375372353418
+t_min 690.2375372353418
+t_diff 347
+Fraud pattern with:   4, c-NIGER-0 -> NIGER-6
 --------------------------------------------
 subgraph:  c-NIGER-0
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -731,14 +711,28 @@ subgraph:  c-NIGER-0
 4,c-NIGER-0,NIGER-6,0,2018-04-01 22:43:02,2018-04-01 22:43:43,13755.34
 6,c-NIGER-0,NIGER-8,0,2018-04-01 22:49:30,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Sink - alert!:  {1 fraud pattern {{0 0 <nil>} 0xc0007a0f30}}
-Alert - label: 1, info: fraud pattern, timestamp: 23.654988ms, numAlert: 1
+t_min before 112.42709676720912
+Sink - alert!:  {1 fraud pattern {{0 0 <nil>} 0xc0001b2150}}
+Alert - label: 1, info: fraud pattern, timestamp: 24.359444ms, numAlert: 1
 subgraph:  c-NIGER-0
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 4,c-NIGER-0,NIGER-6,0,2018-04-01 22:43:02,2018-04-01 22:43:43,13755.34
 6,c-NIGER-0,NIGER-8,0,2018-04-01 22:49:30,0001-01-01 00:00:00,0.00
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ______________________________________________________________________________
+t_min after 23.140532046304354
+t_min 23.140532046304354
+t_diff 23180
+--------------------------------------------
+subgraph:  c-NIGER-2
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+10,c-NIGER-2,NIGER-5,2,2018-04-01 04:07:01,2018-04-01 04:07:53,0.00
+11,c-NIGER-2,NIGER-3,0,2018-04-01 11:26:15,2018-04-01 11:27:26,50789.21
+12,c-NIGER-2,NIGER-5,0,2018-04-01 17:53:46,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_end arrived:   12, c-NIGER-2 -> NIGER-5
+subgraph:  c-NIGER-2
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-1]- edge_end arrived:   6, c-NIGER-0 -> NIGER-8
 subgraph:  c-NIGER-0
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -767,6 +761,37 @@ subgraph:  c-NIGER-4
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-1]- edge_start arrived:   5, c-NIGER-0 -> NIGER-7
 -------------- CHECKFRAUD()-----------------
+10,c-NIGER-2,NIGER-5,2,2018-04-01 04:07:01,2018-04-01 04:07:53,0.00
+11,c-NIGER-2,NIGER-3,0,2018-04-01 11:26:15,2018-04-01 11:27:26,50789.21
+12,c-NIGER-2,NIGER-5,0,2018-04-01 17:53:46,2018-04-01 17:54:05,33252.26
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_start arrived:   31, c-NIGER-7 -> EXT-3
+-------------- CHECKFRAUD()-----------------
+t_min before 160.19378966524374
+t_min after 32.97220714542812
+t_min 32.97220714542812
+t_diff 37335
+--------------------------------------------
+subgraph:  c-NIGER-10
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+t_min before 3485.259197442026
+t_min after 717.3604448318999
+t_min 717.3604448318999
+t_diff 8890
+--------------------------------------------
+subgraph:  c-NIGER-0
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+0,c-NIGER-0,NIGER-7,0,2018-04-01 07:59:56,2018-04-01 08:01:33,7826.58
+1,c-NIGER-0,NIGER-4,3,2018-04-01 18:38:03,2018-04-01 18:39:18,31720.04
+2,c-NIGER-0,NIGER-4,3,2018-04-01 20:32:59,2018-04-01 20:34:47,41458.94
+3,c-NIGER-0,NIGER-4,0,2018-04-01 21:33:02,2018-04-01 21:34:27,8009.67
+4,c-NIGER-0,NIGER-6,0,2018-04-01 22:43:02,2018-04-01 22:43:43,13755.34
+6,c-NIGER-0,NIGER-8,0,2018-04-01 22:49:30,2018-04-01 22:49:31,27510.68
+5,c-NIGER-0,NIGER-7,3,2018-04-02 01:17:41,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-1]- edge_end arrived:   5, c-NIGER-0 -> NIGER-7
+subgraph:  c-NIGER-0
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 t_min before 108.22774028651968
 t_min after 22.276191099953486
 t_min 22.276191099953486
@@ -787,27 +812,13 @@ subgraph:  c-NIGER-7
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-11]- edge_start arrived:   26, c-NIGER-6 -> NIGER-4
 -------------- CHECKFRAUD()-----------------
-t_min before 3485.259197442026
-t_min after 717.3604448318999
-t_min 717.3604448318999
-t_diff 8890
---------------------------------------------
-subgraph:  c-NIGER-0
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 0,c-NIGER-0,NIGER-7,0,2018-04-01 07:59:56,2018-04-01 08:01:33,7826.58
 1,c-NIGER-0,NIGER-4,3,2018-04-01 18:38:03,2018-04-01 18:39:18,31720.04
 2,c-NIGER-0,NIGER-4,3,2018-04-01 20:32:59,2018-04-01 20:34:47,41458.94
 3,c-NIGER-0,NIGER-4,0,2018-04-01 21:33:02,2018-04-01 21:34:27,8009.67
 4,c-NIGER-0,NIGER-6,0,2018-04-01 22:43:02,2018-04-01 22:43:43,13755.34
 6,c-NIGER-0,NIGER-8,0,2018-04-01 22:49:30,2018-04-01 22:49:31,27510.68
-5,c-NIGER-0,NIGER-7,3,2018-04-02 01:17:41,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-t_min before 160.19378966524374
-t_min after 32.97220714542812
-t_min 32.97220714542812
-t_diff 37335
---------------------------------------------
-subgraph:  c-NIGER-10
+5,c-NIGER-0,NIGER-7,3,2018-04-02 01:17:41,2018-04-02 01:18:41,28999.46
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 39,c-NIGER-10,EXT-1,0,2018-04-01 13:38:12,2018-04-01 13:38:37,53015.58
 40,c-NIGER-10,NIGER-1,0,2018-04-01 15:55:04,2018-04-01 15:55:31,4905.32
@@ -818,6 +829,8 @@ subgraph:  c-NIGER-10
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 39,c-NIGER-10,EXT-1,0,2018-04-01 13:38:12,2018-04-01 13:38:37,53015.58
 40,c-NIGER-10,NIGER-1,0,2018-04-01 15:55:04,2018-04-01 15:55:31,4905.32
+FW-[c-NIGER-1]- edge_start arrived:   9, c-NIGER-1 -> EXT-0
+-------------- CHECKFRAUD()-----------------
 41,c-NIGER-10,EXT-1,0,2018-04-02 02:17:46,2018-04-02 02:19:18,15882.07
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-8]- edge_start arrived:   23, c-NIGER-5 -> NIGER-6
@@ -836,19 +849,6 @@ subgraph:  c-NIGER-5
 22,c-NIGER-5,NIGER-6,0,2018-04-02 01:57:31,2018-04-02 01:59:01,49982.04
 23,c-NIGER-5,NIGER-6,1,2018-04-02 03:14:04,2018-04-02 03:15:06,11713.23
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge_end arrived:   5, c-NIGER-0 -> NIGER-7
-subgraph:  c-NIGER-0
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-0,c-NIGER-0,NIGER-7,0,2018-04-01 07:59:56,2018-04-01 08:01:33,7826.58
-1,c-NIGER-0,NIGER-4,3,2018-04-01 18:38:03,2018-04-01 18:39:18,31720.04
-2,c-NIGER-0,NIGER-4,3,2018-04-01 20:32:59,2018-04-01 20:34:47,41458.94
-3,c-NIGER-0,NIGER-4,0,2018-04-01 21:33:02,2018-04-01 21:34:27,8009.67
-4,c-NIGER-0,NIGER-6,0,2018-04-01 22:43:02,2018-04-01 22:43:43,13755.34
-6,c-NIGER-0,NIGER-8,0,2018-04-01 22:49:30,2018-04-01 22:49:31,27510.68
-5,c-NIGER-0,NIGER-7,3,2018-04-02 01:17:41,2018-04-02 01:18:41,28999.46
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-1]- edge_start arrived:   9, c-NIGER-1 -> EXT-0
--------------- CHECKFRAUD()-----------------
 t_min before 197.5056440040988
 t_min after 40.651994188431644
 t_min 40.651994188431644
@@ -1075,20 +1075,8 @@ Fraud pattern with:   48, c-NIGER-11 -> EXT-2
 --------------------------------------------
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:57:22,0.00
-43,c-NIGER-11,EXT-0,1,2018-04-01 05:23:01,2018-04-01 05:24:48,7654.30
-44,c-NIGER-11,EXT-0,0,2018-04-01 11:22:46,2018-04-01 11:23:41,31158.52
-45,c-NIGER-11,NIGER-8,0,2018-04-01 12:48:16,2018-04-01 12:48:33,35441.71
-46,c-NIGER-11,EXT-0,0,2018-04-02 00:49:11,2018-04-02 00:50:03,6681.78
-47,c-NIGER-11,EXT-2,0,2018-04-02 01:06:59,2018-04-02 01:07:33,14529.43
-48,c-NIGER-11,EXT-2,3,2018-04-02 03:49:05,2018-04-02 03:50:14,42276.18
-49,c-NIGER-11,EXT-3,3,2018-04-02 03:57:03,0001-01-01 00:00:00,0.00
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FW-[c-NIGER-11]- edge_end arrived:   49, c-NIGER-11 -> EXT-3
-subgraph:  c-NIGER-11
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Sink - alert!:  {1 fraud pattern {{0 0 <nil>} 0xc0005d0210}}
-Alert - label: 1, info: fraud pattern, timestamp: 44.1958ms, numAlert: 2
+Sink - alert!:  {1 fraud pattern {{0 0 <nil>} 0xc0001b3650}}
+Alert - label: 1, info: fraud pattern, timestamp: 48.596411ms, numAlert: 2
 subgraph:  c-NIGER-11
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 48,c-NIGER-11,EXT-2,3,2018-04-02 03:49:05,2018-04-02 03:50:14,42276.18
@@ -1102,7 +1090,19 @@ ______________________________________________________________________________
 46,c-NIGER-11,EXT-0,0,2018-04-02 00:49:11,2018-04-02 00:50:03,6681.78
 47,c-NIGER-11,EXT-2,0,2018-04-02 01:06:59,2018-04-02 01:07:33,14529.43
 48,c-NIGER-11,EXT-2,3,2018-04-02 03:49:05,2018-04-02 03:50:14,42276.18
-49,c-NIGER-11,EXT-3,3,2018-04-02 03:57:03,2018-04-02 03:57:05,84552.36
+49,c-NIGER-11,EXT-3,3,2018-04-02 03:57:03,0001-01-01 00:00:00,0.00
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FW-[c-NIGER-11]- edge_end arrived:   49, c-NIGER-11 -> EXT-3
+subgraph:  c-NIGER-11
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+42,c-NIGER-11,EXT-2,2,2018-04-01 03:57:05,2018-04-01 03:57:22,0.00
+43,c-NIGER-11,EXT-0,1,2018-04-01 05:23:01,2018-04-01 05:24:48,7654.30
+44,c-NIGER-11,EXT-0,0,2018-04-01 11:22:46,2018-04-01 11:23:41,31158.52
+45,c-NIGER-11,NIGER-8,0,2018-04-01 12:48:16,2018-04-01 12:48:33,35441.71
+46,c-NIGER-11,EXT-0,0,2018-04-02 00:49:11,2018-04-02 00:50:03,6681.78
+47,c-NIGER-11,EXT-2,0,2018-04-02 01:06:59,2018-04-02 01:07:33,14529.43
+48,c-NIGER-11,EXT-2,3,2018-04-02 03:49:05,2018-04-02 03:50:14,42276.18
+49,c-NIGER-11,EXT-3,3,2018-04-02 03:57:03,2018-04-02 03:57:04,84552.36
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FW-[c-NIGER-11] - Filter worker finished
 F-[c-NIGER-11] - Close ch - internal_edge
@@ -1126,7 +1126,6 @@ G - Close ch - out_event
 G finished
 Sink - EOF event
 Session closed.
-Sink - Finished
-TotalExecutionTime, 44.453851ms , 44453 μs, 44 ms , 0.044453851 s
+TotalExecutionTime, 48.803749ms , 48803 μs, 48 ms , 0.048803749 s
 Finish Program
 Connection closed.

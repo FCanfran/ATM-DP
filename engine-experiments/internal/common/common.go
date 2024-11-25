@@ -214,7 +214,7 @@ func (g *Graph) Delete(e Edge) {
 
 // ------------------------------------------------------------------------------ //
 // obtain Tmin(eg.loc, new_e.loc), returns seconds of time
-func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 string, ATM_id_2 string) (int, error) {
+func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 string, ATM_id_2 string) (float64, error) {
 	// Connect to the static gdb to obtain the location of the ATMs given the ATM ids
 	// TODO: Use Indexes for Performance
 	// Ensure that the ATM_id field is indexed if you are performing many lookups based on this property.
@@ -289,7 +289,8 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	t_min = t_min * scaleFactor
 	fmt.Println("t_min after", t_min)
 
-	return int(t_min), nil
+	//return int(t_min), nil
+	return t_min, nil
 }
 
 // - new_e: the new edge that we check the FP against
@@ -338,7 +339,7 @@ func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext
 				// obtain Tmin(last_e.loc, new_e.loc)
 				t_min, err := obtainTmin(ctx, session, last_e.ATM_id, new_e.ATM_id)
 				CheckError(err)
-				t_diff := int((new_e.Tx_start.Sub(last_e.Tx_end)).Seconds())
+				t_diff := (new_e.Tx_start.Sub(last_e.Tx_end)).Seconds()
 				fmt.Println("t_min", t_min)
 				fmt.Println("t_diff", t_diff)
 				if t_diff < t_min {
