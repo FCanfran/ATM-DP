@@ -27,8 +27,11 @@ def main():
     first_timestamp = tx_df.iloc[0]["transaction_start"]  # first tx
     last_timestamp = tx_df.iloc[-1]["transaction_end"]  # last tx
     # Calculate the difference in seconds - size of the original time interval T
-    T_original = int((last_timestamp - first_timestamp).total_seconds())
+    time_difference = last_timestamp - first_timestamp
+    T_original = int(time_difference.total_seconds())
     print(f"The original time interval size is T = {T_original} s")
+    print(f"\t~ {time_difference.days} days")
+    print(f"\t~ {round(T_original / 3600, 2)} hours")
 
     validInt = False
     while not validInt:  # Loop until a valid integer is entered
@@ -45,7 +48,7 @@ def main():
     scale_factor = T_new / T_original
     print(scale_factor)
 
-    tx_df["transaction_start_scaled"] = tx_df["transaction_start"].apply(
+    tx_df["transaction_start"] = tx_df["transaction_start"].apply(
         lambda t_start: first_timestamp
         + timedelta(
             seconds=((t_start - first_timestamp).total_seconds() * scale_factor)
@@ -53,7 +56,7 @@ def main():
     )
 
     # only if transaction_end is not NaN
-    tx_df["transaction_end_scaled"] = tx_df["transaction_end"].apply(
+    tx_df["transaction_end"] = tx_df["transaction_end"].apply(
         lambda t_end: (
             first_timestamp
             + timedelta(
@@ -64,14 +67,10 @@ def main():
         )  # Handle NaN (missing values)
     )
 
-    tx_df["transaction_start_scaled"] = tx_df["transaction_start_scaled"].dt.strftime(
-        format
-    )
-    tx_df["transaction_end_scaled"] = tx_df["transaction_end_scaled"].dt.strftime(
-        format
-    )
+    tx_df["transaction_start"] = tx_df["transaction_start"].dt.strftime(format)
+    tx_df["transaction_end"] = tx_df["transaction_end"].dt.strftime(format)
 
-    outfilename = tx_file.replace(".csv", "-scaled.csv")
+    outfilename = tx_file.replace(".csv", f"-scaled-{scale_factor}.csv")
     tx_df.to_csv(outfilename, index=False)
     print(f"Scaled stream file saved to {outfilename}")
 

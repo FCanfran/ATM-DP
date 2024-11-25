@@ -18,14 +18,26 @@ import (
 const ChannelSize = 5000
 
 // TODO: Parameterize!
+// ***************************************************************************** //
 // max number of cards per filter
-const MaxFilterSize = 4
+var MaxFilterSize = 4
 
 // TODO: Parameterize! - get from input and define a setter to be able to set
 // them accordingly
 // diefpy csv result files
-const TEST = "dp"
-const APPROACH = "1-core"
+var TEST = "dp"
+var APPROACH = "1-core"
+
+// scaling factor
+var scaleFactor float64 = 1.0
+
+func SetScaleFactor(value string) {
+	var err error
+	scaleFactor, err = strconv.ParseFloat(value, 64)
+	CheckError(err)
+}
+
+// ***************************************************************************** //
 
 // https://yourbasic.org/golang/format-parse-string-time-date-example/
 const Time_layout = "2006-01-02 15:04:05"
@@ -272,85 +284,13 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	// t = e / v ---> (km)/(km/h) --> in seconds (*60*60)
 	t_min := (distance_km / maxSpeed) * 60 * 60 // in seconds
 
+	fmt.Println("t_min before", t_min)
+	// scale factor
+	t_min = t_min * scaleFactor
+	fmt.Println("t_min after", t_min)
+
 	return int(t_min), nil
 }
-
-// checkfraud I - old version
-/*
-// - new_e: the new edge that we check the FP against
-// Returns:
-// - bool: indicating the presence of a positive Alert (true) or not (false)
-// - Alert: the Alert itself, only in the case it is true. Empty if false.
-func (g *Graph) CheckFraud(new_e Edge) (bool, Alert) {
-
-	fmt.Println("-------------- CHECKFRAUD()--------------")
-	// TODO/TOCHECK: Have a session continuosly open for each filter instead of
-	// opening/closing it at each time it needs to do the checkFraud() operation!!
-	// ---> MIRAR LO QUE COMENTÓ DANI!
-	// New root context for the connections to the gdb that are going to be done here
-	context := context.Background()
-	// 0. Open a session to connect to the gdb
-	session := connection.CreateSession(context)
-	defer connection.CloseSession(context, session)
-
-	fraudIndicator := false
-	var fraud1Alert Alert // Default 0-value initialization
-
-	// 1. Obtain last added edge of the subgraph
-	// TODO: FIX ---> I think the backward traversal is incorrect!
-	for prev := g.edges.Back(); prev != nil && !fraudIndicator; prev = prev.Prev() {
-
-		prev_e := *(prev.Value.(*Edge)) // asserts eg.Value to type Edge
-
-		// Case new_e.tx_start < prev_e.tx_end -> it can't happen that a transaction starts before the previous is finished
-		if new_e.Tx_start.Before(prev_e.Tx_end) {
-			fmt.Println("tx starts before the previous ends!")
-			// TODO: It is a TRUE fraud, but not of this kind! - other kind
-			// do not consider it here so far
-			// print fraud pattern with this edge
-			PrintEdge("Fraud pattern with: ", prev_e)
-			continue
-		}
-
-		if prev_e.ATM_id == new_e.ATM_id {
-			continue // no fraud with current edge, go to check next edge
-		}
-
-		// != ATM_id
-
-		// time feasibility check: (new_e.tx_start - prev_e.tx_end) < Tmin(prev_e.loc, new_e.loc)
-		// obtain Tmin(eg.loc, new_e.loc)
-		t_min, err := obtainTmin(context, session, prev_e.ATM_id, new_e.ATM_id)
-		CheckError(err)
-
-		t_diff := int((new_e.Tx_start.Sub(prev_e.Tx_end)).Seconds())
-
-		//fmt.Println("t_min", t_min)
-		//fmt.Println("t_diff", t_diff)
-
-		if t_diff < t_min {
-			// print fraud pattern with this edge
-			PrintEdge("Fraud pattern with: ", prev_e)
-			// subgraph
-			subgraph := NewGraph()
-			subgraph.AddEdge(prev_e)
-			subgraph.AddEdge(new_e)
-			//fmt.Println("TRUE FP1: ")
-			subgraph.Print()
-			//fmt.Println("...........................................................")
-			// Construct the corresponding Alert properly
-			fraud1Alert.Label = "1"
-			fraud1Alert.Info = "fraud pattern"
-			fraud1Alert.Subgraph = *subgraph
-			fraudIndicator = true
-		} else {
-			//fmt.Println("FALSE FP1")
-		}
-	}
-
-	return fraudIndicator, fraud1Alert
-}
-*/
 
 // - new_e: the new edge that we check the FP against
 // Returns:
@@ -399,8 +339,8 @@ func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext
 				t_min, err := obtainTmin(ctx, session, last_e.ATM_id, new_e.ATM_id)
 				CheckError(err)
 				t_diff := int((new_e.Tx_start.Sub(last_e.Tx_end)).Seconds())
-				//fmt.Println("t_min", t_min)
-				//fmt.Println("t_diff", t_diff)
+				fmt.Println("t_min", t_min)
+				fmt.Println("t_diff", t_diff)
 				if t_diff < t_min {
 					// create alert
 					PrintEdge("Fraud pattern with: ", last_e)

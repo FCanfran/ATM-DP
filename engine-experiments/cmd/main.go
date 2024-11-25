@@ -15,8 +15,8 @@ import (
 
 func main() {
 
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: go run main.go <transactionFileName>")
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: go run main.go <transactionFileName> <scalingFactor>")
 		return
 	}
 
@@ -25,6 +25,8 @@ func main() {
 
 	// obtain stream fileName from args
 	istream := os.Args[1]
+	// scaling factor (T_new / T_original) - of the time interval of the input transaction stream: [0,1]
+	cmn.SetScaleFactor(os.Args[2])
 
 	// creation of needed channels
 	// event channel

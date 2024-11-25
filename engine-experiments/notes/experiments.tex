@@ -90,7 +90,7 @@ The consequences for the experiments and metrics:
   \item $\rightarrow$ (*) Solution A: \textbf{introduce the scaling factor as a input parameter} and consider it also for the fraud checking so to properly \textbf{scale the $\texttt{t\_min}$ variable} ($\texttt{t\_min}=8h \rightarrow \texttt{t\_min'}=\frac{8}{5}h=1.6h$) and therefore: 
   \begin{itemize}
     \item Before scaling: $\texttt{t\_diff}=24h > \texttt{t\_min}=8h$.
-    \item After scaling (scale factor $=\frac{1}{5}$): $\texttt{t\_diff}=\frac{24}{5}=4.8h > \texttt{t\_min}=\frac{8}{5}=1.6h$.
+    \item After scaling (scale factor $=\frac{1}{5}$): $\texttt{t\_diff}=24*\frac{1}{5}=4.8h > \texttt{t\_min}=8*\frac{1}{5}=1.6h$.
   \end{itemize}
   \item $\rightarrow$ Solution B: conserve the original timestamps, and consider the mapped-reduced timestamps for simulating the arrival times of the transactions into the system while taking the original timestamps for the checking of the frauds.
 \end{itemize}
