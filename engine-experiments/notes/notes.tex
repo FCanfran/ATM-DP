@@ -152,8 +152,7 @@ fill=green!30]
 
 Description of the channels:
 \begin{itemize}
-    \item \texttt{edge}: only edge dedicated channel \textcolor{red}{$\rightarrow$ NO}
-    \item \texttt{event}: events channel
+    \item \texttt{event}: events channel. \textcolor{red}{TODO: Describe the type of events!}
     \item \texttt{alert}: direct channel from the filters (in particular the filter worker) to the sink (it does not go through the Generator, although it has it to be able to give it to the filters so that they are able to write on it)
     \item \texttt{out\_event}: direct dedicated event channel between Generator and Sink.
     \item \texttt{internal\_edge}: edge channel between filter and its worker. Used to communicate to the worker the edges belonging to the filter that the worker needs to process. \textcolor{red}{$\rightarrow$ Now events and not only edges, and also distinguishing between start and end edges on the type of event.}
@@ -165,7 +164,14 @@ Description of the channels:
   \centering
   \includegraphics[scale = 0.7]{images/pipeline-schema-filter-detail.png}
   \caption{Pipeline Schema with Filter detail}
-  \label{img:pipeline-schema}
+  \label{img:pipeline-schema-0}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.7]{images/pipeline-schema-filter-detail-1.png}
+  \caption{Pipeline Schema with Filter detail 1}
+  \label{img:pipeline-schema-1}
 \end{figure}
 
 
