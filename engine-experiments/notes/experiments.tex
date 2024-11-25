@@ -60,16 +60,16 @@ fill=green!30]
 \begin{document}
 \section{Experiments}
 
-Note that, since the way we did the transaction generator (coming from wisabi database client's behavior), the average number of transactions per day per card is $\sim1$, and therefore to be able to generate a transaction set with anomalous situations more close to reality, a reasonable size for the generated transaction stream would be having $t$ around some weeks or month(s).
+Note that, since the way we did the transaction generator (coming from wisabi database client's behavior), the average number of transactions per day per card is $\sim1$, and therefore to be able to generate a transaction set with anomalous situations more close to reality, a reasonable time interval size for the generated transaction stream would be having $T$ around some weeks or month(s).
 
 \subsection{1st option: Real time-event stream simulation}
 
-Since we do not have the material time to run each experiment for a time $t$ of some weeks or a month the idea is to do time scaling of the time event stream.
+Since we do not have the material time to run each experiment for a interval time $T$ of some weeks or a month the idea is to do time scaling of the time event stream.
 
-Take the stream of a certain time interval size $t$ and map it into a smaller time interval
-$t'$ where $t' << t$ so that:
+Take the stream of a certain time interval size $T$ and map it into a smaller time interval
+$T'$ where $T' << T$ so that:
 \begin{itemize}
-  \item \textbf{Shorter experimental time}: Reduced time to test the system behavior. Instead of $t$, only $t'$ time to test it. 
+  \item \textbf{Shorter experimental time}: Reduced time to test the system behavior. Instead of $T$, only $T'$ time to test it. 
   \item \textbf{Stress testing}: We do not test the system under a real-case scenario considering its number of cards $c$, instead we are testing it under a higher load to what it would correspond, but having $c$ cards, and therefore $c$ filter's subgraph.
   \item \textbf{Graph database size VS amount of filters' subgraphs}: Although we simulate a higher load, the number of filters' subgraph corresponds to $c$ the number of cards. The benefit is that we do not need to have such a big graph database.
 \end{itemize}
@@ -83,8 +83,21 @@ The consequences for the experiments and metrics:
 
 \textcolor{red}{Problems derived to pay attention to}:
 \begin{itemize}
-  \item Shrinking the timestamps to a smaller time interval, produces the emergence of not real fraud patterns that before did not exist due to their real and "correct" larger time distance. $\rightarrow$ a solution for this is to conserve the original timestamps, and consider the mapped-shrunk-reduced timestamps for simulating the arrival times of the transactions into the system while taking the original timestamps for the checking of the frauds.
+  \item Shrinking the timestamps to a smaller time interval, produces the emergence of not real fraud patterns that before did not exist due to their real and "correct" larger time distance. Example:
+  \begin{itemize}
+  \item Consider the original size of the time interval of the input stream $T=120h$ (5 days) and $T'=24h$.
+  \item Consider two consecutive regular transactions of a certain client performed in two different ATMs \texttt{ATM-x} and \texttt{ATM-y} with \texttt{t\_min}$=8$h (minimum time difference to traverse the distance from \texttt{ATM-x} to \texttt{ATM-y}) and \texttt{t\_diff}$=24$h (time difference between the first and the second transaction). 
+  \item \textcolor{red}{$\rightarrow$ Note that with the scaling the time difference \texttt{t\_diff} would be of 5 times less, that is, $\texttt{t\_diff}=4.8h$. Therefore this will make $\texttt{t\_diff'}=4.8h < \texttt{t\_min}=8h$}.
+  \end{itemize}
+  \item $\rightarrow$ (*) Solution A: \textbf{introduce the scaling factor as a input parameter} and consider it also for the fraud checking so to properly \textbf{scale the $\texttt{t\_min}$ variable} ($\texttt{t\_min}=8h \rightarrow \texttt{t\_min'}=\frac{8}{5}h=1.6h$) and therefor: 
+  \begin{itemize}
+    \item Before scaling: $\texttt{t\_diff}=24h > \texttt{t\_min}=8h$.
+    \item After scaling (scale factor $=\frac{1}{5}$): $\texttt{t\_diff}=\frac{24}{5}=4.8h > \texttt{t\_min}=\frac{8}{5}=1.6h$.
+  \end{itemize}
+  \item $\rightarrow$ Solution B: conserve the original timestamps, and consider the mapped-reduced timestamps for simulating the arrival times of the transactions into the system while taking the original timestamps for the checking of the frauds.
 \end{itemize}
+
+
 
 \subsection{2nd option: real timestamp omission}
 
