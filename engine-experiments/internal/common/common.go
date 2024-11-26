@@ -31,10 +31,23 @@ var APPROACH = "1-core"
 // scaling factor
 var scaleFactor float64 = 1.0
 
+// root filename
+var RootName string
+
 func SetScaleFactor(value string) {
 	var err error
-	scaleFactor, err = strconv.ParseFloat(value, 64)
+	value_conv, err := strconv.ParseFloat(value, 64)
 	CheckError(err)
+	// check the value is in [0,1]
+	if value_conv < 0 || value_conv > 1 {
+		log.Fatalf("Error --- scaleFactor needs to be in [0,1]\n")
+	} else {
+		scaleFactor = value_conv
+	}
+}
+
+func SetRootFileName(name string) {
+	rootName = name
 }
 
 // ***************************************************************************** //

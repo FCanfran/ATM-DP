@@ -93,7 +93,9 @@ Loop:
 				fmt.Println("Sink - EOF event")
 				// finish the Sink
 				break Loop
-
+				/*case cmn.LOG:
+				// TODO-FUTURE
+				*/
 			}
 		}
 	}
@@ -273,6 +275,9 @@ Loop:
 			// pass the finish event to next process
 			out_event <- event // TOCHECK: This before worker is done or here?
 			break Loop
+			/*case cmn.LOG:
+			// TODO-FUTURE
+			*/
 			// TODO-FUTURE: case: Reconnection case - use this channel?
 		// TODO: Separate in 2 different cases: EdgeStart and EdgeEnd cases ?
 		// --> a EdgeEnd should not be able to create an entry on the map
@@ -357,42 +362,24 @@ func Source(istream string, out_event chan<- cmn.Event) {
 // Source: reads edges given by Stream process
 func Source(in_stream <-chan cmn.Event, out_event chan<- cmn.Event) {
 
-Loop:
+	txLogFile, err := os.Create(cmn.RootName + "-txLog.txt")
+	cmn.CheckError(err)
+	defer txLogFile.Close()
+
 	for {
 		event, ok := <-in_stream
 		if !ok {
 			// TODO: Manage the error properly
 			fmt.Println("Source - !ok in in_stream channel")
 		}
-
-		switch event.Type {
-		case cmn.EOF:
+		out_event <- event
+		if event.Type == cmn.EOF {
 			fmt.Println("Source - EOF event")
-			out_event <- event
-			// end the generator
-			break Loop
-			/*case cmn.LOG:
-			// TODO
-			fmt.Println("G: LOG - event")
-			// TODO-FUTURE: case: Reconnection case - use this channel?
-			*/
-		case cmn.EdgeEnd:
-			// TODO: decide how to manage better?
-			log.Fatalf("Error: edge_end arrived before edge_start")
-		case cmn.EdgeStart:
-			cmn.PrintEdge("G - edge_start arrived: ", event.E)
-			// spawn a filter
-			new_event_ch := make(chan cmn.Event, cmn.ChannelSize)
-			go filter(event, in_event, new_event_ch, out_alert)
-			// set the new input channels of the generator
-			in_event = new_event_ch
+			break
+		} else if event.Type == cmn.EdgeStart || event.Type == cmn.EdgeEnd {
+			// Print the incoming tx in the tx record
+			cmn.PrintEdgeCompleteToFile("", event.E, txLogFile)
 		}
-		out_event <- r
-
-		// TODO-REMOVE: -- Only for testing/debugging purposes --
-		//  Sleep time for debugging to slow down the flux of transactions
-		// Leave without this sleep / change it
-		//time.Sleep(200 * time.Millisecond)
 	}
 
 	fmt.Println("Source - Close ch - out_event")
@@ -401,7 +388,7 @@ Loop:
 }
 
 // TODO: Read by chunks so that the reading is not the bottleneck
-func Stream(istream string) {
+func Stream(istream string, out_stream chan<- cmn.Event) {
 
 	// input stream file
 	file, err := os.Open(istream)
@@ -418,6 +405,7 @@ func Stream(istream string) {
 	if err != io.EOF {
 		var tx1_ts, tx2_ts time.Time
 		r := cmn.ReadEdge(tx1)
+		out_stream <- r
 		// if tx_end use as timestamp ------> tx_end
 		// else: use as timestamp     ------> tx_start
 		if r.Type == cmn.EdgeEnd {
@@ -433,9 +421,9 @@ func Stream(istream string) {
 		for {
 			tx2, err := reader.Read()
 			if err == io.EOF {
-				//r.Type = cmn.EOF
-				//r.E = cmn.Edge{}
-				// out_event <- r
+				r.Type = cmn.EOF
+				r.E = cmn.Edge{}
+				out_stream <- r
 				break
 			}
 			cmn.CheckError(err)
@@ -457,14 +445,14 @@ func Stream(istream string) {
 			ts_diff := tx2_ts.Sub(tx1_ts)
 			fmt.Println(ts_diff)
 			time.Sleep(ts_diff)
+			out_stream <- r
 			tx1_ts = tx2_ts
 
 		}
 	}
 
-	fmt.Println("Source - End of stream...")
-
-	//fmt.Println("Source - Close ch - out_event")
-	//close(out_event)
-	//fmt.Println("Source - Finished")
+	fmt.Println("Stream - End of stream...")
+	fmt.Println("Stream - Close ch - out_stream")
+	close(out_stream)
+	fmt.Println("Stream - Finished")
 }
