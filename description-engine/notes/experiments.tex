@@ -113,6 +113,52 @@ Some (other) references:
   \item \href{https://www.confluent.io/es-es/learn/apache-flink/}{Apache Flink}: distributed processing engine for stateful computation of data streams.
 \end{itemize}
 
+\section{Experiments description}
+
+Initially, we take as reference some small Spanish banks, such as "Caja Rural de Aragón" with:
+\begin{itemize}
+  \item $|ATM| \sim 200$
+  \item $|Card| \sim 14000$
+\end{itemize}
+
+other small banks have $|ATM| \sim 200$ and around up to $|Card| \sim 10^{5}$.
+\textit{Note that, for simplicity, we are assuming the number of bank branches as the number of ATMs and the number of clients as the number of cards.}
+\textcolor{red}{TODO: PONER enlace a web de donde obtengo estos datos!}
+
+
+Regarding the size of the transaction stream, looking at some related works such as:
+\textcolor{red}{TODO: PONER ESTAS REFERENCIAS}
+work with a transaction stream of a size around $\sim 10^{5},10^{6}$.
+
+For the transaction stream size we need to consider that our transaction generator takes as base the behavior of the clients of the 
+Wisabi Bank Database, where each client typically produces at most $\sim 1$ transaction per day. (\textcolor{red}{TO CHECK to give the exact number}).
+
+In relation with the fraud ratio, some works like \textcolor{red}{TODO: PONER ESTAS REFERENCIAS} were reviewed...
+
+\subsection{Initial setup}
+
+\textit{Small} initial graph database (gdb) size:
+\begin{itemize}
+  \item $|ATM| = 50$
+  \item $|Card| = 2000$
+\end{itemize}
+
+Transaction stream:
+\begin{itemize}
+  \item $\texttt{NUM\_DAYS} = 30$
+  \item $\texttt{anomalous\_ratio} = 0.02\ (2\%)$ 
+\end{itemize}
+
+This setup gives us a transaction stream of 
+\begin{itemize}
+  \item $\texttt{total\_tx} = 39959$
+  \item $\texttt{regular\_tx} = 39508$
+  \item $\texttt{anomalous\_tx} = 451$
+\end{itemize}
+
+\subsection{Bigger instances}
+
+
 %\bibliographystyle{plain} % Choose a style (plain, abbrv, unsrt, etc.)
 %\bibliography{references} % This points to references.bib  
 

@@ -7,6 +7,8 @@ from bitarray import bitarray
 import random
 import bisect
 import math
+import os
+from tqdm import tqdm
 
 # Transaction generator with anomalous transaction generation, given by parameter ratio [0,1], which defines
 # the number of anomalous tx introduced per card (# anomalous tx of card_i = ratio * # tx of card_i)
@@ -23,7 +25,13 @@ OP_TYPES = [0, 1, 2, 3]
 # Parameters
 #############################################################################################################
 START_DATE = "2018-04-01"  # start date, from which the first transaction is generated
-NUM_DAYS = 5  # num of days for which transactions are generated (init START_DATE)
+NUM_DAYS = 30  # num of days for which transactions are generated (init START_DATE)
+
+ANOMALOUS_RATIO_1 = (
+    0.02  # ratio of anomalous tx (per card) over the total amount of generated withdrawal transactions
+    # argument must be a float in [0,1]
+)
+
 MAX_SIZE_ATM_SUBSET_RATIO = 0.2  # ratio [0,1] of the total size of the ATM global set - maximum size of the ATM subset: |ATM_subset| = ratio * |ATM|
 MAX_DISTANCE_SUBSET_THRESHOLD = (
     70  # maximum distance of the atms in the ATM subset to client residence
@@ -37,10 +45,6 @@ REGULAR_SPEED = 50  # (km/h) REGULAR_SPEED: for the creation of the regular tx
 ANOMALOUS_SPEED = 500  # (km/h)  NOMALOUS_SPEED: Assumption on the maximum ANOMALOUS speed (km/h) at which the distance between two geographical points
 # can be traveled
 ANOMALOUS_TX_DURATION = 5  # (segs)
-ANOMALOUS_RATIO_1 = (
-    0.1  # ratio of anomalous tx (per card) over the total amount of generated withdrawal transactions
-    # argument must be a float in [0,1]
-)
 #############################################################################################################
 
 
@@ -183,7 +187,7 @@ def distribute_tx(n, t_min_subset):
 
 def transaction_generator(card, atm_df, tx_id):
 
-    print(f"------------- Generation for card: {card['number_id']} -------------")
+    # print(f"------------- Generation for card: {card['number_id']} -------------")
     # create transaction dataframe
     cols = [
         "transaction_id",
@@ -218,8 +222,8 @@ def transaction_generator(card, atm_df, tx_id):
         t_min_subset = int(
             (max_distance_subset / REGULAR_SPEED) * 60 * 60
         )  # in seconds
-        print(max_distance_subset)
-        print(f"tx-generation ----- t_min_subset = {t_min_subset}")
+        # print(max_distance_subset)
+        # print(f"tx-generation ----- t_min_subset = {t_min_subset}")
 
         # Generation of transactions
         withdrawal_day = card["withdrawal_day"]
@@ -330,8 +334,8 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
     # regular_withdrawals_df = regular_tx_card[regular_tx_card["transaction_type"] == 0]
     num_regular = len(regular_tx_card)
     num_anomalous = round(num_regular * ANOMALOUS_RATIO_1)
-    print("..........................................")
-    print(f"num_regular_tx = {num_regular}, num_anomalous = {num_anomalous}")
+    # print("..........................................")
+    # print(f"num_regular_tx = {num_regular}, num_anomalous = {num_anomalous}")
 
     # randomly select in between which tx the anomalous are introduced
 
@@ -355,15 +359,13 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
     ]
     anomalous_df = pd.DataFrame(columns=cols)
     while anomalous < num_anomalous:
-        print("................... ANOMALOUS: ", anomalous, "...................")
+        # print("................... ANOMALOUS: ", anomalous, "...................")
         # random hole selection in [0, num_regular-1]
         hole_index = np.random.randint(0, num_regular)
         if holes[hole_index] == 0:
             # not occupied, mark as occupied
             holes[hole_index] = 1
             tx_prev = regular_tx_card.iloc[hole_index]
-            print("----------------------- prev -----------------------")
-            print(tx_prev)
 
             # select one ATM at random from atm_non_regular
             rand_index = np.random.choice(atm_non_regular.index)
@@ -401,18 +403,16 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
                 )
 
                 if hole_index + 1 < num_regular:
-                    print("----------------------- next -----------------------")
                     tx_next = regular_tx_card.iloc[hole_index + 1]
-                    print(tx_next)
                     # Check tx_new.end < tx_next.start
-                    print(tx_new_end)
-                    print(tx_next["transaction_start"])
+                    # print(tx_new_end)
+                    # print(tx_next["transaction_start"])
 
                     if tx_new_end < tx_next["transaction_start"]:
                         fit_time = True
-                    else:
-                        # else -> try again with another (start, end) times
-                        print("NOT FIT - Trying again with another (start, end) times")
+                    # else:
+                    # else -> try again with another (start, end) times
+                    # print("NOT FIT - Trying again with another (start, end) times")
 
                 else:
                     # no next tx
@@ -431,9 +431,6 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
                 "transaction_end": tx_new_end,
                 "transaction_amount": tx_prev["transaction_amount"] * 2,
             }
-
-            print("==================== tx_new ======================")
-            print(tx_new)
 
             tx_new_df = pd.DataFrame([tx_new])
             anomalous_df = (
@@ -502,13 +499,15 @@ def main():
     anomalous_df = pd.DataFrame(columns=cols)
     tx_id = 0
 
-    for card_index in card_df.index:
+    # added progress bar with tqdm
+    for card_index in tqdm(
+        card_df.index,
+        desc="Generating synthetic transaction stream for each of the cards",
+    ):
         # atm_non_regular: is the set of atms not selected for the generated tx of the card since distance <= max_distance
         tx_card, tx_id, atm_regular, atm_non_regular = transaction_generator(
             card_df.iloc[card_index], atm_df, tx_id
         )
-
-        print(tx_card)
 
         # Introduction of anomalous
         if len(tx_card) > 0:
@@ -525,10 +524,6 @@ def main():
                     else pd.concat([anomalous_df, card_anomalous_df], ignore_index=True)
                 )
 
-            print(
-                "########################################################################################################################################"
-            )
-
         # if transaction_df is empty (on first iteration) then directly assign the returned df, otherwise an ordinary concat
         # Drop all-NaN rows from tx_card before concatenation:
         # Ensure the df is not empty and does not contain only NaN values, to avoid warnings
@@ -538,8 +533,6 @@ def main():
                 if transaction_df.empty
                 else pd.concat([transaction_df, tx_card], ignore_index=True)
             )
-
-    print(transaction_df)
 
     # 3 csv generated:
     # - regular tx
@@ -597,18 +590,20 @@ def main():
             # Drop the sort_key column
             anomalous_df_ext = anomalous_df_ext.drop(columns=["sort_key"])
             # Write csv
+            # Create the output dir if it does not exist
+            os.makedirs("tx", exist_ok=True)
             anomalous_df_ext.to_csv(
-                "csv/tx/" + output_file_name + "-anomalous.csv", index=False
+                "tx/" + output_file_name + "-anomalous.csv", index=False
             )
         else:
             all_tx_ext = transaction_df_ext
 
         all_tx_ext = all_tx_ext.drop(columns=["sort_key"])
-        all_tx_ext.to_csv("csv/tx/" + output_file_name + "-all.csv", index=False)
+        all_tx_ext.to_csv("tx/" + output_file_name + "-all.csv", index=False)
 
         transaction_df_ext = transaction_df_ext.drop(columns=["sort_key"])
         transaction_df_ext.to_csv(
-            "csv/tx/" + output_file_name + "-regular.csv", index=False
+            "tx/" + output_file_name + "-regular.csv", index=False
         )
 
     else:
