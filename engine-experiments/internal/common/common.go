@@ -31,8 +31,8 @@ var APPROACH = "1-core"
 // scaling factor
 var scaleFactor float64 = 1.0
 
-// root filename
-var RootName string
+// output directory
+var outDirName string
 
 func SetScaleFactor(value string) {
 	var err error
@@ -46,8 +46,28 @@ func SetScaleFactor(value string) {
 	}
 }
 
-func SetRootFileName(name string) {
-	rootName = name
+func SetOutputDir(name string) {
+
+	// create output dir - if it does not exist
+	_, err := os.Stat("../output")
+	if os.IsNotExist(err) {
+		err = os.Mkdir("../output", 0755)
+		CheckError(err)
+	}
+	CheckError(err)
+
+	// create subdirectory if it does not exist
+	outDirName = "../output/" + name
+	_, err = os.Stat(outDirName)
+	if os.IsNotExist(err) {
+		err = os.Mkdir(outDirName, 0755)
+		CheckError(err)
+	}
+	CheckError(err)
+}
+
+func GetOutputDir() string {
+	return outDirName
 }
 
 // ***************************************************************************** //

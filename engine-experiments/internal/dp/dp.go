@@ -24,16 +24,15 @@ func Sink(
 	// TOCHECK: Take the initial time here or in the main process before the running of the goroutines...
 	// start := time.Now()
 	var alertCount int
+	outDir := cmn.GetOutputDir()
 
 	fmt.Println("Sink - creation")
-	// TOCHECK: Create results output files: one for each kind of fraud pattern (?)
-	// TODO: For the moment only 1 kind of pattern
-	file_fp_1, err := os.Create("./out-pattern1.txt")
+	file_fp_1, err := os.Create(outDir + "/alerts.txt")
 	cmn.CheckError(err)
 	defer file_fp_1.Close()
 
 	// Logging file
-	file_log, err := os.Create("./out-log.txt")
+	file_log, err := os.Create(outDir + "/out-log.txt")
 	cmn.CheckError(err)
 	defer file_log.Close()
 
@@ -42,7 +41,7 @@ func Sink(
 	// - metrics.csv
 
 	// trace.csv
-	file_trace, err := os.Create("./trace.csv")
+	file_trace, err := os.Create(outDir + "/trace.csv")
 	cmn.CheckError(err)
 	defer file_trace.Close()
 	// csv writer
@@ -54,7 +53,7 @@ func Sink(
 	cmn.CheckError(err)
 
 	// metrics.csv
-	file_metrics, err := os.Create("./metrics.csv")
+	file_metrics, err := os.Create(outDir + "/metrics.csv")
 	cmn.CheckError(err)
 	defer file_metrics.Close()
 	writer_metrics := csv.NewWriter(file_metrics)
@@ -362,7 +361,7 @@ func Source(istream string, out_event chan<- cmn.Event) {
 // Source: reads edges given by Stream process
 func Source(in_stream <-chan cmn.Event, out_event chan<- cmn.Event) {
 
-	txLogFile, err := os.Create(cmn.RootName + "-txLog.txt")
+	txLogFile, err := os.Create(cmn.GetOutputDir() + "/txLog.txt")
 	cmn.CheckError(err)
 	defer txLogFile.Close()
 
@@ -443,7 +442,6 @@ func Stream(istream string, out_stream chan<- cmn.Event) {
 			// NOTE: If we want more precision we will need to set the timestamps
 			// with more than seconds precision!
 			ts_diff := tx2_ts.Sub(tx1_ts)
-			fmt.Println(ts_diff)
 			time.Sleep(ts_diff)
 			out_stream <- r
 			tx1_ts = tx2_ts
