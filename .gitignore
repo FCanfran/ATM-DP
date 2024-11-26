@@ -4,6 +4,5 @@ gdb/populatemodule/cmd/csvimport/main
 gdb/populatemodule/cmd/cypherimport/main
 gdb/populatemodule/cmd/csvimport/.env
 gdb/populatemodule/cmd/cypherimport/.env
-pipeline/cmd/main
-pipeline/cmd/.env
-pipeline/personal/personal-notes.md
+old-versions
+engine*/cmd/.env
