@@ -365,7 +365,6 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	t_min = t_min * scaleFactor
 	fmt.Println("t_min after", t_min)
 
-	//return int(t_min), nil
 	return t_min, nil
 }
 
@@ -375,15 +374,6 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 // - Alert: the Alert itself, only in the case it is true. Empty if false.
 func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext, new_e Edge) (bool, Alert) {
 
-	// TODO/TOCHECK: Have a session continuosly open for each filter instead of
-	// opening/closing it at each time it needs to do the checkFraud() operation!!
-	// ---> MIRAR LO QUE COMENTÓ DANI!
-	// New root context for the connections to the gdb that are going to be done here
-	//context := context.Background()
-	// 0. Open a session to connect to the gdb
-	//session := connection.CreateSession(context)
-	//defer connection.CloseSession(context, session)
-
 	var fraudAlert Alert // Default 0-value initialization
 	fraudIndicator := false
 
@@ -392,6 +382,8 @@ func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext
 
 	if last != nil {
 		last_e := *(last.Value.(*Edge)) // asserts eg.Value to type Edge
+		PrintEdge("", new_e)
+		PrintEdge("", last_e)
 		// Case new_e.tx_start < last_e.tx_end
 		// -> it can not happen that a transaction starts before the previous is finished
 		if new_e.Tx_start.Before(last_e.Tx_end) {

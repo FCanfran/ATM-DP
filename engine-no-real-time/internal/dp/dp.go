@@ -76,7 +76,6 @@ Loop:
 					timeFirst = t
 				}
 				timeLast = t
-				fmt.Println("Sink - alert!: ", alert)
 				cmn.PrintAlertVerbose(alert, t, alertCount)
 				cmn.PrintAlertOnFile(alert, t, alertCount, file_fp_1)
 				cmn.PrintAlertOnResultsTrace(t, alertCount, writer_trace)
@@ -132,7 +131,7 @@ Loop:
 			// TODO: decide how to manage better?
 			log.Fatalf("Error: edge_end arrived before edge_start")
 		case cmn.EdgeStart:
-			cmn.PrintEdge("G - edge_start arrived: ", event.E)
+			//cmn.PrintEdge("G - edge_start arrived: ", event.E)
 			// spawn a filter
 			new_event_ch := make(chan cmn.Event, cmn.ChannelSize)
 			go filter(event, in_event, new_event_ch, out_alert)
@@ -196,7 +195,6 @@ func filter(
 		var subgraph *cmn.Graph // variable to work with the subgraphs of the different cards
 
 		fmt.Println(msg_id + " - creation")
-		cmn.PrintEdge(msg_id+" - initial edge:", edge)
 
 		subgraph, ok := card_map[edge.Number_id]
 		if !ok {
@@ -225,32 +223,32 @@ func filter(
 				break Worker_Loop
 			case cmn.EdgeStart:
 				// start edge
-				cmn.PrintEdge(msg_id+"- edge_start arrived: ", event_worker.E)
+				//cmn.PrintEdge(msg_id+"- edge_start arrived: ", event_worker.E)
 				subgraph, ok = card_map[event_worker.E.Number_id]
 				if !ok {
 					// TODO: Manage the error properly
 					fmt.Println("FW - not existing entry in map for: ", event_worker.E.Number_id)
 				}
 				// 1. Check fraud
-				fmt.Println("-------------- CHECKFRAUD()-----------------")
+				fmt.Println(event_worker.E.Number_id, "-------------- CHECKFRAUD()-----------------")
 				isFraud, alert := subgraph.CheckFraud(context, session, event_worker.E)
-				fmt.Println("--------------------------------------------")
+				fmt.Println("----------------------------------------------------")
 				if isFraud {
 					out_alert <- alert
 				}
 				//fmt.Println(msg_id + "................... SUBGRAPH ........................")
 				// 2. Add to the subgraph
 				subgraph.AddEdge(event_worker.E)
-				subgraph.Print()
+				//subgraph.Print()
 			case cmn.EdgeEnd:
-				cmn.PrintEdge(msg_id+"- edge_end arrived: ", event_worker.E)
+				//cmn.PrintEdge(msg_id+"- edge_end arrived: ", event_worker.E)
 				subgraph, ok = card_map[event_worker.E.Number_id]
 				if !ok {
 					// TODO: Manage the error properly
 					fmt.Println("FW - not existing entry in map for: ", event_worker.E.Number_id)
 				}
 				subgraph.CompleteEdge(event_worker.E)
-				subgraph.Print()
+				//subgraph.Print()
 			}
 		}
 		fmt.Println(msg_id + " - Filter worker finished")
@@ -281,19 +279,18 @@ Loop:
 		// --> a EdgeEnd should not be able to create an entry on the map
 		// for the moment: ASSUMPTION - tx_end can not arrive before tx_start
 		case cmn.EdgeStart, cmn.EdgeEnd:
-			//fmt.Println(">>>>>>>>>>>>> num-cards: ", len(card_map))
 			// check if edge belongs to filter
 			_, ok = card_map[event.E.Number_id]
 			if ok {
-				cmn.PrintEdge(msg_id+" - belonging edge: ", event.E)
+				//cmn.PrintEdge(msg_id+" - belonging edge: ", event.E)
 				internal_edge <- event
 			} else if len(card_map) < cmn.MaxFilterSize {
 				// filter is not full yet, assign this filter to this card
-				cmn.PrintEdge(msg_id+" - new belonging edge: ", event.E)
+				//cmn.PrintEdge(msg_id+" - new belonging edge: ", event.E)
 				card_map[event.E.Number_id] = cmn.NewGraph()
 				internal_edge <- event
 			} else {
-				cmn.PrintEdge(msg_id+" - NOT belonging edge: ", event.E)
+				//cmn.PrintEdge(msg_id+" - NOT belonging edge: ", event.E)
 				out_event <- event
 			}
 		}
