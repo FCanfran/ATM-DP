@@ -24,15 +24,14 @@ func Sink(
 	// TOCHECK: Take the initial time here or in the main process before the running of the goroutines...
 	// start := time.Now()
 	var alertCount int
-	outDir := cmn.GetOutputDir()
 
 	fmt.Println("Sink - creation")
-	file_fp_1, err := os.Create(outDir + "/alerts.txt")
+	file_fp_1, err := os.Create(cmn.OutDirName + "/alerts.txt")
 	cmn.CheckError(err)
 	defer file_fp_1.Close()
 
 	// Logging file
-	file_log, err := os.Create(outDir + "/out-log.txt")
+	file_log, err := os.Create(cmn.OutDirName + "/out-log.txt")
 	cmn.CheckError(err)
 	defer file_log.Close()
 
@@ -41,7 +40,7 @@ func Sink(
 	// - metrics.csv
 
 	// trace.csv
-	file_trace, err := os.Create(outDir + "/trace.csv")
+	file_trace, err := os.Create(cmn.OutDirName + "/trace.csv")
 	cmn.CheckError(err)
 	defer file_trace.Close()
 	// csv writer
@@ -53,7 +52,7 @@ func Sink(
 	cmn.CheckError(err)
 
 	// metrics.csv
-	file_metrics, err := os.Create(outDir + "/metrics.csv")
+	file_metrics, err := os.Create(cmn.OutDirName + "/metrics.csv")
 	cmn.CheckError(err)
 	defer file_metrics.Close()
 	writer_metrics := csv.NewWriter(file_metrics)
@@ -361,7 +360,7 @@ func Source(istream string, out_event chan<- cmn.Event) {
 // Source: reads edges given by Stream process
 func Source(in_stream <-chan cmn.Event, out_event chan<- cmn.Event) {
 
-	txLogFile, err := os.Create(cmn.GetOutputDir() + "/txLog.txt")
+	txLogFile, err := os.Create(cmn.OutDirName + "/txLog.txt")
 	cmn.CheckError(err)
 	defer txLogFile.Close()
 

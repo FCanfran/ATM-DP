@@ -7,30 +7,20 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	cmn "pipeline/internal/common"
 	"pipeline/internal/connection"
 	"pipeline/internal/dp"
-	"strings"
 	"time"
 )
 
 func main() {
 
-	if len(os.Args) < 3 {
-		fmt.Println("Usage: go run main.go <transactionFileName> <scalingFactor>")
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: go run main.go <executionDescriptionFile>")
 		return
 	}
 
-	// obtain stream fileName from args
-	streamFile := os.Args[1]
-	// scaling factor (T_new / T_original)
-	// - of the time interval of the input transaction stream: [0,1]
-	cmn.SetScaleFactor(os.Args[2])
-	// obtain the name after input filename
-	baseName := filepath.Base(streamFile)
-	outdirName := strings.TrimSuffix(baseName, ".csv")
-	cmn.SetOutputDir(outdirName)
+	cmn.ReadExecDescriptionFile(os.Args[1])
 
 	// start connection to static gdb
 	ctx := connection.SafeConnect()
@@ -50,7 +40,7 @@ func main() {
 
 	start := time.Now()
 	// launch Stream goroutines - to provide the input in real-time
-	go dp.Stream(streamFile, stream_ch)
+	go dp.Stream(cmn.StreamFileName, stream_ch)
 	// launch Source, Generator and Sink goroutines
 	go dp.Source(stream_ch, event_ch)
 	go dp.Generator(event_ch, alert_ch, out_event_ch)

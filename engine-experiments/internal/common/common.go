@@ -1,14 +1,17 @@
 package common
 
 import (
+	"bufio"
 	"container/list"
 	"context"
 	"encoding/csv"
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"pipeline/internal/connection"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
@@ -17,36 +20,25 @@ import (
 
 const ChannelSize = 5000
 
-// TODO: Parameterize!
+// TODO: Parameterized with input execution description file
 // ***************************************************************************** //
 // max number of cards per filter
-var MaxFilterSize = 4
+var MaxFilterSize int = 4
 
-// TODO: Parameterize! - get from input and define a setter to be able to set
-// them accordingly
 // diefpy csv result files
-var TEST = "dp"
-var APPROACH = "1-core"
+var TEST string
+var APPROACH string
 
 // scaling factor
 var scaleFactor float64 = 1.0
 
-// output directory
-var outDirName string
+// stream input file name
+var StreamFileName string
 
-func SetScaleFactor(value string) {
-	var err error
-	value_conv, err := strconv.ParseFloat(value, 64)
-	CheckError(err)
-	// check the value is in [0,1]
-	if value_conv < 0 || value_conv > 1 {
-		log.Fatalf("Error --- scaleFactor needs to be in [0,1]\n")
-	} else {
-		scaleFactor = value_conv
-	}
-}
+// output directory name
+var OutDirName string
 
-func SetOutputDir(name string) {
+func setOutputDir(name string) {
 
 	// create output dir - if it does not exist
 	_, err := os.Stat("../output")
@@ -57,17 +49,68 @@ func SetOutputDir(name string) {
 	CheckError(err)
 
 	// create subdirectory if it does not exist
-	outDirName = "../output/" + name
-	_, err = os.Stat(outDirName)
+	OutDirName = "../output/" + name
+	_, err = os.Stat(OutDirName)
 	if os.IsNotExist(err) {
-		err = os.Mkdir(outDirName, 0755)
+		err = os.Mkdir(OutDirName, 0755)
 		CheckError(err)
 	}
 	CheckError(err)
 }
 
-func GetOutputDir() string {
-	return outDirName
+func ReadExecDescriptionFile(filename string) {
+	// csv file content:
+	// txFile, scaleFactor, test, approach, maxFilterSize
+	file, err := os.Open(filename)
+	CheckError(err)
+	defer file.Close()
+	reader := csv.NewReader(bufio.NewReader(file))
+	_, err = reader.Read()
+	CheckError(err)
+
+	params, err := reader.Read()
+	CheckError(err)
+
+	if len(params) != 5 {
+		log.Fatalf("Unexpected number of fields in the execution description CSV file\n")
+	}
+
+	// txFile
+	StreamFileName = params[0]
+
+	// scaleFactor
+	scaleFactorPre, err := strconv.ParseFloat(params[1], 64)
+	CheckError(err)
+	if scaleFactorPre < 0 || scaleFactorPre > 1 {
+		log.Fatalf("Error --- scaleFactor needs to be in [0,1]\n")
+	} else {
+		scaleFactor = scaleFactorPre
+	}
+
+	// test
+	TEST = params[2]
+	// approach
+	APPROACH = params[3]
+
+	// maxFilterSize
+	MaxFilterSize, err = strconv.Atoi(params[4])
+	CheckError(err)
+
+	// create output dir to put the result files
+	// obtain the name after input filename
+	baseName := filepath.Base(StreamFileName)
+	outdirName := strings.TrimSuffix(baseName, ".csv")
+	setOutputDir(outdirName)
+
+	fmt.Println("##############    EXECUTION PARAMETERS    #############")
+	fmt.Println("#######################################################")
+	fmt.Println(StreamFileName)
+	fmt.Println(scaleFactor)
+	fmt.Println(TEST)
+	fmt.Println(APPROACH)
+	fmt.Println(MaxFilterSize)
+	fmt.Println("#######################################################")
+
 }
 
 // ***************************************************************************** //
