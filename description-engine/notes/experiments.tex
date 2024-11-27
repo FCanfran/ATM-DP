@@ -156,6 +156,25 @@ This setup gives us a transaction stream of
   \item $\texttt{anomalous\_tx} = 451$ -- note that this is actually a $1\%$.
 \end{itemize}
 
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+  \hline
+  Execution & Scaled   & Num. cards/filter& Num. cores & Num. alerts & Time(s) \\ \hline
+  NRT & No & Baseline (all) & 1 & 462 & 44.88 \\ \hline
+  RT  & 1h & Baseline (all) & 1 & 447 & 3601.65\\ \hline
+  RT  & 6h & Baseline (all) & 1 & x & x \\ \hline
+\end{tabular}
+\caption{Different experimental setups results}
+\label{table:small-results}
+\end{table}
+
+Some nomenclature:
+\begin{itemize}
+  \item NRT: Not Real Time execution
+  \item RT: Real Time execution
+\end{itemize}
+
 \subsection{Bigger instances}
 
 

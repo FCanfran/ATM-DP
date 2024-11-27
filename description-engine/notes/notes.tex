@@ -215,9 +215,6 @@ Some links:
 \end{itemize}
 
 
-
-
-
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.7]{images/filter-worker.png}
@@ -226,6 +223,55 @@ Some links:
 \end{figure}
 
 
+\section{Multiple cards per filter support}
+
+Use a hash table to index card ids to card subgraphs
+\begin{itemize}
+  \item key: card id
+  \item value: pointer to Graph
+\end{itemize}
+
+Note that golang maps are inherently dynamic in size. -> control the desired maximum size by ourselves. 
+
+Management:
+\begin{itemize}
+  \item Filter
+  \begin{itemize}
+    \item Reads to check the existance of an entry on the map
+    \item Creates the entries on the map (in the corresponding cases)
+  \end{itemize}
+  \item Worker
+  \begin{itemize}
+    \item Modifies the entries on the map once they are created
+    (Filter does not modify values after the creation of the entry)
+  \end{itemize}
+\end{itemize}
+
+Conclusion: Safe to do it with a single map and without mutex, since
+there can not be concurrent writes on the same map entries. Filter writes
+on the creation and then it is only the worker who writes on that entry after
+the creation of the entry by the filter.
+
+\textcolor{red}{Issue: "fatal error: concurrent map read and map write"}
+
+More details -- in Golang it is not defined what happens when we have simultaneous read/write operations:
+
+\begin{itemize}
+  \item \href{https://go.dev/doc/faq#atomic_maps}{Maps Atomicity}
+  \item \href{https://go.dev/doc/go1.6}{Runtime. Use of maps}
+  \item \href{https://go.dev/blog/maps}{Golang maps. Concurrency}
+  \item \href{https://groups.google.com/g/golang-nuts/c/_XHqFejikBg?pli=1}{Golang maps concurrency - blog}
+\end{itemize}
+
+\subsection{Solution}
+
+2 hash tables (to avoid race conditions in concurrent access by filter & worker):
+\begin{itemize}
+  \item \texttt{cardList}: to control the belonging cards to the filter. Only access by filter.
+  \item \texttt{cardSubgraph}: to map each belonging card to its corresponding subgraph. Only access by worker.
+\end{itemize}
+
+Note that, all the edges that we pass to the worker are of cards that belong to the corresponding filter. This means that we do not need to do any check on the \texttt{cardSubgraph} map.
 
 \section{Fraud Patterns}
 
