@@ -16,4 +16,5 @@
 
 # Secondly we will run the program
 #go run cmd/main.go cmd/upt-all.csv > out.txt
-cmd/main cmd/upt-all.csv > out.txt
+#cmd/main cmd/upt-all.csv > out.txt
+go run cmd/main.go exps/exp-small.csv > out.txt

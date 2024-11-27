@@ -1,3 +1,0 @@
-transaction_id,number_id,ATM_id,transaction_type,transaction_start,transaction_end,transaction_amount
-30,c-NIGER-5,EXT-3,0,2018-04-04 18:36:15,,
-30,c-NIGER-5,EXT-3,0,2018-04-04 18:36:15,2018-04-04 18:36:20,55430.28

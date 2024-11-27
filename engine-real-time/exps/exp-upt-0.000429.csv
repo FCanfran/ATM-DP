@@ -1,0 +1,2 @@
+txFile,scaleFactor,test,approach,maxFilterSize
+../input/upt-all-scaled-0.000429.csv,0.000429,dp,1-core,4
