@@ -164,6 +164,7 @@ This setup gives us a transaction stream of
   NRT & No & Baseline (all) & 1 & 462 & 44.88 \\ \hline
   RT  & 1h & Baseline (all) & 1 & 447 & 3601.65\\ \hline
   RT  & 6h & Baseline (all) & 1 & 459 & 21606.11 \\ \hline
+  RT  & 6h & 500 (4 filters) & 4 & 459 & 21611.75 \\ \hline
   RT  & 12h & Baseline (all) & 1 & 461 & 43211.95 \\ \hline
 \end{tabular}
 \caption{Different experimental setups results}
@@ -186,6 +187,20 @@ Some nomenclature:
   \item \href{https://pkg.go.dev/github.com/apache/arrow/go/arrow/csv#NewReader}{csv chunk reader - with Apache Arrow package}
 \end{itemize}
 
+\subsection{Apache Arrow}
+
+\href{https://pkg.go.dev/github.com/apache/arrow/go/v12@v12.0.1/arrow/csv}{Apache arrow CSV}
+package allows reading csv in chunks of $n$ rows, called \emph{records}.
+
+The thing is that \emph{records} / apache arrow is optimized storing the data in a columnar way (by columns). So that we can not access the original $n$ rows easily, but instead the columns of these rows. And therefore, from them we will need to reconstruct the rows by taking the corresponding elements from each of the columns, given the index of the corresponding row.
+
+Good references:
+\begin{itemize}
+  \item \href{https://www.apachecon.com/acna2022/slides/01_Topol_Arrow_and_Go.pdf}{Apache Arrow and Go - Good tutorial}
+\end{itemize}
+
+
+\subsection{encoding/csv}
 
 
 
