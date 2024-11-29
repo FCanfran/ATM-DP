@@ -177,6 +177,14 @@ Some nomenclature:
   \item RT: Real Time execution
 \end{itemize}
 
+Some results:
+
+\subsubsection{6h scaling}
+
+We do not see any difference in the behavior between the baseline with 1 filter and 1 core approach (\texttt{RT-6h-1c-1f}) and the approach with 4 filters and 4 cores (\texttt{RT-6h-4c-4f}). 
+
+\textbf{WHY?} $\rightarrow$ a possible reason is that results can only be omitted whenever the corresponding anomalous transaction $a_i$ reaches the system. That happens at the same time $t_i$ for both approaches when the input stream is simulated at real time, meaning that the result corresponding to the anomalous transaction $a_i$ can not be emitted in any case before time $t_i$. Therefore, the difference in time delivery of this result between the different approaches is not expected to be high unless we make the systems to be loaded enough.
+
 \subsection{Bigger instances}
 
 
