@@ -163,6 +163,8 @@ This setup gives us a transaction stream of
   Execution & Scaled   & Num. cards/filter& Num. cores & Num. alerts & Time(s) \\ \hline
   NRT & No & Baseline (all) & 1 & 462 & 44.88 \\ \hline
   RT  & 1h & Baseline (all) & 1 & 447 & 3601.65\\ \hline
+  RT  & 1h & 500 (4 filters) & 4 & 447 & 3603.25\\ \hline
+  RT  & 1h & 200 (10 filters) & 10 & 447 & 3602.71\\ \hline
   RT  & 6h & Baseline (all) & 1 & 459 & 21606.11 \\ \hline
   RT  & 6h & 500 (4 filters) & 4 & 459 & 21611.75 \\ \hline
   RT  & 12h & Baseline (all) & 1 & 461 & 43211.95 \\ \hline
@@ -178,6 +180,22 @@ Some nomenclature:
 \end{itemize}
 
 Some results:
+
+\subsubsection{1h scaling}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.5]{images/traces-1h.png}
+  \caption{Trace 1h }
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.5]{images/traces-1h-10.png}
+  \caption{Trace 1h - first 10 alerts}
+\end{figure}
 
 \subsubsection{6h scaling}
 
