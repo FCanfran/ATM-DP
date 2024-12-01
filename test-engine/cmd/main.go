@@ -5,16 +5,20 @@ Entry point of the program
 package main
 
 import (
-	"bufio"
-	"encoding/csv"
 	"fmt"
-	"io"
 	"os"
-
 	cmn "pipeline/internal/common"
-	//"github.com/apache/arrow/go/arrow/array"
-	//"github.com/apache/arrow/go/arrow/csv"
+
+	"github.com/apache/arrow/go/arrow"
+	"github.com/apache/arrow/go/arrow/array"
+	"github.com/apache/arrow/go/arrow/csv"
 )
+
+// 	"encoding/csv"
+//"github.com/apache/arrow/go/arrow/array"
+//"github.com/apache/arrow/go/arrow/csv"
+
+var chunkSize int = 5
 
 // Opt A: arrow/csv - sending records from worker to main
 // TOCHECK: Not working - investigate more -> not all the records are arriving to the main
@@ -203,6 +207,92 @@ func main() {
 }
 */
 
+// Opt A: apache/arrow -> reading chunks of csv rows in the worker and giving them to the main
+// - Reading as string types first and afterwards converting to the adequate data types.
+// - Transposing back to rows (as the library optimizes saving the csv by columns)
+func main() {
+
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: go run main.go <executionDescriptionFile>")
+		return
+	}
+
+	// worker: puts the csv row chunks in memory
+	// - giving them to the main process.
+	// - read as strings
+	// - transpose to form back the rows...
+	// main: receives the csv rows, process them. Do the conversion types here.
+
+	// channel of chunks - slices of rows
+
+	chunk_ch := make(chan [][]string)
+
+	go func() {
+
+		file, err := os.Open(os.Args[1])
+		cmn.CheckError(err)
+		defer file.Close()
+		cmn.CheckError(err)
+
+		schema := arrow.NewSchema(
+			[]arrow.Field{
+				{Name: "transaction_id", Type: arrow.BinaryTypes.String},
+				{Name: "number_id", Type: arrow.BinaryTypes.String},
+				{Name: "ATM_id", Type: arrow.BinaryTypes.String},
+				{Name: "transaction_type", Type: arrow.BinaryTypes.String},
+				{Name: "transaction_start", Type: arrow.BinaryTypes.String},
+				{Name: "transaction_end", Type: arrow.BinaryTypes.String},
+				{Name: "transaction_amount", Type: arrow.BinaryTypes.String},
+			},
+			nil,
+		)
+
+		r := csv.NewReader(file, schema, csv.WithHeader(true), csv.WithChunk(chunkSize))
+		defer r.Release()
+
+		var rows [][]string
+		var rec array.Record
+		for r.Next() {
+
+			rec = r.Record()
+
+			// obtain the rows - transposing them back to row form
+			numRows := int(rec.NumRows()) // TOCHECK - IT CAN BE LESS THAN chunkSize rows at the end
+			fmt.Println("::::::::::::: n rows = ", numRows)
+			for i := 0; i < numRows; i++ {
+				// Extract row values
+				row := make([]string, rec.NumCols())
+				for j := 0; j < int(rec.NumCols()); j++ {
+					// For each column in the record, get the value for the current row index
+					row[j] = fmt.Sprintf("%v", rec.Column(j).(*array.String).Value(i))
+				}
+
+				// Print the row
+				fmt.Printf("Row %d: %v\n", i, row)
+				rows = append(rows, row)
+			}
+
+			chunk_ch <- rows
+			rows = nil // clear the rows holder
+		}
+
+		close(chunk_ch)
+	}()
+
+	i := 0
+
+	for chunk := range chunk_ch {
+
+		fmt.Println("+++++++++++++++++ chunk i: ", i, " +++++++++++++++++++++")
+		for _, row := range chunk {
+			event := cmn.ReadEdge(row) // converting to corresp. types and creating edge event
+			cmn.PrintEdgeComplete("", event.E)
+		}
+		i++
+	}
+}
+
+/*
 // Opt B: encoding/csv -> reading chunks of csv rows in the worker and giving them to the main
 func main() {
 
@@ -275,7 +365,7 @@ func main() {
 			event := cmn.ReadEdge(row) // converting to corresp. types and creating edge event
 			cmn.PrintEdgeComplete("", event.E)
 		}
-		fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 		i++
 	}
 }
+*/
