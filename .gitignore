@@ -6,3 +6,4 @@ gdb/populatemodule/cmd/csvimport/.env
 gdb/populatemodule/cmd/cypherimport/.env
 old-versions
 engine*/cmd/.env
+read-input-test/cmd/generator/output

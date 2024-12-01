@@ -122,6 +122,8 @@ func main() {
 		fmt.Println("Usage: go run main.go <executionDescriptionFile>")
 		return
 	}
+
+	start := time.Now()
 	// channel of chunks - slices of edge events
 	chunk_ch := make(chan []cmn.Event)
 
@@ -139,7 +141,7 @@ func main() {
 				{Name: "number_id", Type: arrow.BinaryTypes.String},
 				{Name: "ATM_id", Type: arrow.BinaryTypes.String},
 				{Name: "transaction_type", Type: arrow.PrimitiveTypes.Uint8},
-				{Name: "transaction_start", Type: &arrow.TimestampType{Unit: arrow.Second, TimeZone: "UTC"}},
+				{Name: "transaction_start", Type: arrow.FixedWidthTypes.Timestamp_s},
 				{Name: "transaction_end", Type: arrow.FixedWidthTypes.Timestamp_s},
 				{Name: "transaction_amount", Type: arrow.PrimitiveTypes.Float32},
 			},
@@ -223,22 +225,23 @@ func main() {
 		}
 
 		close(chunk_ch)
-		fmt.Println(";;;;;;;;;;;; worker ends ;;;;;;;;;;;;;;;;")
 	}()
 
 	i := 0
+	rows := 0
 
 	for chunk := range chunk_ch {
 
-		fmt.Println("+++++++++++++++++ chunk i: ", i, " +++++++++++++++++++++")
 		for _, event := range chunk {
 			cmn.PrintEdgeComplete("", event.E)
+			rows++
 		}
 		i++
-		fmt.Println("........................................................")
 	}
 
-	fmt.Println(";;;;;;;;;;;; main ends ;;;;;;;;;;;;;;;;")
+	t := time.Since(start)
+	fmt.Println("Total num of rows read: ", rows)
+	fmt.Println("TotalExecutionTime,", t, ",", t.Microseconds(), "μs,", t.Milliseconds(), "ms ,", t.Seconds(), "s")
 
 }
 
