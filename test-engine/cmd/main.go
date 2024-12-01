@@ -147,7 +147,6 @@ func main() {
 		)
 
 		reader := csv.NewReader(file, schema, csv.WithHeader(true), csv.WithChunk(chunkSize), csv.WithNullReader(true, ""))
-		reader.Retain()
 		defer reader.Release()
 
 		var edgeEvents []cmn.Event
