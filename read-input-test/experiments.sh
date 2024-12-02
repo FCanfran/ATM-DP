@@ -27,7 +27,7 @@ if [ "$num_approach" -eq 1 ]; then
     chunk_size=$((10 ** power)) # Calculate 10^power
     echo "Running for chunk size: $chunk_size"
 
-    for ((i=1; i<=100; i++)); do
+    for ((i=1; i<=20; i++)); do
       echo "Experiment #$i for chunk size: $chunk_size"
       go run cmd/1-apache-arrow/main.go "$input_file" "$chunk_size" "$output_file"
     done
@@ -49,7 +49,7 @@ elif [ "$num_approach" -eq 2 ]; then
     chunk_size=$((10 ** power)) # Calculate 10^power
     echo "Running for chunk size: $chunk_size"
 
-    for ((i=1; i<=100; i++)); do
+    for ((i=1; i<=20; i++)); do
       echo "Experiment #$i for chunk size: $chunk_size"
       go run cmd/2-apache-arrow/main.go "$input_file" "$chunk_size" "$output_file"
     done
@@ -59,7 +59,7 @@ elif [ "$num_approach" -eq 2 ]; then
 elif [ "$num_approach" -eq 3 ]; then
 
 
-  output_file="${base_name}-3-apache-arrow.csv"
+  output_file="${base_name}-3-csv-encoding.csv"
 
   if [ -f "$output_file" ]; then
     echo "Deleting existing output file: $output_file"
@@ -72,9 +72,9 @@ elif [ "$num_approach" -eq 3 ]; then
     chunk_size=$((10 ** power)) # Calculate 10^power
     echo "Running for chunk size: $chunk_size"
         
-    for ((i=1; i<=100; i++)); do
+    for ((i=1; i<=20; i++)); do
       echo "Experiment #$i for chunk size: $chunk_size"
-      go run cmd/3-apache-arrow/main.go "$input_file" "$chunk_size" "$output_file"
+      go run cmd/3-csv-encoding/main.go "$input_file" "$chunk_size" "$output_file"
     done
 
   done

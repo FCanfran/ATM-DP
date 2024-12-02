@@ -24,8 +24,8 @@ import (
 // main: receives the csv rows, process them
 func main() {
 
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: go run main.go csvFile chunkSize")
+	if len(os.Args) < 4 {
+		fmt.Println("Usage: go run main.go csvFile chunkSize outFile")
 		return
 	}
 
@@ -59,7 +59,7 @@ func main() {
 			cmn.CheckError(err)
 
 			// Print the row
-			fmt.Printf("Row %d: %v\n", i, row)
+			//fmt.Printf("Row %d: %v\n", i, row)
 			rows = append(rows, row)
 			i++
 			if i == chunkSize {
@@ -80,7 +80,7 @@ func main() {
 	rows := 0
 
 	for chunk := range chunk_ch {
-		fmt.Println("+++++++++++++++++ chunk i: ", i, " +++++++++++++++++++++")
+		//fmt.Println("+++++++++++++++++ chunk i: ", i, " +++++++++++++++++++++")
 		for _, row := range chunk {
 			event := cmn.ReadEdge(row) // converting to corresp. types and creating edge event
 			//cmn.PrintEdgeComplete("", event.E)
@@ -93,4 +93,27 @@ func main() {
 	t := time.Since(start)
 	fmt.Println("Total num of rows read: ", rows)
 	fmt.Println("TotalExecutionTime,", t, ",", t.Microseconds(), "μs,", t.Milliseconds(), "ms ,", t.Seconds(), "s")
+
+	// Write results to csv outputfile
+	file, err := os.OpenFile(os.Args[3], os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		fmt.Printf("Error opening/creating file: %v\n", err)
+		return
+	}
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
+	// Data to write
+	row := []string{
+		strconv.Itoa(chunkSize),
+		strconv.FormatInt(t.Milliseconds(), 10),
+	}
+
+	// Write the row to the CSV
+	if err := writer.Write(row); err != nil {
+		fmt.Printf("Error writing to CSV: %v\n", err)
+		return
+	}
 }
