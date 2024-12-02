@@ -29,7 +29,7 @@ if [ "$num_approach" -eq 1 ]; then
 
     for ((i=1; i<=20; i++)); do
       echo "Experiment #$i for chunk size: $chunk_size"
-      go run cmd/1-apache-arrow/main.go "$input_file" "$chunk_size" "$output_file"
+      cmd/1-apache-arrow/main "$input_file" "$chunk_size" "$output_file"
     done
 
   done
@@ -51,7 +51,7 @@ elif [ "$num_approach" -eq 2 ]; then
 
     for ((i=1; i<=20; i++)); do
       echo "Experiment #$i for chunk size: $chunk_size"
-      go run cmd/2-apache-arrow/main.go "$input_file" "$chunk_size" "$output_file"
+      cmd/2-apache-arrow/main "$input_file" "$chunk_size" "$output_file"
     done
 
   done
@@ -74,7 +74,7 @@ elif [ "$num_approach" -eq 3 ]; then
         
     for ((i=1; i<=20; i++)); do
       echo "Experiment #$i for chunk size: $chunk_size"
-      go run cmd/3-csv-encoding/main.go "$input_file" "$chunk_size" "$output_file"
+      cmd/3-csv-encoding/main "$input_file" "$chunk_size" "$output_file"
     done
 
   done
