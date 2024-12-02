@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys
-
+#
 labels = ["apache-arrow-1", "apache-arrow-2", "csv-encoding"]
 
 if len(sys.argv) < 5:
