@@ -31,5 +31,5 @@ plt.xscale("log")  # Logarithmic scale if chunk sizes are exponentially distribu
 
 outfilename = f"10-{file_rows}.png"
 plt.savefig(outfilename, format="png", dpi=300, bbox_inches="tight")
-
+###
 plt.show()
