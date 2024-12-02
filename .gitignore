@@ -7,3 +7,4 @@ gdb/populatemodule/cmd/cypherimport/.env
 old-versions
 engine*/cmd/.env
 read-input-test/cmd/generator/output
+read-input-test/streams
