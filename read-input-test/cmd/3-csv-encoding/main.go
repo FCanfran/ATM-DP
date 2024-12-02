@@ -83,7 +83,8 @@ func main() {
 		fmt.Println("+++++++++++++++++ chunk i: ", i, " +++++++++++++++++++++")
 		for _, row := range chunk {
 			event := cmn.ReadEdge(row) // converting to corresp. types and creating edge event
-			cmn.PrintEdgeComplete("", event.E)
+			//cmn.PrintEdgeComplete("", event.E)
+			_ = event
 			rows++
 		}
 		i++
