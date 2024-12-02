@@ -48,25 +48,26 @@ func main() {
 	}
 	writer.Write(header)
 
-	line1 := []string{
-		"12", "c-NIGER-2", "NIGER-5", "0", "2018-04-04 01:42:08", "2018-04-04 01:43:39", "33252.26",
+	tx_start := []string{
+		"31", "c-NIGER-7", "EXT-3", "0", "2018-04-04 03:54:48", "", "",
 	}
-	line2 := []string{
-		"31", "c-NIGER-7", "EXT-3", "0", "2018-04-04 03:54:48", "1970-01-01 01:00:00", "0.00",
+
+	tx_end := []string{
+		"12", "c-NIGER-2", "NIGER-5", "0", "2018-04-04 01:42:08", "2018-04-04 01:43:39", "33252.26",
 	}
 
 	// Replicate the lines x times
 	for i := 0; i < numRows/2; i++ {
 		// Write the first line
-		err := writer.Write(line1)
+		err := writer.Write(tx_start)
 		if err != nil {
-			fmt.Println("Error writing line1:", err)
+			fmt.Println("Error writing tx_start:", err)
 			return
 		}
 		// Write the second line
-		err = writer.Write(line2)
+		err = writer.Write(tx_end)
 		if err != nil {
-			fmt.Println("Error writing line2:", err)
+			fmt.Println("Error writing tx_end:", err)
 			return
 		}
 	}

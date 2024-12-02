@@ -205,6 +205,7 @@ We do not see any difference in the behavior between the baseline with 1 filter 
 
 \subsection{Bigger instances}
 
+\newpage
 
 \section{Input reading by chunks}
 
@@ -227,6 +228,15 @@ Good references:
 
 
 \subsection{encoding/csv}
+
+\subsection{Experiments over the different approaches}
+
+Approaches:
+\begin{itemize}
+  \item apache/arrow direct corresponding data type reading.
+  \item apache/arrow reading as string data type. Later conversion in main.
+  \item encoding/csv: row by row reading and passing chunks of rows to main.
+\end{itemize}
 
 
 

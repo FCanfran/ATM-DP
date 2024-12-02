@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	cmn "pipeline/internal/common"
@@ -20,8 +21,6 @@ import (
 // 	"encoding/csv"
 //"github.com/apache/arrow/go/arrow/array"
 //"github.com/apache/arrow/go/arrow/csv"
-
-var chunkSize int = 5
 
 /*
 // Opt A: arrow/csv - sending records from worker to main
@@ -53,9 +52,7 @@ func main() {
 		file, err := os.Open(os.Args[1])
 		cmn.CheckError(err)
 		defer file.Close()
-		cmn.CheckError(err)
-
-		// opc 1: read all as strings - later we will do the conversions
+		cmn.CheckError(err)numChunkshe conversions
 		schema := arrow.NewSchema(
 			[]arrow.Field{
 				{Name: "transaction_id", Type: arrow.BinaryTypes.String},
@@ -119,13 +116,17 @@ func main() {
 func main() {
 
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: go run main.go <executionDescriptionFile>")
+		fmt.Println("Usage: go run main.go csvFile chunkSize")
 		return
 	}
 
 	start := time.Now()
 	// channel of chunks - slices of edge events
 	chunk_ch := make(chan []cmn.Event)
+
+	var chunkSize int
+	chunkSize, err := strconv.Atoi(os.Args[2])
+	cmn.CheckError(err)
 
 	go func() {
 
@@ -242,7 +243,6 @@ func main() {
 	t := time.Since(start)
 	fmt.Println("Total num of rows read: ", rows)
 	fmt.Println("TotalExecutionTime,", t, ",", t.Microseconds(), "μs,", t.Milliseconds(), "ms ,", t.Seconds(), "s")
-
 }
 
 /*
