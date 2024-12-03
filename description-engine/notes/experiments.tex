@@ -248,19 +248,19 @@ Approaches:
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale = 0.7]{images/10-4.png}
+  \includegraphics[scale = 0.7]{images/read-input-10-4.png}
   \caption{Comparison of the variants for file of $10^4$ rows}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale = 0.7]{images/10-5.png}
+  \includegraphics[scale = 0.7]{images/read-input-10-5.png}
   \caption{Comparison of the variants for file of $10^5$ rows}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale = 0.7]{images/10-6.png}
+  \includegraphics[scale = 0.7]{images/read-input-10-6.png}
   \caption{Comparison of the variants for file of $10^6$ rows}
 \end{figure}
 
@@ -272,6 +272,26 @@ Once we decided to use the approach using the \texttt{csv/encoding} library, we 
   \item Compare the variant with worker and chunk size of $10^2$ with the one without worker and therefore not reading by chunks.
   \item Comparison for different sizes of files: $10^4$, $10^5$ and $10^6$ number of rows (transactions).
 \end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.7]{images/read-input-csv-encoding-all.png}
+  \caption{Comparison of \texttt{csv/encoding} variants up to $10^7$ rows}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.7]{images/read-input-csv-encoding.png}
+  \caption{Comparison of \texttt{csv/encoding} variants up to $10^6$ rows}
+\end{figure}
+
+\begin{itemize}
+  \item Differences insignificant
+  \item Depend on the application
+  \item Real-time simulation: worker version. To avoid possible bottleneck on the input reading. Instead the bottleneck be just the stopping to provide the input.
+\end{itemize}
+
+\textcolor{blue}{As it can be seen, the differences are insignificant, and the selection of each of the variants will depend on the application. For example, we suspect that the worker version can be beneficial in the real time simulation, so that we do not make the reading be the bottleneck of the simulation, by having a background process reading input transactions from the stream files while the main process providing the input to the pipeline can be stopped doing the real time simulation.}
 
 \cite{angles2008survey}
 
