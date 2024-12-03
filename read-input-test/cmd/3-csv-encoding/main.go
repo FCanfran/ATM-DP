@@ -105,9 +105,15 @@ func main() {
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
-	// Data to write
+	/*
+		row := []string{
+			strconv.Itoa(chunkSize),
+			strconv.FormatInt(t.Milliseconds(), 10),
+		}
+	*/
+
 	row := []string{
-		strconv.Itoa(chunkSize),
+		strconv.Itoa(rows),
 		strconv.FormatInt(t.Milliseconds(), 10),
 	}
 

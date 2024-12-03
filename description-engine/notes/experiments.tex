@@ -233,14 +233,49 @@ Good references:
 
 Approaches:
 \begin{itemize}
-  \item apache/arrow direct corresponding data type reading.
-  \item apache/arrow reading as string data type. Later conversion in main.
-  \item encoding/csv: row by row reading and passing chunks of rows to main.
+  \item \texttt{1-apache/arrow} direct reading of corresponding data type in the worker.
+  \item \texttt{2apache/arrow} reading as string data type. Later conversion in main.
+  \item \texttt{3-encoding/csv}: row by row reading and passing chunks of rows to main.
+\end{itemize}
+
+\textcolor{red}{TODO: put a schema of the main/worker to show the different approaches better}
+
+\begin{itemize}
+  \item For the different approaches we tried with different sizes of files: $10^4$, $10^5$ and $10^6$ number of rows (transactions).
+  \item For each of the sizes we compared the time it took to read the full file to each of the variants, testing for different chunk sizes in terms of the number of rows: ranging from $10^0, 10^1, 10^2,...$ up to the total number of rows of the file (maximum possible chunk size, all at once).
 \end{itemize}
 
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.7]{images/10-4.png}
+  \caption{Comparison of the variants for file of $10^4$ rows}
+\end{figure}
 
-%\bibliographystyle{plain} % Choose a style (plain, abbrv, unsrt, etc.)
-%\bibliography{references} % This points to references.bib  
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.7]{images/10-5.png}
+  \caption{Comparison of the variants for file of $10^5$ rows}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.7]{images/10-6.png}
+  \caption{Comparison of the variants for file of $10^6$ rows}
+\end{figure}
+
+Note that in all of the cases, the fastest approach is the one using the \texttt{csv/encoding} library. And, in addition, with chunk size of $10^2$ rows.
+
+Once we decided to use the approach using the \texttt{csv/encoding} library, we performed an additional experiment in order to see if it was actually worthy to do the \emph{background} reading of the input with a worker goroutine. To see this:
+
+\begin{itemize}
+  \item Compare the variant with worker and chunk size of $10^2$ with the one without worker and therefore not reading by chunks.
+  \item Comparison for different sizes of files: $10^4$, $10^5$ and $10^6$ number of rows (transactions).
+\end{itemize}
+
+\cite{angles2008survey}
+
+\bibliographystyle{plain} % Choose a style (plain, abbrv, unsrt, etc.)
+\bibliography{references} % This points to references.bib  
 
 \end{document}
