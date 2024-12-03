@@ -216,38 +216,46 @@ func filter(
 				subgraph, ok = cardSubgraph[event_worker.E.Number_id]
 				if !ok {
 					// card does not exist -> create entry for the new card in the cardSubgraph
+					// and add the new edge
 					cardSubgraph[event_worker.E.Number_id] = cmn.NewGraph()
 					subgraph, ok = cardSubgraph[event_worker.E.Number_id]
 					if !ok {
 						// TODO: Manage the error properly
 						fmt.Println("FW - not existing entry in map for: ", event_worker.E.Number_id)
 					}
+					// add to the subgraph
+					subgraph.AddEdge(event_worker.E)
+				} else {
+					// card already exists, therefore, at least an edge on the subgraph
+					// check fraud
+					fmt.Println(event_worker.E.Number_id, "-------------- CHECKFRAUD()-----------------")
+					isFraud, alert := subgraph.CheckFraud(context, session, event_worker.E)
+					fmt.Println("----------------------------------------------------")
+					if isFraud {
+						out_alert <- alert
+					}
+					// set as new head of the subgraph (only save the last edge)
+					subgraph.NewHead(event_worker.E)
 				}
-				// check fraud
-				fmt.Println(event_worker.E.Number_id, "-------------- CHECKFRAUD()-----------------")
-				isFraud, alert := subgraph.CheckFraud(context, session, event_worker.E)
-				fmt.Println("----------------------------------------------------")
-				if isFraud {
-					out_alert <- alert
-				}
-				// add to the subgraph
-				subgraph.AddEdge(event_worker.E)
 			case cmn.EdgeEnd:
 				//cmn.PrintEdge(msg_id+"- edge_end arrived: ", event_worker.E)
 				subgraph, ok = cardSubgraph[event_worker.E.Number_id]
 				if !ok {
 					// TODO: Manage the error properly
 					fmt.Println("FW - edge end has not existing entry in map for: ", event_worker.E.Number_id)
+					log.Println("Warning: AddEdge -> a tx-end was tryied to be added on a empty subgraph", event_worker.E.Number_id)
 					// NOTE: THIS SHOULD NOT BE DONE HERE - tx_start should arrive before tx_end
-					// ---> in completeEdge() a warning will be printed in the log to warn about this!
+					// Warn - anyway create the subgraph for this edge
 					cardSubgraph[event_worker.E.Number_id] = cmn.NewGraph()
 					subgraph, ok = cardSubgraph[event_worker.E.Number_id]
 					if !ok {
 						// TODO: Manage the error properly
 						fmt.Println("FW - not existing entry in map for: ", event_worker.E.Number_id)
 					}
+					subgraph.AddEdge(event_worker.E)
+				} else {
+					subgraph.CompleteEdge(event_worker.E)
 				}
-				subgraph.CompleteEdge(event_worker.E)
 				//subgraph.Print()
 			}
 		}
@@ -330,33 +338,65 @@ func Source(in_stream <-chan cmn.Event, out_event chan<- cmn.Event) {
 	fmt.Println("Source - Finished")
 }
 
-// TODO: Read by chunks so that the reading is not the bottleneck
 func Stream(istream string, out_stream chan<- cmn.Event) {
 
-	// input stream file
-	file, err := os.Open(istream)
-	cmn.CheckError(err)
-	defer file.Close()
-	cmn.CheckError(err)
+	// channel of chunks - slices of rows
+	chunk_ch := make(chan [][]string)
 
-	// csv reader
-	reader := csv.NewReader(bufio.NewReader(file))
-	_, err = reader.Read() // Read and discard the header line
-	cmn.CheckError(err)
+	// worker to do background reading
+	go func() {
 
-	var r cmn.Event
-	for {
-		tx, err := reader.Read()
-		if err == io.EOF {
-			r.Type = cmn.EOF
-			r.E = cmn.Edge{}
-			out_stream <- r
-			break
-		}
+		file, err := os.Open(istream)
 		cmn.CheckError(err)
-		r = cmn.ReadEdge(tx)
-		out_stream <- r
+		defer file.Close()
+		cmn.CheckError(err)
+
+		// csv reader
+		reader := csv.NewReader(bufio.NewReader(file))
+		_, err = reader.Read() // Read and discard the header line
+		cmn.CheckError(err)
+
+		var rows [][]string
+		i := 0
+		for {
+			row, err := reader.Read()
+			if err == io.EOF {
+				break
+			}
+			cmn.CheckError(err)
+			rows = append(rows, row)
+			i++
+			if i == cmn.ChunkSize {
+				chunk_ch <- rows
+				rows = nil // clear the rows holder
+				i = 0
+			}
+		}
+
+		// send the remaining rows if there are
+		if len(rows) > 0 {
+			chunk_ch <- rows
+		}
+		close(chunk_ch)
+	}()
+
+	var event cmn.Event
+	rows := 0
+	for chunk := range chunk_ch {
+		for _, row := range chunk {
+			event = cmn.ReadEdge(row) // converting to corresp. types and creating edge event
+			//cmn.PrintEdgeComplete("", event.E)
+			out_stream <- event
+			rows++
+		}
 	}
+
+	fmt.Println("rows: ------------> ", rows)
+
+	// send EOF event
+	event.Type = cmn.EOF
+	event.E = cmn.Edge{}
+	out_stream <- event
 
 	fmt.Println("Stream - End of stream...")
 	fmt.Println("Stream - Close ch - out_stream")
