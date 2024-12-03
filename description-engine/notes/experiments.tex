@@ -243,6 +243,7 @@ Approaches:
 \begin{itemize}
   \item For the different approaches we tried with different sizes of files: $10^4$, $10^5$ and $10^6$ number of rows (transactions).
   \item For each of the sizes we compared the time it took to read the full file to each of the variants, testing for different chunk sizes in terms of the number of rows: ranging from $10^0, 10^1, 10^2,...$ up to the total number of rows of the file (maximum possible chunk size, all at once).
+  \item Each of the experiments is done 20 times to obtain stable measurements.
 \end{itemize}
 
 
@@ -271,6 +272,7 @@ Once we decided to use the approach using the \texttt{csv/encoding} library, we 
 \begin{itemize}
   \item Compare the variant with worker and chunk size of $10^2$ with the one without worker and therefore not reading by chunks.
   \item Comparison for different sizes of files: $10^4$, $10^5$ and $10^6$ number of rows (transactions).
+  \item Each of the experiments is done 20 times to obtain stable measurements.
 \end{itemize}
 
 \begin{figure}[H]
