@@ -41,15 +41,15 @@ var OutDirName string
 func setOutputDir(name string) {
 
 	// create output dir - if it does not exist
-	_, err := os.Stat("../output")
+	_, err := os.Stat("./output")
 	if os.IsNotExist(err) {
-		err = os.Mkdir("../output", 0755)
+		err = os.Mkdir("./output", 0755)
 		CheckError(err)
 	}
 	CheckError(err)
 
 	// create subdirectory if it does not exist
-	OutDirName = "../output/" + name
+	OutDirName = "./output/" + name
 	_, err = os.Stat(OutDirName)
 	if os.IsNotExist(err) {
 		err = os.Mkdir(OutDirName, 0755)
