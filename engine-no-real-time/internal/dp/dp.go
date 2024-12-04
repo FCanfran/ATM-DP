@@ -26,9 +26,9 @@ func Sink(
 	var alertCount int
 
 	fmt.Println("Sink - creation")
-	file_fp_1, err := os.Create(cmn.OutDirName + "/alerts.txt")
+	fileAlerts, err := os.Create(cmn.OutDirName + "/alerts.txt")
 	cmn.CheckError(err)
-	defer file_fp_1.Close()
+	defer fileAlerts.Close()
 
 	// Logging file
 	file_log, err := os.Create(cmn.OutDirName + "/out-log.txt")
@@ -77,7 +77,7 @@ Loop:
 				}
 				timeLast = t
 				cmn.PrintAlertVerbose(alert, t, alertCount)
-				cmn.PrintAlertOnFile(alert, t, alertCount, file_fp_1)
+				cmn.PrintAlertOnFile(alert, fileAlerts)
 				cmn.PrintAlertOnResultsTrace(t, alertCount, writer_trace)
 			}
 		case event, ok := <-in_event:
@@ -129,7 +129,7 @@ Loop:
 			*/
 		case cmn.EdgeEnd:
 			// TODO: decide how to manage better?
-			log.Fatalf("Error: edge_end arrived before edge_start")
+			log.Fatalf("Error-Generator: edge_end arrived before edge_start")
 		case cmn.EdgeStart:
 			//cmn.PrintEdge("G - edge_start arrived: ", event.E)
 			// spawn a filter

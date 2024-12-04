@@ -295,6 +295,7 @@ Once we decided to use the approach using the \texttt{csv/encoding} library, we 
 
 \textcolor{blue}{As it can be seen, the differences are insignificant, and the selection of each of the variants will depend on the application. For example, we suspect that the worker version can be beneficial in the real time simulation, so that we do not make the reading be the bottleneck of the simulation, by having a background process reading input transactions from the stream files while the main process providing the input to the pipeline can be stopped doing the real time simulation.}
 
+\textcolor{red}{TODO: Comparativa run same experiment NRT with worker VS without worker for the input providing - a single experiment example to show that is better with worker!}
 
 \section{E1: Mean Response Time}
 

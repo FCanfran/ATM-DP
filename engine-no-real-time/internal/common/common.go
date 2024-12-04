@@ -284,9 +284,6 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	// t = e / v ---> (km)/(km/h) --> in seconds (*60*60)
 	t_min := (distance_km / maxSpeed) * 60 * 60 // in seconds
 
-	fmt.Println("t_min before", t_min)
-	fmt.Println("t_min after", t_min)
-
 	return t_min, nil
 }
 
@@ -304,7 +301,7 @@ func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext
 
 	if last != nil {
 		last_e := *(last.Value.(*Edge)) // asserts eg.Value to type Edge
-		// Case new_e.tx_start < last_e.tx_end
+		// FRAUD PATTERN 0: case new_e.tx_start < last_e.tx_end
 		// -> it can not happen that a transaction starts before the previous is finished
 		// check if previous was closed
 		if last_e.Tx_end.IsZero() || new_e.Tx_start.Before(last_e.Tx_end) {
@@ -314,14 +311,16 @@ func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext
 			// do not consider it here so far
 			// print fraud pattern with this edge
 			PrintEdge("Fraud pattern with: ", last_e)
-			fraudIndicator = true
-			subgraph := NewGraph()
-			subgraph.AddEdge(last_e)
-			subgraph.AddEdge(new_e)
-			fraudAlert.Label = "0"
-			fraudAlert.Info = "fraud pattern"
-			fraudAlert.Subgraph = *subgraph
-			fraudIndicator = true
+			/*
+				fraudIndicator = true
+				subgraph := NewGraph()
+				subgraph.AddEdge(last_e)
+				subgraph.AddEdge(new_e)
+				fraudAlert.Label = "0"
+				fraudAlert.Info = "fraud pattern"
+				fraudAlert.Subgraph = *subgraph
+				fraudIndicator = true
+			*/
 		} else {
 			if last_e.ATM_id != new_e.ATM_id {
 				// time feasibility check: (new_e.tx_start - last_e.tx_end) < Tmin(last_e.loc, new_e.loc)
@@ -528,9 +527,16 @@ func PrintAlertVerbose(alert Alert, timestamp time.Duration, alertCount int) {
 	fmt.Println("______________________________________________________________________________")
 }
 
-// So far, to print the anomalous tx subgraph on a dedicated log file for each kind of fraud
-func PrintAlertOnFile(alert Alert, timestamp time.Duration, alertCount int, file *os.File) {
+func PrintAlertOnFileVerbose(alert Alert, timestamp time.Duration, alertCount int, file *os.File) {
 	fmt.Fprintf(file, "Alert - label: %s, info: %s, timestamp: %v, numAlert: %d\n", alert.Label, alert.Info, timestamp, alertCount)
+	switch alert.Label {
+	case "0", "1":
+		alert.Subgraph.PrintToFile(file)
+	}
+}
+
+func PrintAlertOnFile(alert Alert, file *os.File) {
+	fmt.Fprintf(file, "Alert - label: %s\n", alert.Label)
 	switch alert.Label {
 	case "0", "1":
 		alert.Subgraph.PrintToFile(file)

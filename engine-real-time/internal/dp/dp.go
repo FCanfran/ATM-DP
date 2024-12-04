@@ -346,20 +346,22 @@ func Stream(istream string, out_stream chan<- cmn.Event) {
 
 	tx1, err := reader.Read()
 	if err != io.EOF {
-		var tx1_ts, tx2_ts time.Time
+		//var tx1_ts, tx2_ts time.Time
 		r := cmn.ReadEdge(tx1)
 		out_stream <- r
-		// if tx_end use as timestamp ------> tx_end
-		// else: use as timestamp     ------> tx_start
-		if r.Type == cmn.EdgeEnd {
-			tx1_ts = r.E.Tx_end
-		} else if r.Type == cmn.EdgeStart {
-			// take tx_start as timestamp
-			tx1_ts = r.E.Tx_start
-		} else {
-			fmt.Println("Incorrect Edge type - stop ")
-			log.Fatalf("Fatal error --- %s\n", "Incorrect Edge type - stop")
-		}
+		/*
+			// if tx_end use as timestamp ------> tx_end
+			// else: use as timestamp     ------> tx_start
+			if r.Type == cmn.EdgeEnd {
+				tx1_ts = r.E.Tx_end
+			} else if r.Type == cmn.EdgeStart {
+				// take tx_start as timestamp
+				tx1_ts = r.E.Tx_start
+			} else {
+				fmt.Println("Incorrect Edge type - stop ")
+				log.Fatalf("Fatal error --- %s\n", "Incorrect Edge type - stop")
+			}
+		*/
 
 		for {
 			tx2, err := reader.Read()
@@ -372,23 +374,25 @@ func Stream(istream string, out_stream chan<- cmn.Event) {
 			cmn.CheckError(err)
 
 			r = cmn.ReadEdge(tx2)
-			if r.Type == cmn.EdgeEnd {
-				tx2_ts = r.E.Tx_end
-			} else if r.Type == cmn.EdgeStart {
-				// take tx_start as timestamp
-				tx2_ts = r.E.Tx_start
-			} else {
-				fmt.Println("Incorrect Edge type - stop ")
-				log.Fatalf("Fatal error --- %s\n", "Incorrect Edge type - stop")
-			}
+			/*
+				if r.Type == cmn.EdgeEnd {
+					tx2_ts = r.E.Tx_end
+				} else if r.Type == cmn.EdgeStart {
+					// take tx_start as timestamp
+					tx2_ts = r.E.Tx_start
+				} else {
+					fmt.Println("Incorrect Edge type - stop ")
+					log.Fatalf("Fatal error --- %s\n", "Incorrect Edge type - stop")
+				}
 
-			// diff between tx2_ts and tx1_ts - in seconds
-			// NOTE: If we want more precision we will need to set the timestamps
-			// with more than seconds precision!
-			ts_diff := tx2_ts.Sub(tx1_ts)
-			time.Sleep(ts_diff)
+				// diff between tx2_ts and tx1_ts - in seconds
+				// NOTE: If we want more precision we will need to set the timestamps
+				// with more than seconds precision!
+				ts_diff := tx2_ts.Sub(tx1_ts)
+				time.Sleep(ts_diff)
+			*/
 			out_stream <- r
-			tx1_ts = tx2_ts
+			//tx1_ts = tx2_ts
 
 		}
 	}
