@@ -32,3 +32,4 @@ done
 # at this point -> "output" directory with all the results 
 # - produce plots and diefficiency results with the diefpy library program
 # - move the result subdirectories of the "output" directory
+
