@@ -256,7 +256,6 @@ func filter(
 				} else {
 					subgraph.CompleteEdge(event_worker.E)
 				}
-				//subgraph.Print()
 			}
 		}
 		fmt.Println(msg_id + " - Filter worker finished")
