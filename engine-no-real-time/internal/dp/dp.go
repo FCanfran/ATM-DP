@@ -21,8 +21,6 @@ func Sink(
 	in_event <-chan cmn.Event,
 	endchan chan<- struct{}) {
 
-	// TOCHECK: Take the initial time here or in the main process before the running of the goroutines...
-	// start := time.Now()
 	var alertCount int
 
 	fmt.Println("Sink - creation")

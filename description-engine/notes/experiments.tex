@@ -313,14 +313,45 @@ Once we decided to use the approach using the \texttt{csv/encoding} library, we 
   \item R2: Not real time simulation. Direct transaction stream input supply. Comparison of the continuous delivery of results of the different systems variations (diefficiency metrics).
 \end{itemize}
 
+$\rightarrow$ We set the worker stream reading by chunks, with chunk size of $10^2$.\\
 
-\begin{enumerate}
+The setups of the experiments that we are going to do are:
+\begin{itemize}
+  \item Fix different bank sizes (small, $+\frac{1}{4}$, $+\frac{2}{4}$, $+\frac{3}{4}$, the biggest possible size).
+  \begin{itemize}
+    \item For each, generate different stream sizes.
+    \begin{itemize}
+      \item Compare different system variations in the number of cores and number of filters.
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
 
-  \item Initially: worker input chunk reading.
-  \item Then: compare with reading input stream without worker in the Stream goroutine.
-\end{enumerate}
+\subsection{Bank size: Initial - Small}
 
+\begin{itemize}
+  \item $|ATM| = 50$
+  \item $|Card| = 2000$
+\end{itemize}
 
+\subsubsection{Transaction stream - small}
+
+\begin{itemize}
+  \item $\texttt{NUM\_DAYS} = 30$
+  \item $\texttt{anomalous\_ratio} = 0.02\ (2\%)$ 
+\end{itemize}
+
+This setup gives us a transaction stream of 
+\begin{itemize}
+  \item $\texttt{total\_tx} = 39959$
+  \item $\texttt{regular\_tx} = 39508$
+  \item $\texttt{anomalous\_tx} = 451$ -- note that this is actually a $1\%$.
+\end{itemize}
+
+\subsubsection{Transaction stream - medium}
+
+\subsubsection{Transaction stream - big}
+
+\subsection{Bank size: $+\frac{1}{4}$ of Initial}
 
 \cite{angles2008survey}
 

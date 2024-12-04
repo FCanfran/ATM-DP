@@ -90,7 +90,7 @@ func ReadExecDescriptionFile(filename string) {
 	// create output dir to put the result files
 	// obtain the name after input filename
 	baseName := filepath.Base(StreamFileName)
-	outdirName := strings.TrimSuffix(baseName, ".csv")
+	outdirName := strings.TrimSuffix(baseName, ".csv") + "-" + APPROACH
 	setOutputDir(outdirName)
 
 	fmt.Println("##############    EXECUTION PARAMETERS    #############")
@@ -583,8 +583,8 @@ func PrintEventOnFile(e Event, file *os.File) {
 
 func PrintAlertOnResultsTrace(timestamp time.Duration, alertCount int, csv_writer *csv.Writer) {
 	dataRow := []string{
-		TEST,                     // test
-		APPROACH,                 // approach
+		TEST,                     // test (stream kind)
+		APPROACH,                 // approach (num cores & num filters)
 		strconv.Itoa(alertCount), // answer
 		strconv.FormatFloat(timestamp.Seconds(), 'f', 2, 64), // time (in seconds)
 	}
