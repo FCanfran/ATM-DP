@@ -28,3 +28,7 @@ for script in $(ls "$directory"/*.sh | sort -V); do # sort -V to respect numeric
         echo "No .sh files found in $directory."
     fi
 done
+
+# at this point -> "output" directory with all the results 
+# - produce plots and diefficiency results with the diefpy library program
+# - move the result subdirectories of the "output" directory
