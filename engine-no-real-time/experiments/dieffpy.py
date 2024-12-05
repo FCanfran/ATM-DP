@@ -354,15 +354,12 @@ def plot_continuous_efficiency_with_diefk_edit(
 
 
 if len(sys.argv) < 3:
-    print("Error, run like: $>python test.py resultsDirectoryPath TEST(name)")
+    print("Error, run like: $>python dieffpy.py resultsDirectoryPath TEST(name)")
     exit(1)
 
 # Read name of the directory
 input_dir = sys.argv[1]
 test_name = sys.argv[2]
-
-print(input_dir)
-print(test_name)
 
 metrics_all = []
 header_metrics = False
@@ -383,9 +380,9 @@ sorted_subdirs = sorted(
 # Subdirectories
 for subdir in sorted_subdirs:
     if os.path.isdir(os.path.join(input_dir, subdir)):
-        print(subdir)
+        # print(subdir)
         metrics_file = os.path.join(input_dir, subdir, "metrics.csv")
-        print(metrics_file)
+        # print(metrics_file)
 
         if os.path.isfile(metrics_file):  # Check if 'metrics.csv' exists
             try:
@@ -398,14 +395,14 @@ for subdir in sorted_subdirs:
                     # Skip the header for subsequent files
                     df = pd.read_csv(metrics_file, header=0)
 
-                print(df)
+                # print(df)
                 metrics_all.append(df)
                 # print(metrics_all)
             except Exception as e:
                 print(f"Error reading {metrics_file}: {e}")
 
         traces_file = os.path.join(input_dir, subdir, "trace.csv")
-        print(traces_file)
+        # print(traces_file)
         if os.path.isfile(traces_file):
             try:
                 # Read the CSV file
@@ -417,7 +414,6 @@ for subdir in sorted_subdirs:
                     # Skip the header for subsequent files
                     df = pd.read_csv(traces_file, header=0)
 
-                print(df)
                 traces_all.append(df)
             except Exception as e:
                 print(f"Error reading {traces_file}: {e}")
@@ -427,9 +423,7 @@ if metrics_all:
     metrics_all_df = pd.concat(metrics_all, ignore_index=True)
     # output metrics all csv
     output_metrics = input_dir + "/metrics.csv"
-    print(output_metrics)
     metrics_all_df.to_csv(output_metrics, index=False, header=header_metrics)
-    print(f"Combined CSV saved to {output_metrics}")
 else:
     print("No metrics.csv files found to combine.")
 
@@ -439,7 +433,6 @@ if traces_all:
     # output metrics all csv
     output_traces = input_dir + "/trace.csv"
     traces_all_df.to_csv(output_traces, index=False, header=header_traces)
-    print(f"Combined CSV saved to {output_traces}")
 else:
     print("No traces.csv files found to combine.")
 
@@ -459,11 +452,13 @@ plt.savefig(outputPlotDir + "traces.png")
 # print(pd.DataFrame(dt).head())
 
 # computing dief@t until the time unit when the slowest approach finalizes its execution
-# (in toy-trace.csv is t=~22.69s)
 dt = diefpy.dieft(traces, test_name)
+print("dief@t until the time unit when the slowest approach finalizes its execution")
 print(pd.DataFrame(dt).head())
+print("____________________________________________________________________________")
+print()
 
-print(input_dir + "/metrics.csv")
+# print(input_dir + "/metrics.csv")
 metrics = diefpy.load_metrics(input_dir + "/metrics.csv")
 
 # Execution time plot
@@ -481,8 +476,11 @@ plt.savefig(outputPlotDir + "execTime.png")
 # - inverse time to first tuple (1/tfft)
 # - inverse execution time (1/totaltime)
 exp1 = diefpy.performance_of_approaches_with_dieft(traces, metrics)
-
+print("Create all metrics from the traces and metrics")
 print(pd.DataFrame(exp1[exp1["test"] == test_name]).head())
+print("____________________________________________________________________________")
+print()
+
 
 # Create radar plot to compare the performance of the approaches with dief@t and other metrics.
 # - Plot interpretation: Higher is better.
@@ -497,16 +495,28 @@ plt.savefig(outputPlotDir + "radar-dieft.png")
 # dief@k interpretation: Lower is better
 
 # dief@k producing the first 5 answers
+print("dief@k producing the first 5 answers")
 dk = diefpy.diefk(traces, test_name, 5)
 print(pd.DataFrame(dk).head())
+print("____________________________________________________________________________")
+print()
+
 
 # dief@k producing the first 10 answers
+print("dief@k producing the first 10 answers")
 dk = diefpy.diefk(traces, test_name, 10)
 print(pd.DataFrame(dk).head())
+print("____________________________________________________________________________")
+print()
+
 
 # producing 50% of the answers
+print("# producing 50% of the answers")
 dk = diefpy.diefk2(traces, test_name, 0.50)
 print(pd.DataFrame(dk).head())
+print("____________________________________________________________________________")
+print()
+
 
 # 4.6. Measuring dief@t at Different Answer Completeness Percentages
 # compares the performance of the three variants when producing different
