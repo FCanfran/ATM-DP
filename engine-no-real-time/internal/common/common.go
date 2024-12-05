@@ -8,10 +8,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"pipeline/internal/connection"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
@@ -89,8 +87,9 @@ func ReadExecDescriptionFile(filename string) {
 
 	// create output dir to put the result files
 	// obtain the name after input filename
-	baseName := filepath.Base(StreamFileName)
-	outdirName := strings.TrimSuffix(baseName, ".csv") + "-" + APPROACH
+	//baseName := filepath.Base(StreamFileName)
+	//outdirName := strings.TrimSuffix(baseName, ".csv") + "-" + APPROACH
+	outdirName := APPROACH
 	setOutputDir(outdirName)
 
 	fmt.Println("##############    EXECUTION PARAMETERS    #############")
