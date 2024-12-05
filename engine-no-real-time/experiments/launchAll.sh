@@ -85,4 +85,6 @@ find . -type d -name "*-avg" | while read -r dir; do
     echo "Moved $dir to $outdirallavg/"
 done
 
-python3.10 dieffpy.py $outdirallavg $TEST
+
+outfiledieff="$outdirallavg/dieffpy-out.txt"
+python3.10 dieffpy.py $outdirallavg $TEST > $outfiledieff
