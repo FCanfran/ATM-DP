@@ -26,13 +26,42 @@ for script in $(ls "$directory"/*.sh | sort -V); do # sort -V to respect numeric
         filename=$(basename "$script") 
         base="${filename%.sh}"        
         outdir="output/$base"
+        outdiravg="output/$base-avg"
+
+        # create output directory for the averaged results
+        rm -r $outdiravg 
+        mkdir -p "$outdiravg"
+        echo "Directory '$outdiravg' created."
+        
+        # output averaged files: metrics.csv and trace.csv
+        metrics_outfile="$outdiravg/metrics.csv"
+        trace_outfile="$outdiravg/trace.csv"
+        rm -f "$metrics_outfile"
+        rm -f "$trace_outfile"
+
         # execute each experiment execTimes
         for ((i = 1; i <= execTimes; i++)); do
             echo "Executing $script run $i..."  
-            bash "$script"
+            bash "$script" # outdir is the script output directory
+            rm -r "$outdir-$i"
             mv $outdir "$outdir-$i" # rename - appending the label of the corresponding run
+            # append the csv metrics and traces files into the avg files
+            # metrics
+            if [ ! -f "$metrics_outfile" ]; then
+                head -n 1 "$outdir-$i/metrics.csv" > "$metrics_outfile" # add header if does not exist
+            fi
+            tail -n +2 "$outdir-$i/metrics.csv" >> "$metrics_outfile" # append, excluding the header
+
+            # traces
+            if [ ! -f "$trace_outfile" ]; then
+                head -n 1 "$outdir-$i/trace.csv" > "$trace_outfile" # add header if does not exist
+            fi
+            tail -n +2 "$outdir-$i/trace.csv" >> "$trace_outfile" # append, excluding the header
+
         done
         # average the results of this experiment in a single output - averaged - directory
+        # averaged metrics.csv
+        # averaged trace.csv
     else
         echo "No .sh files found in $directory."
     fi
