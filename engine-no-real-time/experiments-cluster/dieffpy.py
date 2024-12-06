@@ -167,13 +167,13 @@ def plot_execution_time_edit_single_test(
     ]
 
     fig = plt.figure(figsize=(4.0, 5), dpi=100)
-    bars = plt.bar(
-        sorted_approaches,
-        results,
-        color=[color_map[a] for a in sorted_approaches],
-        label=sorted_approaches,
-        width=0.7,
-    )
+
+    # Plot each bar with its respective label
+    for approach, result, color in zip(
+        sorted_approaches, results, [color_map[a] for a in sorted_approaches]
+    ):
+        plt.bar(approach, result, color=color, label=approach, width=0.7)
+
     # Customizing the chart
     plt.xlabel("Approach", fontsize="large", labelpad=10)
     plt.ylabel("Execution Time [s]", fontsize="large")
