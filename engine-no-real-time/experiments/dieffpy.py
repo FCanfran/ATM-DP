@@ -128,6 +128,73 @@ def plot_execution_time_edit(
     return fig
 
 
+def plot_execution_time_edit_single_test(
+    test_name,
+    metrics: np.ndarray,
+    colors: list = DEFAULT_COLORS,
+    log_scale: bool = False,
+) -> Figure:
+    """
+    Creates a bar chart with the overall *execution time* for 1 test and approaches in the metrics data.
+
+    Bar chart presenting the conventional performance measure *execution time*.
+
+    :param metrics: Dataframe with the metrics. Attributes of the dataframe: test, approach, tfft, totaltime, comp.
+    :param colors: List of colors to use for the different approaches.
+    :param log_scale: (optional) If log_scale is set to True, logarithmic scale for the y-axis will be used.
+    :return: Plot of the execution time for all tests and approaches in the metrics data provided.
+
+    **Examples**
+
+    >>> plot_execution_time(metrics)
+    >>> plot_execution_time(metrics, ["#ECC30B","#D56062","#84BCDA"])
+    >>> plot_execution_time(metrics, log_scale=True)
+    >>> plot_execution_time(metrics, ["#ECC30B","#D56062","#84BCDA"], log_scale=True)
+    """
+
+    submetrics = metrics[metrics["test"] == test_name]
+    approaches = np.unique(metrics["approach"])
+    sorted_approaches = sorted(
+        approaches,
+        key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
+    )
+
+    color_map = dict(zip(approaches, colors))
+
+    results = [
+        submetrics[submetrics["approach"] == a]["totaltime"][0]
+        for a in sorted_approaches
+    ]
+
+    fig = plt.figure(figsize=(4.0, 5), dpi=100)
+    bars = plt.bar(
+        sorted_approaches,
+        results,
+        color=[color_map[a] for a in sorted_approaches],
+        label=sorted_approaches,
+        width=0.7,
+    )
+    # Customizing the chart
+    plt.xlabel("Approach", fontsize="large", labelpad=10)
+    plt.ylabel("Execution Time [s]", fontsize="large")
+    plt.legend(
+        sorted_approaches,
+        bbox_to_anchor=(1, 1),
+        loc="upper left",
+        labelspacing=0.1,
+        fontsize="medium",
+        frameon=False,
+    )
+    plt.title(f"{test_name}", fontsize=16, loc="center", pad=10)
+    if log_scale:
+        plt.yscale("log")
+
+    # Display the chart
+    plt.tight_layout()
+
+    return fig
+
+
 def plot_answer_trace_edit(
     inputtrace: np.ndarray, inputtest: str, colors: list = DEFAULT_COLORS
 ) -> Figure:
@@ -1080,7 +1147,7 @@ metrics = diefpy.load_metrics(input_dir + "/metrics.csv")
 # TODO: Do it better - poner bonito!
 # Execution time plot
 # diefpy.plot_execution_time(metrics, COLORS, log_scale=True)
-plot_execution_time_edit(metrics, COLORS, log_scale=True)
+plot_execution_time_edit_single_test(test_name, metrics, COLORS, log_scale=False)
 plt.savefig(outputPlotDir + "execTime.png")
 
 
