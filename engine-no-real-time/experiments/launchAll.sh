@@ -84,7 +84,7 @@ rm -r $outdirallavg
 mkdir -p $outdirallavg
 
 # Find directories ending with -avg and move them to the target directory
-find . -type d -name "*-avg" | while read -r dir; do
+find ./output -type d -name "*-avg" | while read -r dir; do
     echo "$dir"
     mv "$dir" "$outdirallavg/"
     echo "Moved $dir to $outdirallavg/"
