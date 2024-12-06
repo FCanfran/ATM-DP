@@ -347,6 +347,30 @@ This setup gives us a transaction stream of
   \item $\texttt{anomalous\_tx} = 451$ -- note that this is actually a $1\%$.
 \end{itemize}
 
+For different core variations, we are going to try different combinations of the system in terms
+of the number of the maximum number of cards per filter, that consequently will produce an inverse variation in the number of filters of the system.
+
+\begin{table}[H]
+  \renewcommand{\arraystretch}{1.5} % control row height
+  \centering
+  \begin{tabular}{|c|c|}
+  \hline
+  \# cards per filter & \# filters \\ \hline
+  $|Card|\ / \ {2^0} $  &   1     \\ \hline
+  $|Card|\ / \ {2^1} $ &   2     \\ \hline
+  $|Card|\ / \ {2^2} $ &   4     \\ \hline
+  $|Card|\ / \ {2^3} $ &   8     \\ \hline
+  $|Card|\ / \ {2^4} $ &   16    \\ \hline
+  $|Card|\ / \ {2^5} $ &   32    \\ \hline
+  \end{tabular}
+\end{table}
+
+\textcolor{red}{\# of times / runs each experiment?}
+
+\paragraph{1-core\\}
+
+\paragraph{4-cores\\}
+
 \subsubsection{Transaction stream - medium}
 
 \subsubsection{Transaction stream - big}
