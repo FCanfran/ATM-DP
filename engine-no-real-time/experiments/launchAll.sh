@@ -42,7 +42,11 @@ for script in $(ls "$directory"/*.sh | sort -V); do # sort -V to respect numeric
 
         # execute each experiment execTimes
         for ((i = 1; i <= execTimes; i++)); do
+            echo "___________________________________________________________________________________________________________"
+            echo 
             echo "Executing $script run $i..."  
+            echo "___________________________________________________________________________________________________________"
+            echo 
             bash "$script" # outdir is the script output directory
             rm -r "$outdir-$i"
             mv $outdir "$outdir-$i" # rename - appending the label of the corresponding run
@@ -76,7 +80,8 @@ done
 
 # move all the -avg directories into the same directory and run the dieffpy program there
 outdirallavg="output/avg-all"
-mkdir -p outdirallavg
+rm -r $outdirallavg
+mkdir -p $outdirallavg
 
 # Find directories ending with -avg and move them to the target directory
 find . -type d -name "*-avg" | while read -r dir; do

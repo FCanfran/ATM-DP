@@ -331,7 +331,7 @@ func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext
 				//fmt.Println("t_diff", t_diff)
 				if t_diff < t_min {
 					// create alert
-					PrintEdge("Fraud pattern with: ", last_e)
+					// PrintEdge("Fraud pattern with: ", last_e)
 					// subgraph
 					subgraph := NewGraph()
 					subgraph.AddEdge(last_e)

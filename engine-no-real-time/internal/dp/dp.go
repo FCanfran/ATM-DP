@@ -74,7 +74,7 @@ Loop:
 					timeFirst = t
 				}
 				timeLast = t
-				cmn.PrintAlertVerbose(alert, t, alertCount)
+				//cmn.PrintAlertVerbose(alert, t, alertCount)
 				cmn.PrintAlertOnFile(alert, fileAlerts)
 				cmn.PrintAlertOnResultsTrace(t, alertCount, writer_trace)
 			}
@@ -181,7 +181,7 @@ func filter(
 	go func() {
 		var msg_id string = "FW-[" + id + "]"
 		var subgraph *cmn.Graph // variable to work with the subgraphs of the different cards
-		fmt.Println(msg_id + " - creation")
+		//fmt.Println(msg_id + " - creation")
 
 		cardSubgraph[edge.Number_id] = cmn.NewGraph()
 		subgraph, ok := cardSubgraph[edge.Number_id]
@@ -226,9 +226,9 @@ func filter(
 				} else {
 					// card already exists, therefore, at least an edge on the subgraph
 					// check fraud
-					fmt.Println(event_worker.E.Number_id, "-------------- CHECKFRAUD()-----------------")
+					//fmt.Println(event_worker.E.Number_id, "-------------- CHECKFRAUD()-----------------")
 					isFraud, alert := subgraph.CheckFraud(context, session, event_worker.E)
-					fmt.Println("----------------------------------------------------")
+					//fmt.Println("----------------------------------------------------")
 					if isFraud {
 						out_alert <- alert
 					}
