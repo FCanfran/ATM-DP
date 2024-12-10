@@ -1,0 +1,82 @@
+***Profiles
+
+$ ./flag-kmstV7-UW-buffer -file=aves-sparrow-social -cpuprofile=cpu.pprof -memprofile=mem.pprof
+$ go tool pprof --text cpu.prof http://myserver:6060:/debug/pprof/profile
+$ go tool pprof cpu.pprof http://myserver:6060:/debug/pprof/profile <- modo (pprof)
+Este comando funciona pero advierte que no encuentra el server (el que ellos dicen??)
+
+$ ./kmstV8 -file=aves-sparrow-social -cpuprofile=cpu.pprof -memprofile=mem.pprof 2> trace.out
+The command above generates the cpu and mem profiles as well as the trace of the execution.
+Now we can use the pprof and trace tools as follows:
+$ go tool pprof cpu.pprof
+$ go tool pprof mem.pprof
+$ go tool trace trace.out
+
+pprof <format> [options] [binary] <source> ...
+
+Omit the format to get an interactive shell whose commands can be used
+to generate various views of a profile
+
+   pprof [options] [binary] <source> ...
+
+
+$ go tool pprof --text mem.prof
+$ go tool pprof --text cpu.prof
+$ go tool pprof --gif cpu.prof
+$ go tool pprof --png cpu.prof
+$ go tool pprof --tree mem.prof > mem-profile1
+$ go tool pprof --pdf mem.prof > calltree.pdf
+
+(pprof)
+help      <-- Muestra todos los comandos de pprof
+top10
+top -cum  <-- Showing top 10 nodes out of N nodes
+exit  <-- salir
+list filter <-- muestra la func filter (main.filter)
+
+***Trace
+Para hacer el trace de las goroutines:
+
+import "runtime/trace"
+
+func main() {
+	trace.Start(os.Stderr)
+	defer trace.Stop()
+        <my code here>
+}
+
+$ go run myprogram.go 2> trace.out
+$ go tool trace trace.out
+
+OJO: el "2>" en el comando de arriba es importante
+
+*** Very important URLs:
+
+**pprof
+
+***** Para entender los reportes de pprof *****
+https://blog.golang.org/pprof (video)
+https://stackoverflow.com/questions/32571396/pprof-and-golang-how-to-interpret-a-results
+https://www.reddit.com/r/golang/comments/7ony5f/what_is_the_meaning_of_flat_and_cum_in_golang/
+
+
+En el directorio WithFlagV7 tenemos varios llamados "calltrees"
+
+** Goroutines analysis
+
+$ go tool trace trace.out
+
+(1) https://blog.gopheracademy.com/advent-2017/go-execution-tracer/
+(2) https://medium.com/justforfunc/using-the-go-execution-tracer-to-speed-up-fractal-rendering-c06bb3760507
+(3) https://about.sourcegraph.com/go/an-introduction-to-go-tool-trace-rhys-hiltner
+
+** Fixing blank page for "View Trace":
+https://github.com/golang/go/issues/25151
+Debo re-instalar Go (UFFFF!)
+
+**** /usr/local/go/misc/trace *** Está en este directorio en mi mac!!
+$open trace_viewer_full.html
+En el browser:
+file:///usr/local/go/misc/trace/trace_viewer_full.html
+
+
