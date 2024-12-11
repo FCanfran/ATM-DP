@@ -29,10 +29,11 @@ func main() {
 	// start connection to static gdb
 	ctx := connection.SafeConnect()
 
-	// to avoid golang scheduling all the goroutines in the same core
-	maxProcs := runtime.GOMAXPROCS(0)
+	// golang max processors settings
+	maxProcsBefore := runtime.GOMAXPROCS(0)
+	maxProcsNow := runtime.GOMAXPROCS(0)
 	numCPU := runtime.NumCPU()
-	fmt.Println("maxProcs: ", maxProcs, " numCPU: ", numCPU)
+	fmt.Println("maxProcsBefore: ", maxProcsBefore, "maxProcsNow: ", maxProcsNow, " numCPU: ", numCPU)
 
 	// create go execution traces output files
 	var cpuprofile string = cmn.OutDirName + "/cpu.pprof"

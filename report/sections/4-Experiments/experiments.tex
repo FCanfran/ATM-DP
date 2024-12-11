@@ -38,6 +38,7 @@ Approaches:
   \item For the different approaches we tried with different sizes of files: $10^4$, $10^5$ and $10^6$ number of rows (transactions).
   \item For each of the sizes we compared the time it took to read the full file to each of the variants, testing for different chunk sizes in terms of the number of rows: ranging from $10^0, 10^1, 10^2,...$ up to the total number of rows of the file (maximum possible chunk size, all at once).
   \item Each of the experiments is done 20 times to obtain stable measurements.
+  \item \textcolor{red}{WITH HOW MANY CORES?, RAM? -- They were done in the logincluster node!, not with sbatch controlling the number of cores! - check the characteristics of the logincluster!}
 \end{itemize}
 
 
@@ -456,7 +457,6 @@ Results for executions with 16-core:
   \label{fig:execution-times}
 \end{figure}
 
-
 \paragraph{Transaction stream - medium\\}
 
 \paragraph{Transaction stream - big\\}
@@ -484,4 +484,3 @@ Results for executions with 16-core:
     \end{center}
     \item Run \texttt{\$> summary-results.sh <directory> <TEST>}: to obtain the averaged results of the experiments run stored in the indicated output \texttt{<directory>} (the predefined output directory is the called \texttt{output} directory) and then \texttt{<TEST>} where we need to indicate the name of the performed test (like in the experiments description files).
 \end{itemize}
-
