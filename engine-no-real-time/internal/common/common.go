@@ -304,7 +304,7 @@ func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext
 		// -> it can not happen that a transaction starts before the previous is finished
 		// check if previous was closed
 		if last_e.Tx_end.IsZero() || new_e.Tx_start.Before(last_e.Tx_end) {
-			fmt.Println("tx starts before the previous ends!")
+			//fmt.Println("tx starts before the previous ends!")
 			log.Println("Warning: tx starts before the previous ends! - ", new_e.Number_id)
 			// TODO: It is a TRUE fraud, but not of this kind! - other kind
 			// do not consider it here so far

@@ -23,7 +23,6 @@ func Sink(
 
 	var alertCount int
 
-	fmt.Println("Sink - creation")
 	fileAlerts, err := os.Create(cmn.OutDirName + "/alerts.txt")
 	cmn.CheckError(err)
 	defer fileAlerts.Close()
@@ -85,7 +84,7 @@ Loop:
 			}
 			switch event.Type {
 			case cmn.EOF:
-				fmt.Println("Sink - EOF event")
+				//fmt.Println("Sink - EOF event")
 				// finish the Sink
 				break Loop
 				/*case cmn.LOG:
@@ -98,7 +97,6 @@ Loop:
 	cmn.PrintMetricsResults(timeFirst, timeLast, alertCount, writer_metrics)
 
 	endchan <- struct{}{}
-	fmt.Println("Sink - Finished")
 }
 
 func Generator(
@@ -106,7 +104,7 @@ func Generator(
 	out_alert chan<- cmn.Alert,
 	out_event chan<- cmn.Event) {
 
-	fmt.Println("G - creation")
+	//fmt.Println("G - creation")
 Loop:
 	for {
 		event, ok := <-in_event
@@ -116,7 +114,7 @@ Loop:
 		}
 		switch event.Type {
 		case cmn.EOF:
-			fmt.Println("G - EOF event")
+			//fmt.Println("G - EOF event")
 			out_event <- event
 			// end the generator
 			break Loop
@@ -138,11 +136,11 @@ Loop:
 		}
 	}
 
-	fmt.Println("G - Close ch - out_alert")
+	//fmt.Println("G - Close ch - out_alert")
 	close(out_alert)
-	fmt.Println("G - Close ch - out_event")
+	//fmt.Println("G - Close ch - out_event")
 	close(out_event)
-	fmt.Println("G finished")
+	//fmt.Println("G finished")
 }
 
 // TODO: pass a counter to use as filter-id instead of the id of the card that spawns it?
@@ -155,7 +153,7 @@ func filter(
 	var edge cmn.Edge = event.E
 	var id string = edge.Number_id
 	var msg_id string = "F-[" + id + "]"
-	fmt.Println(msg_id + " - creation")
+	//fmt.Println(msg_id + " - creation")
 	// hash table to index card ids to card subgraphs
 	// 2 hash tables (to avoid race conditions in concurrent access by filter & worker)
 	// - 1 to control the belonging cards to the filter 			(cardList)		-> only access by filter
@@ -179,7 +177,7 @@ func filter(
 
 	// Worker - Anonymous function
 	go func() {
-		var msg_id string = "FW-[" + id + "]"
+		//var msg_id string = "FW-[" + id + "]"
 		var subgraph *cmn.Graph // variable to work with the subgraphs of the different cards
 		//fmt.Println(msg_id + " - creation")
 
@@ -200,7 +198,7 @@ func filter(
 			event_worker, ok := <-internal_edge
 			if !ok {
 				// TODO: Check what to do here better
-				fmt.Println(msg_id + "- closed internal_edge channel")
+				//fmt.Println(msg_id + "- closed internal_edge channel")
 				break Worker_Loop
 			}
 
@@ -256,7 +254,7 @@ func filter(
 				}
 			}
 		}
-		fmt.Println(msg_id + " - Filter worker finished")
+		//fmt.Println(msg_id + " - Filter worker finished")
 	}() // () here to not only define it but also run it
 
 Loop:
@@ -268,7 +266,7 @@ Loop:
 		}
 		switch event.Type {
 		case cmn.EOF:
-			fmt.Println(msg_id + " - EOF event")
+			//fmt.Println(msg_id + " - EOF event")
 			// finish the Filter
 			// pass the EOF event to the worker & wait until its worker is done
 			internal_edge <- event
@@ -300,11 +298,11 @@ Loop:
 		}
 	}
 
-	fmt.Println(msg_id + " - Close ch - internal_edge")
+	//fmt.Println(msg_id + " - Close ch - internal_edge")
 	close(internal_edge)
-	fmt.Println(msg_id + " - Close ch - out_event")
+	//fmt.Println(msg_id + " - Close ch - out_event")
 	close(out_event)
-	fmt.Println(msg_id + " - Filter finished")
+	//fmt.Println(msg_id + " - Filter finished")
 }
 
 // Source: reads edges given by Stream process
@@ -322,7 +320,7 @@ func Source(in_stream <-chan cmn.Event, out_event chan<- cmn.Event) {
 		}
 		out_event <- event
 		if event.Type == cmn.EOF {
-			fmt.Println("Source - EOF event")
+			//fmt.Println("Source - EOF event")
 			break
 		} else if event.Type == cmn.EdgeStart || event.Type == cmn.EdgeEnd {
 			// Print the incoming tx in the tx record
@@ -330,9 +328,9 @@ func Source(in_stream <-chan cmn.Event, out_event chan<- cmn.Event) {
 		}
 	}
 
-	fmt.Println("Source - Close ch - out_event")
+	//fmt.Println("Source - Close ch - out_event")
 	close(out_event)
-	fmt.Println("Source - Finished")
+	//fmt.Println("Source - Finished")
 }
 
 func Stream(istream string, out_stream chan<- cmn.Event) {
@@ -395,8 +393,8 @@ func Stream(istream string, out_stream chan<- cmn.Event) {
 	event.E = cmn.Edge{}
 	out_stream <- event
 
-	fmt.Println("Stream - End of stream...")
-	fmt.Println("Stream - Close ch - out_stream")
+	//fmt.Println("Stream - End of stream...")
+	//fmt.Println("Stream - Close ch - out_stream")
 	close(out_stream)
-	fmt.Println("Stream - Finished")
+	//fmt.Println("Stream - Finished")
 }

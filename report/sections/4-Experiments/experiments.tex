@@ -38,7 +38,7 @@ Approaches:
   \item For the different approaches we tried with different sizes of files: $10^4$, $10^5$ and $10^6$ number of rows (transactions).
   \item For each of the sizes we compared the time it took to read the full file to each of the variants, testing for different chunk sizes in terms of the number of rows: ranging from $10^0, 10^1, 10^2,...$ up to the total number of rows of the file (maximum possible chunk size, all at once).
   \item Each of the experiments is done 20 times to obtain stable measurements.
-  \item \textcolor{red}{WITH HOW MANY CORES?, RAM? -- They were done in the logincluster node!, not with sbatch controlling the number of cores! - check the characteristics of the logincluster!}
+  \item Experiments done in the cluster with 1 core and 1024MB of RAM.
 \end{itemize}
 
 
@@ -346,24 +346,32 @@ This setup gives us a transaction stream of
 For different core variations, we are going to try different combinations of the system in terms
 of the number of the maximum number of cards per filter, that consequently will produce an inverse variation in the number of filters of the system.
 
+\texttt{\# cards per filter} $ = |Card|\ / \# filters $
+
 \begin{table}[H]
   \renewcommand{\arraystretch}{1.5} % control row height
   \centering
   \begin{tabular}{|c|c|}
   \hline
   \# cards per filter & \# filters \\ \hline
-  $|Card|\ / \ {2^0} $  &   1     \\ \hline
-  $|Card|\ / \ {2^1} $ &   2     \\ \hline
-  $|Card|\ / \ {2^2} $ &   4     \\ \hline
-  $|Card|\ / \ {2^3} $ &   8     \\ \hline
-  $|Card|\ / \ {2^4} $ &   16    \\ \hline
-  $|Card|\ / \ {2^5} $ &   32    \\ \hline
+  $2000 $ &   1     \\ \hline
+  $1000 $ &   2     \\ \hline
+  $400  $ &   5     \\ \hline
+  $200  $ &   10     \\ \hline
+  $100  $ &   20    \\ \hline
+  $50   $ &   40    \\ \hline
+  $20   $ &   100    \\ \hline
+  $10   $ &   200    \\ \hline
+  $4    $ &   500    \\ \hline
+  $2    $ &  1000    \\ \hline
+  $1    $ &  2000    \\ \hline
   \end{tabular}
 \end{table}
 
 \begin{itemize}
   \item \# of times / runs each job $=10$.
   \item Maximum RAM limited to 16GB.
+  \item \texttt{totaltime} represents the execution time in seconds in which the last alert/result was produced.
 \end{itemize}
 
 \paragraph{1-core\\}
@@ -457,13 +465,22 @@ Results for executions with 16-core:
   \label{fig:execution-times}
 \end{figure}
 
+\textcolor{red}{UPDATE}
+
+\begin{itemize}
+  \item Set the number of cores that the golang program can use with \texttt{runtime.GOMAXPROCS(0)}, this sets the maximum number of CPUs that can be executing simultaneously, and in the case of $n < 1$ as argument, then it does not change the current setting, which by default is taking the value of $runtime.NumCPU$.
+  \item To run with 1 core we need to manually fix the argument to 1, since apparently the cluster node with which it is said to run has 2 cores, although specifying 1 core in the configuration of the cluster environment. \textcolor{red}{Not sure about this anymore... last run it did not happen!}
+  \item Golang execution trace is added? - just for debugging in some cases. In general without, since it causes a considerable overhead in the execution time.
+   
+\end{itemize}
+
 \paragraph{Transaction stream - medium\\}
 
 \paragraph{Transaction stream - big\\}
 
 \subsubsection{Bank size: $+\frac{1}{4}$ of Initial}
 
-\subsection{How to run the experiments}
+\subsubsection{How to run the experiments}
 
 \begin{itemize}
     \item Run \texttt{\$> launchAll-\{1,2,4,...\}c.sh <descriptions> <execTimes>} where we select the script to run based on the number of cores (1,2,4...) and maximum RAM with which to run the set of experiments. Indicate the directory of the description files of the experiments to run with \texttt{<descriptions>}, and the number of times to run each experiment with the \texttt{<execTimes>} parameter.
