@@ -37,7 +37,7 @@ done
 
 
 outfiledieff="$outdirallavg/dieffpy-out.txt"
-python3 dieffpy.py $outdirallavg $TEST 1 > $outfiledieff
+python3 dieffpy-filters.py $outdirallavg $TEST 1 > $outfiledieff
 
 #outdirTest="out-$TEST"
 #rm -r $outdirTest
