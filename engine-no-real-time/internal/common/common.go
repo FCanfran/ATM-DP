@@ -309,6 +309,8 @@ func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext
 			// TODO: It is a TRUE fraud, but not of this kind! - other kind
 			// do not consider it here so far
 			// print fraud pattern with this edge
+			fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+			fmt.Println("Warning: tx starts before the previous ends! - ", new_e.Number_id)
 			PrintEdge("Fraud pattern with: ", last_e)
 			/*
 				fraudIndicator = true
