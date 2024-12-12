@@ -166,26 +166,39 @@ def plot_execution_time_edit_single_test(
         for a in sorted_approaches
     ]
 
-    fig = plt.figure(figsize=(4.0, 5), dpi=100)
+    edited_labels = [a.split("-")[-1] for a in sorted_approaches]
+    edited_labels = [re.search(r"\d+", label).group() for label in edited_labels]
+
+    fig = plt.figure(figsize=(0.4 * len(approaches), 5), dpi=100)
 
     # Plot each bar with its respective label
-    for approach, result, color in zip(
-        sorted_approaches, results, [color_map[a] for a in sorted_approaches]
+    for approach, result, color, label in zip(
+        sorted_approaches,
+        results,
+        [color_map[a] for a in sorted_approaches],
+        edited_labels,
     ):
-        plt.bar(approach, result, color=color, label=approach, width=0.7)
+        plt.bar(approach, result, color=color, label=label, width=0.7)
 
     # Customizing the chart
-    plt.xlabel("Approach", fontsize="large", labelpad=10)
+    plt.xlabel("# filters", fontsize="large", labelpad=10)
     plt.ylabel("Execution Time [s]", fontsize="large")
+    plt.xticks(
+        range(len(sorted_approaches)), edited_labels, rotation=90, fontsize="medium"
+    )
     plt.legend(
-        sorted_approaches,
+        edited_labels,
         bbox_to_anchor=(1, 1),
         loc="upper left",
         labelspacing=0.1,
         fontsize="medium",
         frameon=False,
+        title="# filters",
     )
-    plt.title(f"{test_name}", fontsize=16, loc="center", pad=10)
+
+    title = test_name.split("-")[-1]
+
+    plt.title(f"{title}", fontsize=16, loc="center", pad=10)
     if log_scale:
         plt.yscale("log")
 
@@ -242,10 +255,13 @@ def plot_answer_trace_edit(
             linestyle="None",
         )
 
-    plt.xlabel("Time")
+    plt.xlabel("Time [s]")
     plt.ylabel("# Answers Produced")
     plt.legend(loc="upper left")
-    plt.title(inputtest, fontsize=16, loc="center", pad=20)
+
+    title = inputtest.split("-")[-1]
+
+    plt.title(title, fontsize=16, loc="center", pad=20)
     plt.tight_layout()
 
     return fig
@@ -369,7 +385,8 @@ def plot_performance_of_approaches_with_dieft_edit(
     )
 
     plt.setp(ax.spines.values(), color="grey")
-    plt.title(q, fontsize=16, loc="center", pad=30)
+    title = q.split("-")[-1]
+    plt.title(title, fontsize=16, loc="center", pad=30)
     plt.tight_layout()
 
     return fig
@@ -491,7 +508,8 @@ def plot_continuous_efficiency_with_diefk_edit(
     )
 
     plt.setp(ax.spines.values(), color="grey")
-    plt.title(q, fontsize=16, loc="center", pad=30)
+    title = q.split("-")[-1]
+    plt.title(title, fontsize=16, loc="center", pad=30)
     plt.tight_layout()
 
     return fig
@@ -794,7 +812,8 @@ def plot_performance_of_approaches_with_dieft_edit(
     )
 
     plt.setp(ax.spines.values(), color="grey")
-    plt.title(q, fontsize=16, loc="center", pad=30)
+    title = q.split("-")[-1]
+    plt.title(title, fontsize=16, loc="center", pad=30)
     plt.tight_layout()
 
     return fig
@@ -1023,7 +1042,8 @@ def plot_continuous_efficiency_with_diefk_edit(
     )
 
     plt.setp(ax.spines.values(), color="grey")
-    plt.title(q, fontsize=16, loc="center", pad=30)
+    title = q.split("-")[-1]
+    plt.title(title, fontsize=16, loc="center", pad=30)
     plt.tight_layout()
 
     return fig
@@ -1032,88 +1052,90 @@ def plot_continuous_efficiency_with_diefk_edit(
 ####################################################################################################################
 
 
-if len(sys.argv) < 3:
-    print("Error, run like: $>python dieffpy.py resultsDirectoryPath TEST(name)")
+if len(sys.argv) < 4:
+    print(
+        "Error, run like: $>python dieffpy.py resultsDirectoryPath TEST(name) DOAVERAGE(0:no,1:yes)"
+    )
     exit(1)
 
 # Read name of the directory
 input_dir = sys.argv[1]
 test_name = sys.argv[2]
+do_average = bool(sys.argv[3])
 
-metrics_all = []
-header_metrics = False
-traces_all = []
-header_traces = False
+if do_average:
 
-subdirs = [
-    d for d in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir, d))
-]
+    metrics_all = []
+    header_metrics = False
+    traces_all = []
+    header_traces = False
 
-# Sort subdirectories alphanumerically, respecting numerical order
-sorted_subdirs = sorted(
-    subdirs,
-    key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
-)
+    subdirs = [
+        d for d in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir, d))
+    ]
 
+    # Sort subdirectories alphanumerically, respecting numerical order
+    sorted_subdirs = sorted(
+        subdirs,
+        key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
+    )
 
-# Subdirectories
-for subdir in sorted_subdirs:
-    if os.path.isdir(os.path.join(input_dir, subdir)):
-        # print(subdir)
-        metrics_file = os.path.join(input_dir, subdir, "metrics.csv")
-        # print(metrics_file)
+    # Subdirectories
+    for subdir in sorted_subdirs:
+        if os.path.isdir(os.path.join(input_dir, subdir)):
+            # print(subdir)
+            metrics_file = os.path.join(input_dir, subdir, "metrics.csv")
+            # print(metrics_file)
 
-        if os.path.isfile(metrics_file):  # Check if 'metrics.csv' exists
-            try:
-                # Read the CSV file
-                if not header_metrics:
-                    # Read with the header for the first file
-                    df = pd.read_csv(metrics_file)
-                    header_metrics = True
-                else:
-                    # Skip the header for subsequent files
-                    df = pd.read_csv(metrics_file, header=0)
+            if os.path.isfile(metrics_file):  # Check if 'metrics.csv' exists
+                try:
+                    # Read the CSV file
+                    if not header_metrics:
+                        # Read with the header for the first file
+                        df = pd.read_csv(metrics_file)
+                        header_metrics = True
+                    else:
+                        # Skip the header for subsequent files
+                        df = pd.read_csv(metrics_file, header=0)
 
-                # print(df)
-                metrics_all.append(df)
-                # print(metrics_all)
-            except Exception as e:
-                print(f"Error reading {metrics_file}: {e}")
+                    # print(df)
+                    metrics_all.append(df)
+                    # print(metrics_all)
+                except Exception as e:
+                    print(f"Error reading {metrics_file}: {e}")
 
-        traces_file = os.path.join(input_dir, subdir, "trace.csv")
-        # print(traces_file)
-        if os.path.isfile(traces_file):
-            try:
-                # Read the CSV file
-                if not header_traces:
-                    # Read with the header for the first file
-                    df = pd.read_csv(traces_file)
-                    header_traces = True
-                else:
-                    # Skip the header for subsequent files
-                    df = pd.read_csv(traces_file, header=0)
+            traces_file = os.path.join(input_dir, subdir, "trace.csv")
+            # print(traces_file)
+            if os.path.isfile(traces_file):
+                try:
+                    # Read the CSV file
+                    if not header_traces:
+                        # Read with the header for the first file
+                        df = pd.read_csv(traces_file)
+                        header_traces = True
+                    else:
+                        # Skip the header for subsequent files
+                        df = pd.read_csv(traces_file, header=0)
 
-                traces_all.append(df)
-            except Exception as e:
-                print(f"Error reading {traces_file}: {e}")
+                    traces_all.append(df)
+                except Exception as e:
+                    print(f"Error reading {traces_file}: {e}")
 
+    if metrics_all:
+        metrics_all_df = pd.concat(metrics_all, ignore_index=True)
+        # output metrics all csv
+        output_metrics = input_dir + "/metrics.csv"
+        metrics_all_df.to_csv(output_metrics, index=False, header=header_metrics)
+    else:
+        print("No metrics.csv files found to combine.")
 
-if metrics_all:
-    metrics_all_df = pd.concat(metrics_all, ignore_index=True)
-    # output metrics all csv
-    output_metrics = input_dir + "/metrics.csv"
-    metrics_all_df.to_csv(output_metrics, index=False, header=header_metrics)
-else:
-    print("No metrics.csv files found to combine.")
-
-
-if traces_all:
-    traces_all_df = pd.concat(traces_all, ignore_index=True)
-    # output metrics all csv
-    output_traces = input_dir + "/trace.csv"
-    traces_all_df.to_csv(output_traces, index=False, header=header_traces)
-else:
-    print("No traces.csv files found to combine.")
+    if traces_all:
+        traces_all_df = pd.concat(traces_all, ignore_index=True)
+        # output metrics all csv
+        output_traces = input_dir + "/trace.csv"
+        traces_all_df.to_csv(output_traces, index=False, header=header_traces)
+    else:
+        print("No traces.csv files found to combine.")
 
 ############################ RESULT PLOTS AND METRICS ############################
 
@@ -1163,7 +1185,8 @@ plt.savefig(outputPlotDir + "execTime.png")
 # exp1 = diefpy.performance_of_approaches_with_dieft(traces, metrics)
 exp1 = performance_of_approaches_with_dieft_edit(traces, metrics)
 print("Create all metrics from the traces and metrics")
-print(pd.DataFrame(exp1[exp1["test"] == test_name]).head())
+with pd.option_context("display.max_rows", None, "display.max_columns", None):
+    print(pd.DataFrame(exp1[exp1["test"] == test_name]))
 print("____________________________________________________________________________")
 print()
 
@@ -1186,7 +1209,7 @@ plt.savefig(outputPlotDir + "radar-dieft.png")
 print("dief@k producing the first 5 answers")
 # dk = diefpy.diefk(traces, test_name, 5)
 dk = diefk_edit(traces, test_name, 5)
-print(pd.DataFrame(dk).head())
+print(pd.DataFrame(dk))
 print("____________________________________________________________________________")
 print()
 
@@ -1195,7 +1218,7 @@ print()
 print("dief@k producing the first 10 answers")
 # dk = diefpy.diefk(traces, test_name, 10)
 dk = diefk_edit(traces, test_name, 10)
-print(pd.DataFrame(dk).head())
+print(pd.DataFrame(dk))
 print("____________________________________________________________________________")
 print()
 
@@ -1204,7 +1227,7 @@ print()
 print("# producing 50% of the answers")
 # dk = diefpy.diefk2(traces, test_name, 0.50)
 dk = diefk2_edit(traces, test_name, 0.50)
-print(pd.DataFrame(dk).head())
+print(pd.DataFrame(dk))
 print("____________________________________________________________________________")
 print()
 
