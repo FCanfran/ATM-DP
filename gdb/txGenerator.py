@@ -152,8 +152,8 @@ def distribute_tx(n, t_min_subset):
     while len(tx_ordered_times) < n:
         start_time = int(np.random.uniform(lower_bound, upper_bound))
         diff_end = int(np.random.normal(MEAN_DURATION, STD_DURATION))
-        if diff_end < 0:
-            diff_end = MEAN_DURATION  # if negative -> then it is = to the mean
+        if diff_end <= 0:
+            diff_end = MEAN_DURATION  # if negative or 0 -> then it is = to the mean
         if diff_end > MAX_DURATION:
             diff_end = MAX_DURATION  # if above MAX_DURATION -> then MAX_DURATION
 
