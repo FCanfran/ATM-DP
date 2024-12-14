@@ -153,7 +153,7 @@ def plot_execution_time_edit_single_test(
     """
 
     submetrics = metrics[metrics["test"] == test_name]
-    approaches = np.unique(metrics["approach"])
+    approaches = np.unique(submetrics["approach"])
     sorted_approaches = sorted(
         approaches,
         key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
@@ -670,6 +670,10 @@ def performance_of_approaches_with_dieft_edit(
 
     # Obtain tests and approaches.
     tests = np.unique(metrics["test"])
+    tests = sorted(
+        tests,
+        key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
+    )
     approaches = np.unique(metrics["approach"])
     sorted_approaches = sorted(
         approaches,
@@ -1083,6 +1087,28 @@ def plot_continuous_efficiency_with_diefk_edit(
 ####################################################################################################################
 
 
+def plot_execution_time_cores_filters(
+    metrics: np.ndarray, colors: list = DEFAULT_COLORS
+):
+    cores = []
+    filters = []
+    cores = metrics["approach"].str.extract(r"(\d+)c").astype(int)
+    filters = metrics["approach"].str.extract(r"-(\d+)f").astype(int)
+    plt.figure(figsize=(10, 6))
+    for core in metrics["cores"].unique():
+        subset = metrics[metrics["cores"] == core]
+        plt.plot(subset["filters"], subset["totaltime"], label=f"{core} cores")
+
+    plt.xscale("log")
+    plt.xlabel("Number of Filters (log scale)")
+    plt.ylabel("Execution Time (ms)")
+    plt.title("Execution Time vs Number of Filters")
+    plt.legend()
+    plt.grid(True, which="both", linestyle="--", linewidth=0.5)
+    plt.tight_layout()
+    plt.show()
+
+
 if len(sys.argv) < 4:
     print(
         "Error, run like: $>python dieffpy.py resultsDirectoryPath TEST(name) DO_JOIN(0:no,1:yes)"
@@ -1175,38 +1201,45 @@ if not os.path.exists(outputPlotDir):
     os.makedirs(outputPlotDir)
 
 traces = diefpy.load_trace(input_dir + "/trace.csv")
+
+tests = np.unique(traces["test"])
+sorted_tests = sorted(
+    tests,
+    key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
+)
+print(sorted_tests)
+
+
 # Plot the answer trace
 # diefpy.plot_answer_trace(traces, test_name, COLORS)
 # plt.savefig(outputPlotDir + "traces.png")
 plots = plot_all_answer_traces_edit(traces, COLORS)
 for i, plot in enumerate(plots):
-    plot.savefig(outputPlotDir + f"trace-{i}.png")  # Save each plot as plot_0.png, plot_1.png, etc.
-    plt.close(plot)  # Close the plot to free memory
+    plot.savefig(outputPlotDir + f"trace-{i}.png")
+    plt.close(plot)
 
-# plot_answer_trace_edit(traces, test_name, COLORS)
-plt.savefig(outputPlotDir + "traces.png")
-
-# computing dief@t until the time unit 10s
-# dt = diefpy.dieft(traces, test_name, 10)
-# print(pd.DataFrame(dt).head())
 
 # computing dief@t until the time unit when the slowest approach finalizes its execution
-# dt = diefpy.dieft(traces, test_name)
-dt = dieft_edit(traces, test_name)
 print("dief@t until the time unit when the slowest approach finalizes its execution")
-print(pd.DataFrame(dt))
-print("____________________________________________________________________________")
-print()
+for test in sorted_tests:
+    dt = dieft_edit(traces, test)
+    print(pd.DataFrame(dt))
+    print(
+        "____________________________________________________________________________"
+    )
+    print()
 
 # print(input_dir + "/metrics.csv")
 metrics = diefpy.load_metrics(input_dir + "/metrics.csv")
 
-# TODO: Do it better - poner bonito!
 # Execution time plot
 # diefpy.plot_execution_time(metrics, COLORS, log_scale=True)
-plot_execution_time_edit_single_test(test_name, metrics, COLORS, log_scale=False)
-plt.savefig(outputPlotDir + "execTime.png")
 
+for test in sorted_tests:
+    plot_execution_time_edit_single_test(test, metrics, COLORS, log_scale=False)
+    plt.savefig(outputPlotDir + f"execTime-{test}.png")
+
+plot_execution_time_cores_filters(metrics, COLORS)
 
 # Create all metrics from the `traces` and `metrics`
 # computes the results reported in the previously mentioned experiment, i.e.,
@@ -1221,18 +1254,19 @@ plt.savefig(outputPlotDir + "execTime.png")
 exp1 = performance_of_approaches_with_dieft_edit(traces, metrics)
 print("Create all metrics from the traces and metrics")
 with pd.option_context("display.max_rows", None, "display.max_columns", None):
-    print(pd.DataFrame(exp1[exp1["test"] == test_name]))
+    print(pd.DataFrame(exp1))
 print("____________________________________________________________________________")
 print()
 
 
+"""
 # Create radar plot to compare the performance of the approaches with dief@t and other metrics.
 # - Plot interpretation: Higher is better.
 # diefpy.plot_performance_of_approaches_with_dieft(exp1, test_name, COLORS)
 # plt.savefig(outputPlotDir + "radar-dieft.png")
-plot_performance_of_approaches_with_dieft_edit(exp1, test_name, COLORS)
-plt.savefig(outputPlotDir + "radar-dieft.png")
-
+for test in sorted_tests:
+    plot_performance_of_approaches_with_dieft_edit(exp1, test, COLORS)
+    plt.savefig(outputPlotDir + f"radar-dieft-{test}.png")
 
 # dief@k:s
 # The metric dief@k measures the diefficiency of a query engine while producing
@@ -1279,3 +1313,4 @@ exp2 = diefpy.continuous_efficiency_with_diefk(traces)
 # plt.savefig(outputPlotDir + "radar-diefk.png")
 plot_continuous_efficiency_with_diefk_edit(exp2, test_name, COLORS)
 plt.savefig(outputPlotDir + "radar-diefk.png")
+"""
