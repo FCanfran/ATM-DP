@@ -230,7 +230,7 @@ def plot_answer_trace_edit(
     """
     # Obtain test and approaches to compare.
     results = inputtrace[inputtrace["test"] == inputtest]
-    approaches = np.unique(inputtrace["approach"])
+    approaches = np.unique(results["approach"])
 
     sorted_approaches = sorted(
         approaches,
@@ -265,6 +265,37 @@ def plot_answer_trace_edit(
     plt.tight_layout()
 
     return fig
+
+
+def plot_all_answer_traces_edit(
+    inputtrace: np.ndarray, colors: list = DEFAULT_COLORS
+) -> list:
+    """
+    Plots the answer traces of all tests; one plot per test.
+
+    Answer traces record the points in time when an approach produces an answer.
+    This function generates one plot per test showing the answer traces of all
+    approaches for that specific test.
+
+    :param inputtrace: Dataframe with the answer trace. Attributes of the dataframe: test, approach, answer, time.
+    :param colors: List of colors to use for the different approaches.
+    :return: Plot of the answer traces of each approach when evaluating the input test.
+
+    **Examples**
+
+    >>> plot_all_answer_traces(traces)
+    >>> plot_all_answer_traces(traces, ["#ECC30B","#D56062","#84BCDA"])
+    """
+    # Obtain tests.
+    tests = np.unique(inputtrace["test"])
+
+    plots = []
+
+    # Plot the answer traces for each test.
+    for t in tests:
+        plots.append(plot_answer_trace_edit(inputtrace, t, colors))
+
+    return plots
 
 
 def plot_performance_of_approaches_with_dieft_edit(
@@ -1147,8 +1178,12 @@ traces = diefpy.load_trace(input_dir + "/trace.csv")
 # Plot the answer trace
 # diefpy.plot_answer_trace(traces, test_name, COLORS)
 # plt.savefig(outputPlotDir + "traces.png")
+plots = plot_all_answer_traces_edit(traces, COLORS)
+for i, plot in enumerate(plots):
+    plot.savefig(outputPlotDir + f"trace-{i}.png")  # Save each plot as plot_0.png, plot_1.png, etc.
+    plt.close(plot)  # Close the plot to free memory
 
-plot_answer_trace_edit(traces, test_name, COLORS)
+# plot_answer_trace_edit(traces, test_name, COLORS)
 plt.savefig(outputPlotDir + "traces.png")
 
 # computing dief@t until the time unit 10s

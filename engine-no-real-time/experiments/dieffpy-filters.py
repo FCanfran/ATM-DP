@@ -77,7 +77,7 @@ def plot_execution_time_edit(
     # tests = sorted_alphanumeric(np.unique(metrics["test"]))
     tests = np.unique(metrics["test"])
 
-    color_map = dict(zip(approaches, colors))
+    color_map = dict(zip(sorted_approaches, colors))
 
     fig, ax = plt.subplots(figsize=(0.95 * len(tests), 5), dpi=100)
     fig.subplots_adjust(top=0.85, bottom=0.25, left=0.08)
@@ -159,7 +159,7 @@ def plot_execution_time_edit_single_test(
         key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
     )
 
-    color_map = dict(zip(approaches, colors))
+    color_map = dict(zip(sorted_approaches, colors))
 
     results = [
         submetrics[submetrics["approach"] == a]["totaltime"][0]
@@ -236,7 +236,7 @@ def plot_answer_trace_edit(
         key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
     )
 
-    color_map = dict(zip(approaches, colors))
+    color_map = dict(zip(approaches, sorted_approaches))
 
     # Generate plot.
     fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
@@ -304,7 +304,7 @@ def plot_performance_of_approaches_with_dieft_edit(
         approaches,
         key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
     )
-    color_map = dict(zip(approaches, colors))
+    color_map = dict(zip(sorted_approaches, colors))
     labels = []
     for a in sorted_approaches:
         submetric_approaches = allmetrics[
@@ -430,7 +430,7 @@ def plot_continuous_efficiency_with_diefk_edit(
         key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
     )
     labels = []
-    color_map = dict(zip(approaches, colors))
+    color_map = dict(zip(sorted_approaches, colors))
 
     for a in sorted_approaches:
         submetric_approaches = diefkDF[
@@ -732,7 +732,7 @@ def plot_performance_of_approaches_with_dieft_edit(
         approaches,
         key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
     )
-    color_map = dict(zip(approaches, colors))
+    color_map = dict(zip(sorted_approaches, colors))
     labels = []
     for a in sorted_approaches:
         submetric_approaches = allmetrics[(allmetrics["approach"] == a)]
@@ -963,7 +963,7 @@ def plot_continuous_efficiency_with_diefk_edit(
         key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
     )
     labels = []
-    color_map = dict(zip(approaches, colors))
+    color_map = dict(zip(sorted_approaches, colors))
 
     for a in sorted_approaches:
         submetric_approaches = diefkDF[(diefkDF["approach"] == a)]
@@ -1050,16 +1050,16 @@ def plot_continuous_efficiency_with_diefk_edit(
 
 if len(sys.argv) < 4:
     print(
-        "Error, run like: $>python dieffpy.py resultsDirectoryPath TEST(name) DOAVERAGE(0:no,1:yes)"
+        "Error, run like: $>python dieffpy.py resultsDirectoryPath TEST(name) DO_JOIN(0:no,1:yes)"
     )
     exit(1)
 
 # Read name of the directory
 input_dir = sys.argv[1]
 test_name = sys.argv[2]
-do_average = bool(sys.argv[3])
+do_join = bool(sys.argv[3])
 
-if do_average:
+if do_join:
 
     metrics_all = []
     header_metrics = False
