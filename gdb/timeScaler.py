@@ -68,6 +68,7 @@ def main():
         )  # Handle NaN (missing values)
     )
 
+    # microseconds format precision
     tx_df["transaction_start"] = tx_df["transaction_start"].dt.strftime(
         format_microseconds
     )

@@ -117,8 +117,7 @@ func ReadExecDescriptionFile(filename string) {
 
 // ***************************************************************************** //
 
-// https://yourbasic.org/golang/format-parse-string-time-date-example/
-const Time_layout = "2006-01-02 15:04:05"
+const Time_layout_micro = "2006-01-02 15:04:05.000000"
 
 type TxType uint8
 
@@ -400,7 +399,7 @@ func ReadEdge(tx []string) Event {
 	}
 
 	// start
-	tx_start, err := time.Parse(Time_layout, tx[4])
+	tx_start, err := time.Parse(Time_layout_micro, tx[4])
 	CheckError(err)
 
 	// end
@@ -411,7 +410,7 @@ func ReadEdge(tx []string) Event {
 	// a time that has not been initialized explicitly.
 	var tx_end time.Time
 	if tx[5] != "" {
-		tx_end, err = time.Parse(Time_layout, tx[5])
+		tx_end, err = time.Parse(Time_layout_micro, tx[5])
 		CheckError(err)
 		r.Type = EdgeEnd
 	} else {
@@ -496,8 +495,8 @@ func PrintEdgeComplete(msg string, e Edge) {
 			e.Number_id,
 			e.ATM_id,
 			e.Tx_type,
-			e.Tx_start.Format(Time_layout),
-			e.Tx_end.Format(Time_layout),
+			e.Tx_start.Format(Time_layout_micro),
+			e.Tx_end.Format(Time_layout_micro),
 			e.Tx_amount)
 	} else {
 		fmt.Printf("%s  %d,%s,%s,%d,%s,%s,%.2f\n",
@@ -506,8 +505,8 @@ func PrintEdgeComplete(msg string, e Edge) {
 			e.Number_id,
 			e.ATM_id,
 			e.Tx_type,
-			e.Tx_start.Format(Time_layout),
-			e.Tx_end.Format(Time_layout),
+			e.Tx_start.Format(Time_layout_micro),
+			e.Tx_end.Format(Time_layout_micro),
 			e.Tx_amount)
 	}
 }
@@ -519,8 +518,8 @@ func PrintEdgeCompleteToFile(msg string, e Edge, file *os.File) {
 			e.Number_id,
 			e.ATM_id,
 			e.Tx_type,
-			e.Tx_start.Format(Time_layout),
-			e.Tx_end.Format(Time_layout),
+			e.Tx_start.Format(Time_layout_micro),
+			e.Tx_end.Format(Time_layout_micro),
 			e.Tx_amount)
 	} else {
 		fmt.Fprintf(file, "%s:   %d,%s,%s,%d,%s,%s,%.2f\n",
@@ -529,8 +528,8 @@ func PrintEdgeCompleteToFile(msg string, e Edge, file *os.File) {
 			e.Number_id,
 			e.ATM_id,
 			e.Tx_type,
-			e.Tx_start.Format(Time_layout),
-			e.Tx_end.Format(Time_layout),
+			e.Tx_start.Format(Time_layout_micro),
+			e.Tx_end.Format(Time_layout_micro),
 			e.Tx_amount)
 	}
 }
@@ -577,8 +576,8 @@ func PrintEventOnFile(e Event, file *os.File) {
 			edge.Number_id,
 			edge.ATM_id,
 			edge.Tx_type,
-			edge.Tx_start.Format(Time_layout),
-			edge.Tx_end.Format(Time_layout),
+			edge.Tx_start.Format(Time_layout_micro),
+			edge.Tx_end.Format(Time_layout_micro),
 			edge.Tx_amount)
 		file.WriteString(out_string)
 	default:
@@ -591,8 +590,8 @@ func PrintEventOnFile(e Event, file *os.File) {
 			edge.Number_id,
 			edge.ATM_id,
 			edge.Tx_type,
-			edge.Tx_start.Format(Time_layout),
-			edge.Tx_end.Format(Time_layout),
+			edge.Tx_start.Format(Time_layout_micro),
+			edge.Tx_end.Format(Time_layout_micro),
 			edge.Tx_amount)
 		file.WriteString(out_string)
 	}
