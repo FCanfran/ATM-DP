@@ -29,8 +29,8 @@ fi
 
 
 # 1. compilation
-echo "compilation..."
-go build -o ../cmd/main ../cmd/main.go
+#echo "compilation..."
+#go build -o ../cmd/main ../cmd/main.go
 
 # 2. run all the experiments, one after the other
 for csv_description_file in $(ls "$directory"/*.csv | sort -V); do # sort -V to respect numerical order

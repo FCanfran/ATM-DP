@@ -1,4 +1,15 @@
-#!/bin/bash
+#!/bin/bash -l
+#
+#SBATCH -J exp-1c
+#SBATCH -o exp-1c."%j".out
+#SBATCH -e exp-1c."%j".err
+#
+#SBATCH --mail-user fernando.martin.canfran@estudiantat.upc.edu
+#SBATCH --mail-type=ALL
+#
+#SBATCH --mem=1024M
+#SBATCH -c 1
+#SBATCH -p short
 
 if [ $# -ne 3 ]; then
     echo "Usage: $0 <exps-directory> <experiment-execTimes> <TEST>"
@@ -47,7 +58,8 @@ for script in $(ls "$directory"/*.sh | sort -V); do # sort -V to respect numeric
             echo "Executing $script run $i..."  
             echo "___________________________________________________________________________________________________________"
             echo 
-            bash "$script" # outdir is the script output directory
+            ../cmd/main exps-descriptions/small/1c/1c-1f.csv
+            sbatch "$script" # outdir is the script output directory - CLUSTER
             rm -r "$outdir-$i"
             mv $outdir "$outdir-$i" # rename - appending the label of the corresponding run
             # append the csv metrics and traces files into the avg files
@@ -67,8 +79,8 @@ for script in $(ls "$directory"/*.sh | sort -V); do # sort -V to respect numeric
         # average the results of this experiment in a single output - averaged - directory
         # averaged metrics.csv
         # averaged trace.csv
-        python3.10 average_metrics.py $metrics_outfile
-        python3.10 average_traces.py $trace_outfile
+        python3 average_metrics.py $metrics_outfile
+        python3 average_traces.py $trace_outfile
     else
         echo "No .sh files found in $directory."
     fi
@@ -90,9 +102,9 @@ find ./output -type d -name "*-avg" | while read -r dir; do
     echo "Moved $dir to $outdirallavg/"
 done
 
-
 outfiledieff="$outdirallavg/dieffpy-out.txt"
-python3.10 dieffpy.py $outdirallavg $TEST > $outfiledieff
+python -m pip install diefpy
+python3 dieffpy.py $outdirallavg $TEST > $outfiledieff
 
 outdirTest="out-$TEST"
 rm -r $outdirTest

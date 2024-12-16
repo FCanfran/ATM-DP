@@ -7,7 +7,7 @@
 #SBATCH --mail-user fernando.martin.canfran@estudiantat.upc.edu
 #SBATCH --mail-type=ALL
 #
-#SBATCH --mem=1024M
+#SBATCH --mem=16384M
 #SBATCH -c 1
 #SBATCH -p short
 
@@ -29,8 +29,8 @@ fi
 
 
 # 1. compilation
-echo "compilation..."
-go build -o ../cmd/main ../cmd/main.go
+#echo "compilation..."
+#go build -o ../cmd/main ../cmd/main.go
 
 # 2. run all the experiments, one after the other
 for csv_description_file in $(ls "$directory"/*.csv | sort -V); do # sort -V to respect numerical order
