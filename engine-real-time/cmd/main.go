@@ -71,7 +71,7 @@ func main() {
 	// launch Stream goroutines - to provide the input in real-time
 	go dp.Stream(cmn.StreamFileName, stream_ch)
 	// launch Source, Generator and Sink goroutines
-	go dp.Source(stream_ch, event_ch)
+	go dp.Source(start, stream_ch, event_ch)
 	go dp.Generator(event_ch, alert_ch, out_event_ch)
 	go dp.Sink(start, alert_ch, out_event_ch, endchan)
 

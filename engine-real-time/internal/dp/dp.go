@@ -73,6 +73,9 @@ Loop:
 					timeFirst = t
 				}
 				timeLast = t
+
+				// calculate response time
+				responseTime := time.Since(alert.LastEventTimestamp)
 				//cmn.PrintAlertVerbose(alert, t, alertCount)
 				cmn.PrintAlertOnFile(alert, fileAlerts)
 				cmn.PrintAlertOnResultsTrace(t, alertCount, writer_trace)
@@ -228,6 +231,7 @@ func filter(
 					isFraud, alert := subgraph.CheckFraud(context, session, event_worker.E)
 					//fmt.Println("----------------------------------------------------")
 					if isFraud {
+						alert.LastEventTimestamp = event_worker.Timestamp
 						out_alert <- alert
 					}
 					// set as new head of the subgraph (only save the last edge)
@@ -306,7 +310,7 @@ Loop:
 }
 
 // Source: reads edges given by Stream process
-func Source(in_stream <-chan cmn.Event, out_event chan<- cmn.Event) {
+func Source(start_time time.Time, in_stream <-chan cmn.Event, out_event chan<- cmn.Event) {
 
 	txLogFile, err := os.Create(cmn.OutDirName + "/txLog.txt")
 	cmn.CheckError(err)
@@ -318,6 +322,9 @@ func Source(in_stream <-chan cmn.Event, out_event chan<- cmn.Event) {
 			// TODO: Manage the error properly
 			fmt.Println("Source - !ok in in_stream channel")
 		}
+		// get internal system event timestamp - to mark/simulate when the event arrived to the system
+		t := time.Since(start_time)
+		event.Timestamp = t
 		out_event <- event
 		if event.Type == cmn.EOF {
 			//fmt.Println("Source - EOF event")

@@ -151,8 +151,9 @@ type Edge struct {
 }
 
 type Event struct {
-	Type EventType
-	E    Edge
+	Type      EventType
+	E         Edge
+	Timestamp time.Time // internal system timestamp - denotes when the system arrives to the system
 }
 
 type Coordinates struct {
@@ -180,9 +181,14 @@ Alert labels:
 */
 
 type Alert struct {
-	Label    string // it can also be set as integer - for each kind of fraud pattern put a int
-	Info     string // optional additional information of the alert to be passed
-	Subgraph Graph  // if desired, if needed later when receiving the alert in the generator
+	Label              string    // it can also be set as integer - for each kind of fraud pattern put a int
+	Info               string    // optional additional information of the alert to be passed
+	Subgraph           Graph     // if desired, if needed later when receiving the alert in the generator
+	LastEventTimestamp time.Time // denotes the internal system timestamp of the last event that composes the alert
+}
+
+func (g *Graph) GetEdgeList() *list.List {
+	return g.edges
 }
 
 // NewGraph creates a new graph
