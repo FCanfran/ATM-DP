@@ -44,7 +44,7 @@ func Sink(
 	writer_trace := csv.NewWriter(file_trace)
 	defer writer_trace.Flush()
 	// headers
-	headers := []string{"test", "approach", "answer", "time"}
+	headers := []string{"test", "approach", "answer", "time", "responseTime"}
 	err = writer_trace.Write(headers)
 	cmn.CheckError(err)
 
@@ -54,7 +54,7 @@ func Sink(
 	defer file_metrics.Close()
 	writer_metrics := csv.NewWriter(file_metrics)
 	defer writer_metrics.Flush()
-	headers = []string{"test", "approach", "tfft", "totaltime", "comp"}
+	headers = []string{"test", "approach", "tfft", "totaltime", "responseTime", "comp"}
 	err = writer_metrics.Write(headers)
 	cmn.CheckError(err)
 
@@ -75,10 +75,10 @@ Loop:
 				timeLast = t
 
 				// calculate response time
-				responseTime := time.Since(alert.LastEventTimestamp)
+				responseTime := t - alert.LastEventTimestamp
 				//cmn.PrintAlertVerbose(alert, t, alertCount)
-				cmn.PrintAlertOnFile(alert, fileAlerts)
-				cmn.PrintAlertOnResultsTrace(t, alertCount, writer_trace)
+				cmn.PrintAlertOnFileVerbose(alert, responseTime, alertCount, fileAlerts)
+				cmn.PrintAlertOnResultsTrace(t, responseTime, alertCount, writer_trace)
 			}
 		case event, ok := <-in_event:
 			if ok {
