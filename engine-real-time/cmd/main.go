@@ -10,6 +10,7 @@ import (
 	cmn "pipeline/internal/common"
 	"pipeline/internal/connection"
 	"pipeline/internal/dp"
+	"runtime"
 	"time"
 )
 
@@ -24,6 +25,34 @@ func main() {
 
 	// start connection to static gdb
 	ctx := connection.SafeConnect()
+
+	// golang max processors settings
+	maxProcsBefore := runtime.GOMAXPROCS(0)
+	maxProcsNow := runtime.GOMAXPROCS(0)
+	numCPU := runtime.NumCPU()
+	fmt.Println("maxProcsBefore: ", maxProcsBefore, "maxProcsNow: ", maxProcsNow, " numCPU: ", numCPU)
+
+	/*
+		// create go execution traces output files
+		var cpuprofile string = cmn.OutDirName + "/cpu.pprof"
+		var memprofile string = cmn.OutDirName + "/mem.pprof"
+		var tracefile string = cmn.OutDirName + "/trace-go.out"
+		f, err := os.Create(cpuprofile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+
+		f, err = os.Create(tracefile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := trace.Start(f); err != nil {
+			log.Fatalf("failed to start trace: %v", err)
+		}
+		defer trace.Stop()
+	*/
 
 	// creation of needed channels
 	// real-time input stream channel
@@ -51,7 +80,19 @@ func main() {
 	fmt.Println("TotalExecutionTime,", t, ",", t.Microseconds(), "μs,", t.Milliseconds(), "ms ,", t.Seconds(), "s")
 	fmt.Println("Finish Program")
 
-	// TODO: finish connection to static gdb
+	// finish connection to static gdb
 	connection.CloseConnection(ctx)
+
+	/*
+		f, err = os.Create(memprofile)
+		if err != nil {
+			log.Fatal("could not create memory profile: ", err)
+		}
+		defer f.Close() // error handling omitted for example
+		runtime.GC()    // get up-to-date statistics
+		if err := pprof.WriteHeapProfile(f); err != nil {
+			log.Fatal("could not write memory profile: ", err)
+		}
+	*/
 
 }

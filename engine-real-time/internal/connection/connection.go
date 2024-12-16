@@ -131,13 +131,13 @@ func ReadQuery(ctx context.Context,
 
 func CreateSession(ctx context.Context) neo4j.SessionWithContext {
 	session := driver.NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
-	fmt.Println("Session created.")
+	//fmt.Println("Session created.")
 	return session
 }
 
 func CloseSession(ctx context.Context, session neo4j.SessionWithContext) {
 	session.Close(ctx)
-	fmt.Println("Session closed.")
+	//fmt.Println("Session closed.")
 }
 
 // TODO/TOCHECK: ctx as a global variable or not

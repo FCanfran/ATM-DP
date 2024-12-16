@@ -8,10 +8,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"pipeline/internal/connection"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
@@ -20,7 +18,10 @@ import (
 
 const ChannelSize = 5000
 
-// TODO: Parameterized with input execution description file
+// csv input reading
+const ChunkSize = 100
+
+// Parameterized with input execution description file
 // ***************************************************************************** //
 // max number of cards per filter
 var MaxFilterSize int = 4
@@ -29,27 +30,27 @@ var MaxFilterSize int = 4
 var TEST string
 var APPROACH string
 
-// scaling factor
-var scaleFactor float64 = 1.0
-
 // stream input file name
 var StreamFileName string
 
 // output directory name
 var OutDirName string
 
+// scaling factor
+var scaleFactor float64 = 1.0
+
 func setOutputDir(name string) {
 
 	// create output dir - if it does not exist
-	_, err := os.Stat("../output")
+	_, err := os.Stat("./output")
 	if os.IsNotExist(err) {
-		err = os.Mkdir("../output", 0755)
+		err = os.Mkdir("./output", 0755)
 		CheckError(err)
 	}
 	CheckError(err)
 
 	// create subdirectory if it does not exist
-	OutDirName = "../output/" + name
+	OutDirName = "./output/" + name
 	_, err = os.Stat(OutDirName)
 	if os.IsNotExist(err) {
 		err = os.Mkdir(OutDirName, 0755)
@@ -60,7 +61,7 @@ func setOutputDir(name string) {
 
 func ReadExecDescriptionFile(filename string) {
 	// csv file content:
-	// txFile, scaleFactor, test, approach, maxFilterSize
+	// txFile, test, approach, maxFilterSize, scaleFactor
 	file, err := os.Open(filename)
 	CheckError(err)
 	defer file.Close()
@@ -78,8 +79,17 @@ func ReadExecDescriptionFile(filename string) {
 	// txFile
 	StreamFileName = params[0]
 
+	// test
+	TEST = params[1]
+	// approach
+	APPROACH = params[2]
+
+	// maxFilterSize
+	MaxFilterSize, err = strconv.Atoi(params[3])
+	CheckError(err)
+
 	// scaleFactor
-	scaleFactorPre, err := strconv.ParseFloat(params[1], 64)
+	scaleFactorPre, err := strconv.ParseFloat(params[4], 64)
 	CheckError(err)
 	if scaleFactorPre < 0 || scaleFactorPre > 1 {
 		log.Fatalf("Error --- scaleFactor needs to be in [0,1]\n")
@@ -87,28 +97,20 @@ func ReadExecDescriptionFile(filename string) {
 		scaleFactor = scaleFactorPre
 	}
 
-	// test
-	TEST = params[2]
-	// approach
-	APPROACH = params[3]
-
-	// maxFilterSize
-	MaxFilterSize, err = strconv.Atoi(params[4])
-	CheckError(err)
-
 	// create output dir to put the result files
 	// obtain the name after input filename
-	baseName := filepath.Base(StreamFileName)
-	outdirName := strings.TrimSuffix(baseName, ".csv")
+	//baseName := filepath.Base(StreamFileName)
+	//outdirName := strings.TrimSuffix(baseName, ".csv") + "-" + APPROACH
+	outdirName := APPROACH
 	setOutputDir(outdirName)
 
 	fmt.Println("##############    EXECUTION PARAMETERS    #############")
 	fmt.Println("#######################################################")
 	fmt.Println(StreamFileName)
-	fmt.Println(scaleFactor)
 	fmt.Println(TEST)
 	fmt.Println(APPROACH)
 	fmt.Println(MaxFilterSize)
+	fmt.Println(scaleFactor)
 	fmt.Println("#######################################################")
 
 }
@@ -159,32 +161,17 @@ type Coordinates struct {
 	Longitude float64
 }
 
-// FUTURE: For the multiple window support - for the moment: single window support
-// ------------------------------------------------------------------------------ //
-// TODO: Put this correctly!, for the moment the diff is 24h
-// In Duration format
-const timeTxThreshold = 1 * 24 * time.Hour
-
-// TODO: Put this correctly!
-const timeFilterThreshold = 2 * 24 * time.Hour
-
-// ------------------------------------------------------------------------------ //
-
 // CheckFraud() parameters
 // Assumption on the maximum speed (km/h) at which the distance between two geographical points
 // can be traveled
 const maxSpeed = 500 // km/h
 
-// ------------------------------------------------------------------ //
-
 // For the volatile subgraph
 
 // Golang list - doubly linked list
 // Graph is a struct that encapsulates a list of edges: edges
-// last_timestamp: to save the last timestamp of the filter / subgraph
 type Graph struct {
-	last_timestamp time.Time
-	edges          *list.List // a list of pointers to edges
+	edges *list.List // a list of pointers to edges
 }
 
 /*
@@ -205,12 +192,15 @@ func NewGraph() *Graph {
 	return &g
 }
 
+// sets edge e as the new head of the subgraph while erasing the previous
+func (g *Graph) NewHead(e Edge) {
+	g.edges = list.New()
+	g.edges.PushBack(&e)
+}
+
 // For adding a general edge or a tx-start edge at the end of the volatile subgraph ds
 func (g *Graph) AddEdge(e Edge) {
-	//fmt.Println(":::: AddEdge ::::")
 	g.edges.PushBack(&e) // Adding edge as pointer to the list (list of pointers to edges)
-	// TODO: Needs to be updated?
-	// g.last_timestamp = e.Tx_start
 }
 
 // Complete an edge in the subgraph with the tx-end edge
@@ -231,60 +221,6 @@ func (g *Graph) CompleteEdge(e Edge) {
 		}
 	} else {
 		log.Println("Warning: AddEdge -> a tx-end was tryied to be added on a empty subgraph")
-	}
-}
-
-// FUTURE: For the multiple window support - for the moment: single window support
-// ------------------------------------------------------------------------------ //
-// Given a certain datetime, it updates the graph, starting from the first
-// edge, by eliminating those that are outdated wrt this datetime
-// - datetime format: DD/MM/YYYY HH:MM:SS
-func (g *Graph) Update(timestamp time.Time) {
-	fmt.Println(":::: update ::::")
-	// Traverse the list from the beginning and eliminate edges until no
-	// outdate is detected
-	eg := g.edges.Front()
-	for eg != nil {
-		eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
-		difference := timestamp.Sub(eg_val.Tx_end)
-		if difference >= timeTxThreshold {
-			// Keep the next before deleting the current, so that we can have
-			// the next of the current after the removal
-			eg_next := eg.Next()
-			g.edges.Remove(eg)
-			eg = eg_next
-		} else {
-			// at the time that we find the first edge which is not
-			// outdated, we stop, since for sure the next ones are
-			// also not outdated (we are assuming that the tx are
-			// received ordered in time...)
-			return
-		}
-	}
-}
-
-// Filter timeout check: test if the filter has to die (with the last edge
-// of the volatile subgraph and a timestamp), if the time difference is
-// greater than timeFilterThreshold returns true, otherwise false
-// TODO: Again this is assuming that the tx are ordered in time!!!
-// otherwise we will have to find the most recent tx in time
-func (g *Graph) CheckFilterTimeout(timestamp time.Time) bool {
-	fmt.Println(":::: checkFilterTimeout ::::")
-	difference := timestamp.Sub(g.last_timestamp)
-	return (difference >= timeFilterThreshold)
-}
-
-// Delete a specific edge of the graph
-// - Locate by tx id
-func (g *Graph) Delete(e Edge) {
-
-	// Locate the element, and then remove it
-	for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
-		eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
-		if eg_val.Tx_id == e.Tx_id {
-			g.edges.Remove(eg)
-			return
-		}
 	}
 }
 
@@ -360,11 +296,6 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	// t = e / v ---> (km)/(km/h) --> in seconds (*60*60)
 	t_min := (distance_km / maxSpeed) * 60 * 60 // in seconds
 
-	fmt.Println("t_min before", t_min)
-	// scale factor
-	t_min = t_min * scaleFactor
-	fmt.Println("t_min after", t_min)
-
 	return t_min, nil
 }
 
@@ -382,37 +313,44 @@ func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext
 
 	if last != nil {
 		last_e := *(last.Value.(*Edge)) // asserts eg.Value to type Edge
-		PrintEdge("", new_e)
-		PrintEdge("", last_e)
-		// Case new_e.tx_start < last_e.tx_end
+		// FRAUD PATTERN 0: case new_e.tx_start < last_e.tx_end
 		// -> it can not happen that a transaction starts before the previous is finished
-		if new_e.Tx_start.Before(last_e.Tx_end) {
-			fmt.Println("tx starts before the previous ends!")
+		// check if previous was closed
+		if last_e.Tx_end.IsZero() || new_e.Tx_start.Before(last_e.Tx_end) {
+			//fmt.Println("tx starts before the previous ends!")
+			log.Println("Warning: tx starts before the previous ends! - ", new_e.Number_id)
 			// TODO: It is a TRUE fraud, but not of this kind! - other kind
 			// do not consider it here so far
 			// print fraud pattern with this edge
+			fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+			fmt.Println("Warning: tx starts before the previous ends! - ", new_e.Number_id)
 			PrintEdge("Fraud pattern with: ", last_e)
-			fraudIndicator = true
-			// fraud1Alert = ... // TODO: Poner/Separar como otro tipo de fraude/alert
-			subgraph := NewGraph()
-			subgraph.AddEdge(last_e)
-			subgraph.AddEdge(new_e)
-			fraudAlert.Label = "0"
-			fraudAlert.Info = "fraud pattern"
-			fraudAlert.Subgraph = *subgraph
-			fraudIndicator = true
+			/*
+				fraudIndicator = true
+				subgraph := NewGraph()
+				subgraph.AddEdge(last_e)
+				subgraph.AddEdge(new_e)
+				fraudAlert.Label = "0"
+				fraudAlert.Info = "fraud pattern"
+				fraudAlert.Subgraph = *subgraph
+				fraudIndicator = true
+			*/
 		} else {
 			if last_e.ATM_id != new_e.ATM_id {
 				// time feasibility check: (new_e.tx_start - last_e.tx_end) < Tmin(last_e.loc, new_e.loc)
 				// obtain Tmin(last_e.loc, new_e.loc)
 				t_min, err := obtainTmin(ctx, session, last_e.ATM_id, new_e.ATM_id)
 				CheckError(err)
+				// scale factor
+				//fmt.Println("t_min before", t_min)
+				t_min = t_min * scaleFactor
+				//fmt.Println("t_min after", t_min)
 				t_diff := (new_e.Tx_start.Sub(last_e.Tx_end)).Seconds()
-				fmt.Println("t_min", t_min)
-				fmt.Println("t_diff", t_diff)
+				//fmt.Println("t_min", t_min)
+				//fmt.Println("t_diff", t_diff)
 				if t_diff < t_min {
 					// create alert
-					PrintEdge("Fraud pattern with: ", last_e)
+					// PrintEdge("Fraud pattern with: ", last_e)
 					// subgraph
 					subgraph := NewGraph()
 					subgraph.AddEdge(last_e)
@@ -442,7 +380,7 @@ func (e Edge) IsStart() bool {
 	}
 }
 
-// returns the constructed Edge Event - given the tx csv row
+// Constructs the Edge Event from a transaction csv row
 func ReadEdge(tx []string) Event {
 
 	var r Event
@@ -607,9 +545,16 @@ func PrintAlertVerbose(alert Alert, timestamp time.Duration, alertCount int) {
 	fmt.Println("______________________________________________________________________________")
 }
 
-// So far, to print the anomalous tx subgraph on a dedicated log file for each kind of fraud
-func PrintAlertOnFile(alert Alert, timestamp time.Duration, alertCount int, file *os.File) {
+func PrintAlertOnFileVerbose(alert Alert, timestamp time.Duration, alertCount int, file *os.File) {
 	fmt.Fprintf(file, "Alert - label: %s, info: %s, timestamp: %v, numAlert: %d\n", alert.Label, alert.Info, timestamp, alertCount)
+	switch alert.Label {
+	case "0", "1":
+		alert.Subgraph.PrintToFile(file)
+	}
+}
+
+func PrintAlertOnFile(alert Alert, file *os.File) {
+	fmt.Fprintf(file, "Alert - label: %s\n", alert.Label)
 	switch alert.Label {
 	case "0", "1":
 		alert.Subgraph.PrintToFile(file)
@@ -656,8 +601,8 @@ func PrintEventOnFile(e Event, file *os.File) {
 
 func PrintAlertOnResultsTrace(timestamp time.Duration, alertCount int, csv_writer *csv.Writer) {
 	dataRow := []string{
-		TEST,                     // test
-		APPROACH,                 // approach
+		TEST,                     // test (stream kind)
+		APPROACH,                 // approach (num cores & num filters)
 		strconv.Itoa(alertCount), // answer
 		strconv.FormatFloat(timestamp.Seconds(), 'f', 2, 64), // time (in seconds)
 	}
@@ -696,3 +641,66 @@ func ChangeLogPrefiX() {
 	// Set microseconds and full PATH of source code in logs
 	log.SetFlags(log.Lmicroseconds | log.Llongfile)
 }
+
+/*
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
+// FUTURE: For the multiple window support - for the moment: single window support
+// TODO: Put this correctly!, for the moment the diff is 24h
+// In Duration format
+//const timeTxThreshold = 1 * 24 * time.Hour
+// TODO: Put this correctly!
+//const timeFilterThreshold = 2 * 24 * time.Hour
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
+// ------------------------------------------------------------------------------ //
+// Given a certain datetime, it updates the graph, starting from the first
+// edge, by eliminating those that are outdated wrt this datetime
+// - datetime format: DD/MM/YYYY HH:MM:SS
+func (g *Graph) Update(timestamp time.Time) {
+	fmt.Println(":::: update ::::")
+	// Traverse the list from the beginning and eliminate edges until no
+	// outdate is detected
+	eg := g.edges.Front()
+	for eg != nil {
+		eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
+		difference := timestamp.Sub(eg_val.Tx_end)
+		if difference >= timeTxThreshold {
+			// Keep the next before deleting the current, so that we can have
+			// the next of the current after the removal
+			eg_next := eg.Next()
+			g.edges.Remove(eg)
+			eg = eg_next
+		} else {
+			// at the time that we find the first edge which is not
+			// outdated, we stop, since for sure the next ones are
+			// also not outdated (we are assuming that the tx are
+			// received ordered in time...)
+			return
+		}
+	}
+}
+
+// Filter timeout check: test if the filter has to die (with the last edge
+// of the volatile subgraph and a timestamp), if the time difference is
+// greater than timeFilterThreshold returns true, otherwise false
+// TODO: Again this is assuming that the tx are ordered in time!!!
+// otherwise we will have to find the most recent tx in time
+func (g *Graph) CheckFilterTimeout(timestamp time.Time) bool {
+	fmt.Println(":::: checkFilterTimeout ::::")
+	difference := timestamp.Sub(g.last_timestamp)
+	return (difference >= timeFilterThreshold)
+}
+
+// Delete a specific edge of the graph
+// - Locate by tx id
+func (g *Graph) Delete(e Edge) {
+
+	// Locate the element, and then remove it
+	for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
+		eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
+		if eg_val.Tx_id == e.Tx_id {
+			g.edges.Remove(eg)
+			return
+		}
+	}
+}
+*/
