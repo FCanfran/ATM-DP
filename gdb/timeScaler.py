@@ -4,7 +4,8 @@ from datetime import datetime, timedelta
 
 # Pre:
 # - input stream comes ordered by timestamp
-format = "%Y-%m-%d %H:%M:%S"
+format_seconds = "%Y-%m-%d %H:%M:%S"
+format_microseconds = "%Y-%m-%d %H:%M:%S.%f"  # 10^-6 seconds
 
 
 def main():
@@ -67,8 +68,10 @@ def main():
         )  # Handle NaN (missing values)
     )
 
-    tx_df["transaction_start"] = tx_df["transaction_start"].dt.strftime(format)
-    tx_df["transaction_end"] = tx_df["transaction_end"].dt.strftime(format)
+    tx_df["transaction_start"] = tx_df["transaction_start"].dt.strftime(
+        format_microseconds
+    )
+    tx_df["transaction_end"] = tx_df["transaction_end"].dt.strftime(format_microseconds)
 
     outfilename = tx_file.replace(".csv", f"-scaled-{scale_factor}.csv")
     tx_df.to_csv(outfilename, index=False)
