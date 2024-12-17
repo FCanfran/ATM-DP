@@ -13,8 +13,6 @@ metrics = pd.read_csv(sys.argv[2])
 
 mean_response_time_ns = int(trace["responseTime"].mean())
 
-print(mean_response_time_ns)
-
 metrics["mrt"] = mean_response_time_ns
 
 # print(metrics)
