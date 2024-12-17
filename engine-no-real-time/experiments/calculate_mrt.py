@@ -2,7 +2,7 @@ import pandas as pd
 import sys
 
 if len(sys.argv) < 3:
-    print("Error, run like: $>python average_traces.py <trace.csv> <metrics.csv>")
+    print("Error, run like: $>python calculate_mrt.py <trace.csv> <metrics.csv>")
     exit(1)
 
 trace_csv = sys.argv[1]
