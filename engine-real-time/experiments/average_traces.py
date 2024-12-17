@@ -7,6 +7,8 @@ if len(sys.argv) < 2:
 
 df = pd.read_csv(sys.argv[1])
 
+print(df)
+
 # Group by 'answer' and calculate the mean of 'time'
 grouped = df.groupby(["test", "approach", "answer"], as_index=False)["time"].mean()
 
