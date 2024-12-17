@@ -1,14 +1,14 @@
 #!/bin/bash -l
 #
-#SBATCH -J exp-4c
-#SBATCH -o exp-4c."%j".out
-#SBATCH -e exp-4c."%j".err
+#SBATCH -J exp-2c
+#SBATCH -o exp-2c."%j".out
+#SBATCH -e exp-2c."%j".err
 #
 #SBATCH --mail-user fernando.martin.canfran@estudiantat.upc.edu
 #SBATCH --mail-type=ALL
 #
 #SBATCH --mem=16384M
-#SBATCH -c 4
+#SBATCH -c 2
 #SBATCH -p short
 
 

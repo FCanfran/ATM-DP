@@ -1,14 +1,25 @@
-#!/bin/bash
+#!/bin/bash -l
+#
+#SBATCH -J exp-16c
+#SBATCH -o exp-16c."%j".out
+#SBATCH -e exp-16c."%j".err
+#
+#SBATCH --mail-user fernando.martin.canfran@estudiantat.upc.edu
+#SBATCH --mail-type=ALL
+#
+#SBATCH --mem=16384M
+#SBATCH -c 16
+#SBATCH -p short
 
-if [ $# -ne 3 ]; then
-    echo "Usage: $0 <exps-directory> <experiment-execTimes> <TEST>"
+
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <exps-descriptions-directory> <experiment-execTimes>"
     exit 1
 fi
 
 # Assign the directory from the command line argument
 directory="$1"
 execTimes="$2"
-TEST="$3"
 
 # Check if the provided directory exists
 if [ ! -d "$directory" ]; then
@@ -18,14 +29,14 @@ fi
 
 
 # 1. compilation
-echo "compilation..."
-go build -o ../cmd/main ../cmd/main.go
+#echo "compilation..."
+#go build -o ../cmd/main ../cmd/main.go
 
-# 2. launch all the experiments scripts, one after the other (in the exps-scrips directory)
-for script in $(ls "$directory"/*.sh | sort -V); do # sort -V to respect numerical order
-    if [ -f "$script" ]; then
-        filename=$(basename "$script") 
-        base="${filename%.sh}"        
+# 2. run all the experiments, one after the other
+for csv_description_file in $(ls "$directory"/*.csv | sort -V); do # sort -V to respect numerical order
+    if [ -f "$csv_description_file" ]; then
+        filename=$(basename "$csv_description_file") 
+        base="${filename%.csv}"        
         outdir="output/$base"
         outdiravg="output/$base-avg"
 
@@ -44,12 +55,16 @@ for script in $(ls "$directory"/*.sh | sort -V); do # sort -V to respect numeric
         for ((i = 1; i <= execTimes; i++)); do
             echo "___________________________________________________________________________________________________________"
             echo 
-            echo "Executing $script run $i..."  
+            echo "Executing experiment $base run $i..."  
             echo "___________________________________________________________________________________________________________"
             echo 
-            bash "$script" # outdir is the script output directory
+            ../cmd/main "$csv_description_file" # exec
             rm -r "$outdir-$i"
             mv $outdir "$outdir-$i" # rename - appending the label of the corresponding run
+            
+            # calculate the Mean Response Time - based on the trace.csv and add it to the metrics.csv
+            python3 calculate_mrt.py "$outdir-$i/trace.csv" "$outdir-$i/metrics.csv"
+            
             # append the csv metrics and traces files into the avg files
             # metrics
             if [ ! -f "$metrics_outfile" ]; then
@@ -64,36 +79,7 @@ for script in $(ls "$directory"/*.sh | sort -V); do # sort -V to respect numeric
             tail -n +2 "$outdir-$i/trace.csv" >> "$trace_outfile" # append, excluding the header
 
         done
-        # average the results of this experiment in a single output - averaged - directory
-        # averaged metrics.csv
-        # averaged trace.csv
-        python3.10 average_metrics.py $metrics_outfile
-        python3.10 average_traces.py $trace_outfile
     else
         echo "No .sh files found in $directory."
     fi
 done
-
-# at this point -> "output" directory with all the results -> labeled as -avg directories
-# - produce plots and diefficiency results with the diefpy library program
-# - move the result subdirectories of the "output" directory
-
-# move all the -avg directories into the same directory and run the dieffpy program there
-outdirallavg="output/avg-all"
-rm -r $outdirallavg
-mkdir -p $outdirallavg
-
-# Find directories ending with -avg and move them to the target directory
-find ./output -type d -name "*-avg" | while read -r dir; do
-    echo "$dir"
-    mv "$dir" "$outdirallavg/"
-    echo "Moved $dir to $outdirallavg/"
-done
-
-
-outfiledieff="$outdirallavg/dieffpy-out.txt"
-python3.10 dieffpy.py $outdirallavg $TEST > $outfiledieff
-
-outdirTest="out-$TEST"
-rm -r $outdirTest
-mv "./output" $outdirTest

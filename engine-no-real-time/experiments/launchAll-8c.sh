@@ -29,8 +29,8 @@ fi
 
 
 # 1. compilation
-echo "compilation..."
-go build -o ../cmd/main ../cmd/main.go
+#echo "compilation..."
+#go build -o ../cmd/main ../cmd/main.go
 
 # 2. run all the experiments, one after the other
 for csv_description_file in $(ls "$directory"/*.csv | sort -V); do # sort -V to respect numerical order
@@ -61,6 +61,10 @@ for csv_description_file in $(ls "$directory"/*.csv | sort -V); do # sort -V to 
             ../cmd/main "$csv_description_file" # exec
             rm -r "$outdir-$i"
             mv $outdir "$outdir-$i" # rename - appending the label of the corresponding run
+            
+            # calculate the Mean Response Time - based on the trace.csv and add it to the metrics.csv
+            python3 calculate_mrt.py "$outdir-$i/trace.csv" "$outdir-$i/metrics.csv"
+
             # append the csv metrics and traces files into the avg files
             # metrics
             if [ ! -f "$metrics_outfile" ]; then
