@@ -47,6 +47,43 @@ COLORS = (
 
 
 ####################################################################################################################
+def load_metrics(filename: str) -> np.ndarray:
+    """
+    Reads the other metrics from a CSV file.
+
+    Conventional query performance measurements.
+    The attribues of the file specified in the header are expected to be:
+
+    * *test*: the name of the executed test
+    * *approach*: the name of the approach executed
+    * *tfft*: time elapsed until the first answer was generated
+    * *totaltime*: time elapsed until the last answer was generated
+    * *mrt*: mean response time
+    * *comp*: number of answers produced
+
+    :param filename: Path to the CSV file that contains the other metrics.
+                     Attributes of the file specified in the header: test, approach, tfft, totaltime, comp.
+    :return: Dataframe with the other metrics. Attributes of the dataframe: test, approach, tfft, totaltime, comp.
+
+    **Examples**
+
+    >>> load_trace("data/metrics.csv")
+    """
+    # Loading data.
+    # names=True is not an error, it is valid for reading the column names from the data
+    if np.__version__ >= "1.23.0":
+        df = np.genfromtxt(
+            filename, delimiter=",", names=True, dtype=None, encoding="utf8", ndmin=1
+        )
+    else:
+        df = np.genfromtxt(
+            filename, delimiter=",", names=True, dtype=None, encoding="utf8"
+        )
+
+    # Return dataframe in order.
+    return df[["test", "approach", "tfft", "totaltime", "mrt", "comp"]]
+
+
 def plot_execution_time_edit(
     metrics: np.ndarray, colors: list = DEFAULT_COLORS, log_scale: bool = False
 ) -> Figure:
@@ -169,7 +206,7 @@ def plot_execution_time_edit_single_test(
     edited_labels = [a.split("-")[-1] for a in sorted_approaches]
     edited_labels = [re.search(r"\d+", label).group() for label in edited_labels]
 
-    fig = plt.figure(figsize=(0.4 * len(approaches), 5), dpi=100)
+    fig = plt.figure(figsize=(0.6 * len(approaches), 5), dpi=100)
 
     # Plot each bar with its respective label
     for approach, result, color, label in zip(
@@ -183,6 +220,68 @@ def plot_execution_time_edit_single_test(
     # Customizing the chart
     plt.xlabel("# filters", fontsize="large", labelpad=10)
     plt.ylabel("Execution Time [s]", fontsize="large")
+    plt.xticks(
+        range(len(sorted_approaches)), edited_labels, rotation=90, fontsize="medium"
+    )
+    plt.legend(
+        edited_labels,
+        bbox_to_anchor=(1, 1),
+        loc="upper left",
+        labelspacing=0.1,
+        fontsize="medium",
+        frameon=False,
+        title="# filters",
+    )
+
+    title = test_name.split("-")[-1]
+
+    plt.title(f"{title}", fontsize=16, loc="center", pad=10)
+    if log_scale:
+        plt.yscale("log")
+
+    # Display the chart
+    plt.tight_layout()
+
+    return fig
+
+
+def plot_mean_response_time_single_test(
+    test_name,
+    metrics: np.ndarray,
+    colors: list = DEFAULT_COLORS,
+    log_scale: bool = False,
+) -> Figure:
+
+    submetrics = metrics[metrics["test"] == test_name]
+    approaches = np.unique(metrics["approach"])
+    sorted_approaches = sorted(
+        approaches,
+        key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
+    )
+
+    color_map = dict(zip(sorted_approaches, colors))
+
+    results = [
+        submetrics[submetrics["approach"] == a]["mrt"][0] for a in sorted_approaches
+    ]
+
+    edited_labels = [a.split("-")[-1] for a in sorted_approaches]
+    edited_labels = [re.search(r"\d+", label).group() for label in edited_labels]
+
+    fig = plt.figure(figsize=(0.6 * len(approaches), 5), dpi=100)
+
+    # Plot each bar with its respective label
+    for approach, result, color, label in zip(
+        sorted_approaches,
+        results,
+        [color_map[a] for a in sorted_approaches],
+        edited_labels,
+    ):
+        plt.bar(approach, result, color=color, label=label, width=0.7)
+
+    # Customizing the chart
+    plt.xlabel("# filters", fontsize="large", labelpad=10)
+    plt.ylabel("Mean Response Time [ms]", fontsize="large")
     plt.xticks(
         range(len(sorted_approaches)), edited_labels, rotation=90, fontsize="medium"
     )
@@ -1061,7 +1160,7 @@ if len(sys.argv) < 4:
 # Read name of the directory
 input_dir = sys.argv[1]
 test_name = sys.argv[2]
-do_join = bool(sys.argv[3])
+do_join = sys.argv[3] == "1"
 
 if do_join:
 
@@ -1164,14 +1263,17 @@ print("_________________________________________________________________________
 print()
 
 # print(input_dir + "/metrics.csv")
-metrics = diefpy.load_metrics(input_dir + "/metrics.csv")
+metrics = load_metrics(input_dir + "/metrics.csv")
+print(metrics)
 
-# TODO: Do it better - poner bonito!
 # Execution time plot
 # diefpy.plot_execution_time(metrics, COLORS, log_scale=True)
 plot_execution_time_edit_single_test(test_name, metrics, COLORS, log_scale=False)
 plt.savefig(outputPlotDir + "execTime.png")
 
+# Mean Response Time plot
+plot_mean_response_time_single_test(test_name, metrics, COLORS, log_scale=False)
+plt.savefig(outputPlotDir + "mrt.png")
 
 # Create all metrics from the `traces` and `metrics`
 # computes the results reported in the previously mentioned experiment, i.e.,
