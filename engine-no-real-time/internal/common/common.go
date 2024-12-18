@@ -139,8 +139,9 @@ type Edge struct {
 }
 
 type Event struct {
-	Type EventType
-	E    Edge
+	Type      EventType
+	E         Edge
+	Timestamp time.Duration // internal system timestamp - denotes when the tx arrives to the system
 }
 
 type Coordinates struct {
@@ -168,9 +169,10 @@ Alert labels:
 */
 
 type Alert struct {
-	Label    string // it can also be set as integer - for each kind of fraud pattern put a int
-	Info     string // optional additional information of the alert to be passed
-	Subgraph Graph  // if desired, if needed later when receiving the alert in the generator
+	Label              string        // it can also be set as integer - for each kind of fraud pattern put a int
+	Info               string        // optional additional information of the alert to be passed
+	Subgraph           Graph         // if desired, if needed later when receiving the alert in the generator
+	LastEventTimestamp time.Duration // denotes the internal system timestamp of the last event that composes the alert
 }
 
 // NewGraph creates a new graph
@@ -528,8 +530,8 @@ func PrintAlertVerbose(alert Alert, timestamp time.Duration, alertCount int) {
 	fmt.Println("______________________________________________________________________________")
 }
 
-func PrintAlertOnFileVerbose(alert Alert, timestamp time.Duration, alertCount int, file *os.File) {
-	fmt.Fprintf(file, "Alert - label: %s, info: %s, timestamp: %v, numAlert: %d\n", alert.Label, alert.Info, timestamp, alertCount)
+func PrintAlertOnFileVerbose(alert Alert, responseTime time.Duration, alertCount int, file *os.File) {
+	fmt.Fprintf(file, "Alert - label: %s, info: %s, responseTime: %v, numAlert: %d\n", alert.Label, alert.Info, responseTime, alertCount)
 	switch alert.Label {
 	case "0", "1":
 		alert.Subgraph.PrintToFile(file)
@@ -582,12 +584,13 @@ func PrintEventOnFile(e Event, file *os.File) {
 
 }
 
-func PrintAlertOnResultsTrace(timestamp time.Duration, alertCount int, csv_writer *csv.Writer) {
+func PrintAlertOnResultsTrace(timestamp time.Duration, responseTime time.Duration, alertCount int, csv_writer *csv.Writer) {
 	dataRow := []string{
 		TEST,                     // test (stream kind)
 		APPROACH,                 // approach (num cores & num filters)
 		strconv.Itoa(alertCount), // answer
-		strconv.FormatFloat(timestamp.Seconds(), 'f', 2, 64), // time (in seconds)
+		strconv.FormatFloat(timestamp.Seconds(), 'f', 2, 64),                 // time (in seconds)
+		strconv.FormatFloat(float64(responseTime.Nanoseconds()), 'f', 2, 64), // in nanoseconds
 	}
 
 	err := csv_writer.Write(dataRow)
@@ -600,9 +603,10 @@ func PrintMetricsResults(timeFirst time.Duration, timeLast time.Duration, alertC
 	dataRow := []string{
 		TEST,     // test
 		APPROACH, // approach
-		strconv.FormatFloat(timeFirst.Seconds(), 'f', 2, 64), // tfft time (in seconds)
-		strconv.FormatFloat(timeLast.Seconds(), 'f', 2, 64),  // totaltime time (in seconds)
-		strconv.Itoa(alertCount),                             // comp
+		strconv.FormatFloat(timeFirst.Seconds(), 'f', 2, 64),  // tfft time (in seconds)
+		strconv.FormatFloat(timeLast.Seconds(), 'f', 2, 64),   // totaltime time (in seconds)
+		strconv.FormatInt(time.Duration(0).Nanoseconds(), 10), // response time (in nanoseconds) - draft filling value - calculate afterwards!
+		strconv.Itoa(alertCount),                              // comp
 	}
 
 	err := csv_writer.Write(dataRow)

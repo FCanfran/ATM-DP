@@ -147,7 +147,6 @@ Loop:
 	//fmt.Println("G finished")
 }
 
-// TODO: pass a counter to use as filter-id instead of the id of the card that spawns it?
 func filter(
 	event cmn.Event,
 	in_event <-chan cmn.Event,

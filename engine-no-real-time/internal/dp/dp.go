@@ -44,7 +44,7 @@ func Sink(
 	writer_trace := csv.NewWriter(file_trace)
 	defer writer_trace.Flush()
 	// headers
-	headers := []string{"test", "approach", "answer", "time"}
+	headers := []string{"test", "approach", "answer", "time", "responseTime"}
 	err = writer_trace.Write(headers)
 	cmn.CheckError(err)
 
@@ -54,7 +54,7 @@ func Sink(
 	defer file_metrics.Close()
 	writer_metrics := csv.NewWriter(file_metrics)
 	defer writer_metrics.Flush()
-	headers = []string{"test", "approach", "tfft", "totaltime", "comp"}
+	headers = []string{"test", "approach", "tfft", "totaltime", "responseTime", "comp"}
 	err = writer_metrics.Write(headers)
 	cmn.CheckError(err)
 
@@ -73,9 +73,10 @@ Loop:
 					timeFirst = t
 				}
 				timeLast = t
-				//cmn.PrintAlertVerbose(alert, t, alertCount)
-				cmn.PrintAlertOnFile(alert, fileAlerts)
-				cmn.PrintAlertOnResultsTrace(t, alertCount, writer_trace)
+				// calculate response time
+				responseTime := t - alert.LastEventTimestamp
+				cmn.PrintAlertOnFileVerbose(alert, responseTime, alertCount, fileAlerts)
+				cmn.PrintAlertOnResultsTrace(t, responseTime, alertCount, writer_trace)
 			}
 		case event, ok := <-in_event:
 			if ok {
@@ -143,7 +144,6 @@ Loop:
 	//fmt.Println("G finished")
 }
 
-// TODO: pass a counter to use as filter-id instead of the id of the card that spawns it?
 func filter(
 	event cmn.Event,
 	in_event <-chan cmn.Event,
@@ -228,6 +228,7 @@ func filter(
 					isFraud, alert := subgraph.CheckFraud(context, session, event_worker.E)
 					//fmt.Println("----------------------------------------------------")
 					if isFraud {
+						alert.LastEventTimestamp = event_worker.Timestamp
 						out_alert <- alert
 					}
 					// set as new head of the subgraph (only save the last edge)
@@ -306,7 +307,7 @@ Loop:
 }
 
 // Source: reads edges given by Stream process
-func Source(in_stream <-chan cmn.Event, out_event chan<- cmn.Event) {
+func Source(start_time time.Time, in_stream <-chan cmn.Event, out_event chan<- cmn.Event) {
 
 	txLogFile, err := os.Create(cmn.OutDirName + "/txLog.txt")
 	cmn.CheckError(err)
@@ -318,6 +319,9 @@ func Source(in_stream <-chan cmn.Event, out_event chan<- cmn.Event) {
 			// TODO: Manage the error properly
 			fmt.Println("Source - !ok in in_stream channel")
 		}
+		// get internal system event timestamp - to mark/simulate when the event arrived to the system
+		t := time.Since(start_time)
+		event.Timestamp = t
 		out_event <- event
 		if event.Type == cmn.EOF {
 			//fmt.Println("Source - EOF event")
