@@ -54,7 +54,7 @@ func Sink(
 	defer file_metrics.Close()
 	writer_metrics := csv.NewWriter(file_metrics)
 	defer writer_metrics.Flush()
-	headers = []string{"test", "approach", "tfft", "totaltime", "responseTime", "comp"}
+	headers = []string{"test", "approach", "tfft", "totaltime", "mrt", "comp"}
 	err = writer_metrics.Write(headers)
 	cmn.CheckError(err)
 

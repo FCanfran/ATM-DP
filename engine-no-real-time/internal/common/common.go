@@ -605,7 +605,7 @@ func PrintMetricsResults(timeFirst time.Duration, timeLast time.Duration, alertC
 		APPROACH, // approach
 		strconv.FormatFloat(timeFirst.Seconds(), 'f', 2, 64),  // tfft time (in seconds)
 		strconv.FormatFloat(timeLast.Seconds(), 'f', 2, 64),   // totaltime time (in seconds)
-		strconv.FormatInt(time.Duration(0).Nanoseconds(), 10), // response time (in nanoseconds) - draft filling value - calculate afterwards!
+		strconv.FormatInt(time.Duration(0).Nanoseconds(), 10), // mrt (in nanoseconds) - draft filling value - calculate afterwards!
 		strconv.Itoa(alertCount),                              // comp
 	}
 
