@@ -241,7 +241,7 @@ def plot_execution_time_edit_single_test(
     edited_labels = [a.split("-")[-1] for a in sorted_approaches]
     edited_labels = [re.search(r"\d+", label).group() for label in edited_labels]
 
-    fig = plt.figure(figsize=(0.8 * len(approaches), 5), dpi=100)
+    fig = plt.figure(figsize=(0.6 * len(approaches), 5), dpi=100)
 
     # Plot each bar with its respective label
     for approach, result, color, label in zip(
@@ -307,7 +307,7 @@ def plot_mean_response_time_single_test(
     edited_labels = [a.split("-")[-1] for a in sorted_approaches]
     edited_labels = [re.search(r"\d+", label).group() for label in edited_labels]
 
-    fig = plt.figure(figsize=(0.8 * len(approaches), 5), dpi=100)
+    fig = plt.figure(figsize=(0.6 * len(approaches), 5), dpi=100)
 
     # Plot each bar with its respective label
     for approach, result, color, label in zip(
@@ -1430,7 +1430,6 @@ print()
 
 # print(input_dir + "/metrics.csv")
 metrics = load_metrics(input_dir + "/metrics.csv")
-print(metrics)
 
 # Execution time plot
 # diefpy.plot_execution_time(metrics, COLORS, log_scale=True)
