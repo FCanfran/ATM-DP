@@ -876,6 +876,7 @@ def performance_of_approaches_with_dieft_edit(
 
     >>> performance_of_approaches_with_dieft(traces, metrics)
     """
+    print(inputtest)
     # Initialize output structure.
     df = np.empty(
         shape=0,
