@@ -1,5 +1,5 @@
 import diefpy
-import pandas as pd  # for displaying the data in a nice way
+import pandas as pd
 import matplotlib.pyplot as plt
 import sys
 import os
@@ -394,7 +394,7 @@ def plot_answer_trace_edit(
         )
 
     plt.xlabel("Time [s]")
-    plt.ylabel("# Answers Produced")
+    plt.ylabel("# Checks Produced")
     plt.legend(loc="upper left")
 
     title = inputtest.split("-")[-1]
@@ -450,7 +450,7 @@ def plot_response_time_trace(
         )
 
     plt.ylabel("Response time [ms]")
-    plt.xlabel("# Answers Produced")
+    plt.xlabel("# Checks Produced")
     plt.legend(loc="upper left")
 
     title = inputtest.split("-")[-1]
@@ -510,7 +510,7 @@ def plot_response_time_trace_reduced(
         )
 
     plt.ylabel("Response time [ms]")
-    plt.xlabel("# Answers Produced")
+    plt.xlabel("# Checks Produced")
     plt.legend(loc="upper left")
 
     title = inputtest.split("-")[-1]
@@ -1430,6 +1430,7 @@ print()
 
 # print(input_dir + "/metrics.csv")
 metrics = load_metrics(input_dir + "/metrics.csv")
+# TODO: divide tfft (ns) to obtain it in ms or other bigger order!
 
 # Execution time plot
 # diefpy.plot_execution_time(metrics, COLORS, log_scale=True)

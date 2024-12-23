@@ -2,7 +2,7 @@ import pandas as pd
 import sys
 
 if len(sys.argv) < 2:
-    print("Error, run like: $>python average_traces.py <csvFile>")
+    print("Error, run like: $>python average_metrics.py <csvFile>")
     exit(1)
 
 df = pd.read_csv(sys.argv[1])

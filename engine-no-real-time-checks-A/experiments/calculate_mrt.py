@@ -11,15 +11,17 @@ metrics_csv = sys.argv[2]
 trace = pd.read_csv(sys.argv[1])
 metrics = pd.read_csv(sys.argv[2])
 
-mean_response_time_ns = int(trace["responseTime"].mean())
+mean_response_time_sink_ns = int(trace["responseTimeSink"].mean())
 
 #################################    TEST    ##########################################
+mean_response_time_filter_ns = int(trace["responseTimeFilter"].mean())
 mean_response_time_diff_ns = int(trace["rtDiff"].mean())
 #######################################################################################
 
-metrics["mrt"] = mean_response_time_ns
+metrics["mrt_sink"] = mean_response_time_sink_ns
 
 #################################    TEST    ##########################################
+metrics["mrt_filter"] = mean_response_time_filter_ns
 metrics["mrt_diff"] = mean_response_time_diff_ns
 #######################################################################################
 

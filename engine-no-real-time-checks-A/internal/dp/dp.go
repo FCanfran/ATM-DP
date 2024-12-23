@@ -45,7 +45,7 @@ func Sink(
 	writer_trace := csv.NewWriter(file_trace)
 	defer writer_trace.Flush()
 	// headers
-	headers := []string{"test", "approach", "answer", "time", "responseTime", "rtDiff", "isPositive"}
+	headers := []string{"test", "approach", "answer", "time", "responseTimeSink", "responseTimeFilter", "rtDiff", "isPositive"}
 	err = writer_trace.Write(headers)
 	cmn.CheckError(err)
 
@@ -84,7 +84,7 @@ Loop:
 
 				// print the difference between the responseTime measured on Filter and on Sink
 				diffResponseTime := responseTimeSink - check.ResponseTime
-				cmn.PrintCheckOnResultsTrace(t, responseTimeSink, checkCount, check.IsPositive, writer_trace, diffResponseTime)
+				cmn.PrintCheckOnResultsTrace(t, responseTimeSink, checkCount, check.IsPositive, writer_trace, check.ResponseTime, diffResponseTime)
 			}
 		case event, ok := <-in_event:
 			if ok {
