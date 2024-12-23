@@ -21,6 +21,7 @@ func Sink(
 	in_event <-chan cmn.Event,
 	endchan chan<- struct{}) {
 
+	var checkCount int
 	var alertCount int
 
 	fileAlerts, err := os.Create(cmn.OutDirName + "/alerts.txt")
@@ -44,7 +45,7 @@ func Sink(
 	writer_trace := csv.NewWriter(file_trace)
 	defer writer_trace.Flush()
 	// headers
-	headers := []string{"test", "approach", "answer", "time", "responseTime"}
+	headers := []string{"test", "approach", "answer", "time", "responseTime", "isPositive"}
 	err = writer_trace.Write(headers)
 	cmn.CheckError(err)
 
@@ -67,16 +68,20 @@ Loop:
 		case check, ok := <-in_check:
 			if ok {
 				t := time.Since(start_time)
-				alertCount += 1
+				checkCount += 1
 				// save the tfft - metrics.csv
-				if alertCount == 1 {
+				if checkCount == 1 {
 					timeFirst = t
 				}
 				timeLast = t
 				// calculate response time
 				responseTime := t - check.LastEventTimestamp
-				cmn.PrintCheckOnFileVerbose(check, responseTime, alertCount, fileAlerts)
-				cmn.PrintCheckOnResultsTrace(t, responseTime, alertCount, writer_trace)
+				// Record verbose on a file only the alerts
+				if check.IsPositive {
+					alertCount += 1
+					cmn.PrintAlertOnFileVerbose(check, responseTime, alertCount, fileAlerts)
+				}
+				cmn.PrintCheckOnResultsTrace(t, responseTime, checkCount, check.IsPositive, writer_trace)
 			}
 		case event, ok := <-in_event:
 			if ok {
@@ -95,14 +100,14 @@ Loop:
 		}
 	}
 
-	cmn.PrintMetricsResults(timeFirst, timeLast, alertCount, writer_metrics)
+	cmn.PrintMetricsResults(timeFirst, timeLast, checkCount, writer_metrics)
 
 	endchan <- struct{}{}
 }
 
 func Generator(
 	in_event <-chan cmn.Event,
-	out_alert chan<- cmn.CheckResult,
+	out_check chan<- cmn.CheckResult,
 	out_event chan<- cmn.Event) {
 
 	//fmt.Println("G - creation")
@@ -131,14 +136,14 @@ Loop:
 			//cmn.PrintEdge("G - edge_start arrived: ", event.E)
 			// spawn a filter
 			new_event_ch := make(chan cmn.Event, cmn.ChannelSize)
-			go filter(event, in_event, new_event_ch, out_alert)
+			go filter(event, in_event, new_event_ch, out_check)
 			// set the new input channels of the generator
 			in_event = new_event_ch
 		}
 	}
 
 	//fmt.Println("G - Close ch - out_alert")
-	close(out_alert)
+	close(out_check)
 	//fmt.Println("G - Close ch - out_event")
 	close(out_event)
 	//fmt.Println("G finished")

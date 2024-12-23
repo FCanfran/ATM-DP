@@ -60,7 +60,7 @@ func main() {
 	// event channel
 	event_ch := make(chan cmn.Event, cmn.ChannelSize)
 	// alerts channel
-	alert_ch := make(chan cmn.Alert, cmn.ChannelSize)
+	check_ch := make(chan cmn.CheckResult, cmn.ChannelSize)
 	// out_event_ch channel: direct event channel between Generator and Sink.
 	// --> all kinds of events except the alerts
 	out_event_ch := make(chan cmn.Event, cmn.ChannelSize)
@@ -72,8 +72,8 @@ func main() {
 	go dp.Stream(cmn.StreamFileName, stream_ch)
 	// launch Source, Generator and Sink goroutines
 	go dp.Source(start, stream_ch, event_ch)
-	go dp.Generator(event_ch, alert_ch, out_event_ch)
-	go dp.Sink(start, alert_ch, out_event_ch, endchan)
+	go dp.Generator(event_ch, check_ch, out_event_ch)
+	go dp.Sink(start, check_ch, out_event_ch, endchan)
 
 	<-endchan
 	t := time.Since(start)

@@ -518,7 +518,7 @@ func PrintEdgeCompleteToFile(msg string, e Edge, file *os.File) {
 	}
 }
 
-func PrintAlertVerbose(alert Alert, timestamp time.Duration, alertCount int) {
+func PrintAlertVerbose(alert CheckResult, timestamp time.Duration, alertCount int) {
 
 	fmt.Printf("Alert - label: %s, info: %s, timestamp: %v, numAlert: %d\n", alert.Label, alert.Info, timestamp, alertCount)
 	switch alert.Label {
@@ -528,7 +528,7 @@ func PrintAlertVerbose(alert Alert, timestamp time.Duration, alertCount int) {
 	fmt.Println("______________________________________________________________________________")
 }
 
-func PrintAlertOnFileVerbose(alert Alert, responseTime time.Duration, alertCount int, file *os.File) {
+func PrintAlertOnFileVerbose(alert CheckResult, responseTime time.Duration, alertCount int, file *os.File) {
 	fmt.Fprintf(file, "Alert - label: %s, info: %s, responseTime: %v, numAlert: %d\n", alert.Label, alert.Info, responseTime, alertCount)
 	switch alert.Label {
 	case "0", "1":
@@ -536,7 +536,15 @@ func PrintAlertOnFileVerbose(alert Alert, responseTime time.Duration, alertCount
 	}
 }
 
-func PrintAlertOnFile(alert Alert, file *os.File) {
+func PrintCheckOnFileVerbose(check CheckResult, responseTime time.Duration, checkCount int, file *os.File) {
+	fmt.Fprintf(file, "Check - label: %s, info: %s, isPositive: %t, responseTime: %v, numCheck: %d\n", check.Label, check.Info, check.IsPositive, responseTime, checkCount)
+	switch check.Label {
+	case "0", "1":
+		check.Subgraph.PrintToFile(file)
+	}
+}
+
+func PrintAlertOnFile(alert CheckResult, file *os.File) {
 	fmt.Fprintf(file, "Alert - label: %s\n", alert.Label)
 	switch alert.Label {
 	case "0", "1":
@@ -582,13 +590,22 @@ func PrintEventOnFile(e Event, file *os.File) {
 
 }
 
-func PrintAlertOnResultsTrace(timestamp time.Duration, responseTime time.Duration, alertCount int, csv_writer *csv.Writer) {
+func PrintCheckOnResultsTrace(timestamp time.Duration, responseTime time.Duration, checkCount int, isPositive bool, csv_writer *csv.Writer) {
+
+	var positiveIndicator string
+	if isPositive {
+		positiveIndicator = "1"
+	} else {
+		positiveIndicator = "0"
+	}
+
 	dataRow := []string{
 		TEST,                     // test (stream kind)
 		APPROACH,                 // approach (num cores & num filters)
-		strconv.Itoa(alertCount), // answer
+		strconv.Itoa(checkCount), // answer
 		strconv.FormatFloat(timestamp.Seconds(), 'f', 2, 64),                 // time (in seconds)
-		strconv.FormatFloat(float64(responseTime.Nanoseconds()), 'f', 2, 64), // in nanoseconds
+		strconv.FormatFloat(float64(responseTime.Nanoseconds()), 'f', 2, 64), // response time in nanoseconds
+		positiveIndicator,
 	}
 
 	err := csv_writer.Write(dataRow)
