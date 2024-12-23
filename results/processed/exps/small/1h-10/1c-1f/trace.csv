@@ -1,0 +1,11 @@
+test,approach,answer,time
+dp,1-core,1,19.05
+dp,1-core,2,20.04
+dp,1-core,3,24.04
+dp,1-core,4,48.06
+dp,1-core,5,53.05
+dp,1-core,6,66.07
+dp,1-core,7,68.07
+dp,1-core,8,81.08
+dp,1-core,9,96.09
+dp,1-core,10,102.07

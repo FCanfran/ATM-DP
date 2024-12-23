@@ -1,4 +1,0 @@
-test,approach,tfft,totaltime,comp
-dp,1-core,19.05,3600.76,447
-dp,4-core,19.27,3602.29,447
-dp,10-core,19.03,3601.72,447
