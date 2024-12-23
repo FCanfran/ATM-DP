@@ -13,8 +13,15 @@ metrics = pd.read_csv(sys.argv[2])
 
 mean_response_time_ns = int(trace["responseTime"].mean())
 
+#################################    TEST    ##########################################
+mean_response_time_diff_ns = int(trace["rtDiff"].mean())
+#######################################################################################
+
 metrics["mrt"] = mean_response_time_ns
 
-# print(metrics)
+#################################    TEST    ##########################################
+metrics["mrt_diff"] = mean_response_time_diff_ns
+#######################################################################################
+
 
 metrics.to_csv(metrics_csv, index=False)

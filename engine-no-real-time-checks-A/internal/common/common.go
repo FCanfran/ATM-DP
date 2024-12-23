@@ -591,7 +591,7 @@ func PrintEventOnFile(e Event, file *os.File) {
 
 }
 
-func PrintCheckOnResultsTrace(timestamp time.Duration, responseTime time.Duration, checkCount int, isPositive bool, csv_writer *csv.Writer) {
+func PrintCheckOnResultsTrace(timestamp time.Duration, responseTime time.Duration, checkCount int, isPositive bool, csv_writer *csv.Writer, responseTimeDiff time.Duration) {
 
 	var positiveIndicator string
 	if isPositive {
@@ -606,6 +606,7 @@ func PrintCheckOnResultsTrace(timestamp time.Duration, responseTime time.Duratio
 		strconv.Itoa(checkCount), // answer
 		strconv.FormatFloat(timestamp.Seconds(), 'f', 2, 64),                 // time (in seconds)
 		strconv.FormatFloat(float64(responseTime.Nanoseconds()), 'f', 2, 64), // response time in nanoseconds
+		strconv.FormatFloat(float64(responseTimeDiff.Nanoseconds()), 'f', 2, 64),
 		positiveIndicator,
 	}
 
