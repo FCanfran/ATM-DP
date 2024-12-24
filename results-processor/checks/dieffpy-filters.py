@@ -300,9 +300,6 @@ def plot_mean_response_time_single_test(
         submetrics[submetrics["approach"] == a]["mrt"][0] for a in sorted_approaches
     ]
 
-    # convert mrt in ns -> to ms: divide by 10^6
-    results = [r / 1_000_000 for r in results]
-
     edited_labels = [re.match(r"(\d+)", label).group() for label in sorted_approaches]
 
     fig = plt.figure(figsize=(0.8 * len(approaches), 5), dpi=100)
@@ -433,8 +430,6 @@ def plot_response_time_trace(
     fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
     for a in sorted_approaches:
         subtrace = results[results["approach"] == a]
-        # convert responseTime from ns to ms
-        subtrace["responseTime"] = [r / 1_000_000 for r in subtrace["responseTime"]]
         if subtrace.size == 0:
             continue
         plt.plot(
@@ -492,8 +487,6 @@ def plot_response_time_trace_reduced(
     fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
     for a in sorted_approaches:
         subtrace = results[results["approach"] == a]
-        # convert responseTime from ns to ms
-        subtrace["responseTime"] = [r / 1_000_000 for r in subtrace["responseTime"]]
         if subtrace.size == 0:
             continue
         plt.plot(
@@ -1426,6 +1419,12 @@ print()
 
 # print(input_dir + "/metrics.csv")
 metrics = load_metrics(input_dir + "/metrics.csv")
+
+# F: Conversions
+# tfft (ns) ->
+# mrt (ns)  -> ms
+# convert mrt in ns -> to ms: divide by 10^6
+# results = [r / 1_000_000 for r in results]
 
 # Execution time plot
 # diefpy.plot_execution_time(metrics, COLORS, log_scale=True)
