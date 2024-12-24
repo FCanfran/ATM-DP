@@ -614,14 +614,15 @@ func PrintCheckOnResultsTrace(timestamp time.Duration, responseTime time.Duratio
 	csv_writer.Flush() // Ensure data is written to file
 }
 
-func PrintMetricsResults(timeFirst time.Duration, timeLast time.Duration, alertCount int, csv_writer *csv.Writer) {
+func PrintMetricsResults(timeFirst time.Duration, timeLast time.Duration, checkCount int, alertCount int, csv_writer *csv.Writer) {
 	dataRow := []string{
 		TEST,     // test
 		APPROACH, // approach
 		strconv.FormatInt(timeFirst.Nanoseconds(), 10),        // tfft time (in nanoseconds)
 		strconv.FormatFloat(timeLast.Seconds(), 'f', 2, 64),   // totaltime time (in seconds)
 		strconv.FormatInt(time.Duration(0).Nanoseconds(), 10), // mrt (in nanoseconds) - draft filling value - calculate afterwards!
-		strconv.Itoa(alertCount),                              // comp
+		strconv.Itoa(checkCount),                              // checks
+		strconv.Itoa(alertCount),                              // alerts
 	}
 
 	err := csv_writer.Write(dataRow)

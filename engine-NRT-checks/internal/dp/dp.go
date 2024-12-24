@@ -55,7 +55,7 @@ func Sink(
 	defer file_metrics.Close()
 	writer_metrics := csv.NewWriter(file_metrics)
 	defer writer_metrics.Flush()
-	headers = []string{"test", "approach", "tfft", "totaltime", "mrt", "comp"}
+	headers = []string{"test", "approach", "tfft", "totaltime", "mrt", "checks", "alerts"}
 	err = writer_metrics.Write(headers)
 	cmn.CheckError(err)
 
@@ -100,7 +100,10 @@ Loop:
 		}
 	}
 
-	cmn.PrintMetricsResults(timeFirst, timeLast, checkCount, writer_metrics)
+	cmn.PrintMetricsResults(timeFirst, timeLast, checkCount, alertCount, writer_metrics)
+
+	fmt.Println("numChecks: ", checkCount)
+	fmt.Println("numAlerts: ", alertCount)
 
 	endchan <- struct{}{}
 }

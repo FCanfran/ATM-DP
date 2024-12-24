@@ -1,0 +1,2 @@
+txFile,scaleFactor,test,approach,maxFilterSize
+../input/small/stream-30-0.02-all.csv,1.0,dp,1-core,10000
