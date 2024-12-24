@@ -77,8 +77,17 @@ for csv_description_file in $(ls "$directory"/*.csv | sort -V); do # sort -V to 
                 head -n 1 "$outdir-$i/trace.csv" > "$trace_outfile" # add header if does not exist
             fi
             tail -n +2 "$outdir-$i/trace.csv" >> "$trace_outfile" # append, excluding the header
-
+            
+            # Optional: remove the current directory - we will keep only the -avg one
+            echo "rm -r $outdir-$i"
+            rm -r "$outdir-$i"
+        
         done
+
+        # average metrics & trace csvs
+        python3 average_metrics.py $metrics_outfile
+        python3 average_traces.py $trace_outfile
+        
     else
         echo "No .sh files found in $directory."
     fi
