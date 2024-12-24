@@ -78,9 +78,11 @@ for csv_description_file in $(ls "$directory"/*.csv | sort -V); do # sort -V to 
             fi
             tail -n +2 "$outdir-$i/trace.csv" >> "$trace_outfile" # append, excluding the header
 
-            # Optional: remove the current directory - we will keep only the -avg one
-            echo "rm -r $outdir-$i"
-            rm -r "$outdir-$i"
+            if [ $i -ne 1 ]; then
+                # Optional: remove the current directory - we will keep only the -avg one
+                echo "rm -r $outdir-$i"
+                rm -r "$outdir-$i"
+            fi
 
         done
 
