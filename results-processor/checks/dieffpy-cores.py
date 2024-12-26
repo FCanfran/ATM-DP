@@ -1482,7 +1482,7 @@ plt.savefig(outputPlotDir + "radar-dieft.png")
 # a shorter period of time to produce a certain number of answers are more efficient
 # dief@k interpretation: Lower is better
 
-# dief@k producing the first 5 answers
+# dief@k producing the first 500 answers
 print("dief@k producing the first 500 answers")
 # dk = diefpy.diefk(traces, test_name, 5)
 dk = diefk_edit(traces, test_name, 500)
@@ -1491,7 +1491,7 @@ print("_________________________________________________________________________
 print()
 
 
-# dief@k producing the first 10 answers
+# dief@k producing the first 1000 answers
 print("dief@k producing the first 1000 answers")
 # dk = diefpy.diefk(traces, test_name, 10)
 dk = diefk_edit(traces, test_name, 1000)

@@ -80,6 +80,17 @@ def load_metrics(filename: str) -> np.ndarray:
             filename, delimiter=",", names=True, dtype=None, encoding="utf8"
         )
 
+    # F: Fix -> allow more characters for the test field
+    new_dtype = []
+    for field in df.dtype.descr:
+        if field[0] == "test":  # Adjust the size of the 'test' field
+            new_dtype.append((field[0], "U50"))
+        else:  # Retain the original dtype for other fields
+            new_dtype.append(field)
+
+    # Convert the array to the new dtype
+    df = np.array(df, dtype=new_dtype)
+
     # Return dataframe in order.
     return df[["test", "approach", "tfft", "totaltime", "mrt", "comp"]]
 
@@ -115,8 +126,65 @@ def load_trace(filename: str) -> np.ndarray:
             filename, delimiter=",", names=True, dtype=None, encoding="utf8"
         )
 
+    # F: Fix -> allow more characters for the test field
+    new_dtype = []
+    for field in df.dtype.descr:
+        if field[0] == "test":  # Adjust the size of the 'test' field
+            new_dtype.append((field[0], "U50"))
+        else:  # Retain the original dtype for other fields
+            new_dtype.append(field)
+
+    # Convert the array to the new dtype
+    df = np.array(df, dtype=new_dtype)
+
     # Return dataframe in order.
     return df[["test", "approach", "answer", "time", "responseTime"]]
+
+
+def load_trace_reduced(filename: str) -> np.ndarray:
+    """
+    Reads answer traces from a CSV file.
+
+    Answer traces record the points in time when an approach produces an answer.
+    The attribues of the file specified in the header are expected to be:
+
+    * *test*: the name of the executed test
+    * *approach*: the name of the approach executed
+    * *answer*: the number of the answer produced
+    * *time*: time elapsed from the start of the execution until the generation of the answer
+
+    :param filename: Path to the CSV file that contains the answer traces.
+                     Attributes of the file specified in the header: test, approach, answer, time.
+    :return: Dataframe with the answer trace. Attributes of the dataframe: test, approach, answer, time.
+
+    **Examples**
+
+    >>> load_trace("data/traces.csv")
+    """
+    # Loading data.
+    # names=True is not an error, it is valid for reading the column names from the data
+    if np.__version__ >= "1.23.0":
+        df = np.genfromtxt(
+            filename, delimiter=",", names=True, dtype=None, encoding="utf8", ndmin=1
+        )
+    else:
+        df = np.genfromtxt(
+            filename, delimiter=",", names=True, dtype=None, encoding="utf8"
+        )
+
+    # F: Fix -> allow more characters for the test field
+    new_dtype = []
+    for field in df.dtype.descr:
+        if field[0] == "test":  # Adjust the size of the 'test' field
+            new_dtype.append((field[0], "U50"))
+        else:  # Retain the original dtype for other fields
+            new_dtype.append(field)
+
+    # Convert the array to the new dtype
+    df = np.array(df, dtype=new_dtype)
+
+    # Return dataframe in order.
+    return df[["test", "approach", "answer", "time"]]
 
 
 def plot_execution_time_edit(
@@ -389,7 +457,7 @@ def plot_answer_trace_edit(
         )
 
     plt.xlabel("Time [s]")
-    plt.ylabel("# Answers Produced")
+    plt.ylabel("# Checks Produced")
     plt.legend(loc="upper left")
 
     title = inputtest.split("-")[-1]
@@ -443,7 +511,7 @@ def plot_response_time_trace(
         )
 
     plt.ylabel("Response time [ms]")
-    plt.xlabel("# Answers Produced")
+    plt.xlabel("# Checks Produced")
     plt.legend(loc="upper left")
 
     title = inputtest.split("-")[-1]
@@ -501,7 +569,7 @@ def plot_response_time_trace_reduced(
         )
 
     plt.ylabel("Response time [ms]")
-    plt.xlabel("# Answers Produced")
+    plt.xlabel("# Checks Produced")
     plt.legend(loc="upper left")
 
     title = inputtest.split("-")[-1]
@@ -869,19 +937,20 @@ def performance_of_approaches_with_dieft_edit(
 
     >>> performance_of_approaches_with_dieft(traces, metrics)
     """
-    print(inputtest)
     # Initialize output structure.
     df = np.empty(
         shape=0,
         dtype=[
             ("test", traces["test"].dtype),
             ("approach", traces["approach"].dtype),
-            ("tfft", metrics["tfft"].dtype),
-            ("totaltime", metrics["totaltime"].dtype),
-            ("comp", metrics["comp"].dtype),
+            ("tfft (ms)", metrics["tfft"].dtype),
+            ("totaltime (s)", metrics["totaltime"].dtype),
+            ("mrt (ms)", metrics["mrt"].dtype),
+            ("checks", metrics["comp"].dtype),
             ("throughput", float),
             ("invtfft", float),
             ("invtotaltime", float),
+            ("invmrt", float),
             ("dieft", float),
         ],
     )
@@ -909,6 +978,7 @@ def performance_of_approaches_with_dieft_edit(
         throughput = submetric["comp"][0] / submetric["totaltime"][0]
         invtfft = 1 / submetric["tfft"][0]
         invtotaltime = 1 / submetric["totaltime"][0]
+        invmrt = 1 / submetric["mrt"][0]
 
         res = np.array(
             [
@@ -917,22 +987,26 @@ def performance_of_approaches_with_dieft_edit(
                     a,
                     submetric["tfft"][0],
                     submetric["totaltime"][0],
+                    submetric["mrt"][0],
                     submetric["comp"][0],
                     throughput,
                     invtfft,
                     invtotaltime,
+                    invmrt,
                     dieft_,
                 )
             ],
             dtype=[
                 ("test", submetric["test"].dtype),
                 ("approach", submetric["approach"].dtype),
-                ("tfft", submetric["tfft"].dtype),
-                ("totaltime", submetric["totaltime"].dtype),
-                ("comp", submetric["comp"].dtype),
+                ("tfft (ms)", submetric["tfft"].dtype),
+                ("totaltime (s)", submetric["totaltime"].dtype),
+                ("mrt (ms)", submetric["mrt"].dtype),
+                ("checks", submetric["comp"].dtype),
                 ("throughput", float),
                 ("invtfft", float),
                 ("invtotaltime", float),
+                ("invmrt", float),
                 ("dieft", float),
             ],
         )
@@ -967,7 +1041,7 @@ def plot_performance_of_approaches_with_dieft_edit(
         dtype=[
             ("invtfft", allmetrics["invtfft"].dtype),
             ("invtotaltime", allmetrics["invtotaltime"].dtype),
-            ("comp", float),
+            ("invmrt", allmetrics["invmrt"].dtype),
             ("throughput", allmetrics["throughput"].dtype),
             ("dieft", allmetrics["dieft"].dtype),
         ],
@@ -994,7 +1068,7 @@ def plot_performance_of_approaches_with_dieft_edit(
                 (
                     (submetric_approaches["invtfft"]),
                     (submetric_approaches["invtotaltime"]),
-                    (submetric_approaches["comp"]),
+                    (submetric_approaches["invmrt"]),
                     (submetric_approaches["throughput"]),
                     (submetric_approaches["dieft"]),
                 )
@@ -1002,7 +1076,7 @@ def plot_performance_of_approaches_with_dieft_edit(
             dtype=[
                 ("invtfft", submetric_approaches["invtfft"].dtype),
                 ("invtotaltime", submetric_approaches["invtotaltime"].dtype),
-                ("comp", float),
+                ("invmrt", submetric_approaches["invmrt"].dtype),
                 ("throughput", submetric_approaches["throughput"].dtype),
                 ("dieft", submetric_approaches["dieft"].dtype),
             ],
@@ -1013,7 +1087,7 @@ def plot_performance_of_approaches_with_dieft_edit(
     maxs = [
         df["invtfft"].max(),
         df["invtotaltime"].max(),
-        df["comp"].max(),
+        df["invmrt"].max(),
         df["throughput"].max(),
         df["dieft"].max(),
     ]
@@ -1022,7 +1096,7 @@ def plot_performance_of_approaches_with_dieft_edit(
     for row in df:
         row["invtfft"] = row["invtfft"] / maxs[0]
         row["invtotaltime"] = row["invtotaltime"] / maxs[1]
-        row["comp"] = row["comp"] / maxs[2]
+        row["invmrt"] = row["invmrt"] / maxs[2]
         row["throughput"] = row["throughput"] / maxs[3]
         row["dieft"] = row["dieft"] / maxs[4]
 
@@ -1030,7 +1104,7 @@ def plot_performance_of_approaches_with_dieft_edit(
     df = df.tolist()
     N = len(df[0])
     theta = radar_factory(N, frame="polygon")
-    spoke_labels = ["(TFFT)^-1", "(ET)^-1       ", "Comp", "T", "     dief@t"]
+    spoke_labels = ["(TFFT)^-1", "(ET)^-1       ", "(MRT)^-1", "T", "     dief@t"]
     case_data = df
     fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(projection="radar"))
     fig.subplots_adjust(top=0.85, bottom=0.05)
@@ -1304,7 +1378,7 @@ if len(sys.argv) < 4:
 # Read name of the directory
 input_dir = sys.argv[1]
 test_name = sys.argv[2]
-do_join = bool(sys.argv[3])
+do_join = sys.argv[3] == "1"
 
 if do_join:
 
@@ -1386,7 +1460,8 @@ outputPlotDir = input_dir + "/plots/"
 if not os.path.exists(outputPlotDir):
     os.makedirs(outputPlotDir)
 
-traces = diefpy.load_trace(input_dir + "/trace.csv")
+# traces = diefpy.load_trace(input_dir + "/trace.csv")
+traces = load_trace_reduced(input_dir + "/trace.csv")
 # Plot the answer trace
 # diefpy.plot_answer_trace(traces, test_name, COLORS)
 # plt.savefig(outputPlotDir + "traces.png")
@@ -1396,6 +1471,11 @@ plt.savefig(outputPlotDir + "traces.png")
 
 # plot response time trace
 traces_response_time = load_trace(input_dir + "/trace.csv")
+
+# F: Conversions
+# responseTime (ns) -> (ms)
+traces_response_time["responseTime"] = traces_response_time["responseTime"] / 1_000_000
+
 plot_response_time_trace(traces_response_time, test_name, COLORS)
 plt.savefig(outputPlotDir + "traces-response-time.png")
 # control reduction step - to take 1 point every reduction_step points
@@ -1419,12 +1499,11 @@ print()
 
 # print(input_dir + "/metrics.csv")
 metrics = load_metrics(input_dir + "/metrics.csv")
-
 # F: Conversions
-# tfft (ns) ->
+# tfft (ns) -> ms
 # mrt (ns)  -> ms
-# convert mrt in ns -> to ms: divide by 10^6
-# results = [r / 1_000_000 for r in results]
+metrics["mrt"] = metrics["mrt"] / 1_000_000
+metrics["tfft"] = metrics["tfft"] / 1_000_000
 
 # Execution time plot
 # diefpy.plot_execution_time(metrics, COLORS, log_scale=True)
@@ -1467,19 +1546,19 @@ plt.savefig(outputPlotDir + "radar-dieft.png")
 # a shorter period of time to produce a certain number of answers are more efficient
 # dief@k interpretation: Lower is better
 
-# dief@k producing the first 5 answers
-print("dief@k producing the first 5 answers")
+# dief@k producing the first 500 answers
+print("dief@k producing the first 500 answers")
 # dk = diefpy.diefk(traces, test_name, 5)
-dk = diefk_edit(traces, test_name, 5)
+dk = diefk_edit(traces, test_name, 500)
 print(pd.DataFrame(dk))
 print("____________________________________________________________________________")
 print()
 
 
-# dief@k producing the first 10 answers
-print("dief@k producing the first 10 answers")
+# dief@k producing the first 1000 answers
+print("dief@k producing the first 1000 answers")
 # dk = diefpy.diefk(traces, test_name, 10)
-dk = diefk_edit(traces, test_name, 10)
+dk = diefk_edit(traces, test_name, 1000)
 print(pd.DataFrame(dk))
 print("____________________________________________________________________________")
 print()
