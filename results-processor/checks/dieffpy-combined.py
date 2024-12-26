@@ -84,6 +84,52 @@ def load_metrics(filename: str) -> np.ndarray:
     return df[["test", "approach", "tfft", "totaltime", "mrt", "comp"]]
 
 
+def load_trace_reduced(filename: str) -> np.ndarray:
+    """
+    Reads answer traces from a CSV file.
+
+    Answer traces record the points in time when an approach produces an answer.
+    The attribues of the file specified in the header are expected to be:
+
+    * *test*: the name of the executed test
+    * *approach*: the name of the approach executed
+    * *answer*: the number of the answer produced
+    * *time*: time elapsed from the start of the execution until the generation of the answer
+
+    :param filename: Path to the CSV file that contains the answer traces.
+                     Attributes of the file specified in the header: test, approach, answer, time.
+    :return: Dataframe with the answer trace. Attributes of the dataframe: test, approach, answer, time.
+
+    **Examples**
+
+    >>> load_trace("data/traces.csv")
+    """
+    # Loading data.
+    # names=True is not an error, it is valid for reading the column names from the data
+    if np.__version__ >= "1.23.0":
+        df = np.genfromtxt(
+            filename, delimiter=",", names=True, dtype=None, encoding="utf8", ndmin=1
+        )
+    else:
+        df = np.genfromtxt(
+            filename, delimiter=",", names=True, dtype=None, encoding="utf8"
+        )
+
+    # F: Fix -> allow more characters for the test field
+    new_dtype = []
+    for field in df.dtype.descr:
+        if field[0] == "test":  # Adjust the size of the 'test' field
+            new_dtype.append((field[0], "U50"))
+        else:  # Retain the original dtype for other fields
+            new_dtype.append(field)
+
+    # Convert the array to the new dtype
+    df = np.array(df, dtype=new_dtype)
+
+    # Return dataframe in order.
+    return df[["test", "approach", "answer", "time"]]
+
+
 def plot_execution_time_edit_1(
     test_name,
     metrics: pd.DataFrame,
@@ -309,131 +355,6 @@ def plot_mrt_edit_2(
     return fig
 
 
-def plot_performance_of_approaches_with_dieft_edit(
-    allmetrics: np.ndarray, q: str, colors: list = DEFAULT_COLORS
-) -> Figure:
-    """
-    Generates a radar plot that compares **dief@t** with conventional metrics for a specific test.
-
-    This function plots the results reported for a single given test in "Experiment 1" (see :cite:p:`dief`).
-    "Experiment 1" compares the performance of testing approaches when using metrics defined in the literature
-    (*total execution time*, *time for the first tuple*, *throughput*, and *completeness*) and the metric **dieft@t**.
-
-    :param allmetrics: Dataframe with all the metrics from "Experiment 1".
-    :param q: ID of the selected test to plot.
-    :param colors: List of colors to use for the different approaches.
-    :return: Matplotlib radar plot for the specified test over the provided metrics.
-
-    **Examples**
-
-    >>> plot_performance_of_approaches_with_dieft(extended_metrics, "Q9.sparql")
-    >>> plot_performance_of_approaches_with_dieft(extended_metrics, "Q9.sparql", ["#ECC30B","#D56062","#84BCDA"])
-    """
-    # Initialize output structure.
-    df = np.empty(
-        shape=0,
-        dtype=[
-            ("invtfft", allmetrics["invtfft"].dtype),
-            ("invtotaltime", allmetrics["invtotaltime"].dtype),
-            ("comp", float),
-            ("throughput", allmetrics["throughput"].dtype),
-            ("dieft", allmetrics["dieft"].dtype),
-        ],
-    )
-
-    # Obtain approaches.
-    approaches = np.unique(allmetrics["approach"])
-    sorted_approaches = sorted(
-        approaches,
-        key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
-    )
-    color_map = dict(zip(sorted_approaches, colors))
-    labels = []
-    for a in sorted_approaches:
-        submetric_approaches = allmetrics[
-            (allmetrics["approach"] == a) & (allmetrics["test"] == q)
-        ]
-
-        if submetric_approaches.size == 0:
-            continue
-        else:
-            labels.append(a)
-
-        res = np.array(
-            [
-                (
-                    (submetric_approaches["invtfft"]),
-                    (submetric_approaches["invtotaltime"]),
-                    (submetric_approaches["comp"]),
-                    (submetric_approaches["throughput"]),
-                    (submetric_approaches["dieft"]),
-                )
-            ],
-            dtype=[
-                ("invtfft", submetric_approaches["invtfft"].dtype),
-                ("invtotaltime", submetric_approaches["invtotaltime"].dtype),
-                ("comp", float),
-                ("throughput", submetric_approaches["throughput"].dtype),
-                ("dieft", submetric_approaches["dieft"].dtype),
-            ],
-        )
-        df = np.append(df, res, axis=0)
-
-    # Get maximum values
-    maxs = [
-        df["invtfft"].max(),
-        df["invtotaltime"].max(),
-        df["comp"].max(),
-        df["throughput"].max(),
-        df["dieft"].max(),
-    ]
-
-    # Normalize the data
-    for row in df:
-        row["invtfft"] = row["invtfft"] / maxs[0]
-        row["invtotaltime"] = row["invtotaltime"] / maxs[1]
-        row["comp"] = row["comp"] / maxs[2]
-        row["throughput"] = row["throughput"] / maxs[3]
-        row["dieft"] = row["dieft"] / maxs[4]
-
-    # Plot metrics using spider plot.
-    df = df.tolist()
-    N = len(df[0])
-    theta = radar_factory(N, frame="polygon")
-    spoke_labels = ["(TFFT)^-1", "(ET)^-1       ", "Comp", "T", "     dief@t"]
-    case_data = df
-    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(projection="radar"))
-    fig.subplots_adjust(top=0.85, bottom=0.05)
-    ax.set_ylim(0, 1)
-    ticks_loc = ax.get_yticks()
-    ax.yaxis.set_major_locator(mticker.FixedLocator(ticks_loc))
-    ax.set_yticklabels("" for _ in ticks_loc)
-    legend_handles = []
-    for d, label in zip(case_data, labels):
-        legend_handles.append(
-            mlines.Line2D([], [], color=color_map[label], ls="-", label=label)
-        )
-        ax.plot(theta, d, label=label, color=color_map[label], zorder=10, clip_on=False)
-        ax.fill(theta, d, label=label, facecolor=color_map[label], alpha=0.15)
-
-    ax.set_varlabels(spoke_labels)
-    ax.tick_params(labelsize=14)
-    ax.legend(
-        handles=legend_handles,
-        loc=(0.80, 0.90),
-        labelspacing=0.1,
-        fontsize="medium",
-        frameon=False,
-    )
-
-    plt.setp(ax.spines.values(), color="grey")
-    title = q.split("-")[-1]
-    plt.title(title, fontsize=16, loc="center", pad=30)
-    plt.tight_layout()
-
-    return fig
-
-
 def dieft_edit(
     inputtrace: np.ndarray,
     inputtest: str,
@@ -471,7 +392,7 @@ def dieft_edit(
     )
 
     # Obtain test and approaches to compare.
-    results = inputtrace[inputtrace["test"] == inputtest]
+    results = inputtrace
     approaches = np.unique(results["approach"])
     sorted_approaches = sorted(
         approaches,
@@ -517,232 +438,6 @@ def dieft_edit(
         df = np.append(df, res, axis=0)
 
     return df
-
-
-def performance_of_approaches_with_dieft_edit(
-    traces: np.ndarray, metrics: np.ndarray, continue_to_end: bool = True
-) -> np.ndarray:
-    """
-    Compares **dief@t** with other conventional metrics used in query performance analysis.
-
-    This function repeats the results reported in "Experiment 1" of :cite:p:`dief`.
-    "Experiment 1" compares the performance of testing approaches when using metrics defined in the
-    literature (*total execution time*, *time for the first tuple*, *throughput*, and *completeness*) and the metric **dieft@t**.
-
-    :param traces: Dataframe with the answer trace. Attributes of the dataframe: test, approach, answer, time.
-    :param metrics: Metrics dataframe with the result of the other metrics.
-                    The structure is as follows: test, approach, tfft, totaltime, comp.
-    :param continue_to_end: Indicates whether the AUC should be continued until the end of the time frame
-    :return: Dataframe with all the metrics.
-             The structure is: test, approach, tfft, totaltime, comp, throughput, invtfft, invtotaltime, dieft
-
-    **Examples**
-
-    >>> performance_of_approaches_with_dieft(traces, metrics)
-    """
-    # Initialize output structure.
-    df = np.empty(
-        shape=0,
-        dtype=[
-            ("test", traces["test"].dtype),
-            ("approach", traces["approach"].dtype),
-            ("tfft (ms)", metrics["tfft"].dtype),
-            ("totaltime (s)", metrics["totaltime"].dtype),
-            ("mrt (ms)", metrics["mrt"].dtype),
-            ("checks", metrics["comp"].dtype),
-            ("throughput", float),
-            ("invtfft", float),
-            ("invtotaltime", float),
-            ("invmrt", float),
-            ("dieft", float),
-        ],
-    )
-
-    # Obtain tests and approaches.
-    tests = np.unique(metrics["test"])
-    approaches = np.unique(metrics["approach"])
-    sorted_approaches = sorted(
-        approaches,
-        key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
-    )
-
-    # Compute metrics: dieft, throughput, inverse of execution time, inverse of time for the first tuple.
-    for t in tests:
-        subtrace = traces[traces["test"] == t]
-        dieft_res = dieft_edit(subtrace, t, continue_to_end=continue_to_end)
-
-        for a in sorted_approaches:
-            if a not in np.unique(dieft_res["approach"]):
-                continue
-
-            dieft_ = dieft_res[(dieft_res["approach"] == a) & (dieft_res["test"] == t)][
-                "dieft"
-            ][0]
-            submetric = metrics[(metrics["approach"] == a) & (metrics["test"] == t)]
-
-            throughput = submetric["comp"][0] / submetric["totaltime"][0]
-            invtfft = 1 / submetric["tfft"][0]
-            invtotaltime = 1 / submetric["totaltime"][0]
-            invmrt = 1 / submetric["mrt"][0]
-
-            res = np.array(
-                [
-                    (
-                        t,
-                        a,
-                        submetric["tfft"][0],
-                        submetric["totaltime"][0],
-                        submetric["mrt"][0],
-                        submetric["comp"][0],
-                        throughput,
-                        invtfft,
-                        invtotaltime,
-                        invmrt,
-                        dieft_,
-                    )
-                ],
-                dtype=[
-                    ("test", submetric["test"].dtype),
-                    ("approach", submetric["approach"].dtype),
-                    ("tfft (ms)", submetric["tfft"].dtype),
-                    ("totaltime (s)", submetric["totaltime"].dtype),
-                    ("mrt (ms)", submetric["mrt"].dtype),
-                    ("checks", submetric["comp"].dtype),
-                    ("throughput", float),
-                    ("invtfft", float),
-                    ("invtotaltime", float),
-                    ("invmrt", float),
-                    ("dieft", float),
-                ],
-            )
-            df = np.append(df, res, axis=0)
-
-    return df
-
-
-def plot_performance_of_approaches_with_dieft_edit(
-    allmetrics: np.ndarray, q: str, colors: list = DEFAULT_COLORS
-) -> Figure:
-    """
-    Generates a radar plot that compares **dief@t** with conventional metrics for a specific test.
-
-    This function plots the results reported for a single given test in "Experiment 1" (see :cite:p:`dief`).
-    "Experiment 1" compares the performance of testing approaches when using metrics defined in the literature
-    (*total execution time*, *time for the first tuple*, *throughput*, and *completeness*) and the metric **dieft@t**.
-
-    :param allmetrics: Dataframe with all the metrics from "Experiment 1".
-    :param q: ID of the selected test to plot.
-    :param colors: List of colors to use for the different approaches.
-    :return: Matplotlib radar plot for the specified test over the provided metrics.
-
-    **Examples**
-
-    >>> plot_performance_of_approaches_with_dieft(extended_metrics, "Q9.sparql")
-    >>> plot_performance_of_approaches_with_dieft(extended_metrics, "Q9.sparql", ["#ECC30B","#D56062","#84BCDA"])
-    """
-    # Initialize output structure.
-    df = np.empty(
-        shape=0,
-        dtype=[
-            ("invtfft", allmetrics["invtfft"].dtype),
-            ("invtotaltime", allmetrics["invtotaltime"].dtype),
-            ("invmrt", allmetrics["invmrt"].dtype),
-            ("throughput", allmetrics["throughput"].dtype),
-            ("dieft", allmetrics["dieft"].dtype),
-        ],
-    )
-
-    # Obtain approaches.
-    approaches = np.unique(allmetrics["approach"])
-    sorted_approaches = sorted(
-        approaches,
-        key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
-    )
-    color_map = dict(zip(sorted_approaches, colors))
-    labels = []
-    for a in sorted_approaches:
-        submetric_approaches = allmetrics[
-            (allmetrics["approach"] == a) & (allmetrics["test"] == q)
-        ]
-
-        if submetric_approaches.size == 0:
-            continue
-        else:
-            labels.append(a)
-
-        res = np.array(
-            [
-                (
-                    (submetric_approaches["invtfft"]),
-                    (submetric_approaches["invtotaltime"]),
-                    (submetric_approaches["invmrt"]),
-                    (submetric_approaches["throughput"]),
-                    (submetric_approaches["dieft"]),
-                )
-            ],
-            dtype=[
-                ("invtfft", submetric_approaches["invtfft"].dtype),
-                ("invtotaltime", submetric_approaches["invtotaltime"].dtype),
-                ("invmrt", submetric_approaches["invmrt"].dtype),
-                ("throughput", submetric_approaches["throughput"].dtype),
-                ("dieft", submetric_approaches["dieft"].dtype),
-            ],
-        )
-        df = np.append(df, res, axis=0)
-
-    # Get maximum values
-    maxs = [
-        df["invtfft"].max(),
-        df["invtotaltime"].max(),
-        df["invmrt"].max(),
-        df["throughput"].max(),
-        df["dieft"].max(),
-    ]
-
-    # Normalize the data
-    for row in df:
-        row["invtfft"] = row["invtfft"] / maxs[0]
-        row["invtotaltime"] = row["invtotaltime"] / maxs[1]
-        row["invmrt"] = row["invmrt"] / maxs[2]
-        row["throughput"] = row["throughput"] / maxs[3]
-        row["dieft"] = row["dieft"] / maxs[4]
-
-    # Plot metrics using spider plot.
-    df = df.tolist()
-    N = len(df[0])
-    theta = radar_factory(N, frame="polygon")
-    spoke_labels = ["(TFFT)^-1", "(ET)^-1       ", "(MRT)^-1", "T", "     dief@t"]
-    case_data = df
-    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(projection="radar"))
-    fig.subplots_adjust(top=0.85, bottom=0.05)
-    ax.set_ylim(0, 1)
-    ticks_loc = ax.get_yticks()
-    ax.yaxis.set_major_locator(mticker.FixedLocator(ticks_loc))
-    ax.set_yticklabels("" for _ in ticks_loc)
-    legend_handles = []
-    for d, label in zip(case_data, labels):
-        legend_handles.append(
-            mlines.Line2D([], [], color=color_map[label], ls="-", label=label)
-        )
-        ax.plot(theta, d, label=label, color=color_map[label], zorder=10, clip_on=False)
-        ax.fill(theta, d, label=label, facecolor=color_map[label], alpha=0.15)
-
-    ax.set_varlabels(spoke_labels)
-    ax.tick_params(labelsize=14)
-    ax.legend(
-        handles=legend_handles,
-        loc=(0.80, 0.90),
-        labelspacing=0.1,
-        fontsize="medium",
-        frameon=False,
-    )
-
-    plt.setp(ax.spines.values(), color="grey")
-    title = q.split("-")[-1]
-    plt.title(title, fontsize=16, loc="center", pad=30)
-    plt.tight_layout()
-
-    return fig
 
 
 def diefk_edit(inputtrace: np.ndarray, inputtest: str, k: int = -1) -> np.ndarray:
@@ -978,9 +673,9 @@ def plot_continuous_efficiency_with_diefk_edit(
 ####################################################################################################################
 
 
-if len(sys.argv) < 4:
+if len(sys.argv) < 5:
     print(
-        "Error, run like: $>python dieffpy.py resultsDirectoryPath TEST(name) DO_JOIN(0:no,1:yes)"
+        "Error, run like: $>python dieffpy.py resultsDirectoryPath TEST(name) DO_JOIN(0:no,1:yes) num_interactions"
     )
     exit(1)
 
@@ -988,11 +683,14 @@ if len(sys.argv) < 4:
 input_dir = sys.argv[1]
 test_name = sys.argv[2]
 do_join = sys.argv[3] == "1"
+num_interactions = int(sys.argv[4])
 
 if do_join:
 
     metrics_all = []
     header_metrics = False
+    traces_all = []
+    header_traces = False
 
     subdirs = [
         d for d in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir, d))
@@ -1028,6 +726,23 @@ if do_join:
                 except Exception as e:
                     print(f"Error reading {metrics_file}: {e}")
 
+            traces_file = os.path.join(input_dir, subdir, "trace.csv")
+            # print(traces_file)
+            if os.path.isfile(traces_file):
+                try:
+                    # Read the CSV file
+                    if not header_traces:
+                        # Read with the header for the first file
+                        df = pd.read_csv(traces_file)
+                        header_traces = True
+                    else:
+                        # Skip the header for subsequent files
+                        df = pd.read_csv(traces_file, header=0)
+
+                    traces_all.append(df)
+                except Exception as e:
+                    print(f"Error reading {traces_file}: {e}")
+
     if metrics_all:
         metrics_all_df = pd.concat(metrics_all, ignore_index=True)
         # output metrics all csv
@@ -1035,6 +750,14 @@ if do_join:
         metrics_all_df.to_csv(output_metrics, index=False, header=header_metrics)
     else:
         print("No metrics.csv files found to combine.")
+
+    if traces_all:
+        traces_all_df = pd.concat(traces_all, ignore_index=True)
+        # output metrics all csv
+        output_traces = input_dir + "/trace.csv"
+        traces_all_df.to_csv(output_traces, index=False, header=header_traces)
+    else:
+        print("No traces.csv files found to combine.")
 
 ############################ RESULT PLOTS AND METRICS ############################
 
@@ -1090,9 +813,22 @@ plt.savefig(outputPlotDir + "mrt-2.png")
 
 
 # tfft
+# throughput: number of checks / second
+df["throughput"] = df["comp"] / df["totaltime"]
+# tx/second
+df["interactions/s"] = num_interactions / df["totaltime"]
+print(df)
 
-# throughput
+# TODO: dieft
 
-# dieft
+traces = load_trace_reduced(input_dir + "/trace.csv")
+dt = dieft_edit(traces, test_name)
 
-# tx/second - VS throughput?
+print("dief@t until the time unit when the slowest approach finalizes its execution")
+print(pd.DataFrame(dt))
+print("____________________________________________________________________________")
+print()
+
+df["dieft"] = dt["dieft"]
+
+print(df)
