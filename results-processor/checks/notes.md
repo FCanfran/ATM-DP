@@ -44,6 +44,10 @@ Modified so to:
 - include mrt
 - detail of the units of tfft (ms), mrt (ms) and totaltime (s).
 
+- switch the diefk outputs: 
+    - 5 -> 500
+    - 10 -> 1000 first answers
+
 TODO: For the ongoing 
 - add the alerts values
 
