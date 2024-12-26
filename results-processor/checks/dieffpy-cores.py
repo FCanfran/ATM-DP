@@ -874,12 +874,14 @@ def performance_of_approaches_with_dieft_edit(
         dtype=[
             ("test", traces["test"].dtype),
             ("approach", traces["approach"].dtype),
-            ("tfft", metrics["tfft"].dtype),
-            ("totaltime", metrics["totaltime"].dtype),
-            ("comp", metrics["comp"].dtype),
+            ("tfft (ms)", metrics["tfft"].dtype),
+            ("totaltime (s)", metrics["totaltime"].dtype),
+            ("mrt (ms)", metrics["mrt"].dtype),
+            ("checks", metrics["comp"].dtype),
             ("throughput", float),
             ("invtfft", float),
             ("invtotaltime", float),
+            ("invmrt", float),
             ("dieft", float),
         ],
     )
@@ -909,6 +911,7 @@ def performance_of_approaches_with_dieft_edit(
             throughput = submetric["comp"][0] / submetric["totaltime"][0]
             invtfft = 1 / submetric["tfft"][0]
             invtotaltime = 1 / submetric["totaltime"][0]
+            invmrt = 1 / submetric["mrt"][0]
 
             res = np.array(
                 [
@@ -917,22 +920,26 @@ def performance_of_approaches_with_dieft_edit(
                         a,
                         submetric["tfft"][0],
                         submetric["totaltime"][0],
+                        submetric["mrt"][0],
                         submetric["comp"][0],
                         throughput,
                         invtfft,
                         invtotaltime,
+                        invmrt,
                         dieft_,
                     )
                 ],
                 dtype=[
                     ("test", submetric["test"].dtype),
                     ("approach", submetric["approach"].dtype),
-                    ("tfft", submetric["tfft"].dtype),
-                    ("totaltime", submetric["totaltime"].dtype),
-                    ("comp", submetric["comp"].dtype),
+                    ("tfft (ms)", submetric["tfft"].dtype),
+                    ("totaltime (s)", submetric["totaltime"].dtype),
+                    ("mrt (ms)", submetric["mrt"].dtype),
+                    ("checks", submetric["comp"].dtype),
                     ("throughput", float),
                     ("invtfft", float),
                     ("invtotaltime", float),
+                    ("invmrt", float),
                     ("dieft", float),
                 ],
             )
@@ -967,7 +974,7 @@ def plot_performance_of_approaches_with_dieft_edit(
         dtype=[
             ("invtfft", allmetrics["invtfft"].dtype),
             ("invtotaltime", allmetrics["invtotaltime"].dtype),
-            ("comp", float),
+            ("invmrt", allmetrics["invmrt"].dtype),
             ("throughput", allmetrics["throughput"].dtype),
             ("dieft", allmetrics["dieft"].dtype),
         ],
@@ -996,7 +1003,7 @@ def plot_performance_of_approaches_with_dieft_edit(
                 (
                     (submetric_approaches["invtfft"]),
                     (submetric_approaches["invtotaltime"]),
-                    (submetric_approaches["comp"]),
+                    (submetric_approaches["invmrt"]),
                     (submetric_approaches["throughput"]),
                     (submetric_approaches["dieft"]),
                 )
@@ -1004,7 +1011,7 @@ def plot_performance_of_approaches_with_dieft_edit(
             dtype=[
                 ("invtfft", submetric_approaches["invtfft"].dtype),
                 ("invtotaltime", submetric_approaches["invtotaltime"].dtype),
-                ("comp", float),
+                ("invmrt", submetric_approaches["invmrt"].dtype),
                 ("throughput", submetric_approaches["throughput"].dtype),
                 ("dieft", submetric_approaches["dieft"].dtype),
             ],
@@ -1015,7 +1022,7 @@ def plot_performance_of_approaches_with_dieft_edit(
     maxs = [
         df["invtfft"].max(),
         df["invtotaltime"].max(),
-        df["comp"].max(),
+        df["invmrt"].max(),
         df["throughput"].max(),
         df["dieft"].max(),
     ]
@@ -1024,7 +1031,7 @@ def plot_performance_of_approaches_with_dieft_edit(
     for row in df:
         row["invtfft"] = row["invtfft"] / maxs[0]
         row["invtotaltime"] = row["invtotaltime"] / maxs[1]
-        row["comp"] = row["comp"] / maxs[2]
+        row["invmrt"] = row["invmrt"] / maxs[2]
         row["throughput"] = row["throughput"] / maxs[3]
         row["dieft"] = row["dieft"] / maxs[4]
 
@@ -1032,7 +1039,7 @@ def plot_performance_of_approaches_with_dieft_edit(
     df = df.tolist()
     N = len(df[0])
     theta = radar_factory(N, frame="polygon")
-    spoke_labels = ["(TFFT)^-1", "(ET)^-1       ", "Comp", "T", "     dief@t"]
+    spoke_labels = ["(TFFT)^-1", "(ET)^-1       ", "(MRT)^-1", "T", "     dief@t"]
     case_data = df
     fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(projection="radar"))
     fig.subplots_adjust(top=0.85, bottom=0.05)
@@ -1400,6 +1407,11 @@ plt.savefig(outputPlotDir + "traces.png")
 
 # plot response time trace
 traces_response_time = load_trace(input_dir + "/trace.csv")
+
+# F: Conversions
+# responseTime (ns) -> (ms)
+traces_response_time["responseTime"] = traces_response_time["responseTime"] / 1_000_000
+
 plot_response_time_trace(traces_response_time, test_name, COLORS)
 plt.savefig(outputPlotDir + "traces-response-time.png")
 # control reduction step - to take 1 point every reduction_step points
@@ -1426,8 +1438,6 @@ metrics = load_metrics(input_dir + "/metrics.csv")
 # F: Conversions
 # tfft (ns) -> ms
 # mrt (ns)  -> ms
-# convert mrt in ns -> to ms: divide by 10^6
-# results = [r / 1_000_000 for r in results]
 metrics["mrt"] = metrics["mrt"] / 1_000_000
 metrics["tfft"] = metrics["tfft"] / 1_000_000
 
@@ -1473,18 +1483,18 @@ plt.savefig(outputPlotDir + "radar-dieft.png")
 # dief@k interpretation: Lower is better
 
 # dief@k producing the first 5 answers
-print("dief@k producing the first 5 answers")
+print("dief@k producing the first 500 answers")
 # dk = diefpy.diefk(traces, test_name, 5)
-dk = diefk_edit(traces, test_name, 5)
+dk = diefk_edit(traces, test_name, 500)
 print(pd.DataFrame(dk))
 print("____________________________________________________________________________")
 print()
 
 
 # dief@k producing the first 10 answers
-print("dief@k producing the first 10 answers")
+print("dief@k producing the first 1000 answers")
 # dk = diefpy.diefk(traces, test_name, 10)
-dk = diefk_edit(traces, test_name, 10)
+dk = diefk_edit(traces, test_name, 1000)
 print(pd.DataFrame(dk))
 print("____________________________________________________________________________")
 print()
