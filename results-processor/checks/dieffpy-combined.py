@@ -355,6 +355,85 @@ def plot_mrt_edit_2(
     return fig
 
 
+def plot_edit_1(
+    test_name,
+    metric_name,
+    label_name,
+    metrics: pd.DataFrame,
+    colors: list = DEFAULT_COLORS,
+    log_scale: bool = False,
+) -> Figure:
+
+    # Create a figure and axis
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Group data by core
+    unique_cores = metrics["cores"].unique()
+    for i, core_count in enumerate(unique_cores):
+        subset = metrics[metrics["cores"] == core_count]
+        # x = subset["filters"]
+        x = range(len(subset))
+        y = subset[metric_name]
+        color = colors[i % len(colors)]
+        ax.plot(x, y, label=f"{core_count}", color=color, marker="o")
+
+    if log_scale:
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+
+    ax.set_xlabel("# filters")
+    ax.set_ylabel(label_name)
+    ax.set_title(test_name)
+    ax.legend(title="# cores", loc="best")
+
+    filter_labels = metrics["filters"].unique()  # Get the unique filter values
+    ax.set_xticks(range(len(filter_labels)))  # Set ticks at equal intervals
+    ax.set_xticklabels(
+        filter_labels, rotation=45
+    )  # Use the actual filter values as tick labels
+
+    ax.grid(True, which="both", linestyle="--", linewidth=0.5)
+    plt.tight_layout()
+
+    return fig
+
+
+def plot_edit_2(
+    test_name,
+    metric_name,
+    label_name,
+    metrics: pd.DataFrame,
+    colors: list = DEFAULT_COLORS,
+    log_scale: bool = False,
+) -> Figure:
+
+    # Create a figure and axis
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Group data by core
+    unique_cores = metrics["cores"].unique()
+    for i, core_count in enumerate(unique_cores):
+        subset = metrics[metrics["cores"] == core_count]
+        x = subset["filters"]
+        y = subset[metric_name]
+        color = colors[i % len(colors)]
+        ax.plot(x, y, label=f"{core_count}", color=color, marker="o")
+
+    if log_scale:
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+
+    ax.set_xlabel("# filters")
+    ax.set_ylabel(label_name)
+    ax.set_title(test_name)
+    ax.legend(title="# cores", loc="best")
+
+    ax.grid(True, which="both", linestyle="--", linewidth=0.5)
+    plt.tight_layout()
+
+    return fig
+
+
 def dieft_edit(
     inputtrace: np.ndarray,
     inputtest: str,
@@ -438,236 +517,6 @@ def dieft_edit(
         df = np.append(df, res, axis=0)
 
     return df
-
-
-def diefk_edit(inputtrace: np.ndarray, inputtest: str, k: int = -1) -> np.ndarray:
-    """
-    Computes the **dief@k** metric for a specific test at a given number of answers *k*.
-
-    **dief@k** measures the diefficiency while *k* answers are produced by computing
-    the area under the curve of the answer traces.
-    By default, the function computes the minimum of the total number of answer produces by the approaches.
-
-    :param inputtrace: Dataframe with the answer trace. Attributes of the dataframe: test, approach, answer, time.
-    :param inputtest: Specifies the specific test to analyze from the answer trace.
-    :param k: Number of answers to compute dief@k for. By default, the function computes the minimum of the total number
-              of answers produced by the approaches.
-    :return: Dataframe with the dief@k values for each approach. Attributes of the dataframe: test, approach, diefk.
-
-    **Examples**
-
-    >>> diefk(traces, "Q9.sparql")
-    >>> diefk(traces, "Q9.sparql", 1000)
-    """
-    # Initialize output structure.
-    df = np.empty(
-        shape=0,
-        dtype=[
-            ("test", inputtrace["test"].dtype),
-            ("approach", inputtrace["approach"].dtype),
-            ("diefk", float),
-        ],
-    )
-
-    # Obtain test and approaches to compare.
-    results = inputtrace[inputtrace["test"] == inputtest]
-    approaches = np.unique(results["approach"])
-    sorted_approaches = sorted(
-        approaches,
-        key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
-    )
-
-    # Obtain k per approach.
-    if k == -1:
-        n = []
-        for a in sorted_approaches:
-            x = results[results["approach"] == a]
-            n.append(len(x))
-        k = min(n)
-
-    # Compute diefk per approach.
-    for a in sorted_approaches:
-        dief = 0
-        subtrace = results[(results["approach"] == a) & (results["answer"] <= k)]
-        if len(subtrace) > 1:
-            dief = np.trapz(subtrace["answer"], subtrace["time"])
-        res = np.array(
-            [(inputtest, a, dief)],
-            dtype=[
-                ("test", inputtrace["test"].dtype),
-                ("approach", inputtrace["approach"].dtype),
-                ("diefk", float),
-            ],
-        )
-        df = np.append(df, res, axis=0)
-
-    return df
-
-
-def diefk2_edit(inputtrace: np.ndarray, inputtest: str, kp: float = -1.0) -> np.ndarray:
-    """
-    Computes the **dief@k** metric for a specific test at a given percentage of answers *kp*.
-
-    **dief@k** measures the diefficiency while the first *kp* percent of answers are produced
-    by computing the area under the curve of the answer traces.
-    By default, this function behaves the same as ``diefk``. This also holds for kp = 1.0.
-    The function computes the portion *kp* of the minimum number of answers produces by the approaches.
-
-    :param inputtrace: Dataframe with the answer trace. Attributes of the dataframe: test, approach, answer, time.
-    :param inputtest: Specifies the specific test to analyze from the answer trace.
-    :param kp: Ratio of answers to compute dief@k for (kp in [0.0;1.0]). By default and when kp=1.0, this function behaves
-               the same as diefk. It computes the kp portion of the minimum number of answers produced by the approaches.
-    :return: Dataframe with the dief@k values for each approach. Attributes of the dataframe: test, approach, diefk.
-
-    **Examples**
-
-    >>> diefk2(traces, "Q9.sparql")
-    >>> diefk2(traces, "Q9.sparql", 0.25)
-    """
-    # Obtain test and approaches to compare.
-    results = inputtrace[inputtrace["test"] == inputtest]
-    approaches = np.unique(results["approach"])
-    sorted_approaches = sorted(
-        approaches,
-        key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
-    )
-
-    # Obtain k per approach.
-    n = []
-    for a in approaches:
-        x = results[results["approach"] == a]
-        n.append(len(x))
-    k = min(n)
-    if kp > -1:
-        k = k * kp
-
-    # Compute diefk.
-    df = diefk_edit(inputtrace, inputtest, k)
-
-    return df
-
-
-def plot_continuous_efficiency_with_diefk_edit(
-    diefkDF: np.ndarray, q: str, colors: list = DEFAULT_COLORS
-) -> Figure:
-    """
-    Generates a radar plot that compares **dief@k** at different answer completeness percentages for a specific test.
-
-    This function plots the results reported for a single given test in "Experiment 2"
-    (see :cite:p:`dief`).
-    "Experiment 2" measures the continuous efficiency of approaches when producing
-    the first 25%, 50%, 75%, and 100% of the answers.
-
-    :param diefkDF: Dataframe with the results from "Experiment 2".
-    :param q: ID of the selected test to plot.
-    :param colors: List of colors to use for the different approaches.
-    :return: Matplotlib plot for the specified test over the provided metrics.
-
-    **Examples**
-
-    >>> plot_continuous_efficiency_with_diefk(diefkDF, "Q9.sparql")
-    >>> plot_continuous_efficiency_with_diefk(diefkDF, "Q9.sparql", ["#ECC30B","#D56062","#84BCDA"])
-    """
-    # Initialize output structure.
-    df = np.empty(
-        shape=0,
-        dtype=[
-            ("diefk25", float),
-            ("diefk50", float),
-            ("diefk75", float),
-            ("diefk100", float),
-        ],
-    )
-
-    # Obtain approaches.
-    approaches = np.unique(diefkDF["approach"])
-    sorted_approaches = sorted(
-        approaches,
-        key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
-    )
-    labels = []
-    color_map = dict(zip(sorted_approaches, colors))
-
-    for a in sorted_approaches:
-        submetric_approaches = diefkDF[
-            (diefkDF["approach"] == a) & (diefkDF["test"] == q)
-        ]
-
-        if submetric_approaches.size == 0:
-            continue
-        else:
-            labels.append(a)
-
-        res = np.array(
-            [
-                (
-                    (submetric_approaches["diefk25"]),
-                    (submetric_approaches["diefk50"]),
-                    (submetric_approaches["diefk75"]),
-                    (submetric_approaches["diefk100"]),
-                )
-            ],
-            dtype=[
-                ("diefk25", submetric_approaches["diefk25"].dtype),
-                ("diefk50", submetric_approaches["diefk50"].dtype),
-                ("diefk75", submetric_approaches["diefk75"].dtype),
-                ("diefk100", submetric_approaches["diefk100"].dtype),
-            ],
-        )
-
-        df = np.append(df, res, axis=0)
-
-    # Get maximum values
-    maxs = [
-        df["diefk25"].max(),
-        df["diefk50"].max(),
-        df["diefk75"].max(),
-        df["diefk100"].max(),
-    ]
-
-    # Normalize the data
-    for row in df:
-        row["diefk25"] = row["diefk25"] / maxs[0]
-        row["diefk50"] = row["diefk50"] / maxs[1]
-        row["diefk75"] = row["diefk75"] / maxs[2]
-        row["diefk100"] = row["diefk100"] / maxs[3]
-
-    # Plot metrics using spider plot.
-    df = df.tolist()
-    N = len(df[0])
-    theta = radar_factory(N, frame="polygon")
-    spoke_labels = ["k=25%", "k=50%      ", "k=75%", "        k=100%"]
-    case_data = df
-    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(projection="radar"))
-    fig.subplots_adjust(top=0.85, bottom=0.05)
-    ax.set_ylim(0, 1)
-    ticks_loc = ax.get_yticks()
-    ax.yaxis.set_major_locator(mticker.FixedLocator(ticks_loc))
-    ax.set_yticklabels("" for _ in ticks_loc)
-    legend_handles = []
-    for d, label in zip(case_data, labels):
-        legend_handles.append(
-            mlines.Line2D([], [], color=color_map[label], ls="-", label=label)
-        )
-        ax.plot(theta, d, color=color_map[label], zorder=10, clip_on=False)
-        ax.fill(theta, d, facecolor=color_map[label], alpha=0.15)
-    ax.set_varlabels(spoke_labels)
-    ax.tick_params(labelsize=14, zorder=0)
-
-    ax.legend(
-        handles=legend_handles,
-        loc=(0.80, 0.90),
-        labelspacing=0.1,
-        fontsize="medium",
-        frameon=False,
-    )
-
-    plt.setp(ax.spines.values(), color="grey")
-    title = q.split("-")[-1]
-    plt.title(title, fontsize=16, loc="center", pad=30)
-    plt.tight_layout()
-
-    return fig
 
 
 ####################################################################################################################
@@ -815,20 +664,44 @@ plt.savefig(outputPlotDir + "mrt-2.png")
 # tfft
 # throughput: number of checks / second
 df["throughput"] = df["comp"] / df["totaltime"]
-# tx/second
+# interactions/second
 df["interactions/s"] = num_interactions / df["totaltime"]
-print(df)
-
-# TODO: dieft
-
+# dieft
 traces = load_trace_reduced(input_dir + "/trace.csv")
 dt = dieft_edit(traces, test_name)
-
 print("dief@t until the time unit when the slowest approach finalizes its execution")
-print(pd.DataFrame(dt))
-print("____________________________________________________________________________")
-print()
-
+print(
+    "NOTE! - Now it is among all the possible included variations! (not only among the ones with the same # filters or # cores)"
+)
 df["dieft"] = dt["dieft"]
-
 print(df)
+
+# plots
+
+# tfft
+plot_edit_1(test_name, "tfft", "tfft [ms]", df, COLORS, log_scale=False)
+plt.savefig(outputPlotDir + "tfft-1.png")
+plot_edit_2(test_name, "tfft", "tfft [ms]", df, COLORS, log_scale=True)
+plt.savefig(outputPlotDir + "tfft-log.png")
+
+# throughput: number of checks / second
+plot_edit_1(
+    test_name, "throughput", "throughput (checks/s)", df, COLORS, log_scale=False
+)
+plt.savefig(outputPlotDir + "throughput-1.png")
+plot_edit_2(
+    test_name, "throughput", "throughput (checks/s)", df, COLORS, log_scale=True
+)
+plt.savefig(outputPlotDir + "throughput-log.png")
+
+# interactions/s
+plot_edit_1(test_name, "interactions/s", "interactions/s", df, COLORS, log_scale=False)
+plt.savefig(outputPlotDir + "interactions-1.png")
+plot_edit_2(test_name, "interactions/s", "interactions/s", df, COLORS, log_scale=True)
+plt.savefig(outputPlotDir + "interactions-log.png")
+
+# dieft
+plot_edit_1(test_name, "dieft", "dieft", df, COLORS, log_scale=False)
+plt.savefig(outputPlotDir + "dieft-1.png")
+plot_edit_2(test_name, "dieft", "dieft", df, COLORS, log_scale=True)
+plt.savefig(outputPlotDir + "dieft-log.png")
