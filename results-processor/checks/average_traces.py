@@ -14,6 +14,6 @@ grouped = df.groupby(["test", "approach", "answer"], as_index=False).agg(
 )
 
 grouped["time"] = grouped["time"].round(2)
-grouped["responseTime"] = grouped["responseTime"].round(2)
+grouped["responseTime"] = grouped["responseTime"].astype(int)
 
 grouped.to_csv(sys.argv[1], index=False)

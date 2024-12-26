@@ -7,15 +7,17 @@ if len(sys.argv) < 2:
 
 df = pd.read_csv(sys.argv[1])
 
-grouped = df.groupby(["test", "approach", "comp"], as_index=False)[
-    ["tfft", "totaltime", "mrt"]
+grouped = df.groupby(["test", "approach"], as_index=False)[
+    ["tfft", "totaltime", "mrt", "checks", "alerts"]
 ].mean()
 
-grouped["tfft"] = grouped["tfft"].round(2)
+grouped["tfft"] = grouped["tfft"].astype(int)
 grouped["totaltime"] = grouped["totaltime"].round(2)
 grouped["mrt"] = grouped["mrt"].astype(int)
+grouped["checks"] = grouped["checks"].astype(int)
+grouped["alerts"] = grouped["alerts"].astype(int)
 
 
-grouped = grouped[["test", "approach", "tfft", "totaltime", "mrt", "comp"]]
+grouped = grouped[["test", "approach", "tfft", "totaltime", "mrt", "checks", "alerts"]]
 
 grouped.to_csv(sys.argv[1], index=False)
