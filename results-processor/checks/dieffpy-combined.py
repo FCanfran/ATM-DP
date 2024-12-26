@@ -119,7 +119,7 @@ def plot_execution_time_edit_1(
         filter_labels, rotation=45
     )  # Use the actual filter values as tick labels
 
-    # ax.grid(True, which="both", linestyle="--", linewidth=0.5)
+    ax.grid(True, which="both", linestyle="--", linewidth=0.5)
     plt.tight_layout()
 
     return fig
@@ -153,70 +153,157 @@ def plot_execution_time_edit_2(
     ax.set_title(test_name)
     ax.legend(title="# cores", loc="best")
 
-    # ax.grid(True, which="both", linestyle="--", linewidth=0.5)
+    ax.grid(True, which="both", linestyle="--", linewidth=0.5)
     plt.tight_layout()
 
     return fig
 
 
-# mrt is read in ns -> we plot it in ms
-def plot_mean_response_time_single_test(
+def plot_execution_time_edit_cores_1(
     test_name,
-    metrics: np.ndarray,
+    metrics: pd.DataFrame,
     colors: list = DEFAULT_COLORS,
     log_scale: bool = False,
 ) -> Figure:
 
-    submetrics = metrics[metrics["test"] == test_name]
-    approaches = np.unique(metrics["approach"])
-    sorted_approaches = sorted(
-        approaches,
-        key=lambda x: [int(i) if i.isdigit() else i for i in re.split("([0-9]+)", x)],
-    )
+    # Create a figure and axis
+    fig, ax = plt.subplots(figsize=(10, 6))
 
-    color_map = dict(zip(sorted_approaches, colors))
+    # Group data by filter
+    unique_filters = metrics["filters"].unique()
+    for i, filter_count in enumerate(unique_filters):
+        subset = metrics[metrics["filters"] == filter_count]
+        # x = subset["filters"]
+        x = range(len(subset))
+        y = subset["totaltime"]
+        color = colors[i % len(colors)]
+        ax.plot(x, y, label=f"{filter_count}", color=color, marker="o")
 
-    results = [
-        submetrics[submetrics["approach"] == a]["mrt"][0] for a in sorted_approaches
-    ]
-
-    edited_labels = [a.split("-")[-1] for a in sorted_approaches]
-    edited_labels = [re.search(r"\d+", label).group() for label in edited_labels]
-
-    fig = plt.figure(figsize=(0.6 * len(approaches), 5), dpi=100)
-
-    # Plot each bar with its respective label
-    for approach, result, color, label in zip(
-        sorted_approaches,
-        results,
-        [color_map[a] for a in sorted_approaches],
-        edited_labels,
-    ):
-        plt.bar(approach, result, color=color, label=label, width=0.7)
-
-    # Customizing the chart
-    plt.xlabel("# filters", fontsize="large", labelpad=10)
-    plt.ylabel("Mean Response Time [ms]", fontsize="large")
-    plt.xticks(
-        range(len(sorted_approaches)), edited_labels, rotation=90, fontsize="medium"
-    )
-    plt.legend(
-        edited_labels,
-        bbox_to_anchor=(1, 1),
-        loc="upper left",
-        labelspacing=0.1,
-        fontsize="medium",
-        frameon=False,
-        title="# filters",
-    )
-
-    title = test_name.split("-")[-1]
-
-    plt.title(f"{title}", fontsize=16, loc="center", pad=10)
     if log_scale:
-        plt.yscale("log")
+        ax.set_xscale("log")
+        ax.set_yscale("log")
 
-    # Display the chart
+    ax.set_xlabel("# cores")
+    ax.set_ylabel("Execution Time [s]")
+    ax.set_title(test_name)
+    ax.legend(title="# filters", loc="best")
+
+    core_labels = metrics["cores"].unique()  # Get the unique cores values
+    ax.set_xticks(range(len(core_labels)))  # Set ticks at equal intervals
+    ax.set_xticklabels(
+        core_labels, rotation=45
+    )  # Use the actual filter values as tick labels
+
+    ax.grid(True, which="both", linestyle="--", linewidth=0.5)
+    plt.tight_layout()
+
+    return fig
+
+
+def plot_execution_time_edit_cores_2(
+    test_name,
+    metrics: pd.DataFrame,
+    colors: list = DEFAULT_COLORS,
+    log_scale: bool = False,
+) -> Figure:
+
+    # Create a figure and axis
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Group data by filter
+    unique_filters = metrics["filters"].unique()
+    for i, filter_count in enumerate(unique_filters):
+        subset = metrics[metrics["filters"] == filter_count]
+        x = subset["cores"]
+        y = subset["totaltime"]
+        color = colors[i % len(colors)]
+        ax.plot(x, y, label=f"{filter_count}", color=color, marker="o")
+
+    if log_scale:
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+
+    ax.set_xlabel("# cores")
+    ax.set_ylabel("Execution Time [s]")
+    ax.set_title(test_name)
+    ax.legend(title="# filters", loc="best")
+
+    ax.grid(True, which="both", linestyle="--", linewidth=0.5)
+    plt.tight_layout()
+
+    return fig
+
+
+def plot_mrt_edit_1(
+    test_name,
+    metrics: pd.DataFrame,
+    colors: list = DEFAULT_COLORS,
+    log_scale: bool = False,
+) -> Figure:
+
+    # Create a figure and axis
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Group data by core
+    unique_cores = metrics["cores"].unique()
+    for i, core_count in enumerate(unique_cores):
+        subset = metrics[metrics["cores"] == core_count]
+        # x = subset["filters"]
+        x = range(len(subset))
+        y = subset["mrt"]
+        color = colors[i % len(colors)]
+        ax.plot(x, y, label=f"{core_count}", color=color, marker="o")
+
+    if log_scale:
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+
+    ax.set_xlabel("# filters")
+    ax.set_ylabel("Mean Response Time [ms]")
+    ax.set_title(test_name)
+    ax.legend(title="# cores", loc="best")
+
+    filter_labels = metrics["filters"].unique()  # Get the unique filter values
+    ax.set_xticks(range(len(filter_labels)))  # Set ticks at equal intervals
+    ax.set_xticklabels(
+        filter_labels, rotation=45
+    )  # Use the actual filter values as tick labels
+
+    ax.grid(True, which="both", linestyle="--", linewidth=0.5)
+    plt.tight_layout()
+
+    return fig
+
+
+def plot_mrt_edit_2(
+    test_name,
+    metrics: pd.DataFrame,
+    colors: list = DEFAULT_COLORS,
+    log_scale: bool = False,
+) -> Figure:
+
+    # Create a figure and axis
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Group data by core
+    unique_cores = metrics["cores"].unique()
+    for i, core_count in enumerate(unique_cores):
+        subset = metrics[metrics["cores"] == core_count]
+        x = subset["filters"]
+        y = subset["mrt"]
+        color = colors[i % len(colors)]
+        ax.plot(x, y, label=f"{core_count}", color=color, marker="o")
+
+    if log_scale:
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+
+    ax.set_xlabel("# filters")
+    ax.set_ylabel("Mean Response Time [ms]")
+    ax.set_title(test_name)
+    ax.legend(title="# cores", loc="best")
+
+    ax.grid(True, which="both", linestyle="--", linewidth=0.5)
     plt.tight_layout()
 
     return fig
@@ -980,3 +1067,32 @@ plt.savefig(outputPlotDir + "execTime-log.png")
 
 plot_execution_time_edit_2(test_name, df, COLORS, log_scale=False)
 plt.savefig(outputPlotDir + "execTime-2.png")
+
+plot_execution_time_edit_cores_1(test_name, df, COLORS, log_scale=False)
+plt.savefig(outputPlotDir + "execTime-cores-1.png")
+
+plot_execution_time_edit_cores_2(test_name, df, COLORS, log_scale=True)
+plt.savefig(outputPlotDir + "execTime-cores-log.png")
+
+plot_execution_time_edit_cores_2(test_name, df, COLORS, log_scale=False)
+plt.savefig(outputPlotDir + "execTime-cores-2.png")
+
+
+# mean response time plot
+plot_mrt_edit_1(test_name, df, COLORS, log_scale=False)
+plt.savefig(outputPlotDir + "mrt-1.png")
+
+plot_mrt_edit_2(test_name, df, COLORS, log_scale=True)
+plt.savefig(outputPlotDir + "mrt-log.png")
+
+plot_mrt_edit_2(test_name, df, COLORS, log_scale=False)
+plt.savefig(outputPlotDir + "mrt-2.png")
+
+
+# tfft
+
+# throughput
+
+# dieft
+
+# tx/second - VS throughput?
