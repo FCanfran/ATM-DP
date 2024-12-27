@@ -11,9 +11,11 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j/config"
 )
 
 var (
@@ -46,12 +48,18 @@ func SafeConnect() context.Context {
 		log.Fatal("Missing required environment variables: NEO4J_URI, NEO4J_USERNAME, or NEO4J_PASSWORD - use a .env file to specify them")
 	}
 
+	// F: Adjust to avoid timeout on the execution of a transaction
+	// **************************************************************************************
 	driver, err = neo4j.NewDriverWithContext(
 		dbUri,
-		neo4j.BasicAuth(dbUser, dbPassword, ""))
+		neo4j.BasicAuth(dbUser, dbPassword, ""),
+		func(config *config.Config) {
+			config.MaxTransactionRetryTime = 1 * time.Hour
+		})
 	if err != nil {
 		panic(err)
 	}
+	// **************************************************************************************
 
 	err = driver.VerifyConnectivity(ctx)
 	if err != nil {
@@ -105,6 +113,18 @@ func ReadQuery(ctx context.Context,
 	// the ReadQuery function)
 	processResult func(neo4j.ResultWithContext) (any, error)) (any, error) {
 
+	// F: Context with retries
+	//maxRetries := 1
+	//timeout := 120 * time.Second
+	//attempt := 1
+	//var lastErr error
+	//for attempt <= maxRetries {
+	//	if attempt > 1 {
+	//		log.Printf("Attempt init %d/%d", attempt, maxRetries)
+	//	}
+	//ctxTimeout, cancel := context.WithTimeout(ctx, time.Second*50)
+	//defer cancel()
+
 	result, err := neo4j.ExecuteRead(ctx, session,
 		func(tx neo4j.ManagedTransaction) (any, error) {
 			result, err := tx.Run(ctx, query, params)
@@ -114,7 +134,24 @@ func ReadQuery(ctx context.Context,
 			return processResult(result) // process the result within the active transaction
 		})
 
+	//if err == nil {
 	return result, err
+	//}
+
+	// if errors.Is(err, context.DeadlineExceeded) || neo4j.IsConnectivityError(err) {
+	//log.Printf("Attempt %d/%d failed due to timeout or connectivity error. Retrying...", attempt, maxRetries)
+	//lastErr = err
+	//time.Sleep(time.Duration(attempt) * time.Millisecond * 10) // Exponential backoff
+	//attempt++
+	//continue
+	//}
+
+	//log.Printf("Other error but no retry!!!!")
+
+	//return nil, err // Non-timeout error, exit early
+	// }
+
+	//return nil, fmt.Errorf("query failed after %d retries: %w", maxRetries, lastErr)
 }
 
 // DriverWithContext VS Sessions
