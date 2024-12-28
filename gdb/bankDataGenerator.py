@@ -200,106 +200,14 @@ def atm_generator(
     return atm_df, atm_bank_internal_df, atm_bank_external_df
 
 
-# Different types of transactions:
-# - 1: Withdrawal       (Retirada de dinero)
-# - 2: Deposit          (Ingreso)
-# - 3: Balance Inquiry  (Consulta de saldo/balance)
-# - 4: Transfer         (Transferencia)
-# The behavior gathers metrics for each of the kind of operations
-def get_client_behavior_wisabi(customer):
-    # CardholderID to locate the transactions of the customer in the wisabi dataset
-    # for a customer, all the transactions take place in the same atm (in the wisabi dataset)
-
-    # CardholderID
-    # -> to gather the transactions of this client
-    # -> also indicates in which transaction csv we have to look into
-    behavior = {}
-    cardholderid = customer["CardholderID"]
-    csv_code = cardholderid.split("-")[
-        0
-    ]  # to read the transactions from the corresponding CSV
-
-    if csv_code == "EN":
-        csv_file = "enugu_transactions.csv"
-    elif csv_code == "FC":
-        csv_file = "fct_transactions.csv"
-    elif csv_code == "KN":
-        csv_file = "kano_transactions.csv"
-    elif csv_code == "LA":
-        csv_file = "lagos_transactions.csv"
-    elif csv_code == "RI":
-        csv_file = "rivers_transactions.csv"
-    else:
-        print("No matching transaction file, csv code was:", csv_code)
-        return
-
-    all_transactions_df = pd.read_csv("wisabi/" + csv_file)
-
-    # obtain all the transactions of the customer by the cardholderid
-    transactions = all_transactions_df[
-        (all_transactions_df["CardholderID"] == cardholderid)
-    ]
-    # print(f"# of transactions: {len(transactions)}")
-
-    withdrawals = transactions[(transactions["TransactionTypeID"] == 1)]
-    deposits = transactions[(transactions["TransactionTypeID"] == 2)]
-    inquiries = transactions[(transactions["TransactionTypeID"] == 3)]
-    transfers = transactions[(transactions["TransactionTypeID"] == 4)]
-
-    # print(f"# of withdrawals: {len(withdrawals)}")
-    # print(f"# of deposits: {len(deposits)}")
-    # print(f"# of balance_inquiries: {len(inquiries)}")
-    # print(f"# of transfers: {len(transfers)}")
-
-    # Metrics - Withdrawals
-    if not withdrawals.empty:
-        amount_avg = round(withdrawals["TransactionAmount"].mean(), 2)
-        amount_std = round(withdrawals["TransactionAmount"].std(), 2)
-        # Number of withdrawals per day - we have transactions of the year 2022 - 365 days
-        num_transacc_per_day = round(len(withdrawals) / 365, 4)
-        behavior["amount_avg_withdrawal"] = amount_avg
-        behavior["amount_std_withdrawal"] = amount_std
-        behavior["withdrawal_day"] = num_transacc_per_day
-    else:
-        print("No matching withdrawals with CardholderID found in transactions table")
-
-    # Metrics - Deposits
-    if not deposits.empty:
-        amount_avg = round(deposits["TransactionAmount"].mean(), 2)
-        amount_std = round(deposits["TransactionAmount"].std(), 2)
-        # Number of Deposits per day - we have transactions of the year 2022 - 365 days
-        num_transacc_per_day = round(len(deposits) / 365, 4)
-        behavior["amount_avg_deposit"] = amount_avg
-        behavior["amount_std_deposit"] = amount_std
-        behavior["deposit_day"] = num_transacc_per_day
-    else:
-        print("No matching deposits with CardholderID found in transactions table")
-
-    # Metrics - Inquiries
-    if not inquiries.empty:
-        # Number of inquiries per day - we have transactions of the year 2022 - 365 days
-        num_transacc_per_day = round(len(inquiries) / 365, 4)
-        behavior["inquiry_day"] = num_transacc_per_day
-    else:
-        print("No matching inquiries with CardholderID found in transactions table")
-
-    # Metrics - Transfers
-    if not transfers.empty:
-        amount_avg = round(transfers["TransactionAmount"].mean(), 2)
-        amount_std = round(transfers["TransactionAmount"].std(), 2)
-        # Number of transfers per day - we have transactions of the year 2022 - 365 days
-        num_transacc_per_day = round(len(transfers) / 365, 4)
-        behavior["amount_avg_transfer"] = amount_avg
-        behavior["amount_std_transfer"] = amount_std
-        behavior["transfer_day"] = num_transacc_per_day
-    else:
-        print("No matching transfers with CardholderID found in transactions table")
-
-    return behavior
-
-
 def card_generator(
-    customers_df_wisabi, atm_df_wisabi, atm_df, loc_from_wisabi, n, bank_code
+    customers_df_wisabi,
+    atm_df_wisabi,
+    atm_df,
+    loc_from_wisabi,
+    n,
+    bank_code,
+    atm_dictionary,
 ):
 
     # create the card dataframe
@@ -327,20 +235,23 @@ def card_generator(
     cols = ["code", "number_id"]
     card_bank_df = pd.DataFrame(columns=cols)
 
-    num_customers_wisabi = len(customers_df_wisabi)
-
+    # behavior csv - gathered behaviors of all the wisabi customers
+    behavior_file = "wisabi/behavior.csv"
+    behavior_df_wisabi = pd.read_csv(behavior_file)
+    num_customers_wisabi = len(behavior_df_wisabi)
     # Generate the n synthetic cards
     for i in tqdm(range(n), desc="Generating cards"):
-
-        # Select random wisabi customer
-        # discrete value drawn from uniform distribution in range (0,num_customers_wisabi)
-        rand_index = random.randint(0, num_customers_wisabi - 1)  # randint [a,b]
-        rand_customer = customers_df_wisabi.iloc[rand_index]
 
         # 1. Behavior
         # Get behaviour of this customer so that we also assign them to the new card/client generated
         # --> behavior obtained from its transactions in the wisabi dataset
-        behavior = get_client_behavior_wisabi(rand_customer)
+
+        # Select random wisabi customer - to get its behavior from the beahvior.csv file
+        # discrete value drawn from uniform distribution in range (0,num_customers_wisabi)
+        rand_index = random.randint(0, num_customers_wisabi - 1)  # randint [a,b]
+        rand_customer = customers_df_wisabi.iloc[rand_index]
+        behavior = behavior_df_wisabi.iloc[rand_index]
+        print(behavior)
 
         # 2. Location
 
@@ -363,8 +274,9 @@ def card_generator(
             country = atm_df.iloc[rand_atm_index]["country"]
 
         # optional -> use the previously constructed bbox atm_dictionary of wisabi, so that it is faster
+        # atm_dictionary = None
         loc_latitude, loc_longitude = generate_random_geolocation_city(
-            city, country, atm_dictionary=None
+            city, country, atm_dictionary
         )
 
         # id
@@ -538,6 +450,7 @@ def main():
         loc_from_wisabi,
         num_cards,
         bank_code,
+        atm_dictionary,
     )
 
     print(card_df)
