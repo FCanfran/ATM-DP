@@ -1,4 +1,5 @@
 import pandas as pd
+import csv
 import os
 import random
 import datetime
@@ -210,8 +211,8 @@ def card_generator(
     atm_dictionary,
 ):
 
-    # create the card dataframe
-    cols = [
+    # card
+    card_cols = [
         "number_id",
         "client_id",
         "expiration",
@@ -230,92 +231,94 @@ def card_generator(
         "amount_std_transfer",
         "transfer_day",
     ]
-    card_df = pd.DataFrame(columns=cols)
-    # create the relationship card-bank dataframe
-    cols = ["code", "number_id"]
-    card_bank_df = pd.DataFrame(columns=cols)
+    card_bank_cols = ["code", "number_id"]
 
-    # behavior csv - gathered behaviors of all the wisabi customers
-    behavior_file = "wisabi/behavior.csv"
-    behavior_df_wisabi = pd.read_csv(behavior_file)
-    num_customers_wisabi = len(behavior_df_wisabi)
-    # Generate the n synthetic cards
-    for i in tqdm(range(n), desc="Generating cards"):
+    with open("csv/card.csv", mode="w", newline="") as card_file, open(
+        "csv/card-bank.csv", mode="w", newline=""
+    ) as card_bank_file:
+        card_writer = csv.DictWriter(card_file, fieldnames=card_cols)
+        card_bank_writer = csv.DictWriter(card_bank_file, fieldnames=card_bank_cols)
 
-        # 1. Behavior
-        # Get behaviour of this customer so that we also assign them to the new card/client generated
-        # --> behavior obtained from its transactions in the wisabi dataset
+        card_writer.writeheader()
+        card_bank_writer.writeheader()
 
-        # Select random wisabi customer - to get its behavior from the beahvior.csv file
-        # discrete value drawn from uniform distribution in range (0,num_customers_wisabi)
-        rand_index = random.randint(0, num_customers_wisabi - 1)  # randint [a,b]
-        rand_customer = customers_df_wisabi.iloc[rand_index]
-        behavior = behavior_df_wisabi.iloc[rand_index]
-        print(behavior)
+        # behavior csv - gathered behaviors of all the wisabi customers
+        behavior_file = "wisabi/behavior.csv"
+        behavior_df_wisabi = pd.read_csv(behavior_file)
+        num_customers_wisabi = len(behavior_df_wisabi)
+        # Generate the n synthetic cards
+        for i in tqdm(range(n), desc="Generating cards"):
 
-        # 2. Location
+            # 1. Behavior
+            # Get behaviour of this customer so that we also assign them to the new card/client generated
+            # --> behavior obtained from its transactions in the wisabi dataset
 
-        # Option 1: assign a random location of the usual ATM of the selected wisabi customer
-        if loc_from_wisabi:
-            atmid = rand_customer["ATMID"]
-            # find the city of this atm
-            atm = atm_df_wisabi[atm_df_wisabi["LocationID"] == atmid]
-            if not atm.empty:
-                city = atm["City"].iloc[0]
-                country = atm["Country"].iloc[0]
+            # Select random wisabi customer - to get its behavior from the beahvior.csv file
+            # discrete value drawn from uniform distribution in range (0,num_customers_wisabi)
+            rand_index = random.randint(0, num_customers_wisabi - 1)  # randint [a,b]
+            rand_customer = customers_df_wisabi.iloc[rand_index]
+            behavior = behavior_df_wisabi.iloc[rand_index]
+
+            # 2. Location
+
+            # Option 1: assign a random location of the usual ATM of the selected wisabi customer
+            if loc_from_wisabi:
+                atmid = rand_customer["ATMID"]
+                # find the city of this atm
+                atm = atm_df_wisabi[atm_df_wisabi["LocationID"] == atmid]
+                if not atm.empty:
+                    city = atm["City"].iloc[0]
+                    country = atm["Country"].iloc[0]
+                else:
+                    print("No matching ATM with LocationID found in ATMs table")
+
+            # Option 2: assign a random location of the city of a random ATM of the newly generated ATMs
             else:
-                print("No matching ATM with LocationID found in ATMs table")
+                # Get a random ATM from the new ATM table
+                rand_atm_index = random.randint(0, len(atm_df) - 1)
+                city = atm_df.iloc[rand_atm_index]["city"]
+                country = atm_df.iloc[rand_atm_index]["country"]
 
-        # Option 2: assign a random location of the city of a random ATM of the newly generated ATMs
-        else:
-            # Get a random ATM from the new ATM table
-            rand_atm_index = random.randint(0, len(atm_df) - 1)
-            city = atm_df.iloc[rand_atm_index]["city"]
-            country = atm_df.iloc[rand_atm_index]["country"]
+            # optional -> use the previously constructed bbox atm_dictionary of wisabi, so that it is faster
+            # atm_dictionary = None
+            loc_latitude, loc_longitude = generate_random_geolocation_city(
+                city, country, atm_dictionary
+            )
 
-        # optional -> use the previously constructed bbox atm_dictionary of wisabi, so that it is faster
-        # atm_dictionary = None
-        loc_latitude, loc_longitude = generate_random_geolocation_city(
-            city, country, atm_dictionary
-        )
+            # id
+            number_id = "c-" + bank_code + "-" + str(i)
 
-        # id
-        number_id = "c-" + bank_code + "-" + str(i)
+            new_card = {
+                "number_id": number_id,
+                "client_id": i,
+                "expiration": datetime.date(2050, 1, 17),
+                "CVC": 999,
+                "loc_latitude": loc_latitude,
+                "loc_longitude": loc_longitude,
+                # NOTE: Temporary approach
+                "extract_limit": round(behavior["amount_avg_withdrawal"] * 5, 2),
+                # optional -> for the generation of the transactions based on the behavior
+                # of the clients of the wisabi dataset
+                "amount_avg_withdrawal": behavior["amount_avg_withdrawal"],
+                "amount_std_withdrawal": behavior["amount_std_withdrawal"],
+                "withdrawal_day": behavior["withdrawal_day"],
+                "amount_avg_deposit": behavior["amount_avg_deposit"],
+                "amount_std_deposit": behavior["amount_std_deposit"],
+                "deposit_day": behavior["deposit_day"],
+                "inquiry_day": behavior["inquiry_day"],
+                "amount_avg_transfer": behavior["amount_avg_transfer"],
+                "amount_std_transfer": behavior["amount_std_transfer"],
+                "transfer_day": behavior["transfer_day"],
+            }
 
-        new_card = {
-            "number_id": number_id,
-            "client_id": i,
-            "expiration": datetime.date(2050, 1, 17),
-            "CVC": 999,
-            "loc_latitude": loc_latitude,
-            "loc_longitude": loc_longitude,
-            # NOTE: Temporary approach
-            "extract_limit": round(behavior["amount_avg_withdrawal"] * 5, 2),
-            # optional -> for the generation of the transactions based on the behavior
-            # of the clients of the wisabi dataset
-            "amount_avg_withdrawal": behavior["amount_avg_withdrawal"],
-            "amount_std_withdrawal": behavior["amount_std_withdrawal"],
-            "withdrawal_day": behavior["withdrawal_day"],
-            "amount_avg_deposit": behavior["amount_avg_deposit"],
-            "amount_std_deposit": behavior["amount_std_deposit"],
-            "deposit_day": behavior["deposit_day"],
-            "inquiry_day": behavior["inquiry_day"],
-            "amount_avg_transfer": behavior["amount_avg_transfer"],
-            "amount_std_transfer": behavior["amount_std_transfer"],
-            "transfer_day": behavior["transfer_day"],
-        }
+            card_writer.writerow(new_card)
 
-        card_df.loc[i] = new_card
-
-        # Relationship
-        new_card_bank = {
-            "code": bank_code,
-            "number_id": number_id,
-        }
-
-        card_bank_df.loc[i] = new_card_bank
-
-    return card_df, card_bank_df
+            # Relationship
+            new_card_bank = {
+                "code": bank_code,
+                "number_id": number_id,
+            }
+            card_bank_writer.writerow(new_card_bank)
 
 
 # Bank generator
@@ -443,7 +446,7 @@ def main():
     # returns the card df and the card-bank relationship dataframe
     print(f"Card generation process...")
     bank_code = bank_df.iloc[0]["code"]
-    card_df, card_bank_df = card_generator(
+    card_generator(
         customers_df_wisabi,
         atm_df_wisabi,
         atm_df,
@@ -453,10 +456,6 @@ def main():
         atm_dictionary,
     )
 
-    print(card_df)
-    print(card_bank_df)
-    card_df.to_csv("csv/card.csv", index=False)
-    card_bank_df.to_csv("csv/card-bank.csv", index=False)
     print(f"Cards correctly generated.")
 
 

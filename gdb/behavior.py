@@ -1,12 +1,5 @@
 import pandas as pd
 import csv
-import os
-import random
-import datetime
-from geopy.geocoders import (
-    Nominatim,
-)  # https://nominatim.org/ -> open-source geocoding with OpenStreetMap data -> search API
-from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 from tqdm import tqdm
 
 
