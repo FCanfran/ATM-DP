@@ -548,6 +548,10 @@ func populateCardsAlt(session neo4j.SessionWithContext, csvPath string) {
 
 		i += 1
 
+		if i%1000 == 0 {
+			fmt.Printf("Population of card: %d", i)
+		}
+
 		number_id := row[0]
 		client_id := row[1]
 
