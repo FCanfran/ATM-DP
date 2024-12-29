@@ -8,6 +8,7 @@ import random
 import bisect
 import math
 import os
+import csv
 from tqdm import tqdm
 
 # Transaction generator with anomalous transaction generation, given by parameter ratio [0,1], which defines
@@ -25,7 +26,7 @@ OP_TYPES = [0, 1, 2, 3]
 # Parameters
 #############################################################################################################
 START_DATE = "2018-04-01"  # start date, from which the first transaction is generated
-NUM_DAYS = 5  # num of days for which transactions are generated (init START_DATE)
+NUM_DAYS = 30  # num of days for which transactions are generated (init START_DATE)
 
 ANOMALOUS_RATIO_1 = (
     0.02  # ratio of anomalous tx (per card) over the total amount of generated withdrawal transactions
@@ -334,8 +335,9 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
     # regular_withdrawals_df = regular_tx_card[regular_tx_card["transaction_type"] == 0]
     num_regular = len(regular_tx_card)
     num_anomalous = round(num_regular * ANOMALOUS_RATIO_1)
-    # print("..........................................")
-    # print(f"num_regular_tx = {num_regular}, num_anomalous = {num_anomalous}")
+
+    print("..........................................")
+    print(f"num_regular_tx = {num_regular}, num_anomalous = {num_anomalous}")
 
     # randomly select in between which tx the anomalous are introduced
 
@@ -468,11 +470,16 @@ def split_tx(tx_df):
 
 def main():
 
-    if len(sys.argv) < 2:
-        print("Usage: python transactionGenerator.go <outputFileName>")
+    if len(sys.argv) < 4:
+        print(
+            "Usage: python transactionGenerator.go <outputFileName> <start-card-index> <num-cards>"
+        )
         sys.exit(1)
 
     output_file_name = sys.argv[1]
+    start_card_index = int(sys.argv[2])
+    num_cards = int(sys.argv[3])
+    end_card_index = start_card_index + num_cards
 
     # fix a constant seed so that experiments are reproducible
     key = 37
@@ -482,10 +489,13 @@ def main():
     atm_df = pd.read_csv("csv/atm.csv")
     card_df = pd.read_csv("csv/card.csv")
 
-    print(atm_df)
+    # slice the card_df
+    print(f"start card: {start_card_index}")
+    print(f"end card: {end_card_index}")
+    card_df = card_df.iloc[start_card_index:end_card_index]
     print(card_df)
 
-    # create the transaction dataframe
+    # create the transaction csv
     cols = [
         "transaction_id",
         "number_id",
@@ -495,45 +505,48 @@ def main():
         "transaction_end",
         "transaction_amount",
     ]
-    transaction_df = pd.DataFrame(columns=cols)
-    anomalous_df = pd.DataFrame(columns=cols)
-    tx_id = 0
+    # transaction_df = pd.DataFrame(columns=cols)
+    # anomalous_df = pd.DataFrame(columns=cols)
+    with open(
+        "tx/" + output_file_name + "-all-" + str(start_card_index) + ".csv",
+        mode="w",
+        newline="",
+    ) as all_tx_file, open(
+        "tx/" + output_file_name + "-anomalous-" + str(start_card_index) + ".csv",
+        mode="w",
+        newline="",
+    ) as anomalous_tx_file:
+        all_tx_writer = csv.writer(all_tx_file)
+        anomalous_tx_writer = csv.writer(anomalous_tx_file)
 
-    # added progress bar with tqdm
-    for card_index in tqdm(
-        card_df.index,
-        desc="Generating synthetic transaction stream for each of the cards",
-    ):
-        # atm_non_regular: is the set of atms not selected for the generated tx of the card since distance <= max_distance
-        tx_card, tx_id, atm_regular, atm_non_regular = transaction_generator(
-            card_df.iloc[card_index], atm_df, tx_id
-        )
+        # header
+        all_tx_writer.writerow(cols)
+        anomalous_tx_writer.writerow(cols)
+        tx_id = 0
 
-        # Introduction of anomalous
-        if len(tx_card) > 0:
-            # Generation of anomalous tx for this card
-            card_anomalous_df, tx_id = introduce_anomalous_fp_1(
-                tx_card, atm_regular, atm_non_regular, tx_id
+        # added progress bar with tqdm
+        for card_index in tqdm(
+            card_df.index,
+            desc="Generating synthetic transaction stream for each of the cards",
+        ):
+            # atm_non_regular: is the set of atms not selected for the generated tx of the card since distance <= max_distance
+            tx_card, tx_id, atm_regular, atm_non_regular = transaction_generator(
+                card_df.loc[card_index], atm_df, tx_id
             )
 
-            # Ensure the df is not empty and does not contain only NaN values, to avoid warnings
-            if not card_anomalous_df.dropna(how="all").empty:
-                anomalous_df = (
-                    card_anomalous_df.copy()
-                    if anomalous_df.empty
-                    else pd.concat([anomalous_df, card_anomalous_df], ignore_index=True)
+            # Introduction of anomalous
+            if len(tx_card) > 0:
+                # Generation of anomalous tx for this card
+                card_anomalous_df, tx_id = introduce_anomalous_fp_1(
+                    tx_card, atm_regular, atm_non_regular, tx_id
                 )
 
-        # if transaction_df is empty (on first iteration) then directly assign the returned df, otherwise an ordinary concat
-        # Drop all-NaN rows from tx_card before concatenation:
-        # Ensure the df is not empty and does not contain only NaN values, to avoid warnings
-        if not tx_card.dropna(how="all").empty:
-            transaction_df = (
-                tx_card.copy()
-                if transaction_df.empty
-                else pd.concat([transaction_df, tx_card], ignore_index=True)
-            )
+                if len(card_anomalous_df) > 0:
+                    anomalous_tx_writer.writerows(card_anomalous_df.values)
 
+                all_tx_writer.writerows(tx_card.values)
+
+    """
     # 3 csv generated:
     # - regular tx
     # - anomalous tx
@@ -608,6 +621,7 @@ def main():
 
     else:
         print("No transactions generated\n")
+    """
 
     print("\n")
     print("~~~~~~~~~~~~~~~~~~~ Summary ~~~~~~~~~~~~~~~~~~~~~")
