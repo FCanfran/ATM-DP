@@ -5,7 +5,6 @@ from geopy.distance import geodesic, great_circle
 import sys
 from bitarray import bitarray
 import random
-import bisect
 import math
 import os
 import csv
@@ -161,27 +160,26 @@ def distribute_tx(n, t_min_subset):
         end_time = start_time + diff_end
         candidate_tx = (start_time, end_time)
 
-        def get_start(element):
-            return element[0]
+        # Manually find the correct insertion point
+        index = 0
+        while index < len(tx_ordered_times):
+            prev = tx_ordered_times[index - 1] if index > 0 else None
+            next = tx_ordered_times[index] if index < len(tx_ordered_times) else None
 
-        def get_end(element):
-            return element[1]
+            # Check if insertion is possible with previous and next
+            # - [0]: start_time, [1]: end_time
+            if (prev is None or prev[1] + t_min_subset < candidate_tx[0]) and (
+                next is None or candidate_tx[1] + t_min_subset < next[0]
+            ):
+                # Insert in this position
+                tx_ordered_times.insert(index, candidate_tx)
+                break
 
-        # Check with previous and next
-        # Find the insertion index
-        index = bisect.bisect_left(
-            tx_ordered_times, get_start(candidate_tx), key=get_start
-        )
-        # Access the previous element if it exists
-        prev = tx_ordered_times[index - 1] if index > 0 else None
-        # Access the next element if it exists
-        next = tx_ordered_times[index] if index < len(tx_ordered_times) else None
-        # Check if insertion is possible with prev and next
-        if (
-            prev == None or get_end(prev) + t_min_subset < get_start(candidate_tx)
-        ) and (next == None or get_end(candidate_tx) + t_min_subset < get_start(next)):
-            # Insert in this position
-            bisect.insort(tx_ordered_times, candidate_tx)
+            index += 1
+
+        # If we didn't find an insertion point (i.e., we're at the end), insert it at the end
+        if index == len(tx_ordered_times):
+            tx_ordered_times.append(candidate_tx)
 
     return tx_ordered_times
 
@@ -335,9 +333,6 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
     # regular_withdrawals_df = regular_tx_card[regular_tx_card["transaction_type"] == 0]
     num_regular = len(regular_tx_card)
     num_anomalous = round(num_regular * ANOMALOUS_RATIO_1)
-
-    print("..........................................")
-    print(f"num_regular_tx = {num_regular}, num_anomalous = {num_anomalous}")
 
     # randomly select in between which tx the anomalous are introduced
 
@@ -543,6 +538,8 @@ def main():
 
                 if len(card_anomalous_df) > 0:
                     anomalous_tx_writer.writerows(card_anomalous_df.values)
+                    # join anomalous with tx-all
+                    tx_card = pd.concat([tx_card, card_anomalous_df], ignore_index=True)
 
                 all_tx_writer.writerows(tx_card.values)
 
