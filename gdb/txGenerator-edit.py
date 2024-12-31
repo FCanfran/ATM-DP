@@ -213,9 +213,6 @@ def transaction_generator(card, atm_df, tx_id):
         atm_df,
     )
 
-    print(atm_df_regular)
-    exit(1)
-
     if len(atm_df_regular) > 0:
         # Calculate max_distance_subset for each specific ATM_subset
         max_distance_subset = calculate_max_distance_subset(atm_df_regular)
@@ -249,6 +246,8 @@ def transaction_generator(card, atm_df, tx_id):
         if num_tx > 0:
             # distributed transaction start moments (in seconds)
             tx_times = distribute_tx(num_tx, t_min_subset)
+            print(tx_times)
+            exit(1)
             for tx_time in tx_times:
                 # 0. ATM id
                 # randomly among the subset of ATMs -> all of them satisfy the constraints

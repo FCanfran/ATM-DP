@@ -108,65 +108,74 @@ def calculate_max_distance_subset(atm_df_regular):
 # Returns a ordered list of start moments in seconds, respecting that all of the moments
 # are at a minimum time distance of t_min_subset
 def distribute_tx(n, t_min_subset):
+    print(f"distribute_tx - n = {n}")
     # in seconds of a day: (86400s in a day)
     lower_bound = 0
     upper_bound = (86400 * NUM_DAYS) - 1
 
     num_holes = upper_bound - lower_bound
     needed_holes = (MAX_DURATION + t_min_subset) * (n - 1) + MAX_DURATION
-    # print(f"num_holes: {num_holes}, needed_holes: {needed_holes}")
 
     tx_ordered_times = []
     if num_holes < needed_holes:
         return tx_ordered_times, False
 
-    i = 0
-    while len(tx_ordered_times) < n:
-        start_time = int(np.random.uniform(lower_bound, upper_bound))
-        diff_end = int(np.random.normal(MEAN_DURATION, STD_DURATION))
-        if diff_end <= 0:
-            diff_end = MEAN_DURATION  # if negative or 0 -> then it is = to the mean
-        if diff_end > MAX_DURATION:
-            diff_end = MAX_DURATION  # if above MAX_DURATION -> then MAX_DURATION
+    if needed_holes > num_holes / 2:
+        print(f"distribute_tx - B - ordered")
+        # distribute in order one after the other
+        start_time = lower_bound
+        # Offset for tx_start_next = tx_end_prev + t_min_subset + offset
+        offset_start = t_min_subset * 0.01
 
-        end_time = start_time + diff_end
-        candidate_tx = (start_time, end_time)
-
-        print(candidate_tx)
-        # Manually find the correct insertion point
-        index = 0
-        print(len(tx_ordered_times))
-        print("-----------------------")
-        while index < len(tx_ordered_times):
-            print(index)
-            prev = tx_ordered_times[index - 1] if index > 0 else None
-            next = tx_ordered_times[index] if index < len(tx_ordered_times) else None
-
-            # Check if insertion is possible with previous and next
-            # - [0]: start_time, [1]: end_time
-            if (prev is None or prev[1] + t_min_subset < candidate_tx[0]) and (
-                next is None or candidate_tx[1] + t_min_subset < next[0]
-            ):
-                # Insert in this position
-                tx_ordered_times.insert(index, candidate_tx)
-                print(f"insert in the found position: {index}")
-                break
-
-            index += 1
-
-        print("xxxxxxxxxxxxxx")
-        print(index)
-        print(len(tx_ordered_times))
-        # If we didn't find an insertion point (i.e., we're at the end), insert it at the end
-        if index == len(tx_ordered_times):
+        while len(tx_ordered_times) < n:
+            diff_end = int(np.random.normal(MEAN_DURATION, STD_DURATION))
+            if diff_end <= 0:
+                diff_end = MEAN_DURATION  # if negative or 0 -> then it is = to the mean
+            if diff_end > MAX_DURATION:
+                diff_end = MAX_DURATION  # if above MAX_DURATION -> then MAX_DURATION
+            end_time = start_time + diff_end
+            candidate_tx = (start_time, end_time)
             tx_ordered_times.append(candidate_tx)
+            start_time = end_time + t_min_subset + offset_start
 
-        print("rrrrrrrrrrrr")
-        print(len(tx_ordered_times))
-        print(n)
-        i += 1
+    else:
+        print(f"distribute_tx - A - random")
+        # distribute randomly
+        while len(tx_ordered_times) < n:
+            start_time = int(np.random.uniform(lower_bound, upper_bound))
+            diff_end = int(np.random.normal(MEAN_DURATION, STD_DURATION))
+            if diff_end <= 0:
+                diff_end = MEAN_DURATION  # if negative or 0 -> then it is = to the mean
+            if diff_end > MAX_DURATION:
+                diff_end = MAX_DURATION  # if above MAX_DURATION -> then MAX_DURATION
 
-    print("holaaaaa")
+            end_time = start_time + diff_end
+            candidate_tx = (start_time, end_time)
+
+            # Manually find the correct insertion point
+            index = 0
+            found_insertion = False
+            while index <= len(tx_ordered_times) and not found_insertion:
+                prev = tx_ordered_times[index - 1] if index > 0 else None
+                next = (
+                    tx_ordered_times[index] if index < len(tx_ordered_times) else None
+                )
+
+                # Check if insertion is possible with previous and next
+                # - [0]: start_time, [1]: end_time
+                if (prev is None or prev[1] < candidate_tx[0]) and (
+                    next is None or candidate_tx[1] < next[0]
+                ):
+                    # Found the correct position
+                    found_insertion = True
+                    # Insert in this position only if constraints of t_min are satisfied
+                    if (prev is None or prev[1] + t_min_subset < candidate_tx[0]) and (
+                        next is None or candidate_tx[1] + t_min_subset < next[0]
+                    ):
+                        tx_ordered_times.insert(index, candidate_tx)
+
+                index += 1
+
     return tx_ordered_times, True
 
 
@@ -207,8 +216,6 @@ def transaction_generator(card, atm_df, tx_id):
         t_min_subset = int(
             (max_distance_subset / REGULAR_SPEED) * 60 * 60
         )  # in seconds
-        print(f"max_distance_subset = {max_distance_subset}")
-        print(f"t_min_subset = {t_min_subset/3600}h")
 
         # Generation of transactions
         withdrawal_day = card["withdrawal_day"]
@@ -218,7 +225,6 @@ def transaction_generator(card, atm_df, tx_id):
 
         ops_day = withdrawal_day + deposit_day + inquiry_day + transfer_day
         num_tx = np.random.poisson(ops_day * NUM_DAYS)
-        print(f"num_tx = {num_tx}")
 
         op_type_probabilities = [
             withdrawal_day / ops_day,
@@ -229,8 +235,9 @@ def transaction_generator(card, atm_df, tx_id):
 
         if num_tx > 0:
             # distributed transaction start moments (in seconds)
-            possible_distribution = False
+            print(num_tx)
             tx_times, possible_distribution = distribute_tx(num_tx, t_min_subset)
+            print(".............")
             # Keep trying with half the tx to distribute... until it is possible
             while not possible_distribution:
                 print(
@@ -241,8 +248,6 @@ def transaction_generator(card, atm_df, tx_id):
                 tx_times, possible_distribution = distribute_tx(num_tx, t_min_subset)
 
             if num_tx > 0:
-                print("...........")
-                print(tx_times)
                 for tx_time in tx_times:
                     # 0. ATM id
                     # randomly among the subset of ATMs -> all of them satisfy the constraints
@@ -311,7 +316,6 @@ def transaction_generator(card, atm_df, tx_id):
                     global total_regular
                     total_regular += 1
 
-                print("hhhhhhhhhh")
     else:
         # if ATM subset size = 0 -> then
         print(f"Empty ATM subset for card: {card['number_id']}")
@@ -323,7 +327,6 @@ def transaction_generator(card, atm_df, tx_id):
         global success_cards
         success_cards += 1
 
-    print("returns")
     return transaction_df, tx_id, atm_df_regular, atm_df_non_regular
 
 
@@ -358,7 +361,7 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
     ]
     anomalous_df = pd.DataFrame(columns=cols)
     while anomalous < num_anomalous:
-        # print("................... ANOMALOUS: ", anomalous, "...................")
+        print("num_anomalous: ", num_anomalous)
         # random hole selection in [0, num_regular-1]
         hole_index = np.random.randint(0, num_regular)
         if holes[hole_index] == 0:
@@ -404,9 +407,6 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
                 if hole_index + 1 < num_regular:
                     tx_next = regular_tx_card.iloc[hole_index + 1]
                     # Check tx_new.end < tx_next.start
-                    # print(tx_new_end)
-                    # print(tx_next["transaction_start"])
-
                     if tx_new_end < tx_next["transaction_start"]:
                         fit_time = True
                     # else:
@@ -488,7 +488,6 @@ def main():
     atm_df = pd.read_csv("csv/atm.csv")
     global max_size_subset
     max_size_subset = math.ceil(MAX_SIZE_ATM_SUBSET_RATIO * len(atm_df))
-    print(max_size_subset)
     card_df = pd.read_csv("csv/card.csv")
 
     # slice the card_df
@@ -540,8 +539,6 @@ def main():
             tx_card, tx_id, atm_regular, atm_non_regular = transaction_generator(
                 card_row, atm_df, tx_id
             )
-            print("...")
-            print(tx_id)
 
             # Introduction of anomalous
             if len(tx_card) > 0:
@@ -551,8 +548,6 @@ def main():
                     tx_card, atm_regular, atm_non_regular, tx_id
                 )
                 #########################################################################################
-                print("...")
-                print(tx_id)
 
                 # Ensure the df is not empty and does not contain only NaN values, to avoid warnings
                 if not card_anomalous_df.dropna(how="all").empty:
