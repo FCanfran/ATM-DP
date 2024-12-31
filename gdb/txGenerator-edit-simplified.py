@@ -16,7 +16,7 @@ from tqdm import tqdm
 # NOTE: Have the same tx_id for the 2 edges (the start and the end one)
 
 # Writing to csv on batches of BATCH_SIZE
-BATCH_SIZE = 100
+BATCH_SIZE = 1000
 
 # Operation types:
 # 0: withdrawal
@@ -108,7 +108,6 @@ def calculate_max_distance_subset(atm_df_regular):
 # Returns a ordered list of start moments in seconds, respecting that all of the moments
 # are at a minimum time distance of t_min_subset
 def distribute_tx(n, t_min_subset):
-    print(f"distribute_tx - n = {n}")
     # in seconds of a day: (86400s in a day)
     lower_bound = 0
     upper_bound = (86400 * NUM_DAYS) - 1
@@ -121,7 +120,6 @@ def distribute_tx(n, t_min_subset):
         return tx_ordered_times, False
 
     if needed_holes > num_holes / 2:
-        print(f"distribute_tx - B - ordered")
         # distribute in order one after the other
         start_time = lower_bound
         # Offset for tx_start_next = tx_end_prev + t_min_subset + offset
@@ -139,7 +137,6 @@ def distribute_tx(n, t_min_subset):
             start_time = end_time + t_min_subset + offset_start
 
     else:
-        print(f"distribute_tx - A - random")
         # distribute randomly
         while len(tx_ordered_times) < n:
             start_time = int(np.random.uniform(lower_bound, upper_bound))
@@ -235,9 +232,7 @@ def transaction_generator(card, atm_df, tx_id):
 
         if num_tx > 0:
             # distributed transaction start moments (in seconds)
-            print(num_tx)
             tx_times, possible_distribution = distribute_tx(num_tx, t_min_subset)
-            print(".............")
             # Keep trying with half the tx to distribute... until it is possible
             while not possible_distribution:
                 print(
@@ -361,7 +356,6 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
     ]
     anomalous_df = pd.DataFrame(columns=cols)
     while anomalous < num_anomalous:
-        print("num_anomalous: ", num_anomalous)
         # random hole selection in [0, num_regular-1]
         hole_index = np.random.randint(0, num_regular)
         if holes[hole_index] == 0:
@@ -525,8 +519,6 @@ def main():
         tx_id = 0
         num_iter = 0
         for _, card_row in card_df.iterrows():
-
-            print(f"iter: {num_iter}")
             # Write csv - every 1000 iterations
             if num_iter % BATCH_SIZE == 0 and num_iter > 0:
                 print(f"... writing batch {num_iter}")
