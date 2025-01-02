@@ -59,7 +59,8 @@ def load_metrics(filename: str) -> np.ndarray:
     * *tfft*: time elapsed until the first answer was generated
     * *totaltime*: time elapsed until the last answer was generated
     * *mrt*: mean response time
-    * *comp*: number of answers produced
+    * *checks*: number of checks produced
+    * *alerts*: number of alerts produced
 
     :param filename: Path to the CSV file that contains the other metrics.
                      Attributes of the file specified in the header: test, approach, tfft, totaltime, comp.
@@ -81,7 +82,7 @@ def load_metrics(filename: str) -> np.ndarray:
         )
 
     # Return dataframe in order.
-    return df[["test", "approach", "tfft", "totaltime", "mrt", "comp"]]
+    return df[["test", "approach", "tfft", "totaltime", "mrt", "checks", "alerts"]]
 
 
 def load_trace_reduced(filename: str) -> np.ndarray:
@@ -623,7 +624,7 @@ metrics = load_metrics(input_dir + "/metrics.csv")
 metrics["mrt"] = metrics["mrt"] / 1_000_000
 metrics["tfft"] = metrics["tfft"] / 1_000_000
 
-columns = ["test", "approach", "tfft", "totaltime", "mrt", "comp"]
+columns = ["test", "approach", "tfft", "totaltime", "mrt", "checks", "alerts"]
 
 df = pd.DataFrame(metrics, columns=columns)
 
@@ -663,7 +664,7 @@ plt.savefig(outputPlotDir + "mrt-2.png")
 
 # tfft
 # throughput: number of checks / second
-df["throughput"] = df["comp"] / df["totaltime"]
+df["throughput"] = df["checks"] / df["totaltime"]
 # interactions/second
 df["interactions/s"] = num_interactions / df["totaltime"]
 # dieft
@@ -674,7 +675,11 @@ print(
     "NOTE! - Now it is among all the possible included variations! (not only among the ones with the same # filters or # cores)"
 )
 df["dieft"] = dt["dieft"]
-print(df)
+
+with pd.option_context("display.max_rows", None, "display.max_columns", None):
+    print(pd.DataFrame(df))
+print("____________________________________________________________________________")
+print()
 
 # plots
 

@@ -51,8 +51,26 @@ Modified so to:
 TODO: For the ongoing 
 - add the alerts values
 
+# Usage
 
+## By cores
 
+Obtain processed results and plots by cores (for each of the indicated number of cores variations):
+```
+$> ./results-fix-cores-main.sh <results-directory> <testName>
+```
 
+## By filters 
 
+```
+$> ./results-fix-filters-main.sh <results-directory> <testName>
+```
+
+## Combined
+
+```
+$> ./results-combined.sh <resultsDirectoryPath> <TEST(name)> <DO_JOIN(0:no,1:yes)> <num_interactions>"
+```
+
+- `num_interactions`: refers to the number of interactions (openings and closings of transactions), therefore `num_tx` x 2.
 
