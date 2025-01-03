@@ -2,7 +2,10 @@
 List of files:
 
 - `bankDataGenerator.py`: stable bank database data generator.
+- `behavior.py`: program to generate the `behavior.csv` file, where the beahvior metrics of each of the
+customers of the wisabi dataset are gathered.
 - `txGenerator.py`: regular and anomalous transactions generator.
+- `txGenerator-simplified.py`: simplified version of the regular and anomalous transactions generator.
 - `csv`: directory with some generated bank data and transactions in csv format.
 - `populatemodule`: golang module for the population of the stable bank database in Neo4j.
 - `wisabi`: directory with the source csv files of the wisabi synthetic bank dataset.
