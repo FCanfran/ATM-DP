@@ -333,6 +333,107 @@ Note: 1f is the equivalent sequential version... in these experiments.
     \label{img:exps-read-input-variants}
 \end{figure}
 
+\paragraph{Radial plots - for a core number - different stream sizes\\}
+\newpage
+
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/30-0.02/fixedcores/2c/plots/radar-dieft.png}
+            \caption*{30-0.02}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/60-0.02/fixedcores/2c/plots/radar-dieft.png}
+            \caption*{60-0.02}
+        \end{minipage}
+    }
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedcores/2c/plots/radar-dieft.png}
+            \caption*{120-0.02}
+        \end{minipage}
+    }
+
+    \caption{Radial Plots for 2c}
+    \label{img:exps-read-input-variants}
+\end{figure}
+
+\paragraph{Radial plots - for a core number - different stream sizes\\}
+\newpage
+
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/30-0.02/fixedcores/4c/plots/radar-dieft.png}
+            \caption*{30-0.02}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/60-0.02/fixedcores/4c/plots/radar-dieft.png}
+            \caption*{60-0.02}
+        \end{minipage}
+    }
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedcores/4c/plots/radar-dieft.png}
+            \caption*{120-0.02}
+        \end{minipage}
+    }
+
+    \caption{Radial Plots for 4c}
+    \label{img:exps-read-input-variants}
+\end{figure}
+
+\paragraph{Radial plots - for a core number - different stream sizes\\}
+\newpage
+
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/30-0.02/fixedcores/8c/plots/radar-dieft.png}
+            \caption*{30-0.02}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/60-0.02/fixedcores/8c/plots/radar-dieft.png}
+            \caption*{60-0.02}
+        \end{minipage}
+    }
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedcores/8c/plots/radar-dieft.png}
+            \caption*{120-0.02}
+        \end{minipage}
+    }
+
+    \caption{Radial Plots for 8c}
+    \label{img:exps-read-input-variants}
+\end{figure}
 
 \paragraph{Radial plots - for a core number - different stream sizes\\}
 \newpage
@@ -368,7 +469,7 @@ Note: 1f is the equivalent sequential version... in these experiments.
     \label{img:exps-read-input-variants}
 \end{figure}
 
-paragraph{MRT plots - for a core number 4c - different stream sizes\\}
+\paragraph{MRT plots - for a core number 4c - different stream sizes\\}
 \newpage
 
 \begin{figure}[H]
@@ -507,14 +608,60 @@ paragraph{MRT plots - for a core number 4c - different stream sizes\\}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.5]{../processed/NRT/small/checks/120-0.02/fixedcores/16c/plots/traces.png}
-    \caption*{Trace}
+    % Subfigures arranged vertically
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[scale=0.5]{../processed/NRT/small/checks/30-0.02/fixedcores/16c/plots/traces-response-time-reduced.png}
+        \caption{30-0.02}
+    \end{subfigure}
+    
+    \vspace{0.5cm} % Vertical space between subfigures
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[scale=0.5]{../processed/NRT/small/checks/60-0.02/fixedcores/16c/plots/traces-response-time-reduced.png}
+        \caption{60-0.02}
+    \end{subfigure}
+    
+    \vspace{0.5cm} % Vertical space between subfigures
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[scale=0.5]{../processed/NRT/small/checks/120-0.02/fixedcores/16c/plots/traces-response-time-reduced.png}
+        \caption{120-0.02}
+    \end{subfigure}
+
+    \caption{Execution Time Plots for 16c}
+    \label{img:exps-read-input-variants}
 \end{figure}
+
+
+
+\paragraph{Trace and response time trace for 16c and big stream\\}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.5]{../processed/NRT/small/checks/120-0.02/fixedcores/16c/plots/traces-response-time-reduced.png}
-    \caption*{Trace Response Time reduced}
+    % Subfigures arranged vertically
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[scale=0.5]{../processed/NRT/small/checks/30-0.02/fixedcores/16c/plots/traces.png}
+        \caption{30-0.02}
+    \end{subfigure}
+    
+    \vspace{0.5cm} % Vertical space between subfigures
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[scale=0.5]{../processed/NRT/small/checks/60-0.02/fixedcores/16c/plots/traces.png}
+        \caption{60-0.02}
+    \end{subfigure}
+    
+    \vspace{0.5cm} % Vertical space between subfigures
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[scale=0.5]{../processed/NRT/small/checks/120-0.02/fixedcores/16c/plots/traces.png}
+        \caption{120-0.02}
+    \end{subfigure}
+
+    \caption{Execution Time Plots for 16c}
+    \label{img:exps-read-input-variants}
 \end{figure}
 
 
@@ -558,6 +705,42 @@ paragraph{MRT plots - for a core number 4c - different stream sizes\\}
     \label{img:exps-read-input-variants}
 \end{figure}
 
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedfilters/5f/plots/mrt.png}
+            \caption*{}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedfilters/20f/plots/mrt.png}
+            \caption*{}
+        \end{minipage}
+    }
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedfilters/100f/plots/mrt.png}
+            \caption*{}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedfilters/1000f/plots/mrt.png}
+            \caption*{}
+        \end{minipage}
+    }
+
+    \caption{Radial Plots for big stream: 120-0.02}
+    \label{img:exps-read-input-variants}
+\end{figure}
 
 Ideas on the analysis so far:
 
@@ -727,7 +910,7 @@ Plots:
 \begin{itemize}
     \item FixedCores: OK
     \item FixedFilters: OK
-    \item Combined: TODO, increase RAM memory to do it, higher than 64GB...
+    \item Combined: Running (128GB of RAM) - OTHERWISE REDUCE!
 \end{itemize}
 
 
