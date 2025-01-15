@@ -13,7 +13,6 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage[toc,page]{appendix}
-\usepackage[backend=biber,style=numeric,sorting=none]{biblatex}
 \usepackage{multicol}
 \usepackage{siunitx}
 \usepackage{comment}
@@ -25,8 +24,6 @@
 \usepackage{todonotes} %\setuptodonotes{tickmarkheight=4pt}
 
 \newtheorem{definition}{Definition}
-
-\addbibresource{ATM.bib}
 
 \tikzstyle{startstop} = [rectangle, rounded corners, 
 minimum width=3cm, 
@@ -205,6 +202,411 @@ fill=green!30]
 \begin{document}
 
 \maketitle
+
+\section{Analysis of Results}
+
+Objectives to answer:
+\begin{itemize}
+    \item How does it behave the \DPATM. Is it worthy wrt to a sequential / non-multiple filter
+    version?
+\end{itemize}
+
+\subsection{Small GDB}
+
+Note: 1f is the equivalent sequential version... in these experiments.
+
+\subsubsection{For each stream size}
+
+1. How the different configurations behave - 
+
+\paragraph{Radial plots - for each stream - comparing among the different number of cores configurations\\}
+\newpage
+
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/30-0.02/fixedcores/2c/plots/radar-dieft.png}
+            \caption*{}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/30-0.02/fixedcores/4c/plots/radar-dieft.png}
+            \caption*{}
+        \end{minipage}
+    }
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/30-0.02/fixedcores/8c/plots/radar-dieft.png}
+            \caption*{}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/30-0.02/fixedcores/16c/plots/radar-dieft.png}
+            \caption*{}
+        \end{minipage}
+    }
+
+    \caption{Radial Plots for small stream: 30-0.02}
+    \label{img:exps-read-input-variants}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/60-0.02/fixedcores/2c/plots/radar-dieft.png}
+            \caption*{}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/60-0.02/fixedcores/4c/plots/radar-dieft.png}
+            \caption*{}
+        \end{minipage}
+    }
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/60-0.02/fixedcores/8c/plots/radar-dieft.png}
+            \caption*{}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/60-0.02/fixedcores/16c/plots/radar-dieft.png}
+            \caption*{}
+        \end{minipage}
+    }
+
+    \caption{Radial Plots for medium stream: 60-0.02}
+    \label{img:exps-read-input-variants}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedcores/2c/plots/radar-dieft.png}
+            \caption*{}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedcores/4c/plots/radar-dieft.png}
+            \caption*{}
+        \end{minipage}
+    }
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedcores/8c/plots/radar-dieft.png}
+            \caption*{}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedcores/16c/plots/radar-dieft.png}
+            \caption*{}
+        \end{minipage}
+    }
+
+    \caption{Radial Plots for big stream: 120-0.02}
+    \label{img:exps-read-input-variants}
+\end{figure}
+
+
+\paragraph{Radial plots - for a core number - different stream sizes\\}
+\newpage
+
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/30-0.02/fixedcores/16c/plots/radar-dieft.png}
+            \caption*{30-0.02}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/60-0.02/fixedcores/16c/plots/radar-dieft.png}
+            \caption*{60-0.02}
+        \end{minipage}
+    }
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedcores/16c/plots/radar-dieft.png}
+            \caption*{120-0.02}
+        \end{minipage}
+    }
+
+    \caption{Radial Plots for 16c}
+    \label{img:exps-read-input-variants}
+\end{figure}
+
+paragraph{MRT plots - for a core number 4c - different stream sizes\\}
+\newpage
+
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{../processed/NRT/small/checks/30-0.02/fixedcores/4c/plots/mrt.png}
+            \caption*{30-0.02}
+        \end{minipage}
+        \hspace{0.1\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{../processed/NRT/small/checks/60-0.02/fixedcores/4c/plots/mrt.png}
+            \caption*{60-0.02}
+        \end{minipage}
+    }
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{../processed/NRT/small/checks/120-0.02/fixedcores/4c/plots/mrt.png}
+            \caption*{120-0.02}
+        \end{minipage}
+    }
+
+    \caption{MRT Plots for 4c}
+    \label{img:exps-read-input-variants}
+\end{figure}
+
+\paragraph{Exec time plots - for a core number - different stream sizes\\}
+\newpage
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{../processed/NRT/small/checks/30-0.02/fixedcores/4c/plots/execTime.png}
+            \caption*{30-0.02}
+        \end{minipage}
+        \hspace{0.1\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{../processed/NRT/small/checks/60-0.02/fixedcores/4c/plots/execTime.png}
+            \caption*{60-0.02}
+        \end{minipage}
+    }
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{../processed/NRT/small/checks/120-0.02/fixedcores/4c/plots/execTime.png}
+            \caption*{120-0.02}
+        \end{minipage}
+    }
+
+    \caption{Execution Time Plots for 4c}
+    \label{img:exps-read-input-variants}
+\end{figure}
+
+\paragraph{MRT plots - for a core number 16 - different stream sizes\\}
+\newpage
+
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{../processed/NRT/small/checks/30-0.02/fixedcores/16c/plots/mrt.png}
+            \caption*{30-0.02}
+        \end{minipage}
+        \hspace{0.1\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{../processed/NRT/small/checks/60-0.02/fixedcores/16c/plots/mrt.png}
+            \caption*{60-0.02}
+        \end{minipage}
+    }
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{../processed/NRT/small/checks/120-0.02/fixedcores/16c/plots/mrt.png}
+            \caption*{120-0.02}
+        \end{minipage}
+    }
+
+    \caption{MRT Plots for 16c}
+    \label{img:exps-read-input-variants}
+\end{figure}
+
+\paragraph{Exec time plots - for a core number - different stream sizes\\}
+\newpage
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{../processed/NRT/small/checks/30-0.02/fixedcores/16c/plots/execTime.png}
+            \caption*{30-0.02}
+        \end{minipage}
+        \hspace{0.1\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{../processed/NRT/small/checks/60-0.02/fixedcores/16c/plots/execTime.png}
+            \caption*{60-0.02}
+        \end{minipage}
+    }
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{../processed/NRT/small/checks/120-0.02/fixedcores/16c/plots/execTime.png}
+            \caption*{120-0.02}
+        \end{minipage}
+    }
+
+    \caption{Execution Time Plots for 16c}
+    \label{img:exps-read-input-variants}
+\end{figure}
+
+\paragraph{Trace and response time trace for 16c and big stream\\}
+\newpage
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{../processed/NRT/small/checks/120-0.02/fixedcores/16c/plots/traces.png}
+    \caption*{Trace}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{../processed/NRT/small/checks/120-0.02/fixedcores/16c/plots/traces-response-time-reduced.png}
+    \caption*{Trace Response Time reduced}
+\end{figure}
+
+
+2. Show how incrementing the resources (number of cores) help to improve the behavior
+
+
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedfilters/5f/plots/execTime.png}
+            \caption*{}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedfilters/20f/plots/execTime.png}
+            \caption*{}
+        \end{minipage}
+    }
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \makebox[\textwidth][c]{%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedfilters/100f/plots/execTime.png}
+            \caption*{}
+        \end{minipage}
+        \hspace{0.08\textwidth}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{../processed/NRT/small/checks/120-0.02/fixedfilters/1000f/plots/execTime.png}
+            \caption*{}
+        \end{minipage}
+    }
+
+    \caption{Radial Plots for big stream: 120-0.02}
+    \label{img:exps-read-input-variants}
+\end{figure}
+
+
+Ideas on the analysis so far:
+
+\begin{itemize}
+    \item More cores help to improve the behavior, especially for the variants with large number of filters (expected).
+    \item For a same core configuration (e.g. 16 cores), the total execution time (time to process all the stream input) is larger for the approaches with less cores, tending to decrease. However the continuous behavior is different: the best is observed for a number of filters in the range of 5-10 filters. From that point and on the continuous behavior tends to degrade when increasing the number filters, especially for bigger stream sizes. Even larger than the lowest number of filters version (close to a sequential version) in these cases. This can be due to an overhead on the number of goroutines utilized and the overhead in the communication of the pipeline that this is causing.
+\end{itemize}
+
+
+These same conclusions are easily to observe in:
+
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \hspace*{-3cm} % Move content to the left by 2 cm (adjust as needed)
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[scale=0.4]{../processed/NRT/small/checks/120-0.02/combined/execTime-1.png}
+        \caption*{}
+    \end{minipage}
+    \hspace{0.16\textwidth}
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[scale=0.4]{../processed/NRT/small/checks/120-0.02/combined/mrt-1.png}
+        \caption*{}
+    \end{minipage}
+    
+    \vspace{0.5cm} % Vertical space between rows
+
+    \hspace*{-3cm} % Move content to the left for the second row
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[scale=0.4]{../processed/NRT/small/checks/120-0.02/combined/dieft-1.png}
+        \caption*{}
+    \end{minipage}
+    \hspace{0.16\textwidth}
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[scale=0.4]{../processed/NRT/small/checks/120-0.02/combined/interactions-1.png}
+        \caption*{}
+    \end{minipage}
+
+    \caption{Radial Plots for big stream: 120-0.02}
+    \label{img:exps-read-input-variants}
+\end{figure}
+
+\textcolor{red}{La pregunta es, por qué teniendo menor tiempo de ejecución, el mrt es superior? - Dar una explicación a esto...}
+
+\subsubsection{Differences among the different stream sizes}
 
 \section{Experiments Summary}
 
@@ -439,6 +841,5 @@ Obtaining plots - only fixed cores plots
     \item 7D: 
     \item 15D: 
 \end{itemize}
-
 
 \end{document}
