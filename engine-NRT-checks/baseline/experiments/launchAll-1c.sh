@@ -29,8 +29,8 @@ fi
 
 
 # 1. compilation
-echo "compilation..."
-go build -o ../cmd/main ../cmd/main.go
+#echo "compilation..."
+#go build -o ../cmd/main ../cmd/main.go
 
 # 2. run all the experiments, one after the other
 for csv_description_file in $(ls "$directory"/*.csv | sort -V); do # sort -V to respect numerical order
@@ -61,20 +61,39 @@ for csv_description_file in $(ls "$directory"/*.csv | sort -V); do # sort -V to 
             ../cmd/main "$csv_description_file" # exec
             rm -r "$outdir-$i"
             mv $outdir "$outdir-$i" # rename - appending the label of the corresponding run
+            
+            # calculate the Mean Response Time - based on the trace.csv and add it to the metrics.csv
+            python3 calculate_mrt.py "$outdir-$i/trace.csv" "$outdir-$i/metrics.csv"
+
             # append the csv metrics and traces files into the avg files
             # metrics
-            if [ ! -f "$metrics_outfile" ]; then
-                head -n 1 "$outdir-$i/metrics.csv" > "$metrics_outfile" # add header if does not exist
+            if [ -s "$outdir-$i/metrics.csv" ]; then  # file exists and is non-empty?
+                if [ ! -f "$metrics_outfile" ]; then
+                    head -n 1 "$outdir-$i/metrics.csv" > "$metrics_outfile" # add header if does not exist
+                fi
+                tail -n +2 "$outdir-$i/metrics.csv" >> "$metrics_outfile" # append, excluding the header
             fi
-            tail -n +2 "$outdir-$i/metrics.csv" >> "$metrics_outfile" # append, excluding the header
-
+            
             # traces
-            if [ ! -f "$trace_outfile" ]; then
-                head -n 1 "$outdir-$i/trace.csv" > "$trace_outfile" # add header if does not exist
+            if [ -s "$outdir-$i/trace.csv" ]; then  # file exists and is non-empty?
+                if [ ! -f "$trace_outfile" ]; then
+                    head -n 1 "$outdir-$i/trace.csv" > "$trace_outfile" # add header if does not exist
+                fi
+                tail -n +2 "$outdir-$i/trace.csv" >> "$trace_outfile" # append, excluding the header
             fi
-            tail -n +2 "$outdir-$i/trace.csv" >> "$trace_outfile" # append, excluding the header
+            
+            if [ $i -ne 1 ]; then
+                # Optional: remove the current directory - we will keep only the -avg one
+                echo "rm -r $outdir-$i"
+                rm -r "$outdir-$i"
+            fi
 
         done
+
+        # average metrics & trace csvs
+        python3 average_metrics.py $metrics_outfile
+        python3 average_traces.py $trace_outfile
+
     else
         echo "No .sh files found in $directory."
     fi
