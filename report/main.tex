@@ -1,5 +1,7 @@
-\documentclass{article}
+\documentclass[12pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
+\usepackage[margin=3cm]{geometry} % margins
+%\linespread{1.2} % line spacing
 \usepackage{graphicx} % Required for inserting images
 \usepackage{hyperref}
 \usepackage{subcaption}
@@ -11,7 +13,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage[toc,page]{appendix}
-\usepackage[backend=biber]{biblatex}
+\usepackage[backend=biber,style=numeric,sorting=none]{biblatex}
 \usepackage{multicol}
 \usepackage{siunitx}
 \usepackage{comment}
@@ -21,6 +23,10 @@
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows}
 \usepackage{todonotes} %\setuptodonotes{tickmarkheight=4pt}
+
+\newtheorem{definition}{Definition}
+
+\addbibresource{ATM.bib}
 
 \tikzstyle{startstop} = [rectangle, rounded corners, 
 minimum width=3cm, 
@@ -66,6 +72,22 @@ fill=green!30]
     commentstyle=\itshape\color{purple!40!black},
     identifierstyle=\color{black},
     backgroundcolor=\color{white},
+}
+
+\lstdefinestyle{csvStyle}{
+    basicstyle=\ttfamily\small, % Use a typewriter font
+    columns=fullflexible, % Better column alignment
+    %frame=single, % Add a border
+    %backgroundcolor=\color{gray!10}, % Light gray background
+    keywordstyle=\color{blue}\bfseries, % Style for keywords (optional)
+    morekeywords={name,code,loc_latitude,loc_longitude, ATM_id, city, country,
+    number_id, client_id, expiration, CVC, extract_limit, amount_avg_withdrawal,amount_std_withdrawal,withdrawal_day,
+    amount_avg_deposit,amount_std_deposit,deposit_day,inquiry_day,
+    amount_avg_transfer,amount_std_transfer,transfer_day,
+    transaction_id,number_id,ATM_id,transaction_type,transaction_start,
+    transaction_end, transaction_amount}, % Highlight CSV headers as keywords
+    showstringspaces=false,
+    captionpos=b,                    % sets the caption-position to bottom
 }
 
 \lstdefinestyle{cypherStyle}{
@@ -127,17 +149,53 @@ fill=green!30]
     numbers=none, 
     basicstyle=\footnotesize\ttfamily,
     keywordstyle=\bfseries\color{green!40!black},
-    commentstyle=\itshape\color{purple!40!black},
+    commentstyle=\scriptsize\itshape\color{gray},
     identifierstyle=\color{black},
     backgroundcolor=\color{white},
     language=Golang,
+    tabsize=1,                 % reduces the tab size (number of spaces per tab)
+    keepspaces=true,           % preserves spaces and tabs exactly as written
+    showspaces=false,          % hides visible spaces
+    showtabs=false             % hides visible tabs
 }
+
+\setlength{\parindent}{0pt} % QUITAR SANGRÍAS
+\captionsetup{font=small} % Fuente del texto de las imagenes
+
+\newcommand{\DP}{$\mathsf{DP}$ }
+\newcommand{\DPATM}{$\mathsf{DP_{ATM}}$ }
+
+\newcommand{\alertch}{$\mathsf{alert}$ }
+\newcommand{\eventch}{$\mathsf{event}$ }
+\newcommand{\internaledgech}{$\mathsf{internal\_edge}$ }
+
+\newcommand{\cardsubgraph}{$\mathsf{cs}$ }
+
+\newcommand{\filter}{\emph{Filter} }
+\newcommand{\source}{\emph{Source} }
+\newcommand{\sink}{\emph{Sink} }
+\newcommand{\generator}{\emph{Generator} }
+\newcommand{\filterworker}{\emph{Filter Worker} }
+
+\newcommand{\F}{$\mathsf{F}$ }
+\newcommand{\Sr}{$\mathsf{Sr}$ }
+\newcommand{\Sk}{$\mathsf{Sk}$ }
+\newcommand{\G}{$\mathsf{G}$ }
+\newcommand{\FW}{$\mathsf{FW}$ }
+
 \newenvironment{graysection}
   {\begingroup\color{gray}} % Start with gray color
   {\endgroup}               % End the color group
 
 %%%%%%%
 \newcommand{\ep}[1]{\todo[inline,backgroundcolor=orange!70,textcolor=black]{\tiny \textbf{Edelmira:} #1}}
+%%%%%%
+%%%%%%%
+\newcommand{\fmc}[1]{\todo[inline,backgroundcolor=blue!40,textcolor=black]{\small \textbf{Fernando:} #1}}
+%%%%%%
+
+%%%%%%%
+\newcommand{\ad}[1]{\todo[inline,backgroundcolor=green!40,textcolor=black]{\tiny \textbf{Amalia:} #1}}
 %%%%%%
 
 \title{TFM-FernandoMartín}
@@ -148,11 +206,12 @@ fill=green!30]
 
 \maketitle
 
-\ep{Ejemplo de comentario de Edelmira. Cada quien debe escoger un color y definir su comando (ver a linea 140)}
-\ep{ATENCIÓN: Por ahora solo hay un editor adicional al owner del proyecto. El departamento no renovó la licencia de overlief porque en *muy breve* tendremos disponibles la licencia institucional...}
-\input{sections/1-DataModel/dataModel}
-\input{sections/2-QueryModel/queryModel}
-\input{sections/3-Engine/engine}
-\input{sections/4-Experiments/experiments}
+\input{sections/1-Introduction}
+\input{sections/2-RelatedWork}
+\input{sections/3-Proposal}
+\input{sections/4-Experiments}
+\input{sections/5-Conclusions}
+
+\printbibliography 
 
 \end{document}

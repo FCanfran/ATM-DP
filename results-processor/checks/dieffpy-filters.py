@@ -384,7 +384,7 @@ def plot_mean_response_time_single_test(
 
     # Customizing the chart
     plt.xlabel("# cores", fontsize="large", labelpad=10)
-    plt.ylabel("Mean Response Time [ms]", fontsize="large")
+    plt.ylabel("Mean Response Time [s]", fontsize="large")
     plt.xticks(
         range(len(sorted_approaches)), edited_labels, rotation=90, fontsize="medium"
     )
@@ -511,7 +511,7 @@ def plot_response_time_trace(
             linestyle="None",
         )
 
-    plt.ylabel("Response time [ms]")
+    plt.ylabel("Response time [s]")
     plt.xlabel("# Checks Produced")
     plt.legend(loc="upper left")
 
@@ -569,7 +569,7 @@ def plot_response_time_trace_reduced(
             linewidth=2.0,
         )
 
-    plt.ylabel("Response time [ms]")
+    plt.ylabel("Response time [s]")
     plt.xlabel("# Checks Produced")
     plt.legend(loc="upper left")
 
@@ -821,7 +821,7 @@ def performance_of_approaches_with_dieft_edit(
             ("approach", traces["approach"].dtype),
             ("tfft (ms)", metrics["tfft"].dtype),
             ("totaltime (s)", metrics["totaltime"].dtype),
-            ("mrt (ms)", metrics["mrt"].dtype),
+            ("mrt (s)", metrics["mrt"].dtype),
             ("checks", metrics["checks"].dtype),
             ("alerts", metrics["alerts"].dtype),
             ("throughput", float),
@@ -879,7 +879,7 @@ def performance_of_approaches_with_dieft_edit(
                 ("approach", submetric["approach"].dtype),
                 ("tfft (ms)", submetric["tfft"].dtype),
                 ("totaltime (s)", submetric["totaltime"].dtype),
-                ("mrt (ms)", submetric["mrt"].dtype),
+                ("mrt (s)", submetric["mrt"].dtype),
                 ("checks", submetric["checks"].dtype),
                 ("alerts", submetric["alerts"].dtype),
                 ("throughput", float),
@@ -1352,13 +1352,15 @@ plt.savefig(outputPlotDir + "traces.png")
 traces_response_time = load_trace(input_dir + "/trace.csv")
 
 # F: Conversions
-# responseTime (ns) -> (ms)
-traces_response_time["responseTime"] = traces_response_time["responseTime"] / 1_000_000
+# responseTime (ns) -> (s)
+traces_response_time["responseTime"] = (
+    traces_response_time["responseTime"] / 1_000_000_000
+)
 
 plot_response_time_trace(traces_response_time, test_name, COLORS)
 plt.savefig(outputPlotDir + "traces-response-time.png")
 # control reduction step - to take 1 point every reduction_step points
-reduction_step = 15
+reduction_step = 15000
 plot_response_time_trace_reduced(
     traces_response_time, test_name, reduction_step, COLORS
 )
@@ -1380,8 +1382,8 @@ print()
 metrics = load_metrics(input_dir + "/metrics.csv")
 # F: Conversions
 # tfft (ns) -> ms
-# mrt (ns)  -> ms
-metrics["mrt"] = metrics["mrt"] / 1_000_000
+# mrt (ns)  -> s
+metrics["mrt"] = metrics["mrt"] / 1_000_000_000
 metrics["tfft"] = metrics["tfft"] / 1_000_000
 
 # Execution time plot

@@ -11,8 +11,8 @@ TEST_NAME=$2
 DO_JOIN=$3
 NUM_INTERACTIONS=$4
 
-rm -r TOPLOT
-mkdir TOPLOT
-cp -r "$RESULTS_DIR/"*"-avg" TOPLOT
+rm -r TOPLOT-COMBINED
+mkdir TOPLOT-COMBINED
+cp -r "$RESULTS_DIR/"*"-avg" TOPLOT-COMBINED
 
-python3 dieffpy-combined.py TOPLOT $TEST_NAME $DO_JOIN $NUM_INTERACTIONS > dieffpy-out.txt
+python3 dieffpy-combined.py TOPLOT-COMBINED $TEST_NAME $DO_JOIN $NUM_INTERACTIONS > dieffpy-out.txt

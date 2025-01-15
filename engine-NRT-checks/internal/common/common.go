@@ -168,6 +168,15 @@ Alert labels:
 - 1: Fraud pattern I
 */
 
+/*
+type Alert struct {
+	Label              string        // it can also be set as integer - for each kind of fraud pattern put a int
+	Info               string        // optional additional information of the alert to be passed
+	Subgraph           Graph         // if desired, if needed later when receiving the alert in the generator
+	LastEventTimestamp time.Duration // denotes the internal system timestamp of the last event that composes the alert
+}
+*/
+
 type CheckResult struct {
 	Label              string        // it can also be set as integer - for each kind of fraud pattern put a int
 	Info               string        // optional additional information of the check result to be passed

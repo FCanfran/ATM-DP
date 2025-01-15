@@ -139,8 +139,9 @@ type Edge struct {
 }
 
 type Event struct {
-	Type EventType
-	E    Edge
+	Type      EventType
+	E         Edge
+	Timestamp time.Duration // internal system timestamp - denotes when the tx arrives to the system
 }
 
 type Coordinates struct {
@@ -167,10 +168,20 @@ Alert labels:
 - 1: Fraud pattern I
 */
 
+/*
 type Alert struct {
 	Label    string // it can also be set as integer - for each kind of fraud pattern put a int
 	Info     string // optional additional information of the alert to be passed
 	Subgraph Graph  // if desired, if needed later when receiving the alert in the generator
+}
+*/
+
+type CheckResult struct {
+	Label              string        // it can also be set as integer - for each kind of fraud pattern put a int
+	Info               string        // optional additional information of the check result to be passed
+	IsPositive         bool          // true -> alert, false otherwise
+	Subgraph           Graph         // subraph of the edges that compose the check
+	LastEventTimestamp time.Duration // denotes the internal system timestamp of the last event that composes the result
 }
 
 // NewGraph creates a new graph
@@ -286,29 +297,29 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	return t_min, nil
 }
 
-// - new_e: the new edge that we check the FP against
-// Returns:
-// - bool: indicating the presence of a positive Alert (true) or not (false)
-// - Alert: the Alert itself, only in the case it is true. Empty if false.
-func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext, new_e Edge) (bool, Alert) {
+func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext, new_e Edge) CheckResult {
 
-	var fraudAlert Alert // Default 0-value initialization
-	fraudIndicator := false
+	var result CheckResult // Default 0-value initialization
+	result.IsPositive = false
+	subgraph := NewGraph()
+	subgraph.AddEdge(new_e)
 
 	// 1. Obtain last added edge of the subgraph
 	last := g.edges.Back()
-
 	if last != nil {
 		last_e := *(last.Value.(*Edge)) // asserts eg.Value to type Edge
+		subgraph.AddEdge(last_e)
 		// FRAUD PATTERN 0: case new_e.tx_start < last_e.tx_end
 		// -> it can not happen that a transaction starts before the previous is finished
 		// check if previous was closed
 		if last_e.Tx_end.IsZero() || new_e.Tx_start.Before(last_e.Tx_end) {
-			fmt.Println("tx starts before the previous ends!")
+			//fmt.Println("tx starts before the previous ends!")
 			log.Println("Warning: tx starts before the previous ends! - ", new_e.Number_id)
 			// TODO: It is a TRUE fraud, but not of this kind! - other kind
 			// do not consider it here so far
 			// print fraud pattern with this edge
+			fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+			fmt.Println("Warning: tx starts before the previous ends! - ", new_e.Number_id)
 			PrintEdge("Fraud pattern with: ", last_e)
 			/*
 				fraudIndicator = true
@@ -332,22 +343,17 @@ func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext
 				if t_diff < t_min {
 					// create alert
 					// PrintEdge("Fraud pattern with: ", last_e)
-					// subgraph
-					subgraph := NewGraph()
-					subgraph.AddEdge(last_e)
-					subgraph.AddEdge(new_e)
 					//fmt.Println("TRUE FP1: ")
-					//subgraph.Print()
-					fraudAlert.Label = "1"
-					fraudAlert.Info = "fraud pattern"
-					fraudAlert.Subgraph = *subgraph
-					fraudIndicator = true
+					result.Label = "1"
+					result.Info = "fraud pattern"
+					result.IsPositive = true
 				}
 			}
 		}
 	}
 
-	return fraudIndicator, fraudAlert
+	result.Subgraph = *subgraph
+	return result
 
 }
 
@@ -516,7 +522,7 @@ func PrintEdgeCompleteToFile(msg string, e Edge, file *os.File) {
 	}
 }
 
-func PrintAlertVerbose(alert Alert, timestamp time.Duration, alertCount int) {
+func PrintAlertVerbose(alert CheckResult, timestamp time.Duration, alertCount int) {
 
 	fmt.Printf("Alert - label: %s, info: %s, timestamp: %v, numAlert: %d\n", alert.Label, alert.Info, timestamp, alertCount)
 	switch alert.Label {
@@ -526,15 +532,23 @@ func PrintAlertVerbose(alert Alert, timestamp time.Duration, alertCount int) {
 	fmt.Println("______________________________________________________________________________")
 }
 
-func PrintAlertOnFileVerbose(alert Alert, timestamp time.Duration, alertCount int, file *os.File) {
-	fmt.Fprintf(file, "Alert - label: %s, info: %s, timestamp: %v, numAlert: %d\n", alert.Label, alert.Info, timestamp, alertCount)
+func PrintAlertOnFileVerbose(alert CheckResult, responseTime time.Duration, alertCount int, file *os.File) {
+	fmt.Fprintf(file, "Alert - label: %s, info: %s, responseTime: %v, numAlert: %d\n", alert.Label, alert.Info, responseTime, alertCount)
 	switch alert.Label {
 	case "0", "1":
 		alert.Subgraph.PrintToFile(file)
 	}
 }
 
-func PrintAlertOnFile(alert Alert, file *os.File) {
+func PrintCheckOnFileVerbose(check CheckResult, responseTime time.Duration, checkCount int, file *os.File) {
+	fmt.Fprintf(file, "Check - label: %s, info: %s, isPositive: %t, responseTime: %v, numCheck: %d\n", check.Label, check.Info, check.IsPositive, responseTime, checkCount)
+	switch check.Label {
+	case "0", "1":
+		check.Subgraph.PrintToFile(file)
+	}
+}
+
+func PrintAlertOnFile(alert CheckResult, file *os.File) {
 	fmt.Fprintf(file, "Alert - label: %s\n", alert.Label)
 	switch alert.Label {
 	case "0", "1":
@@ -580,12 +594,22 @@ func PrintEventOnFile(e Event, file *os.File) {
 
 }
 
-func PrintAlertOnResultsTrace(timestamp time.Duration, alertCount int, csv_writer *csv.Writer) {
+func PrintCheckOnResultsTrace(timestamp time.Duration, responseTime time.Duration, checkCount int, isPositive bool, csv_writer *csv.Writer) {
+
+	var positiveIndicator string
+	if isPositive {
+		positiveIndicator = "1"
+	} else {
+		positiveIndicator = "0"
+	}
+
 	dataRow := []string{
 		TEST,                     // test (stream kind)
 		APPROACH,                 // approach (num cores & num filters)
-		strconv.Itoa(alertCount), // answer
+		strconv.Itoa(checkCount), // answer
 		strconv.FormatFloat(timestamp.Seconds(), 'f', 2, 64), // time (in seconds)
+		strconv.FormatInt(responseTime.Nanoseconds(), 10),    // response time in nanoseconds
+		positiveIndicator,
 	}
 
 	err := csv_writer.Write(dataRow)
@@ -594,13 +618,15 @@ func PrintAlertOnResultsTrace(timestamp time.Duration, alertCount int, csv_write
 	csv_writer.Flush() // Ensure data is written to file
 }
 
-func PrintMetricsResults(timeFirst time.Duration, timeLast time.Duration, alertCount int, csv_writer *csv.Writer) {
+func PrintMetricsResults(timeFirst time.Duration, timeLast time.Duration, checkCount int, alertCount int, csv_writer *csv.Writer) {
 	dataRow := []string{
 		TEST,     // test
 		APPROACH, // approach
-		strconv.FormatFloat(timeFirst.Seconds(), 'f', 2, 64), // tfft time (in seconds)
-		strconv.FormatFloat(timeLast.Seconds(), 'f', 2, 64),  // totaltime time (in seconds)
-		strconv.Itoa(alertCount),                             // comp
+		strconv.FormatInt(timeFirst.Nanoseconds(), 10),        // tfft time (in nanoseconds)
+		strconv.FormatFloat(timeLast.Seconds(), 'f', 2, 64),   // totaltime time (in seconds)
+		strconv.FormatInt(time.Duration(0).Nanoseconds(), 10), // mrt (in nanoseconds) - draft filling value - calculate afterwards!
+		strconv.Itoa(checkCount),                              // checks
+		strconv.Itoa(alertCount),                              // alerts
 	}
 
 	err := csv_writer.Write(dataRow)

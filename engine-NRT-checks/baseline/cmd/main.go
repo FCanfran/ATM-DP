@@ -12,6 +12,7 @@ import (
 	cmn "pipeline/internal/common"
 	"pipeline/internal/connection"
 	"pipeline/internal/dp"
+	"runtime"
 	"time"
 )
 
@@ -27,34 +28,35 @@ func main() {
 	// start connection to static gdb
 	ctx := connection.SafeConnect()
 
+	// golang max processors settings
+	// GOMAXPROCS sets the maximum number of CPUs that can be executing simultaneously and returns the previous setting.
+	// It defaults to the value of runtime.NumCPU. If n < 1, it does not change the current setting.
+	maxProcsBefore := runtime.GOMAXPROCS(0)
+	maxProcsNow := runtime.GOMAXPROCS(0)
+	numCPU := runtime.NumCPU()
+	fmt.Println("maxProcsBefore: ", maxProcsBefore, "maxProcsNow: ", maxProcsNow, " numCPU: ", numCPU)
+
 	// creation of needed channels
 	// real-time input stream channel
 	stream_ch := make(chan cmn.Event, cmn.ChannelSize)
 
-	// event channel
-	//event_ch := make(chan cmn.Event, cmn.ChannelSize)
-	// alerts channel
-	//alert_ch := make(chan cmn.Alert, cmn.ChannelSize)
-	// out_event_ch channel: direct event channel between Generator and Sink.
-	// --> all kinds of events except the alerts
-	//out_event_ch := make(chan cmn.Event, cmn.ChannelSize)
-	// Ending channel
-	//endchan := make(chan struct{})
-	start := time.Now()
+	start_time := time.Now()
 
 	// Session creation
 	session := connection.CreateSession(ctx)
 	defer connection.CloseSession(ctx, session)
 
 	// launch Stream goroutines - to provide the input in real-time
-	go dp.Stream(cmn.StreamFileName, stream_ch)
+	go dp.Stream(start_time, cmn.StreamFileName, stream_ch)
 	// launch Source, Generator and Sink goroutines
 	// hash table to index card ids to card subgraphs
 	// - 1 to map each belonging card to its corresponding subgraph	(cardSubgraph)
 	var cardSubgraph map[string]*cmn.Graph = make(map[string]*cmn.Graph)
 	var subgraph *cmn.Graph
 
+	var checkCount int
 	var alertCount int
+
 	fileAlerts, err := os.Create(cmn.OutDirName + "/alerts.txt")
 	cmn.CheckError(err)
 	defer fileAlerts.Close()
@@ -76,7 +78,7 @@ func main() {
 	writer_trace := csv.NewWriter(file_trace)
 	defer writer_trace.Flush()
 	// headers
-	headers := []string{"test", "approach", "answer", "time"}
+	headers := []string{"test", "approach", "answer", "time", "responseTime", "isPositive"}
 	err = writer_trace.Write(headers)
 	cmn.CheckError(err)
 
@@ -86,7 +88,7 @@ func main() {
 	defer file_metrics.Close()
 	writer_metrics := csv.NewWriter(file_metrics)
 	defer writer_metrics.Flush()
-	headers = []string{"test", "approach", "tfft", "totaltime", "comp"}
+	headers = []string{"test", "approach", "tfft", "totaltime", "mrt", "checks", "alerts"}
 	err = writer_metrics.Write(headers)
 	cmn.CheckError(err)
 
@@ -98,7 +100,6 @@ func main() {
 	for !finish {
 		event_stream, ok := <-stream_ch
 		if !ok {
-			// TODO: Check what to do here better
 			fmt.Println("Closed stream_ch channel")
 			break
 		}
@@ -123,21 +124,22 @@ func main() {
 			} else {
 				// card already exists, therefore, at least an edge on the subgraph
 				// check fraud
-				//fmt.Println(event_worker.E.Number_id, "-------------- CHECKFRAUD()-----------------")
-				isFraud, alert := subgraph.CheckFraud(ctx, session, event_stream.E)
-				//fmt.Println("----------------------------------------------------")
-				if isFraud {
-					t := time.Since(start)
-					alertCount += 1
-					// save the tfft - metrics.csv
-					if alertCount == 1 {
-						timeFirst = t
-					}
-					timeLast = t
-					//cmn.PrintAlertVerbose(alert, t, alertCount)
-					cmn.PrintAlertOnFile(alert, fileAlerts)
-					cmn.PrintAlertOnResultsTrace(t, alertCount, writer_trace)
+				result := subgraph.CheckFraud(ctx, session, event_stream.E)
+				t := time.Since(start_time)
+				checkCount += 1
+				// save the tfft - metrics.csv
+				if checkCount == 1 {
+					timeFirst = t
 				}
+				timeLast = t
+				// calculate response time
+				responseTime := t - event_stream.Timestamp
+				// Record verbose on a file only the alerts
+				if result.IsPositive {
+					alertCount += 1
+					cmn.PrintAlertOnFileVerbose(result, responseTime, alertCount, fileAlerts)
+				}
+				cmn.PrintCheckOnResultsTrace(t, responseTime, checkCount, result.IsPositive, writer_trace)
 				// set as new head of the subgraph (only save the last edge)
 				subgraph.NewHead(event_stream.E)
 			}
@@ -163,13 +165,16 @@ func main() {
 		}
 	}
 
-	cmn.PrintMetricsResults(timeFirst, timeLast, alertCount, writer_metrics)
+	cmn.PrintMetricsResults(timeFirst, timeLast, checkCount, alertCount, writer_metrics)
 
-	t := time.Since(start)
+	fmt.Println("numChecks: ", checkCount)
+	fmt.Println("numAlerts: ", alertCount)
+
+	t := time.Since(start_time)
 	fmt.Println("TotalExecutionTime,", t, ",", t.Microseconds(), "μs,", t.Milliseconds(), "ms ,", t.Seconds(), "s")
 	fmt.Println("Finish Program")
 
-	// TODO: finish connection to static gdb
+	// finish connection to static gdb
 	connection.CloseConnection(ctx)
 
 }
