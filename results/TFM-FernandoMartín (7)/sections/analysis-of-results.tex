@@ -1,214 +1,75 @@
-\documentclass[12pt,a4paper]{article}
-\usepackage[utf8]{inputenc}
-\usepackage[margin=3cm]{geometry} % margins
-%\linespread{1.2} % line spacing
-\usepackage{graphicx} % Required for inserting images
-\usepackage{hyperref}
-\usepackage{subcaption}
-\usepackage{float}
-\usepackage{tcolorbox}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{listings}% http://ctan.org/pkg/listings}
-\usepackage{algorithm}
-\usepackage{algorithmic}
-\usepackage[toc,page]{appendix}
-\usepackage{multicol}
-\usepackage{siunitx}
-\usepackage{comment}
-\usepackage{xcolor}
-\usepackage{caption}
-\usepackage{forest}
-\usepackage{tikz}
-\usetikzlibrary{shapes.geometric, arrows}
-\usepackage{todonotes} %\setuptodonotes{tickmarkheight=4pt}
-
-\newtheorem{definition}{Definition}
-
-\tikzstyle{startstop} = [rectangle, rounded corners, 
-minimum width=3cm, 
-minimum height=1cm,
-text centered, 
-draw=black, 
-fill=red!30]
-
-\tikzstyle{io} = [trapezium, 
-trapezium stretches=true, % A later addition
-trapezium left angle=70, 
-trapezium right angle=110, 
-minimum width=3cm, 
-minimum height=1cm, text centered, 
-draw=black, fill=blue!30]
-
-\tikzstyle{process} = [rectangle, 
-minimum width=3cm, 
-minimum height=1cm, 
-text centered, 
-text width=3cm, 
-draw=black, 
-fill=orange!30]
-
-\tikzstyle{decision} = [diamond, 
-minimum width=3cm, 
-minimum height=1cm, 
-text centered, 
-draw=black, 
-fill=green!30]
-\tikzstyle{arrow} = [thick,->,>=stealth]
-
-% To delete lstlisting caption "Listing x"
-%\captionsetup[lstlisting]{labelformat=empty}
-
-\lstdefinestyle{myStyle}{
-    belowcaptionskip=1\baselineskip,
-    breaklines=true,
-    frame=none,
-    numbers=none, 
-    basicstyle=\footnotesize\ttfamily,
-    keywordstyle=\bfseries\color{green!40!black},
-    commentstyle=\itshape\color{purple!40!black},
-    identifierstyle=\color{black},
-    backgroundcolor=\color{white},
-}
-
-\lstdefinestyle{csvStyle}{
-    basicstyle=\ttfamily\small, % Use a typewriter font
-    columns=fullflexible, % Better column alignment
-    %frame=single, % Add a border
-    %backgroundcolor=\color{gray!10}, % Light gray background
-    keywordstyle=\color{blue}\bfseries, % Style for keywords (optional)
-    morekeywords={name,code,loc_latitude,loc_longitude, ATM_id, city, country,
-    number_id, client_id, expiration, CVC, extract_limit, amount_avg_withdrawal,amount_std_withdrawal,withdrawal_day,
-    amount_avg_deposit,amount_std_deposit,deposit_day,inquiry_day,
-    amount_avg_transfer,amount_std_transfer,transfer_day,
-    transaction_id,number_id,ATM_id,transaction_type,transaction_start,
-    transaction_end, transaction_amount}, % Highlight CSV headers as keywords
-    showstringspaces=false,
-    captionpos=b,                    % sets the caption-position to bottom
-}
-
-\lstdefinestyle{cypherStyle}{
-    backgroundcolor=\color{white},   % choose the background color
-    basicstyle=\footnotesize\ttfamily,        % the size of the fonts that are used for the code
-    commentstyle=\itshape\color{purple!40!black},
-    keywordstyle=\bfseries\color{green!40!black},
-    breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
-    breaklines=true,                 % sets automatic line breaking
-    captionpos=b,                    % sets the caption-position to bottom
-    commentstyle=\color{gray},    % comment style
-    deletekeywords={},            % if you want to delete keywords from the given language
-    escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
-    extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
-    %firstnumber=1000,                % start line enumeration with line 1000
-    frame=none,                    % adds a frame around the code
-    keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
-    language=SQL,                    % the language of the code
-    morekeywords={*,IF, REQUIRE, FOR, IS, LOAD, CSV, WITH, HEADERS, MERGE, toFloat, toInteger, date},            % if you want to add more keywords to the set
-    numbers=none,                    % where to put the line-numbers; possible values are (none, left, right)
-    numbersep=5pt,                   % how far the line-numbers are from the code
-    numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
-    rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
-    showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
-    showstringspaces=false,          % underline spaces within strings only
-    showtabs=false,                  % show tabs within strings adding particular underscores
-    stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
-    stringstyle=\ttfamily,     % string literal style
-    tabsize=2,                       % sets default tabsize to 2 spaces
-}
-
-%% Golang definition for listings
-%% http://github.io/julienc91/lstlistings-golang
-%%
-\lstdefinelanguage{Golang}%
-  {morekeywords=[1]{package,import,func,type,struct,return,defer,panic,%
-     recover,select,var,const,iota,},%
-   morekeywords=[2]{string,uint,uint8,uint16,uint32,uint64,int,int8,int16,%
-     int32,int64,bool,float32,float64,complex64,complex128,byte,rune,uintptr,%
-     error,interface},%
-   morekeywords=[3]{map,slice,make,new,nil,len,cap,copy,close,true,false,%
-     delete,append,real,imag,complex,chan,},%
-   morekeywords=[4]{for,break,continue,range,go,goto,switch,case,fallthrough,if,%
-     else,default,},%
-   morekeywords=[5]{Println,Printf,Error,Print,},%
-   sensitive=true,%
-   morecomment=[l]{//},%
-   morecomment=[s]{/*}{*/},%
-   morestring=[b]',%
-   morestring=[b]",%
-   morestring=[s]{`}{`},%
-}
-
-\lstdefinestyle{golangStyle}{
-    captionpos=b,              % sets the caption-position to bottom
-    belowcaptionskip=1\baselineskip,
-    breaklines=true,
-    frame=none,
-    numbers=none, 
-    basicstyle=\footnotesize\ttfamily,
-    keywordstyle=\bfseries\color{green!40!black},
-    commentstyle=\scriptsize\itshape\color{gray},
-    identifierstyle=\color{black},
-    backgroundcolor=\color{white},
-    language=Golang,
-    tabsize=1,                 % reduces the tab size (number of spaces per tab)
-    keepspaces=true,           % preserves spaces and tabs exactly as written
-    showspaces=false,          % hides visible spaces
-    showtabs=false             % hides visible tabs
-}
-
-\setlength{\parindent}{0pt} % QUITAR SANGRÍAS
-\captionsetup{font=small} % Fuente del texto de las imagenes
-
-\newcommand{\DP}{$\mathsf{DP}$ }
-\newcommand{\DPATM}{$\mathsf{DP_{ATM}}$ }
-
-\newcommand{\alertch}{$\mathsf{alert}$ }
-\newcommand{\eventch}{$\mathsf{event}$ }
-\newcommand{\internaledgech}{$\mathsf{internal\_edge}$ }
-
-\newcommand{\cardsubgraph}{$\mathsf{cs}$ }
-
-\newcommand{\filter}{\emph{Filter} }
-\newcommand{\source}{\emph{Source} }
-\newcommand{\sink}{\emph{Sink} }
-\newcommand{\generator}{\emph{Generator} }
-\newcommand{\filterworker}{\emph{Filter Worker} }
-
-\newcommand{\F}{$\mathsf{F}$ }
-\newcommand{\Sr}{$\mathsf{Sr}$ }
-\newcommand{\Sk}{$\mathsf{Sk}$ }
-\newcommand{\G}{$\mathsf{G}$ }
-\newcommand{\FW}{$\mathsf{FW}$ }
-\newcommand{\smallG}{$\mathsf{GDB_A}$}
-\newcommand{\mediumG}{$\mathsf{GDB_B}$}
-
-\newenvironment{graysection}
-  {\begingroup\color{gray}} % Start with gray color
-  {\endgroup}               % End the color group
-
-%%%%%%%
-\newcommand{\ep}[1]{\todo[inline,backgroundcolor=orange!70,textcolor=black]{\tiny \textbf{Edelmira:} #1}}
-%%%%%%
-%%%%%%%
-\newcommand{\fmc}[1]{\todo[inline,backgroundcolor=blue!40,textcolor=black]{\small \textbf{Fernando:} #1}}
-%%%%%%
-
-%%%%%%%
-\newcommand{\ad}[1]{\todo[inline,backgroundcolor=green!40,textcolor=black]{\tiny \textbf{Amalia:} #1}}
-%%%%%%
-
-\title{TFM-FernandoMartín}
-\author{Fernando Martín Canfrán}
-\date{\today}
-
-\begin{document}
-
-\maketitle
-
-
-\newpage
 \newpage
 \section{Analysis of results}
+
+\fmc{Poner en positivo "obtuvimos esto", lo que se podría haber hecho poner como future work...}
+
+\textcolor{gray}{
+\begin{itemize}
+    \item 1. Tamaño de banco y streams con los que se probó
+    \item 2. Para cada tamaño de banco, configuración / maxFilterSizes con los que se probó + versión secuencial
+    \item 3. Analisis resultados de forma conjunta de todo.
+\end{itemize}
+}
+
+\subsection*{E1: Evaluation in a High-Load Stress Scenario}
+
+\subsubsection*{Experimental Variations}
+
+This experiment on the \DPATM system was tested on the two defined synthetic bank databases \smallG and \mediumG. In each case we 
+provided streams of different sizes and ratio of anomalous transactions, as detailed in the table \ref{table:stream-sizes}. 
+
+\emph{maxFilterSize}
+
+\begin{table}[H]
+    \small 
+    \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    \textbf{Bank Database} & \textbf{\# Days} & \textbf{Anomalous Ratio} & \textbf{Stream Size} & \textbf{Regular tx} & \textbf{Anomalous tx} \\ \hline
+    \smallG    & 30       & $0.02\ (2\%)$   & 39959       & 39508      & 451 $1\%$    \\ \hline
+    \smallG     & 60       & $0.02\ (2\%)$   & 80744       & 79005      & 1739         \\ \hline
+    \smallG     & 120      & $0.02\ (2\%)$   & 160750      & 157756     & 2994         \\ \hline
+    \mediumG    & 7        & $0.03\ (3\%)$   & 2428286     &            &              \\ \hline
+    \mediumG    & 15       & $0.03\ (3\%)$   & 4856573     & 4805920    & 50653        \\ \hline
+    \end{tabular}
+    \caption{Summary of the different stream sizes generated for each of the bank databases. For each stream we indicate the anomalous ratio, its exact stream size (in the number of transactions), and from it, its number of only regular and only anomalous transactions}
+    \label{table:stream-sizes}
+\end{table}
+
+In addition, appart from providing different streams 
+
+
+\textbf{ONLY CHECKS in these experiments}
+
+For different core variations, we are going to try different combinations of the system in terms
+of the number of the maximum number of cards per filter, that consequently will produce an inverse variation in the number of filters of the system.
+
+\subsubsection*{\smallG}
+    
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.5} % control row height
+    \centering
+    \begin{tabular}{|c|c|}
+    \hline
+    \# cards per filter & \# filters \\ \hline
+    2000   &   1     \\ \hline
+    1000   &   2     \\ \hline
+    400 &   5     \\ \hline
+    200  &   10     \\ \hline
+    100 &   20    \\ \hline
+    50  &   40    \\ \hline
+    20  &   100    \\ \hline
+    10  &   200    \\ \hline
+    4  &   500    \\ \hline
+    2  &   1000    \\ \hline
+    1  &   2000    \\ \hline
+    \end{tabular}
+\end{table}
+    
+\begin{itemize}
+    \item \# of times / runs each job $=10$.
+    \item Maximum RAM limited to 16GB.
+    \item Run for 1c, 2c, 4c, 8c and 16c.
+\end{itemize}
 
 \paragraph{Results Analysis\\}
 
@@ -227,13 +88,13 @@ fill=green!30]
     \makebox[\textwidth][c]{%
         \begin{minipage}{0.5\textwidth}
             \centering
-            \includegraphics[scale=0.5]{images/4-Experiments/NRT/small/30-0.02/fixedcores-seq/16c/plots/execTime.png}
+            \includegraphics[scale=0.5]{images/4-Experiments/E1-NRT/30-0.02/16c/execTime.png}
             \caption*{30-0.02}
         \end{minipage}
         \hspace{0.1\textwidth}
         \begin{minipage}{0.5\textwidth}
             \centering
-            \includegraphics[scale=0.5]{images/4-Experiments/NRT/small/60-0.02/16c/execTime.png}
+            \includegraphics[scale=0.5]{images/4-Experiments/E1-NRT/60-0.02/16c/execTime.png}
             \caption*{60-0.02}
         \end{minipage}
     }
@@ -243,7 +104,7 @@ fill=green!30]
     \makebox[\textwidth][c]{%
         \begin{minipage}{0.5\textwidth}
             \centering
-            \includegraphics[scale=0.5]{images/4-Experiments/NRT/small/120-0.02/16c/execTime.png}
+            \includegraphics[scale=0.5]{images/4-Experiments/E1-NRT/120-0.02/16c/execTime.png}
             \caption*{120-0.02}
         \end{minipage}
     }
@@ -476,6 +337,26 @@ Interpretation:
 \textcolor{red}{For these experiments, to generate the stream of tx, we needed to simplify this process in order to be able to generate a stream in a feasible amount of time. In particular we used the simplifed version of the \texttt{txGenerator.py}: \texttt{txGenerator-simplified.py} $\rightarrow$ with a random ATM-subset instead of a closest to client ATM-subset. Also variation on the transaction distribution times.}
   
 
+- Initial filter configuration setups:
+\begin{table}[H]
+\renewcommand{\arraystretch}{1.5} % control row height
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\# cards per filter & \# filters \\ \hline
+500000   &   1     \\ \hline
+100000   &   5     \\ \hline
+50000 &   10     \\ \hline
+5000  &   100     \\ \hline
+2000 &   250    \\ \hline
+1000  &   500    \\ \hline
+500  &   1000    \\ \hline
+250  &   2000    \\ \hline
+100  &   5000    \\ \hline
+50  &   10000    \\ \hline
+10  &   50000    \\ \hline
+\end{tabular}
+\end{table}
 
 Run with:
 \begin{itemize}
@@ -483,6 +364,123 @@ Run with:
     \item x1 run each job
 \end{itemize}
 
+\begin{itemize}
+    \item x: Run and plots done.
+    \item " ": Not run.
+    \item outMem: out of memory error.
+\end{itemize}
+
+\textbf{Stream - 7 Days}
+\begin{table}[H]
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+  \hline
+  \#cores & 1f & 5f & 10f & 100f & 250f & 500f & 1000f & 2000f & 5000f & 10000f & 50000f \\ \hline
+  1       &   & x & x & x & x & x & x & x & x & x &        \\ \hline
+  2       &   & x & x & x & x & x & x & x & x & x &        \\ \hline
+  4       &   & x & x & x & x & x & x & x & x & x &        \\ \hline
+  8       &   & x & x & x & x & x & x & x & x & x &        \\ \hline
+  16      & x & x & x & x & x & x & x & x & x & x & outMem \\ \hline
+  \end{tabular}
+\end{table}
+
+Plots:
+\begin{itemize}
+    \item FixedCores: OK
+    \item FixedFilters: OK
+    \item Combined: TODO, increase RAM memory to do it, higher than 64GB...
+\end{itemize}
+
+
+
+\textbf{Stream - 15 Days}
+\begin{table}[H]
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+  \hline
+  \#cores & 1f & 5f & 10f & 100f & 250f & 500f & 1000f & 2000f & 5000f & 10000f & 50000f \\ \hline
+  1       &   & x & x & x & x & x & x & x & x & x &        \\ \hline
+  2       &   & x & x & x & x & x & x & x & x & x &        \\ \hline
+  4       &   & x & x & x & x & x & x & x & x & x &       \\ \hline
+  8       & x & x & x & x & x & x & x & x & x & x &        \\ \hline
+  16      & x & x & x & x & x & x & x & x & x & x & outMem \\ \hline
+  \end{tabular}
+\end{table}
+
+Plots:
+\begin{itemize}
+    \item FixedCores: TODO
+    \item FixedFilters: TODO
+    \item Combined: TODO
+\end{itemize}
+  
+
+Based on the results seen (it seems that a really great number of filters is not beneficial), we want to see what happens with a combination of a lower number of filters (like in the experiments for the small bank database):
+
+
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.5} % control row height
+    \centering
+    \begin{tabular}{|c|c|}
+    \hline
+    \# cards per filter & \# filters \\ \hline
+    2000   &   1     \\ \hline
+    1000   &   2     \\ \hline
+    400 &   5     \\ \hline
+    200  &   10     \\ \hline
+    100 &   20    \\ \hline
+    50  &   40    \\ \hline
+    20  &   100    \\ \hline
+    10  &   200    \\ \hline
+    4  &   500    \\ \hline
+    2  &   1000    \\ \hline
+    1  &   2000    \\ \hline
+    \end{tabular}
+\end{table}
+
+
+\textbf{Stream - 7 Days}
+\begin{table}[H]
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    \#cores & 20f & 40f & 200f \\ \hline
+    1       &     &     &      \\ \hline
+    2       &     &     &      \\ \hline
+    4       &     &     &      \\ \hline
+    8       &     &     &      \\ \hline
+    16      &     &     &      \\ \hline
+    \end{tabular}
+\end{table}
+
+Results: DONE
+
+Plots:
+\begin{itemize}
+    \item FixedCores: Running
+    \item FixedFilters: Running
+    \item Combined: TODO, increase RAM memory to do it, higher than 64GB...
+\end{itemize}
+
+
+\textbf{Stream - 15 Days}
+\begin{table}[H]
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    \#cores & 2f & 20f & 40f & 200f \\ \hline
+    1       &    &     &     &      \\ \hline
+    2       &    &     &     &      \\ \hline
+    4       &    &     &     &      \\ \hline
+    8       &    &     &     &      \\ \hline
+    16      &    &     &     &      \\ \hline
+    \end{tabular}
+\end{table}
+
+Results: Done
+
+Plots:
+\begin{itemize}
+    \item FixedCores: TODO
+    \item FixedFilters: TODO
+    \item Combined: TODO, increase RAM memory to do it, higher than 64GB...
+\end{itemize}
 
 \subsection*{E2: Evaluation in a Real-World Stress Scenario}
 
@@ -490,5 +488,3 @@ Run with:
 For the experiments perform The real-case scenario and the high loaded test scenario. In the first case, the interactions, although read by a file of artificial simulated interactions, are provided to the pipeline data stream in such a way that they simulate their actual arrival time to the system, with the corresponding time separation between them. In the second case, the interactions are provided just one after the other as fast as possible as they are read.\\
 
 \fmc{TODO: Describir la configuración/entorno donde corrimos los experimentos - maquinas del cluster, con + o - RAM... poner sus características}
-
-\end{document}
