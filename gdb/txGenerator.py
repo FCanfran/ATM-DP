@@ -28,7 +28,7 @@ START_DATE = "2018-04-01"  # start date, from which the first transaction is gen
 NUM_DAYS = 5  # num of days for which transactions are generated (init START_DATE)
 
 ANOMALOUS_RATIO_1 = (
-    0.02  # ratio of anomalous tx (per card) over the total amount of generated withdrawal transactions
+    0.02  # ratio of anomalous tx (per card) over the total amount of generated transactions
     # argument must be a float in [0,1]
 )
 
@@ -42,7 +42,7 @@ STD_DURATION = 120  # std duration of a transaction - 120s  (2min)
 REGULAR_SPEED = 50  # (km/h) REGULAR_SPEED: for the creation of the regular tx
 # - needed to calculate the t_min_subset: time needed to traverse the distance between 2 geographical points at SPEED km/h
 # - speed at which we consider the client travels NORMALY (by any means of transport) between 2 points
-ANOMALOUS_SPEED = 500  # (km/h)  NOMALOUS_SPEED: Assumption on the maximum ANOMALOUS speed (km/h) at which the distance between two geographical points
+ANOMALOUS_SPEED = 500  # (km/h)  ANOMALOUS_SPEED: Assumption on the maximum ANOMALOUS speed (km/h) at which the distance between two geographical points
 # can be traveled
 ANOMALOUS_TX_DURATION = 5  # (segs)
 #############################################################################################################

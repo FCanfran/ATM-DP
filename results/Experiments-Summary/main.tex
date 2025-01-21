@@ -210,16 +210,91 @@ fill=green!30]
 \newpage
 \section{Analysis of results}
 
-\paragraph{Results Analysis\\}
 
-\begin{itemize}
-    \item Better behavior for a number of filters: 5,10,20 (not lowest, not really high)
-    \item How the number of cores influences in the improve of the behavior
-\end{itemize}
+\begin{figure}[H]
+    \centering
+    % Temporarily adjust margins for wider content
+    \hspace*{-3cm} % Move content to the left by 2 cm (adjust as needed)
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[scale=0.4]{images/4-Experiments/NRT/small/120-0.02/combined/plots/mrt-1.png}
+        \caption*{}
+    \end{minipage}
+    \hspace{0.16\textwidth}
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[scale=0.4]{images/4-Experiments/NRT/small/120-0.02/combined/plots/execTime-1.png}
+        \caption*{}
+    \end{minipage}
+    
+    \vspace{0.5cm} % Vertical space between rows
 
-\paragraph{Comparison of behavior depending on the number of filters}
+    \hspace*{-3cm} % Move content to the left for the second row
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[scale=0.4]{images/4-Experiments/NRT/small/120-0.02/combined/plots/dieft-1.png}
+        \caption*{}
+    \end{minipage}
+    \hspace{0.16\textwidth}
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[scale=0.4]{images/4-Experiments/NRT/small/120-0.02/combined/plots/throughput-1.png}
+        \caption*{}
+    \end{minipage}
 
-\paragraph{Exec time plots - for a core number - different stream sizes\\}
+    \caption{Combined cores and filters variation plots for big stream: 120-0.02}
+    \label{img:exps-small-120-combined}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \newpage
 \begin{figure}[H]
     \centering
@@ -252,7 +327,7 @@ fill=green!30]
     \label{img:exps-small-execTime-16c}
 \end{figure}
 
-
+\newpage
 \paragraph{MRT plots - for a core number 16 - different stream sizes\\}
 \newpage
 

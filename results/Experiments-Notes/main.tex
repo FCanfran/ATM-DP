@@ -225,92 +225,6 @@ Introducción: qué contiene la sección
 \end{itemize}
 }
 
-In this section we detail the experimental evaluation done in order to show the performance of the \DPATM system. With these experiments we intend to show the suitability of the dynamic pipeline computational model as a real-time system capable of emitting results as they are computed, in a progressive way.\\
-
-% Explicación breve de los dos principales tipos de experimentos que hemos hecho: RT and NRT-high load scenario
-To evaluate the \DPATM as a real-time system, we conducted two kinds of experiments. On the one hand the analysis of the \DPATM on a high-load stress scenario (E1), where we study the behavior of the system in a worst case scenario, receiving a high loaded transaction stream. On the other hand, the evaluation of the \DPATM in scenarios reflecting more real-world possible conditions, with a more realistic transaction frequency (E2). In each of the cases we intend to show the performance of the system under different possible configurations in terms of the number of filters and available cores on the running machine.\\
-
-% Metrics
-To evaluate the behavior of the system in these scenarios, we decided to analyze not only classical real-time system metrics but also newly proposed metrics for assessing the system's continuous behavior in terms of the emitted results. The selection of the metrics for the system evaluation is described in \ref{exps:evaluation-metrics}. In \ref{exps:results-definition} we explain the possible considered definitions for a system result, which we will select depending on the experiment.\\
-
-% Stream & bank sizes
-The system will be tested for different possible bank sizes, with varying numbers of cards, ATMs, and stream sizes, simulating various time intervals of card-ATM interactions. The selection of the different possible bank and synthetic transaction stream sizes are given in \ref{exps:bank-stream-configs}. 
-
-\fmc{Explicar que se empezaron a hacer los dos experimentos, pero que al hacer E2 se acabó viendo que realmente se estaba tendiendo a hacer el E1, y que por eso el principal experimento de referencia fue la prueba del sistema en un high-load scenario E1.}
-
-Finally, we devote \ref{exps-input-reading} to discuss different considered methods to consume the stream of transactions, and the empirical comparisons from which we decided the method of stream consumption by the \DPATM in our experiments. Part of this discussion was already advanced in the description of the implementation of the \source \Sr stage in \ref{ContinuousQueryEngine}.
-
-\subsection{Definition of a System Result}\label{exps:results-definition}
-
-In principle, attending only to our system description, we consider a result - or equivalently, an answer of the \DPATM - to be synonymous with an alert, caused by a positive fraud check on a \filter stage.\\
-
-For experimental purposes, we propose an alternative result definition, in which we consider a result to be equal to a fraud pattern check. That is, all the fraud pattern checks are considered as results on this definition, even if they are negative, i.e. when they do not derive in the creation of an alert. Considering all the fraud pattern checks as results is done only due to experimental purposes, in order to better analyze the continuous production of results by the \DPATM, reflecting all the fraud pattern checking that the system is undergoing. Note that, considering all the checks as results will derive in a communication overhead between the \filter \F stages and the \sink \Sk stage, where the results are gathered. However, on a production version of the \DPATM, we will utilize the original definition of a \DPATM system result - the alerts are the results - as there would be no interest in sending negative fraud pattern checks to \Sk. Only the positive fraud pattern checks - the alerts - are of interest in that case, therefore reducing at maximum the overhead in the communication channel between the $\mathsf{F}$'s and \Sk and the corresponding processing of results in \Sk.
-
-\subsection{Evaluation Metrics}\label{exps:evaluation-metrics}
-
-The \DPATM is an intended to be real-time system for the detection of card-ATM anomalous interactions. As such its evaluation must capture classical metrics such as: mean response time of an answer/detection to be produced, throughput in terms of answers emitted per unit of time, the execution time to process a full stream. 
-Additionally, we include other kinds of metrics to quantify and evaluate the efficiency of the system over a certain time period, the so-called \emph{diefficiency} metrics, introduced in \cite{exps-diefficiency}. Unlike the classical metrics, these metrics allow us to have a more complete picture on how the system is behaving during a given period of time, and not just a reduced final picture, by evaluating the progressive emission of results in that time period.
-
-% Describo las métricas una a una en un listado
-\begin{itemize}
-    \item \textbf{Number of results: \texttt{checks} and \texttt{alerts} produced\\}
-    Counters of the number of results that the system produces. Results can be either be counted only as alerts (positive fraud patterns), as fraud pattern checks, both positive (alerts) and negative, or as both at the same time, depending on the experiment. 
-    \item \textbf{Response Time (\texttt{RT}) and Mean Response Time (\texttt{MRT})\\}
-    \texttt{RT} captures the time it takes for the system to emit a result. It is the elapsed time from the moment an interaction arrives to the system until the result of its respective fraud pattern check is produced. A fine-grained description on how this metric was captured in the \DPATM system is included in \ref{exp-measuring-mrt}. The \texttt{MRT} is the average response time metric for all the results emitted by the system.
-    \item \textbf{Execution Time (\texttt{ET})\\}
-    It measures the total time (in seconds) that it takes for the system to consume/process a full input stream.
-    \item \textbf{Throughput (\texttt{T})\\}
-    It measures the number of results emitted per time unit. It is calculated as number of results divided by \texttt{ET}.
-    \item \textbf{Interactions per second (\texttt{interactions/s})\\}
-    It measures the number of interactions that the system is able to process per time unit. It is calculated as the total number of interactions that arrived to the system divided by \texttt{ET}.
-    \item \textbf{Time to produce the First Tuple (\texttt{TFFT})\\}
-    It is the time required by the system to produce/emit the first result.
-    \item \textbf{\texttt{dief@t} and \texttt{dief@k} metrics\\}
-    They measure the \emph{diefficiency} - the continuous efficiency of an engine over a certain time period in terms of the emission of results - and, as mentioned allow us to have a more complete picture on how the system is behaving during a given period of time, and not just a reduced final picture. \texttt{dief@t} measures the diefficiency of the engine while producing results in the first \emph{t} time units of execution time. The higher the value of the \texttt{dief@t} metric, the better the continuous behavior. \texttt{dief@k} metric measures the diefficiency of the engine while producing the first \emph{k} results, after the first result is produced. The lower the value of the \texttt{dief@k} metric, the better the continuous behavior.
-
-    \item \textbf{Answer Trace\\}
-    We provide a similar definition as the one in \cite{exps-diefficiency}. An answer trace can be formally defined as a sequence of pairs $(t_1,r_1),...,(t_n,r_n)$, where $r_i$ is the $ith$ result produced by the engine and $t_i$ is the timestamp that indicates the point in time when $r_i$ is produced. We will record an answer trace for each of the experimental evaluations of the engine, since they provide valuable insights about the continuous efficiency - diefficiency.
-
-\end{itemize}
-
-To obtain the \texttt{dief@t} and \texttt{dief@k} metrics we used the \texttt{diefpy} tool \cite{exps-diefpy-tool}, which calculates them from the generated answer/result traces by our system. This tool provides us with other utilities for the visualization of the metrics on the obtained sets of results such as: the visualization of answer traces, the generation of radar plots to compare the \texttt{dief@t} with the other conventional/classical metrics, the generation of radar plots to compare the \texttt{dief@k} at different answer completeness percentages, among others.
-
-We additionally extended/modified the tool for our specific needs. This was done in order to visualize other metrics, especially the \texttt{mrt}, but also others like the thoughtput \texttt{T}, \texttt{interactions/s} or the \texttt{TFFT}.
-
-\fmc{TODO: explicar mejor la utilidad de medir dieft and diefk... resultados... answer trace si es muy bueno}
-
-% Apartado tamaños de banco y streams
-\subsection{Bank and Stream Configurations}\label{exps:bank-stream-configs}
-
-Testing a bank system application like the \DPATM system implies deciding on different representative bank sizes and different stream sizes on which to perform the evaluation of the system. Regarding the stream of transactions the proportion of regular vs anomalous transactions also needs to be decided.\\
-
-We did a brief investigation of some related works, regarding the experimental stream sizes as well as the ratio on the anomalous fraud transactions they utilize. On \cite{exps-atmfrauddetectionstreamdata} the authors propose an ATM fraud detection system based on ML models where they experiment with a transaction stream of a size close to $10^{6}$ consisting of a ratio of 0.88 regular operations to 0.12 fraudulent operations. In \cite{exps-costsensitivepayment} they propose a ML algorithm based on dynamic random forests and k-nearest neighbors, and they test it with a real bank transaction stream of $\sim5 \times 10^{4}$, representing the card activity of 415 different cards, with a fraudulent transaction ratio of 0.07. Finally in \cite{exps-featureengineering} they evaluate the impact of their proposed feature extraction techniques for credit card fraud detection on different ML and data mining state-of-the-art models. For their experiments they used a real European transaction dataset containing $\sim120 \times 10^{6}$ transactions representing a 18 months time interval, in which only $\sim40000$, that is a $0.025\%$, are fraudulent. They also consider a smaller subset of $\sim 2 \times 10^{5}$ transactions with a fraud ratio of $1.5\%$.
-
-\fmc{TODO: Poner mejor}
-Based on these references we constructed different streams with sizes and fraud ratio similar to the ones mentioned, using our generator of synthetic transactions, generated from different bank databases.
-The variation on the size of the simulated stream of transaction on which to test our system is not the unique we do, we also variate the bank database size in terms of the number of cards and ATMs it contains. This variation, apart from having an influence on the volume of generated transactions on a time interval when using our synthetic transaction stream generator, it is expected to have an influence on the performance of the system due to the expected added overhead when querying the Neo4j stable graph database. In our experiments we propose two bank database sizes; one small bank database with 2000 cards and 50 ATMs, and one large bank database with 500000 cards and 1000 ATMs. 
-
-\fmc{Poner referencias a bancos reales de tamaños similares?}
-
-
-When generating the streams, in order to obtain the desired stream sizes, we needed to consider that our transaction generator takes as base the behavior of the clients of the 
-Wisabi Bank Database, where each client typically produces at most $\sim 1$ transaction per day. (\textcolor{red}{TO CHECK to give the exact number}). This means that for each of the bank sizes being tested, in order to achieve the desired stream size, we need to decrease/increase the size of the time interval to be simulated.
-
-
-\fmc{TODO: Sacar métricas exactas de cuál es el numero medio de ops por cliente de wisabi para poder decir cuál es el número de tx por dia approx que generamos con nuestro generador para poder relacionarlo}
-
-\fmc{ Pongo esto?:Note that, for simplicity, we are assuming the number of bank branches as the number of ATMs and the number of clients as the number of cards.}
-
-\begin{comment}
-
-Sobre el número de cards y ATMs algunos bancos pequeños en España como la caja rural de Aragón tienen 14000 clientes y en torno a 200 sucursales (que podemos asumir como el número de ATMs, aunque sería algo más al tener más de 1 ATM por sucursal lo más seguro). Otros bancos pequeños (tipo cajas rurales) también suelen tener en torno a 100-200 sucursales y  algunos incluso 10^5 clientes.
-
-En cuanto al número de transacciones, he estado mirando y algunos artículos juegan con un set de transacciones de en torno a 10^6 o 10⁵. Considerando que nuestro generador de transacciones como mucho crea una transaccion por card por día (basado en los datos del wisabi). Podríamos generar 1 mes de transacciones para 15000 cards y 200 ATMs, que podría dar  como mucho un stream de unas 450000 transacciones. 
-
-\end{comment}
-
-% Resultados - Checks / Alerts...
-
 \subsection*{E1: Evaluation in a High-Load Stress Scenario}
 
 % Intro - Descripción general
@@ -370,110 +284,6 @@ For the second:
   \item Q2: Behavior of the different system variations on a high loaded transaction stream scenario.
   \item R2: Not real time simulation. Direct transaction stream input supply. Comparison of the continuous delivery of results of the different systems variations (diefficiency metrics).
 \end{itemize}
-
-\subsubsection{Small bank size \& small transaction stream}
-
-\paragraph{1-core\\}
-
-\ad{Hay que explicar bien los resultados que se enseñan en cada grafica y lo que representan además de las conclusiones que permiten sacar.}
-
-Results for executions with 1-core:
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale = 0.5]{images/4-Experiments/E2/fixedcores/1c/traces.png}
-  \caption{Alerts trace in time (s) - 1 core}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale = 0.5]{images/4-Experiments/E2/fixedcores/1c/execTime.png}
-  \caption{Execution time (s) - 1 core}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale = 0.5]{images/4-Experiments/E2/fixedcores/1c/radar-dieft.png}
-  \caption{\texttt{dieft} radar - 1 core}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale = 0.5]{images/4-Experiments/E2/fixedcores/1c/radar-diefk.png}
-  \caption{\texttt{diefk} radar - 1 core}
-\end{figure}
-
-\textcolor{red}{TODO: Put table for not graphical results gathered in the dieffpy-out.txt file...}
-
-\paragraph{4-cores\\}
-
-Results for executions with 4-core:
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale = 0.5]{images/4-Experiments/E2/fixedcores/4c/traces.png}
-  \caption{Alerts trace in time (s) - 4 core}
-\end{figure}
-
-\paragraph{8-cores\\}
-
-Results for executions with 8-core:
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale = 0.5]{images/4-Experiments/E2/fixedcores/8c/traces.png}
-  \caption{Alerts trace in time (s) - 8 core}
-\end{figure}
-
-\paragraph{16-cores\\}
-
-Results for executions with 16-core:
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale = 0.5]{images/4-Experiments/E2/fixedcores/16c/traces.png}
-  \caption{Alerts trace in time (s) - 16 core}
-\end{figure}
-
-\textcolor{red}{NOTE: Almost no difference when variating the number of cores!!!!}
-
-\begin{figure}[H]
-  \centering
-  \begin{subfigure}[b]{0.45\textwidth}
-    \centering
-    \includegraphics[scale=0.6]{images/4-Experiments/E2/fixedcores/1c/execTime.png}
-    \caption{Execution time (s) - 1 core}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.45\textwidth}
-    \centering
-    \includegraphics[scale=0.6]{images/4-Experiments/E2/fixedcores/4c/execTime.png}
-    \caption{Execution time (s) - 4 core}
-  \end{subfigure}
-  \\
-  \begin{subfigure}[b]{0.45\textwidth}
-    \centering
-    \includegraphics[scale=0.6]{images/4-Experiments/E2/fixedcores/8c/execTime.png}
-    \caption{Execution time (s) - 8 core}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.45\textwidth}
-    \centering
-    \includegraphics[scale=0.6]{images/4-Experiments/E2/fixedcores/16c/execTime.png}
-    \caption{Execution time (s) - 16 core}
-  \end{subfigure}
-  \caption{Execution times for different core configurations.}
-  \label{fig:execution-times}
-\end{figure}
-
-
-\textcolor{blue}{
-Some observations:
-\begin{itemize}
-    \item Differences between  more or less cores visible specially for a fixed big number of filters (see plots of fixed number of filters) -> TODO
-    \item More filters imply more overhead specially when number of cores is low.
-\end{itemize}
-}
 
 \paragraph{Transaction stream - medium\\}
 
@@ -630,22 +440,46 @@ This setup gives us a transaction stream of
   \item $\texttt{anomalous\_tx} = 451$ -- note that this is actually a $1\%$.
 \end{itemize}
 
+\newpage
+\begin{itemize}
+  \item $\mathsf{GDB_A\text{-}30}$ stream
+  \item Con escalado al nivel de s
+  \item Pruebas iniciales de este test, para ver cómo se comportaba en distintos niveles de escalado, cuántas alerts se perdían por culpa de este escalado.
+\end{itemize}
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
   \hline
   Execution & Scaled   & Num. cards/filter& Num. cores & Num. alerts & Time(s) \\ \hline
-  NRT & No & Baseline (all) & 1 & 462 & 44.88 \\ \hline
-  RT  & 1h & Baseline (all) & 1 & 447 & 3601.65\\ \hline
+  NRT & No & 2000 (1f) & 1 & 462 & 44.88 \\ \hline
+  RT  & 1h & 2000 (1f) & 1 & 447 & 3601.65\\ \hline
   RT  & 1h & 500 (4 filters) & 4 & 447 & 3603.25\\ \hline
   RT  & 1h & 200 (10 filters) & 10 & 447 & 3602.71\\ \hline
-  RT  & 6h & Baseline (all) & 1 & 459 & 21606.11 \\ \hline
+  RT  & 6h & 2000 (1f) & 1 & 459 & 21606.11 \\ \hline
   RT  & 6h & 500 (4 filters) & 4 & 459 & 21611.75 \\ \hline
-  RT  & 12h & Baseline (all) & 1 & 461 & 43211.95 \\ \hline
+  RT  & 12h & 2000 (1f) & 1 & 461 & 43211.95 \\ \hline
 \end{tabular}
 \caption{Different experimental setups results}
 \label{table:small-results}
 \end{table}
+
+\begin{itemize}
+  \item Con escalado cambiado al nivel de $\mu$s
+  \item No se perdían alerts. Sin embargo estaba tendiéndose a un escenario de high stress al hacer tanto escalado
+\end{itemize}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    Execution & Scaled   & Num. filters & Num. cores & Num. alerts\\ \hline
+    RT & 10' & 1 & 1, 4, 16 & 462\\ \hline
+    RT & 10' & 40 & 1, 4, 16 & 462\\\hline
+    RT & 10' & 2000 & 1, 4, 16 & 462\\ \hline
+  \end{tabular}
+  \caption{Different experimental setups results}
+  \label{table:small-results}
+  \end{table}
 
 Some nomenclature:
 \begin{itemize}
