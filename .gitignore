@@ -9,5 +9,7 @@ engine*/cmd/.env
 auxiliary-tests/read-input-test/cmd/generator/output
 auxiliary-tests/read-input-test/streams
 **/.env
-
+engine-E1-checks/cmd/8c-10f.csv
+engine-E1-checks/cmd/output/
+engine-E1-checks/input/medium/
 
