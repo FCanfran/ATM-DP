@@ -4,9 +4,11 @@ This repository contains an implementation of the Continuous Query Engine for th
 
 The repository also contains a synthetic bank graph database generator, which includes a customizable synthetic transaction stream generator. Full detail description is given in the master's thesis document `report.pdf`.
 
+## Contents
+
 The contents of this repository are:
 
-- `gdb`: graph database generator. It contains a synthetic bank dataset generation tool based on the [Wisabi Bank Dataset](https://www.kaggle.com/datasets/obinnaiheanachor/wisabi-bank-dataset?resource=download), a Golang population module for the creation of the corresponding Neo4j database. It also contains a parametrizable synthetic transaction generator based on the created bank dataset.
+- `gdb`: graph database generator. It contains a synthetic bank dataset generation tool based on the [Wisabi Bank Dataset](https://www.kaggle.com/datasets/obinnaiheanachor/wisabi-bank-dataset?resource=download), a Golang population module for the creation of the corresponding Neo4j database. It also contains a parametrizable synthetic transaction generator based on the created bank dataset. More details of this tool are given inside this directory.
 
 - `auxiliary-tests`: Some auxiliary tests of the project.
 
@@ -24,7 +26,9 @@ Then we can find different versions of the Golang implementation of the Continuo
 
 - `engine-E1-checks`: ATM-DP with high-load stress simulation of the transaction input stream. All fraud checks are processed as results of the engine.
 
-To run any of these variants execute:
+## Usage
+
+To run any of these variants execute the `main.go` inside the corresponding `cmd` subdirectory of the desired version:
 
 ```
 >$ go run main.go <executionDescriptionFile>
