@@ -1,8 +1,7 @@
 # Continuous Query Engine for the Detection of Anomalous ATM transactions
 
 
-- `gdb`: graph database generator. It contains a synthetic bank dataset generation tool based on the [Wisabi Bank Dataset](https://www.kaggle.com/datasets/obinnaiheanachor/wisabi-bank-dataset?resource=download),  
-a Golang population module for the creation of the corresponding Neo4j database. It also contains a parametrizable synthetic transaction generator based on the created bank dataset.
+- `gdb`: graph database generator. It contains a synthetic bank dataset generation tool based on the [Wisabi Bank Dataset](https://www.kaggle.com/datasets/obinnaiheanachor/wisabi-bank-dataset?resource=download), a Golang population module for the creation of the corresponding Neo4j database. It also contains a parametrizable synthetic transaction generator based on the created bank dataset.
 
 - `auxiliary-tests`: Some auxiliary tests of the project.
 
