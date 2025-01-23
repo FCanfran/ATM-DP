@@ -33,6 +33,8 @@ var APPROACH string
 // stream input file name
 var StreamFileName string
 
+// ***************************************************************************** //
+
 // output directory name
 var OutDirName string
 
@@ -87,8 +89,6 @@ func ReadExecDescriptionFile(filename string) {
 
 	// create output dir to put the result files
 	// obtain the name after input filename
-	//baseName := filepath.Base(StreamFileName)
-	//outdirName := strings.TrimSuffix(baseName, ".csv") + "-" + APPROACH
 	outdirName := APPROACH
 	setOutputDir(outdirName)
 
@@ -104,7 +104,6 @@ func ReadExecDescriptionFile(filename string) {
 
 // ***************************************************************************** //
 
-// https://yourbasic.org/golang/format-parse-string-time-date-example/
 const Time_layout = "2006-01-02 15:04:05"
 
 type TxType uint8
@@ -155,18 +154,10 @@ type Coordinates struct {
 const maxSpeed = 500 // km/h
 
 // For the volatile subgraph
-
-// Golang list - doubly linked list
 // Graph is a struct that encapsulates a list of edges: edges
 type Graph struct {
 	edges *list.List // a list of pointers to edges
 }
-
-/*
-Alert labels:
-- 0: Overlapping alert - tx_i+1 starts before tx_i ends (interaction starts before previous has ended)
-- 1: Fraud pattern I
-*/
 
 type Alert struct {
 	Label              string        // it can also be set as integer - for each kind of fraud pattern put a int
@@ -194,7 +185,6 @@ func (g *Graph) AddEdge(e Edge) {
 
 // Complete an edge in the subgraph with the tx-end edge
 func (g *Graph) CompleteEdge(e Edge) {
-	//fmt.Println(":::: CompleteEdge ::::")
 	// Get the last edge of the list and complete it
 	// we are getting a reference of the object, so any change directly modifies it
 	prev := g.edges.Back()
@@ -217,9 +207,6 @@ func (g *Graph) CompleteEdge(e Edge) {
 // obtain Tmin(eg.loc, new_e.loc), returns seconds of time
 func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 string, ATM_id_2 string) (float64, error) {
 	// Connect to the static gdb to obtain the location of the ATMs given the ATM ids
-	// TODO: Use Indexes for Performance
-	// Ensure that the ATM_id field is indexed if you are performing many lookups based on this property.
-	// While this is not a different query form, indexing helps improve the performance of queries that filter on this property.
 	getATMLocationQuery := `MATCH (a:ATM) WHERE a.ATM_id = $ATM_id RETURN a.loc_latitude AS loc_latitude, a.loc_longitude AS loc_longitude`
 
 	processCoordinates := func(result neo4j.ResultWithContext) (any, error) {
@@ -277,10 +264,7 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	// Calculate the distance between the two locations
 	loc1 := haversine.Coord{Lat: location1.Latitude, Lon: location1.Longitude}
 	loc2 := haversine.Coord{Lat: location2.Latitude, Lon: location2.Longitude}
-	//fmt.Println(loc1)
-	//fmt.Println(loc2)
 	_, distance_km := haversine.Distance(loc1, loc2)
-	//fmt.Println("Kilometers:", distance_km)
 
 	// t = e / v ---> (km)/(km/h) --> in seconds (*60*60)
 	t_min := (distance_km / maxSpeed) * 60 * 60 // in seconds
@@ -288,10 +272,6 @@ func obtainTmin(ctx context.Context, session neo4j.SessionWithContext, ATM_id_1 
 	return t_min, nil
 }
 
-// - new_e: the new edge that we check the FP against
-// Returns:
-// - bool: indicating the presence of a positive Alert (true) or not (false)
-// - Alert: the Alert itself, only in the case it is true. Empty if false.
 func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext, new_e Edge) (bool, Alert) {
 
 	var fraudAlert Alert // Default 0-value initialization
@@ -302,28 +282,12 @@ func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext
 
 	if last != nil {
 		last_e := *(last.Value.(*Edge)) // asserts eg.Value to type Edge
-		// FRAUD PATTERN 0: case new_e.tx_start < last_e.tx_end
-		// -> it can not happen that a transaction starts before the previous is finished
-		// check if previous was closed
+		//  case new_e.tx_start < last_e.tx_end
 		if last_e.Tx_end.IsZero() || new_e.Tx_start.Before(last_e.Tx_end) {
-			//fmt.Println("tx starts before the previous ends!")
 			log.Println("Warning: tx starts before the previous ends! - ", new_e.Number_id)
-			// TODO: It is a TRUE fraud, but not of this kind! - other kind
-			// do not consider it here so far
-			// print fraud pattern with this edge
 			fmt.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 			fmt.Println("Warning: tx starts before the previous ends! - ", new_e.Number_id)
 			PrintEdge("Fraud pattern with: ", last_e)
-			/*
-				fraudIndicator = true
-				subgraph := NewGraph()
-				subgraph.AddEdge(last_e)
-				subgraph.AddEdge(new_e)
-				fraudAlert.Label = "0"
-				fraudAlert.Info = "fraud pattern"
-				fraudAlert.Subgraph = *subgraph
-				fraudIndicator = true
-			*/
 		} else {
 			if last_e.ATM_id != new_e.ATM_id {
 				// time feasibility check: (new_e.tx_start - last_e.tx_end) < Tmin(last_e.loc, new_e.loc)
@@ -331,17 +295,11 @@ func (g *Graph) CheckFraud(ctx context.Context, session neo4j.SessionWithContext
 				t_min, err := obtainTmin(ctx, session, last_e.ATM_id, new_e.ATM_id)
 				CheckError(err)
 				t_diff := (new_e.Tx_start.Sub(last_e.Tx_end)).Seconds()
-				//fmt.Println("t_min", t_min)
-				//fmt.Println("t_diff", t_diff)
 				if t_diff < t_min {
 					// create alert
-					// PrintEdge("Fraud pattern with: ", last_e)
-					// subgraph
 					subgraph := NewGraph()
 					subgraph.AddEdge(last_e)
 					subgraph.AddEdge(new_e)
-					//fmt.Println("TRUE FP1: ")
-					//subgraph.Print()
 					fraudAlert.Label = "1"
 					fraudAlert.Info = "fraud pattern"
 					fraudAlert.Subgraph = *subgraph
@@ -390,10 +348,6 @@ func ReadEdge(tx []string) Event {
 
 	// end
 	// Check if tx_end field is empty
-	// From: https://pkg.go.dev/time#Time
-	// The zero value of type Time is January 1, year 1, 00:00:00.000000000 UTC. As this time
-	// is unlikely to come up in practice, the Time.IsZero method gives a simple way of detecting
-	// a time that has not been initialized explicitly.
 	var tx_end time.Time
 	if tx[5] != "" {
 		tx_end, err = time.Parse(Time_layout, tx[5])
@@ -546,7 +500,6 @@ func PrintAlertOnFile(alert Alert, file *os.File) {
 	}
 }
 
-// TODO: Put properly event printing
 func PrintEventOnFile(e Event, file *os.File) {
 
 	switch e.Type {
@@ -628,66 +581,3 @@ func ChangeLogPrefiX() {
 	// Set microseconds and full PATH of source code in logs
 	log.SetFlags(log.Lmicroseconds | log.Llongfile)
 }
-
-/*
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
-// FUTURE: For the multiple window support - for the moment: single window support
-// TODO: Put this correctly!, for the moment the diff is 24h
-// In Duration format
-//const timeTxThreshold = 1 * 24 * time.Hour
-// TODO: Put this correctly!
-//const timeFilterThreshold = 2 * 24 * time.Hour
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ //
-// ------------------------------------------------------------------------------ //
-// Given a certain datetime, it updates the graph, starting from the first
-// edge, by eliminating those that are outdated wrt this datetime
-// - datetime format: DD/MM/YYYY HH:MM:SS
-func (g *Graph) Update(timestamp time.Time) {
-	fmt.Println(":::: update ::::")
-	// Traverse the list from the beginning and eliminate edges until no
-	// outdate is detected
-	eg := g.edges.Front()
-	for eg != nil {
-		eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
-		difference := timestamp.Sub(eg_val.Tx_end)
-		if difference >= timeTxThreshold {
-			// Keep the next before deleting the current, so that we can have
-			// the next of the current after the removal
-			eg_next := eg.Next()
-			g.edges.Remove(eg)
-			eg = eg_next
-		} else {
-			// at the time that we find the first edge which is not
-			// outdated, we stop, since for sure the next ones are
-			// also not outdated (we are assuming that the tx are
-			// received ordered in time...)
-			return
-		}
-	}
-}
-
-// Filter timeout check: test if the filter has to die (with the last edge
-// of the volatile subgraph and a timestamp), if the time difference is
-// greater than timeFilterThreshold returns true, otherwise false
-// TODO: Again this is assuming that the tx are ordered in time!!!
-// otherwise we will have to find the most recent tx in time
-func (g *Graph) CheckFilterTimeout(timestamp time.Time) bool {
-	fmt.Println(":::: checkFilterTimeout ::::")
-	difference := timestamp.Sub(g.last_timestamp)
-	return (difference >= timeFilterThreshold)
-}
-
-// Delete a specific edge of the graph
-// - Locate by tx id
-func (g *Graph) Delete(e Edge) {
-
-	// Locate the element, and then remove it
-	for eg := g.edges.Front(); eg != nil; eg = eg.Next() {
-		eg_val := eg.Value.(Edge) // asserts eg.Value to type Edge
-		if eg_val.Tx_id == e.Tx_id {
-			g.edges.Remove(eg)
-			return
-		}
-	}
-}
-*/

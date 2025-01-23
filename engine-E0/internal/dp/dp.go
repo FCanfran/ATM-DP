@@ -10,8 +10,6 @@ import (
 	"os"
 	cmn "pipeline/internal/common"
 	"pipeline/internal/connection"
-
-	//"strings"
 	"time"
 )
 
@@ -77,23 +75,17 @@ Loop:
 
 				// calculate response time
 				responseTime := t - alert.LastEventTimestamp
-				//cmn.PrintAlertVerbose(alert, t, alertCount)
 				cmn.PrintAlertOnFileVerbose(alert, responseTime, alertCount, fileAlerts)
 				cmn.PrintAlertOnResultsTrace(t, responseTime, alertCount, writer_trace)
 			}
 		case event, ok := <-in_event:
 			if ok {
-				// TODO: Print the event and not (only) the edge associated?
 				cmn.PrintEventOnFile(event, file_log)
 			}
 			switch event.Type {
 			case cmn.EOF:
-				//fmt.Println("Sink - EOF event")
 				// finish the Sink
 				break Loop
-				/*case cmn.LOG:
-				// TODO-FUTURE
-				*/
 			}
 		}
 	}
@@ -108,30 +100,21 @@ func Generator(
 	out_alert chan<- cmn.Alert,
 	out_event chan<- cmn.Event) {
 
-	//fmt.Println("G - creation")
 Loop:
 	for {
 		event, ok := <-in_event
 		if !ok {
-			// TODO: Manage the error properly
 			fmt.Println("G - !ok in in_event channel")
 		}
 		switch event.Type {
 		case cmn.EOF:
-			//fmt.Println("G - EOF event")
+
 			out_event <- event
 			// end the generator
 			break Loop
-			/*case cmn.LOG:
-			// TODO
-			fmt.Println("G: LOG - event")
-			// TODO-FUTURE: case: Reconnection case - use this channel?
-			*/
 		case cmn.EdgeEnd:
-			// TODO: decide how to manage better?
 			log.Fatalf("Error-Generator: edge_end arrived before edge_start")
 		case cmn.EdgeStart:
-			//cmn.PrintEdge("G - edge_start arrived: ", event.E)
 			// spawn a filter
 			new_event_ch := make(chan cmn.Event, cmn.ChannelSize)
 			go filter(event, in_event, new_event_ch, out_alert)
@@ -140,11 +123,8 @@ Loop:
 		}
 	}
 
-	//fmt.Println("G - Close ch - out_alert")
 	close(out_alert)
-	//fmt.Println("G - Close ch - out_event")
 	close(out_event)
-	//fmt.Println("G finished")
 }
 
 func filter(
@@ -156,13 +136,6 @@ func filter(
 	var edge cmn.Edge = event.E
 	var id string = edge.Number_id
 	var msg_id string = "F-[" + id + "]"
-	//fmt.Println(msg_id + " - creation")
-	// hash table to index card ids to card subgraphs
-	// 2 hash tables (to avoid race conditions in concurrent access by filter & worker)
-	// - 1 to control the belonging cards to the filter 			(cardList)		-> only access by filter
-	// - 1 to map each belonging card to its corresponding subgraph	(cardSubgraph)	-> only access by worker
-	// NOTE: maps are inherently dynamic in size. -> control the desired
-	// max size by ourselves
 	var cardList map[string]bool = make(map[string]bool)
 	var cardSubgraph map[string]*cmn.Graph = make(map[string]*cmn.Graph)
 
@@ -174,34 +147,27 @@ func filter(
 	endchan := make(chan struct{})
 
 	// Session creation - 1 session per filter - to connect to the gdb
-	context := context.Background() // TOCHECK: Use a different new ctx per filter or the same in all?
+	context := context.Background()
 	session := connection.CreateSession(context)
 	defer connection.CloseSession(context, session)
 
 	// Worker - Anonymous function
 	go func() {
-		//var msg_id string = "FW-[" + id + "]"
-		var subgraph *cmn.Graph // variable to work with the subgraphs of the different cards
-		//fmt.Println(msg_id + " - creation")
 
+		var subgraph *cmn.Graph // variable to work with the subgraphs of the different cards
 		cardSubgraph[edge.Number_id] = cmn.NewGraph()
 		subgraph, ok := cardSubgraph[edge.Number_id]
 		if !ok {
-			// TODO: Manage the error properly
 			fmt.Println("FW - not existing entry in map for: ", edge.Number_id)
 		}
 
 		subgraph.AddEdge(edge)
-		// subgraph.PrintIds()
-
 		// this goroutine dies alone after its father closes the internal_edge channel
 		// (it is the only process with which it has communication / is connected)
 	Worker_Loop:
 		for {
 			event_worker, ok := <-internal_edge
 			if !ok {
-				// TODO: Check what to do here better
-				//fmt.Println(msg_id + "- closed internal_edge channel")
 				break Worker_Loop
 			}
 
@@ -219,7 +185,6 @@ func filter(
 					cardSubgraph[event_worker.E.Number_id] = cmn.NewGraph()
 					subgraph, ok = cardSubgraph[event_worker.E.Number_id]
 					if !ok {
-						// TODO: Manage the error properly
 						fmt.Println("FW - not existing entry in map for: ", event_worker.E.Number_id)
 					}
 					// add to the subgraph
@@ -227,9 +192,7 @@ func filter(
 				} else {
 					// card already exists, therefore, at least an edge on the subgraph
 					// check fraud
-					//fmt.Println(event_worker.E.Number_id, "-------------- CHECKFRAUD()-----------------")
 					isFraud, alert := subgraph.CheckFraud(context, session, event_worker.E)
-					//fmt.Println("----------------------------------------------------")
 					if isFraud {
 						alert.LastEventTimestamp = event_worker.Timestamp
 						out_alert <- alert
@@ -238,18 +201,13 @@ func filter(
 					subgraph.NewHead(event_worker.E)
 				}
 			case cmn.EdgeEnd:
-				//cmn.PrintEdge(msg_id+"- edge_end arrived: ", event_worker.E)
 				subgraph, ok = cardSubgraph[event_worker.E.Number_id]
 				if !ok {
-					// TODO: Manage the error properly
 					fmt.Println("FW - edge end has not existing entry in map for: ", event_worker.E.Number_id)
 					log.Println("Warning: AddEdge -> a tx-end was tryied to be added on a empty subgraph", event_worker.E.Number_id)
-					// NOTE: THIS SHOULD NOT BE DONE HERE - tx_start should arrive before tx_end
-					// Warn - anyway create the subgraph for this edge
 					cardSubgraph[event_worker.E.Number_id] = cmn.NewGraph()
 					subgraph, ok = cardSubgraph[event_worker.E.Number_id]
 					if !ok {
-						// TODO: Manage the error properly
 						fmt.Println("FW - not existing entry in map for: ", event_worker.E.Number_id)
 					}
 					subgraph.AddEdge(event_worker.E)
@@ -258,55 +216,39 @@ func filter(
 				}
 			}
 		}
-		//fmt.Println(msg_id + " - Filter worker finished")
-	}() // () here to not only define it but also run it
+	}()
 
 Loop:
 	for {
 		event, ok := <-in_event
 		if !ok {
-			// TODO: Manage the error properly
 			fmt.Println(msg_id + "- !ok in in_event channel")
 		}
 		switch event.Type {
 		case cmn.EOF:
-			//fmt.Println(msg_id + " - EOF event")
 			// finish the Filter
 			// pass the EOF event to the worker & wait until its worker is done
 			internal_edge <- event
 			<-endchan
 			// pass the finish event to next process
-			out_event <- event // TOCHECK: This before worker is done or here?
+			out_event <- event
 			break Loop
-			/*case cmn.LOG:
-			// TODO-FUTURE
-			*/
-			// TODO-FUTURE: case: Reconnection case - use this channel?
-		// TODO: Separate in 2 different cases: EdgeStart and EdgeEnd cases ?
-		// --> a EdgeEnd should not be able to create an entry on the map
-		// for the moment: ASSUMPTION - tx_end can not arrive before tx_start
 		case cmn.EdgeStart, cmn.EdgeEnd:
 			// check if edge belongs to filter - true if exists and zero-value (false) otherwise
 			if cardList[event.E.Number_id] {
-				//cmn.PrintEdge(msg_id+" - belonging edge: ", event.E)
 				internal_edge <- event
 			} else if len(cardList) < cmn.MaxFilterSize {
 				// filter is not full yet, assign this filter to this card
-				//cmn.PrintEdge(msg_id+" - new belonging edge: ", event.E)
 				cardList[event.E.Number_id] = true
 				internal_edge <- event
 			} else {
-				//cmn.PrintEdge(msg_id+" - NOT belonging edge: ", event.E)
 				out_event <- event
 			}
 		}
 	}
 
-	//fmt.Println(msg_id + " - Close ch - internal_edge")
 	close(internal_edge)
-	//fmt.Println(msg_id + " - Close ch - out_event")
 	close(out_event)
-	//fmt.Println(msg_id + " - Filter finished")
 }
 
 // Source: reads edges given by Stream process
@@ -319,7 +261,6 @@ func Source(start_time time.Time, in_stream <-chan cmn.Event, out_event chan<- c
 	for {
 		event, ok := <-in_stream
 		if !ok {
-			// TODO: Manage the error properly
 			fmt.Println("Source - !ok in in_stream channel")
 		}
 		// get internal system event timestamp - to mark/simulate when the event arrived to the system
@@ -327,7 +268,6 @@ func Source(start_time time.Time, in_stream <-chan cmn.Event, out_event chan<- c
 		event.Timestamp = t
 		out_event <- event
 		if event.Type == cmn.EOF {
-			//fmt.Println("Source - EOF event")
 			break
 		} else if event.Type == cmn.EdgeStart || event.Type == cmn.EdgeEnd {
 			// Print the incoming tx in the tx record
@@ -335,9 +275,7 @@ func Source(start_time time.Time, in_stream <-chan cmn.Event, out_event chan<- c
 		}
 	}
 
-	//fmt.Println("Source - Close ch - out_event")
 	close(out_event)
-	//fmt.Println("Source - Finished")
 }
 
 func Stream(istream string, out_stream chan<- cmn.Event) {
@@ -395,14 +333,10 @@ func Stream(istream string, out_stream chan<- cmn.Event) {
 				tx2_timestamp = event.E.Tx_start
 			}
 
-			// diff between tx2_timestamp and tx1_timestamp - in seconds
-			// NOTE: If we want more precision we will need to set the timestamps
-			// with more than seconds precision!
 			if rows != 0 {
 				timestamp_diff = tx2_timestamp.Sub(tx1_timestamp)
 			}
 			time.Sleep(timestamp_diff)
-			//cmn.PrintEdgeComplete("", event.E)
 			out_stream <- event
 			tx1_timestamp = tx2_timestamp
 			rows++
@@ -415,9 +349,5 @@ func Stream(istream string, out_stream chan<- cmn.Event) {
 	event.Type = cmn.EOF
 	event.E = cmn.Edge{}
 	out_stream <- event
-
-	//fmt.Println("Stream - End of stream...")
-	//fmt.Println("Stream - Close ch - out_stream")
 	close(out_stream)
-	//fmt.Println("Stream - Finished")
 }

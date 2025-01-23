@@ -1,9 +1,7 @@
 package connection
 
 /*
-Connection module:
-
-Connection management with the static graph database (gdb).
+Connection module: Connection management with the static graph database (gdb).
 */
 
 import (
@@ -18,8 +16,6 @@ import (
 
 var (
 	driver neo4j.DriverWithContext
-	// TODO: Leave as global variable or not
-	//ctx context.Context
 )
 
 // Connection (safe, with godotenv)
@@ -83,19 +79,6 @@ func WriteQuery(ctx context.Context,
 	return nil
 }
 
-// TODO: Function to execute a read query -> with ExecuteRead()
-// NOTE: The difference between the two is performance reasons:
-// https://neo4j.com/docs/go-manual/current/transactions/
-/*
-Although executing a write query in read mode likely results in a runtime error,
-you should not rely on this for access control. The difference between the two
-modes is that read transactions will be routed to any node of a cluster, whereas
-write ones will be directed to the leader. In other words, there is no guarantee
-that a write query submitted in read mode will be rejected.
-
-Similar remarks hold for the .ExecuteRead() and .ExecuteWrite() methods.
-*/
-
 func ReadQuery(ctx context.Context,
 	session neo4j.SessionWithContext,
 	query string,
@@ -117,39 +100,16 @@ func ReadQuery(ctx context.Context,
 	return result, err
 }
 
-// DriverWithContext VS Sessions
-// DriverWithContext:
-// - immutable, thread-safe, and fairly expensive to
-// create, so your application should only create one instance
-// Sessions:
-// - created with the method DriverWithContext.NewSession()
-// Session creation is a lightweight operation, so sessions can be created and
-// destroyed without significant cost. Always close sessions when you are done
-// with them.
-// not thread safe: you can share the main DriverWithContext object
-// across threads, but make sure each routine creates its own sessions.
-
 func CreateSession(ctx context.Context) neo4j.SessionWithContext {
 	session := driver.NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
-	//fmt.Println("Session created.")
 	return session
 }
 
 func CloseSession(ctx context.Context, session neo4j.SessionWithContext) {
 	session.Close(ctx)
-	//fmt.Println("Session closed.")
 }
-
-// TODO/TOCHECK: ctx as a global variable or not
 
 func CloseConnection(ctx context.Context) {
 	driver.Close(ctx)
 	fmt.Println("Connection closed.")
 }
-
-/*
-func CloseConnection() {
-	driver.Close(ctx)
-	fmt.Println("Connection closed.")
-}
-*/
