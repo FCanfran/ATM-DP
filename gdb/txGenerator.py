@@ -330,13 +330,8 @@ def transaction_generator(card, atm_df, tx_id):
 # Per each of the generated card tx
 def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_id):
 
-    # UPDATE: Filter the tx of type withdrawal ---> (No -> the fraud can be produced with and by any type of tx)
-    # regular_withdrawals_df = regular_tx_card[regular_tx_card["transaction_type"] == 0]
     num_regular = len(regular_tx_card)
     num_anomalous = round(num_regular * ANOMALOUS_RATIO_1)
-    # print("..........................................")
-    # print(f"num_regular_tx = {num_regular}, num_anomalous = {num_anomalous}")
-
     # randomly select in between which tx the anomalous are introduced
 
     # bit array to mark occupied and free tx "holes" - python bitarray
@@ -359,7 +354,6 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
     ]
     anomalous_df = pd.DataFrame(columns=cols)
     while anomalous < num_anomalous:
-        # print("................... ANOMALOUS: ", anomalous, "...................")
         # random hole selection in [0, num_regular-1]
         hole_index = np.random.randint(0, num_regular)
         if holes[hole_index] == 0:
@@ -405,14 +399,8 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
                 if hole_index + 1 < num_regular:
                     tx_next = regular_tx_card.iloc[hole_index + 1]
                     # Check tx_new.end < tx_next.start
-                    # print(tx_new_end)
-                    # print(tx_next["transaction_start"])
-
                     if tx_new_end < tx_next["transaction_start"]:
                         fit_time = True
-                    # else:
-                    # else -> try again with another (start, end) times
-                    # print("NOT FIT - Trying again with another (start, end) times")
 
                 else:
                     # no next tx

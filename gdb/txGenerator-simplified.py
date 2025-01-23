@@ -327,8 +327,6 @@ def transaction_generator(card, atm_df, tx_id):
 # Per each of the generated card tx
 def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_id):
 
-    # UPDATE: Filter the tx of type withdrawal ---> (No -> the fraud can be produced with and by any type of tx)
-    # regular_withdrawals_df = regular_tx_card[regular_tx_card["transaction_type"] == 0]
     num_regular = len(regular_tx_card)
     num_anomalous = round(num_regular * ANOMALOUS_RATIO_1)
 
@@ -401,9 +399,6 @@ def introduce_anomalous_fp_1(regular_tx_card, atm_regular, atm_non_regular, tx_i
                     # Check tx_new.end < tx_next.start
                     if tx_new_end < tx_next["transaction_start"]:
                         fit_time = True
-                    # else:
-                    # else -> try again with another (start, end) times
-                    # print("NOT FIT - Trying again with another (start, end) times")
 
                 else:
                     # no next tx
