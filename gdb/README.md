@@ -1,3 +1,7 @@
+# Synthetic Bank Data Generation Tool
+
+This is a tool for the 
+
 
 List of files:
 
@@ -10,7 +14,7 @@ customers of the wisabi dataset are gathered.
 - `populatemodule`: golang module for the population of the stable bank database in Neo4j.
 - `wisabi`: directory with the source csv files of the wisabi synthetic bank dataset.
 
-# 2. Creation process of the Bank (Graph) Database
+# 1. Creation process of the Bank (Graph) Database
 
 For simplicity and to do it in a more stepwise manner, first all the CSV data tables for the nodes and for the relations are created in the corresponding format and then with those CSV the Neo4j GDB is populated. 
 Do this using the `bankDataGenerator.py` script.
