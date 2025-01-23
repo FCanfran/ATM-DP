@@ -4,6 +4,14 @@
 - `gdb`: graph database generator. It contains a synthetic bank dataset generation tool based on the [Wisabi Bank Dataset](https://www.kaggle.com/datasets/obinnaiheanachor/wisabi-bank-dataset?resource=download),  
 a Golang population module for the creation of the corresponding Neo4j database. It also contains a parametrizable synthetic transaction generator based on the created bank dataset.
 
+- `auxiliary-tests`: Some auxiliary tests of the project.
+
+- `results-processor`: It contains scripts for the generation of the results plots of the experiments carried on the project. These scripts make use of the custom-modified version of the [diefpy tool](https://sdm-tib.github.io/diefpy/).
+
+- `results`: It contains all the result plots and files for all the experiments carried along the project.
+
+- `report.pdf`: The Master Thesis in pdf format.
+
 Then we can find different versions of the Golang implementation of the Continuous Query Engine for the detection of anomalous ATM transactions (ATM-DP):
 
 - `engine-E0`: ATM-DP with real-time simulation of the transaction input stream.
