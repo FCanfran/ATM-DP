@@ -87,8 +87,9 @@ In this version, the `ATM_subset` is built from a random selection of ATMs of th
 This results in a faster generator, since it reduces the time complexity of the generation.
 
 To use it:
-1. Run `txGenerator-simplified.py`.
+- Run `txGenerator-simplified.py`.
+
 Optionally, afterwards:
-2.1. Run `txGenerator-split.py` to split the generated transactions in interaction-start and interaction-end interactions.
-2.2. Run `txGenerator-join-split.py` to join multiple different transaction files and to split them in interaction-start and interaction-end interactions.
+- Run `txGenerator-split.py` to split the generated transactions in interaction-start and interaction-end interactions.
+- Run `txGenerator-join-split.py` to join multiple different transaction files and to split them in interaction-start and interaction-end interactions.  
 
