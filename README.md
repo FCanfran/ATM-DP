@@ -2,7 +2,9 @@
 
 This repository contains an implementation of the Continuous Query Engine for the detection of Anomalous ATM transactions. This is a project done as part of my master's thesis at UPC (Universitat Politècnica de Catalunya), Barcelona, Spain.
 
-The repository also contains a synthetic bank graph database generator, which includes a customizable synthetic transaction stream generator. Full detail description is given in the `report.pdf`, which is 
+The repository also contains a synthetic bank graph database generator, which includes a customizable synthetic transaction stream generator. Full detail description is given in the master's thesis document `report.pdf`.
+
+The contents of this repository are:
 
 - `gdb`: graph database generator. It contains a synthetic bank dataset generation tool based on the [Wisabi Bank Dataset](https://www.kaggle.com/datasets/obinnaiheanachor/wisabi-bank-dataset?resource=download), a Golang population module for the creation of the corresponding Neo4j database. It also contains a parametrizable synthetic transaction generator based on the created bank dataset.
 
