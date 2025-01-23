@@ -11,6 +11,8 @@ List of files:
 customers of the wisabi dataset are gathered.
 - `txGenerator.py`: regular and anomalous transactions generator.
 - `txGenerator-simplified.py`: simplified version of the regular and anomalous transactions generator.
+- `txGenerator-split.py`: auxiliary script for doing the splitting of the transactions in interaction-start and interaction-end. Generates the start and end interaction for each transaction.
+- `txGenerator-join-split.py`: auxiliary script for joining multiple different transaction files (ordering them by timestamp) and performing the splitting of each transaction into its corresponding interaction-start and interaction-end interactions.
 - `csv`: directory with some generated bank data and transactions in csv format.
 - `populatemodule`: golang module for the population of the stable bank database in Neo4j.
 - `wisabi`: directory with the source csv files of the wisabi synthetic bank dataset.
@@ -83,4 +85,10 @@ The program generates a `tx` directory with the *csv* files representing the tra
 Finally, a simplified version of this synthetic stream generator was developed in the Python program `txGenerator-simplified.py`.  
 In this version, the `ATM_subset` is built from a random selection of ATMs of the bank network, and not based on the distance to the residence location of the cardholder.  
 This results in a faster generator, since it reduces the time complexity of the generation.
+
+To use it:
+1. Run `txGenerator-simplified.py`.
+Optionally, afterwards:
+2.1. Run `txGenerator-split.py` to split the generated transactions in interaction-start and interaction-end interactions.
+2.2. Run `txGenerator-join-split.py` to join multiple different transaction files and to split them in interaction-start and interaction-end interactions.
 
