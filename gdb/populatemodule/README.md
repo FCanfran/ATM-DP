@@ -67,7 +67,7 @@ Separate in another subsection... also explaining where is hosted the gdb and th
 $> go run main.go <csvPath>
 ```
 
-# Verification
+## Verification
 
 To simply check that the Neo4j graph database instance was successfuly populated, we can simply open it and execute the following cypher command:
 
