@@ -1,4 +1,0 @@
-number_id,client_id,expiration,CVC,loc_latitude,loc_longitude,extract_limit,amount_avg,amount_std,withdrawal_day
-c-NIGER-0,0,2024-07-12,999,4.58133,7.165305,107869.55,21573.91,24721.14,0.9452
-c-NIGER-1,1,2024-07-12,999,6.330598,3.54579,99954.95,19990.99,21913.03,0.6082
-c-NIGER-2,2,2024-07-12,999,6.545054,3.310652,125943.4,25188.68,23567.17,0.2904
