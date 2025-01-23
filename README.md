@@ -72,3 +72,7 @@ test,approach,answer,time,responseTime,isPositive
 ```
 
 such that for every answer it shows the time at which it was emitted `time`, its response time `responseTime` and a label `isPositive` indicating whether the answer is an alert (1) or not (0). This last parameter is only shown in the trace file of the engine versions that consider all checks as results and not only the alerts.
+
+## Contact 
+
+For any doubt on the repository, feel free to contact at fernando.martin.canfran@estudiantat.upc.edu
