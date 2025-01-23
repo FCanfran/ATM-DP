@@ -8,5 +8,6 @@ old-versions
 engine*/cmd/.env
 auxiliary-tests/read-input-test/cmd/generator/output
 auxiliary-tests/read-input-test/streams
+**/.env
 
 
