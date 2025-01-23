@@ -18,7 +18,7 @@ To run any of these variants execute:
 >$ go run main.go <executionDescriptionFile>
 ```
 
-where you need to specify the details on the paramteres on the execution on a `csv` file <executionDescriptionFile> and set up the details of the connection to the Neo4j graph database through a `.env`file. Regarding the configuration of the <executionDescriptionFile> it has to follow this same format:
+where you need to specify the details on the paramteres on the execution on a `csv` file `<executionDescriptionFile>` and set up the details of the connection to the Neo4j graph database through a `.env`file. Regarding the configuration of the `<executionDescriptionFile>` it has to follow this same format:
 
 ```
 txFile,test,approach,maxFilterSize
