@@ -1,7 +1,8 @@
 # Synthetic Bank Data Generation Tool
 
-This is a tool for the 
+This tool contains a synthetic bank dataset generation tool based on the [Wisabi Bank Dataset](https://www.kaggle.com/datasets/obinnaiheanachor/wisabi-bank-dataset?resource=download), a Golang population module for the creation of the corresponding Neo4j database. It also contains a parametrizable synthetic transaction generator based on the created bank dataset.
 
+## Contents
 
 List of files:
 
@@ -14,12 +15,14 @@ customers of the wisabi dataset are gathered.
 - `populatemodule`: golang module for the population of the stable bank database in Neo4j.
 - `wisabi`: directory with the source csv files of the wisabi synthetic bank dataset.
 
-# 1. Creation process of the Bank (Graph) Database
+## Synthetic Bank Database Generator
+
+### 1. Creation process of the Bank (Graph) Database
 
 For simplicity and to do it in a more stepwise manner, first all the CSV data tables for the nodes and for the relations are created in the corresponding format and then with those CSV the Neo4j GDB is populated. 
-Do this using the `bankDataGenerator.py` script.
+Do this running the `bankDataGenerator.py` script.
 
-# 2. Population of the Neo4j Graph Database
+### 2. Population of the Neo4j Graph Database
 
 Prior to the population of the Neo4j graph database, a Neo4j graph database instance needs to be
 created. This can be done either locally or in the cloud. See the following links to get more information on how to do this:
@@ -31,3 +34,53 @@ More hands-on tutorial links:
 - [Installation of Neo4j in Ubuntu 22.04](https://www.virtono.com/community/tutorial-how-to/how-to-install-neo4j-on-ubuntu-22-04/ )
 
 Once we have a Neo4j graph database instance available, we can proceed to the population process. The explanation of this process can be seen in the `populatemodule` subdirectory.
+
+## Synthetic Transaction Stream Generator
+
+It is implemented as a Python program `txGenerator.py`. On it we need to specify the value of the parameters needed to customize the generation of the stream of transactions. 
+These parameters are:
+
+### Customizable Parameters for Transaction Stream Generation
+
+| **Parameter**                          | **Description** |
+|----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| `START_DATE`                           | Start date (in date format: `"YYYY-MM-DD"`) |
+| `NUM_DAYS`                             | Number of days duration of the transaction stream generated |
+| `MAX_DISTANCE_SUBSET_THRESHOLD`        | Maximum allowed distance (in km) of the ATMs in the ATM subset to the client location residence |
+| `MAX_SIZE_ATM_SUBSET_RATIO`            | Ratio ∈ [0,1] to limit the maximum size of the ATM subset from which regular transactions of a card are linked to. So that:  \|`ATM_subset`\| = `MAX_SIZE_ATM_SUBSET_RATIO` * \|`ATM`\| |
+| `MAX_DURATION`                         | Maximum time (in seconds) duration of a transaction |
+| `MEAN_DURATION`                        | Mean duration (in seconds) duration of a transaction |
+| `STD_DURATION`                         | Standard deviation (in seconds) duration of a transaction |
+| `REGULAR_SPEED`                        | Assumed as the normal speed (in km/h) at which a client normally can travel the distance between two geographical points |
+| `ANOMALOUS_RATIO_1`                    | Ratio ∈ [0,1] of anomalous transactions of the fraud pattern I over the total number of regular transactions for each of the cards. |
+| `ANOMALOUS_SPEED`                      | Assumption on the maximum speed (in km/h) at which the distance between two geographical points can be traveled, for the generation of anomalous transactions |
+| `ANOMALOUS_TX_DURATION`                | Duration (in seconds) of an anomalous transaction |
+
+*Table: Description of the customizable parameters for the transaction stream generation*
+
+### Usage
+
+To use it:
+
+1. Ensure to have a `csv` named directory with the *csv* stable bank dataset files on which we want to simulate a transaction stream (use the bank data generator `bankDataGenerator.py` to produce it).
+2. Run the following command:
+
+   ```bash
+   $ python3 txGenerator.py <outputFileName>
+   ```
+   introducing *outputFileName* as an argument to name the transaction stream dataset files to be generated.
+
+The program generates a `tx` directory with the *csv* files representing the transaction stream dataset:
+
+```
+<outputFileName>-all.csv       # Joint regular and anomalous dataset
+<outputFileName>-regular.csv    # Regular transaction dataset
+<outputFileName>-anomalous.csv  # Anomalous transaction dataset
+```
+
+### Simplified version
+
+Finally, a simplified version of this synthetic stream generator was developed in the Python program `txGenerator-simplified.py`.  
+In this version, the `ATM_subset` is built from a random selection of ATMs of the bank network, and not based on the distance to the residence location of the cardholder.  
+This results in a faster generator, since it reduces the time complexity of the generation.
+
