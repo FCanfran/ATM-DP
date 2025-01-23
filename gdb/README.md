@@ -10,10 +10,10 @@ customers of the wisabi dataset are gathered.
 - `populatemodule`: golang module for the population of the stable bank database in Neo4j.
 - `wisabi`: directory with the source csv files of the wisabi synthetic bank dataset.
 
+# 2. Creation process of the Bank (Graph) Database
 
-# Creation process of the Bank (Graph) Database
-
-For simplicity and to do it in a more stepwise manner, first all the CSV data tables for the nodes and for the relations are created in the corresponding format and then with those CSV the Neo4j GDB is populated.
+For simplicity and to do it in a more stepwise manner, first all the CSV data tables for the nodes and for the relations are created in the corresponding format and then with those CSV the Neo4j GDB is populated. 
+Do this using the `bankDataGenerator.py` script.
 
 # 2. Population of the Neo4j Graph Database
 
@@ -26,10 +26,4 @@ created. This can be done either locally or in the cloud. See the following link
 More hands-on tutorial links:
 - [Installation of Neo4j in Ubuntu 22.04](https://www.virtono.com/community/tutorial-how-to/how-to-install-neo4j-on-ubuntu-22-04/ )
 
-Once we have a Neo4j graph database instance available, we can proceed to the population process.
-
-The population of the Neo4j database can be done in two possible ways:
-- CSV tables imports.
-- With scripts to create with cypher commands all the nodes, relations... all the database.
-
-The explanation of this process can be seen in the golang `populatemodule` subdirectory.
+Once we have a Neo4j graph database instance available, we can proceed to the population process. The explanation of this process can be seen in the `populatemodule` subdirectory.
