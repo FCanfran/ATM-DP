@@ -18,7 +18,7 @@ To run any of these variants execute:
 >$ go run main.go <executionDescriptionFile>
 ```
 
-where you need to specify the details on the paramteres on the execution on a `csv` file `<executionDescriptionFile>` and set up the details of the connection to the Neo4j graph database through a `.env`file. Regarding the configuration of the `<executionDescriptionFile>` it has to follow this same format:
+where you need to specify the details on the paramteres on the execution on a `csv` file `<executionDescriptionFile>` and set up the details of the connection to the Neo4j graph database through a `.env` file. Regarding the configuration of the `<executionDescriptionFile>` it has to follow this same format:
 
 ```
 txFile,test,approach,maxFilterSize
@@ -46,6 +46,7 @@ The execution will generate an `output` directory with some files related with t
 - `alerts.txt`: it contains a register of the emitted alerts.
 - `metrics.csv`: metrics summary of the execution.
 - `out-log.txt`: auxiliary output events emitted by the system.
+- `txLog.txt`: log file of the input transactions.
 - `trace.csv`: trace of all the emitted answers/results; it is a `csv` file with this format:
 
 ```
@@ -55,4 +56,3 @@ test,approach,answer,time,responseTime,isPositive
 ```
 
 such that for every answer it shows the time at which it was emitted `time`, its response time `responseTime` and a label `isPositive` indicating whether the answer is an alert (1) or not (0). This last parameter is only shown in the trace file of the engine versions that consider all checks as results and not only the alerts.
-- `txLog.txt`: log file of the input transactions.
