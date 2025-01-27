@@ -1,0 +1,113 @@
+\newpage
+\section{Proposal}
+\label{sec:proposal}
+
+Defining and implementing a continuous query engine requires to address many different problems, each of different nature. 
+In addition, the proof of concept we intend to provide has itself its own complications.
+We address all of them in this section.
+%
+
+\subsection{Modeling and Implementing the Continuous Query Engine}
+To define a proper architecture for a continuous query engine is one of the most challenging activities of our work. Among other tasks, this comprises: to define a graph-based query language expressive enough that allows capturing the different patterns representing anomalous queries; to establish the algorithms for identifying the patterns associated to anomalous queries; to choose and manage the right windowing approach and other features related to distributed query-evaluation; to deal with the evaluation of many continuous queries simultaneously; to evaluate the suitability of the implementation language, tools and the proper system configuration. Figure \ref{fig:DP_ATM} depicts a preliminary architecture for a continuous query engine for detecting anomalous ATM transactions, $\mathsf{DP_{ATM}}$.
+Figure \ref{fig:architecture-usage} depicts an abstraction of the architecture of the Continuous Query Engine that we propose and show how this system can be used to prevent ATM transactions frauds combining it with a double check mechanism. 
+%
+\begin{figure}[H]
+         \centering
+         \hspace*{-0.8cm}
+         \includegraphics[scale = 0.32]{images/architectureCQE.png}
+         \caption{Abstraction of the Continuous Query Engine for detecting anomalous 
+         ATM transactions based on the dynamic pipeline computational model. 
+         In this abstract architecture of the Continuous Query  all its components as well as its expected usage are shown. }
+         \label{fig:architecture-usage}
+\end{figure}
+%
+%Still we are working on the design and implementation of this model. 
+As we said, we propose a solution that follows the Dynamic Computational Approach \cite{DP-pasarella2024computational}. Briefly speaking, in this approach, \emph{stages} are processes that execute tasks concurrently/in-parallel. The multiset underlying the input data stream is partitioned \cite{bender1974partitions} and distributed along filters according to a grouping relationship, usually based on filters' parameters. Each filter applies the same function to its block of data (stored as its state). Accordingly, the  $\mathsf{DP_{ATM}}$ algorithm is specified as follows: During a pre-defined time interval window, when an \textsf{interaction} $\mathsf{e}$ (together its properties' values)  arrives to the $\mathsf{DP_{ATM}}$, the stage $\mathsf{S_r}$ register it into a standard transactional log file. Then, $\mathsf{S_r}$ passes $\mathsf{e}$ to the next stage. If there exists a filter parameterized with the value of the property \textsf{number} of the Card vertex that is incident to  $\mathsf{e}$, this filter keeps $\mathsf{e}$ in its state. In this way, filters' states store  subgraphs induced by the edges in the volatile subgraph. Notice that these sets of edges in each filter correspond to blocks of the (multiset) input data stream.  Otherwise, the filter passes $\mathsf{e}$ to the next stage. The task/function of each filter is to decide if there is a match with (some of) the continuous query pattern(s) evaluated by the engine $\mathsf{DP_{ATM}}$ by means of the graph that it stores and the information retrieved from the stable PG to identify patterns and solve constraints. This is, indeed, the way to evaluate continuous queries. In case of matching a pattern, filters emit an alert reporting the finding. Hence, answers are the detected anomalies and they are emitted as they are obtained in filters. When answers arrive to $\mathsf{S_k}$, this stage  post-processes  and output  them. In addition, $\mathsf{S_k}$ maintains an answer log file. The fact that an \textsf{interaction} arrives to $\mathsf{G}$ means that there were not previous interactions having the same value of Card property \textsf{number} and thus, a new filter parameterized with this new value is spawned. When the time interval window is over, the $\mathsf{DP_{ATM}}$ is, in some sense, reset according to the given window policy. Note that the window policy must take into account stored data that might be valid in between two windows and handle the transition properly.
+%
+\subsection{Defining Anomalous Patterns of Transactions}\label{sub:anomalouspatterns}
+It is not trivial to establish what is and in which circumstances a transaction can be considered anomalous. Based on a work that have addressed this characterization \cite{magdalena2021artificial} we intend to find a proper characterization and then define the graph patterns associated to these anomalies. The exact topology of an anomaly will depend on its own nature. Figure \ref{fig:constinuousPGb} depicts an example characterizing a possible card cloning, among many other possibilities. For instance, using a (stolen) card many times over a period of time at different ATMs to withdraw small amounts. In this latter case, there will arrive to the evolving PG many volatile (interaction) edges having the same card vertex and different ATM vertices. There could also be patterns related with frequent/very high expenses; transactions  located in an ATM out of the threshold distance of the usual/registered address of the card holder and so on.
+Moreover, definition of patterns can be beyond ATM transactions by considering Point-Of-Sale (POS) or online card transactions.
+%
+\iffalse
+\subsubsection*{Fraud Patterns Definition}
+
+It is not trivial to establish what is and in which circumstances an ATM transaction can be considered anomalous. Based on a work that have addressed this characterization \cite{FP-magdalena2021artificial} we intend to find a proper characterization and then define the graph patterns associated to these anomalies. The exact topology of an anomaly will depend on its own nature. Moreover, definition of patterns can be beyond ATM transactions by considering online card transactions. In what follows, we propose a characterization of some possible anomalous patterns of ATM transactions and the definition of their associated PG graph patterns. 
+\fi
+%
+\begin{enumerate}
+\renewcommand{\labelenumi}{\Roman{enumi}.} % Roman numerals for the list
+    \item Card cloning characterization
+    \item Lost-and-stolen card characterization
+    %\item Anomalous amount of withdrawals in a time period
+    \item Other possible fraud scenarios
+\end{enumerate}
+
+
+\paragraph{I - Card Cloning Characterization\\\\}
+
+\emph{Card cloning} can be defined as "a kind of fraud in which information on a card used for a transaction is covertly and illegally duplicated. 
+Basically, it’s a process thieves use to copy the information on a transaction card without stealing the physical card itself. 
+This information is then copied onto a new or reformatted card, allowing criminals to use it to make fraudulent purchases or gain unauthorized access to a person’s accounts" \cite{FP-unit21_card_cloning}.\\
+
+There are many possible ways to detect a card cloning scenario, among others, the analysis of the customer's transaction data to construct typical transaction behaviors so to be able to detect uncommon transaction behaviors. However, in our work we propose an alternative possible method based on a PG graph pattern detection.\\
+
+The method consists on detecting abnormal card-ATM activity of the same card at different ATMs taking place within an unfeasible time distance difference. That is, when a transaction is made at an ATM, and after that, another transaction is initiated with the same card at a different ATM, such that the distance between the two is impossible to be covered within the time between the transactions.
+The detection of this anomalous scenario is represented on the PG graph pattern of Figure \ref{img:graphPattern-1}. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.8]{images/2-QueryModel/graphPattern-1.png}
+  \caption{Property graph pattern - Card cloning characterization}
+  \label{img:graphPattern-1}
+\end{figure}
+
+The pattern consists on a \texttt{Card} entity $x_1$, having two \texttt{interaction} relations $y_1$ and $y_2$ with two different \texttt{ATMs} $x_2$ and $x_3$, respectively, such that the time difference between the ending time of the first \texttt{interaction} $y_1.\textit{end}$ and the starting time of the second \texttt{interaction} $y_2.\textit{start}$, is not sufficient to cover the minimum time needed to travel from the first to the second \texttt{ATM} location $T_{min}(x_2.\textit{location}, x_3.\textit{location})$. As a whole:
+
+$$
+\small
+x2.id \ne x3.id \ \land \ y_2.\textit{start} - y_1.\textit{end} < T_{min}(x_2.\textit{location}, x_3.\textit{location})
+$$
+
+where $x_2.\textit{location}$ represents the location coordinates pair of the $x_2$ ATM: $x_2.location = (x_2.loc\_latitude, x_2.loc\_longitude)$. Same for the \texttt{ATM} $x_3$.\\
+
+An example of this kind of anomalous card-ATM interaction, could be one as represented on Figure \ref{img:graphPattern-1-Example}, in which an ATM interaction with a certain card is finished at time 22:14 in Barcelona, and then another interaction with that same card starts at time 22:56 of that same day in Madrid. Clearly this should be reported as this kind of anomalous scenario since it is impossible, for the time being, to cover the distance between these two cities in that time interval.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.7]{images/2-QueryModel/FP1-Example.png}
+  \caption{Card cloning characterization - an example}
+  \label{img:graphPattern-1-Example}
+\end{figure}
+
+\paragraph{II - Lost-and-Stolen Card Characterization\\\\}
+
+"Lost-and-stolen card is the fraud scenario produced when a card is physically stolen or is lost, and is then used by a criminal, posing as you, to obtain goods and services" \cite{FP-lost-and-stolen-americanexpress2025}.\\
+
+A possible way that we propose to detect this kind of fraud scenario is through the tracking of a typical behavior that it is produced when the card is used by the criminal. That is, when obtained, the fraudster tries to do as many as possible money withdrawals in different ATMs before the owner of the card become aware of the loss of the card and asks the bank to freeze it. The detection of this kind of fraud scenario is modeled with a PG graph pattern as the one represented in Figure \ref{img:graphPattern-2}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.7]{images/2-QueryModel/graphPattern-2.png}
+  \caption{Property graph pattern - Lost-and-stolen card characterization. The interactions $y_1,...,y_j$ depicted are of the \emph{type} withdrawal}
+  \label{img:graphPattern-2}
+\end{figure}
+
+On it we define a \texttt{Card} entity $x_1$ having a number $k$ of \texttt{interactions} $y$ at different \texttt{ATMs} $x_2 ... x_k$ within a time interval $[t_i, t_i + \Delta]$, where $t_i = y_1.\textit{start}$ and $t_i + \Delta = y_j.\textit{start}$, such that $k$ is considered to be an usual high number of withdrawals for that time interval. A reference for the usual number of withdrawals on a certain time interval for a specific cardholder can be obtained from the gathered cardholder behavior (in our case represented as the \emph{withdrawal\_day} \texttt{Card} entity property of our defined data model).
+Another indicator of this scenario to be considered could also be the \emph{amount} value of the withdrawal operations performed, which, in these scenarios, is normally a low value to prevent that the card owner realises.
+
+\paragraph{III - Other Possible Fraud Scenarios\\\\}
+
+Some other anomalous scenarios for which more graph patterns could be defined are:
+\begin{itemize}
+    \item \textbf{Anomalous location usage}: When a transaction is made in a location out of the threshold distance of the usual/registered address of the cardholder.
+    \item \textbf{Anomalous number of operations}: Related with the II pattern characterized, we could also define a graph pattern related with a higher than average number of operations of any kind (withdrawal, inquiry, transfer or deposit) for a cardholder in a certain time interval.
+    \item \textbf{Anomalous high expenses:} Similar to the II pattern, but in this case, not considering only the number of the withdrawal operations performed on a certain time interval, but the amount of the withdrawal operations on a certain time interval. This could indicate an anomalous behavior of the cardholder, withdrawing an amount of money way higher for a considered time interval.
+\end{itemize}
+
+%
+
+\input{sections/Proposal/1-DataModel/dataModel}
+\input{sections/Proposal/2-QueryModel/queryModel}
+%\input{sections/Proposal/3-Architecture/architecture}
+%\input{sections/Proposal/3-DynamicPipeline/dp}
+%\input{sections/Proposal/4-Engine/engine}

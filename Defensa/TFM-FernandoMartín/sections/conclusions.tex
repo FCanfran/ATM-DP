@@ -1,0 +1,66 @@
+\newpage
+\section{Conclusions}
+\label{sec:concl}
+
+In this work we address the problem of continuous query evaluation on an evolving graph database. 
+To do so we decompose the datagraph into two well define subgraphs namely the \emph{stable} subgraph and 
+the \emph{volatile} subgraph and use a stream processing approach to query these two subgraphs simultaneously.
+We use the dynamic pipeline computational model to process the stream data since its parallel concurrent 
+nature has proven its suitability for developing real-time systems that emit results as they are computed, 
+in a progressive way. And our preliminary experimental results show that this is also a suitable practical model to solve our problem of study.
+We provide a working open source continuous query engine, the $\mathsf{DP_{ATM}}$ (available here~\cite{ATM-DP-github}), 
+implemented in the \texttt{Go} programming language, to detect abnormal or suspicious ATM transactions. Up to our knowledge, 
+most of the work addressing this topic provide a delayed detection based on predictions given by ML systems while 
+with our engine the detection is almost immediate up the datagraphs and datastreams that we were able to experimentally study. 
+Due to the sensitive and confidential  nature of banking data and transactions, there are no repositories offering this type of datasets 
+for empirical studies. So, to be able to test our engine we have created synthetic repositories for this purpose. 
+Therefore, as a by product of our engine we provide the developers community with a program to generate synthetic banking data 
+under demand under the standard Neo4j graph data base model (available here~\cite{ATM-DP-github}).\\
+
+To test the $\mathsf{DP_{ATM}}$  engine we considered two different sizes of data graphs, 
+simulating the sizes of both a small real bank and a medium-size real bank 
+(unfortunately due to time and hardware restrictions we were not able to test the engine for data graphs of similar size to a big real bank). 
+For each data graph we consider two different scenarios: 
+(i) a real time scenario in which the data stream simulates a real time situation in which every transaction in the stream of 
+transactions has associated its exact time of occurrence and 
+(ii) a highly stressed scenario in which transactions are considered to be continuous and the only difference between the occurrence 
+time of two consecutive transactions is the time taken by the engine to read the two items consecutively.
+The second kind of experiment was proposed as a stress test for the system after observing that it worked really well with the real time experiments proposed at first.\\
+
+All the tests were done considering the sequential framework as baseline: settings using different number of cores, 
+filters, input stream sizes, percentages of abnormal transactions, etc., and comparing the $\mathsf{DP_{ATM}}$ 
+engine behavior against a sequential framework to solve the same problem.\\
+
+Among all the considered metrics the response time \RT\ and mean response time \MRT, the execution time \ET\ and the \dieft\ 
+are the most relevant ones and in particular, looking at the \MRT, it is interesting to observe that it has a relative low value 
+in general and it does not seem to grow but to remain constant.\\
+
+The main conclusion that we extract after the results of our experimental work and the observation of the applied metrics 
+is that the $\mathsf{DP_{ATM}}$ engine a real-time system capable of almost immediately inform whether an anomalous fraud situation entered the system.
+
+As general observations derived from our experimentation we consider also worth mentioning that: 
+\begin{itemize}
+\item The $\mathsf{DP_{ATM}}$ beats sequential baseline (i.e. it obtains better results in general) for almost all metrics -- only for the \MRT\  
+under some configurations of number of filters is it worse. 
+\item The configurations with a small number of filters (between 5 and 10) are apparently 
+the best regarding average response time while regarding other metrics, such as execution time or \dieft, 
+configurations with more filters are better. 
+\item Over all the run tests the \DPATM\ achieved a 100\% of accuracy, meaning that it was able to detect all the fraudulent transactions. This is in contrast with other techniques, such as data mining, used in current applications that provide solutions with a much lower percentage of accuracy.
+\end{itemize}
+
+Although it was not possible to perform experiments with data graphs of sizes similar to those of big banks the experiments performed under 
+the stressed scenario in both kinds of data graphs can be observed of simulations of a much larger banking  since a much larger flow of 
+transactions is being processed than that of that small bank.  For example, in the $\Sigma(\mathsf{GDB_A}, s(120, 0.02), f, c)$ test, 
+the system processes almost 5,000 interactions (2,500 transactions per second) \ref{img:exps-small-120-interactions-new} which implies 3,600,000 per day, a number consequent with the number of transactions of a really big bank.\\
+
+Last but not least, we claim that with our engine, in presence of some weird  finding in an ATM transaction, 
+banks have a tool able to either ask card holders for authorizations or to take any other fraud preventing action at real-time, 
+instead of the frequent and annoying classical treatment of the problem that works  by consulting log files because of the complain 
+of customers when they themselves detect some weird movement in their accounts.\\
+
+To go further with this work it would be interesting to investigate more on why the average response time grows so much for the combinations 
+with more filters (it might be due to a bottleneck in the sink of the system, among other possible reasons), to make experiments with larger banking databases since the settings 
+to generate the data graphs are already implemented, to include the study of more types of ATM frauds or even other kind of frauds (such as Point-Of-Sale frauds) 
+and to study the problem of window management so 
+that filters could be more dynamic and therefore could stop, at some point of their execution and under some specific policies, 
+"tracking" the activity of a card whenever it is decided that too much time has passed since its last operation. 
