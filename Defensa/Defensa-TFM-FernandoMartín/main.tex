@@ -1,0 +1,65 @@
+\documentclass{beamer}
+
+\input{settings}
+
+
+%------------------------------------------------------------
+%This block of code defines the information to appear in the
+%Title page
+\title[CQE Anomalous ATM Transactions] %optional
+{Continuous Query Engine to Detect Anomalous Electronic Transactions Patterns Using Bank Cards}
+
+\author[F. Martín Canfrán] % (optional)
+{Fernando Martín Canfrán\\[0.5cm] 
+\small Supervisor: Edelmira Pasarella Sánchez\\
+\small Co-Supervisor: Amalia Duch Brown}
+
+\institute[UPC] % (optional)
+{
+  Facultat d'Informàtica de Barcelona\\
+  Universitat Politècnica de Catalunya
+}
+
+\date[\monthyeardate\today] % (optional)
+
+
+%\logo{\includegraphics[height=0.75cm]{UPC.png}}
+
+
+%End of title page configuration block
+
+\begin{document}
+
+%The next statement creates the title page.
+\frame{\titlepage}
+
+\begin{frame}{Overview}
+  \tableofcontents
+\end{frame}
+
+
+%---------------------------------------------------------
+
+
+%---------------------------------------------------------
+%Changing visibility of the text
+
+\section{Motivation}
+\input{sections/motivation/motivation}
+
+\section{Proposal}
+\input{sections/proposal/proposal}
+
+\section{Continuous Query Engine}
+\input{sections/engine/engine}
+
+\section{Experiments}
+\input{sections/experiments/experiments}
+
+\section{Results}
+\input{sections/results/results}
+
+\section{Conclusions \& Future Work}
+\input{sections/conclusions/conclusions}
+
+\end{document}

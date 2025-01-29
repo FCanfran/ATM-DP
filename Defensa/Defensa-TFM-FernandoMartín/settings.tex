@@ -1,0 +1,188 @@
+\usepackage[utf8]{inputenc}
+\graphicspath{{figures/}}
+\usepackage{lmodern}
+
+\usepackage{changepage} % Used for alignwidth
+
+\usetheme{Madrid}
+\definecolor{UPCblue}{RGB}{0,119,200}
+\usecolortheme[named=UPCblue]{structure}
+\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage{algpseudocode}
+\usepackage{booktabs}
+\usepackage{ragged2e}
+\usepackage{verbatim}
+
+% Automatic Month, Year in title
+\usepackage{datetime}
+\newdateformat{monthyeardate}{
+  \monthname[\THEMONTH], \THEYEAR}
+
+% Including some maths utilities
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+
+%
+% the environments 'definition', 'lemma', 'proposition', 'corollary',
+% 'remark', and 'example' are defined in the LLNCS documentclass as well.
+%
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+
+% Package to import source code and format it
+\usepackage{listings}
+
+% Produce more beautiful tables
+\usepackage{booktabs}
+% Allows enumerating
+\usepackage{enumerate}% http://ctan.org/pkg/enumerate
+
+% Required to insert images
+\usepackage{graphicx} 
+\usepackage{stackengine} % For overlaying text on images
+
+\usepackage[
+	citestyle=ieee, 
+    bibstyle=ieee,
+    style=numeric-comp,
+    sorting=nty,
+    maxbibnames=99, % Make sure we are printing all authors in the appendix
+    backend=biber
+]{biblatex}
+
+% Needed to add subcaptions to subfigures
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Allows using foreach
+\usepackage{pgffor}
+
+% Avoids placing floats before section
+\usepackage[section]{placeins} 
+
+
+% Cool diagrams
+\usepackage{tikz}
+\usetikzlibrary{positioning, 
+                quotes,
+                shapes.geometric,
+                arrows.meta}
+\pgfdeclarelayer{nodelayer} 
+\pgfdeclarelayer{edgelayer}
+\pgfdeclarelayer{embeded}
+\pgfdeclarelayer{stages}
+\pgfsetlayers{main,nodelayer,edgelayer,stages,embeded}
+\tikzstyle{new style 0}=[fill=white, draw=black, shape=circle, align=center]
+\tikzstyle{tree_edge}=[-, draw=black]
+\tikzstyle{opChan}=[-Stealth, black]
+\tikzstyle{daChan}=[-Stealth, red]
+\tikzstyle{io}=[trapezium, trapezium angle=67, trapezium stretches body, fill=blue!30, draw=black, thick]
+\tikzstyle {filter_gen} = [rectangle, rounded corners, text centered, draw=black, fill=blue!30, thick]
+\tikzset{
+  invisible/.style={opacity=0},
+  visible on/.style={alt={#1{}{invisible}}},
+  alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change the path
+  },
+}
+
+% Nice bibliography
+\usepackage[
+    citestyle=ieee, 
+    bibstyle=ieee,
+    style=numeric-comp,
+    sorting=nty,
+    maxbibnames=99, % Make sure we are printing all authors in the appendix
+]{biblatex}
+
+\addbibresource{references.bib} % Adds the bibliography
+
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{svg}
+\usepackage{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{pifont}  % For \ding symbols
+\usepackage[table]{xcolor} % Required for coloring table rows
+\usepackage{colortbl}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setbeamersize
+{
+    text margin left=1cm,
+    text margin right=1cm
+}
+
+
+% Custom command to change margin
+\newcommand\Wider[2][3em]{%
+\makebox[\linewidth][c]{%
+  \begin{minipage}{\dimexpr\textwidth+#1\relax}
+  \raggedright#2
+  \end{minipage}%
+  }%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%        Usefull macros          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\mst}{\texorpdfstring{$\mathsf{MST}$}{MST}}
+\newcommand{\msts}{\texorpdfstring{$\mathsf{MST}s$}{MSTs}}
+\newcommand{\mstof}[1]{$\mathsf{MST}_{#1}$}
+\newcommand{\dynmst}{\mathsf{Dynamic\_MST}}
+\newcommand{\dpm}{\texorpdfstring{$\mathsf{DPA}$}{DPA}}
+\newcommand{\DP}{$\mathsf{DP}$}
+\newcommand{\DPATM}{$\mathsf{DP_{ATM}}$}
+
+\newcommand{\resultch}{$\mathsf{result}$}
+\newcommand{\alertch}{$\mathsf{alert}$}
+\newcommand{\eventch}{$\mathsf{event}$}
+\newcommand{\internaledgech}{$\mathsf{internal\_edge}$}
+
+\newcommand{\cardsubgraph}{$\mathsf{cs}$}
+
+\newcommand{\filter}{\emph{Filter}}
+\newcommand{\source}{\emph{Source}}
+\newcommand{\sink}{\emph{Sink} }
+\newcommand{\generator}{\emph{Generator}}
+\newcommand{\filterworker}{\emph{Filter Worker}}
+
+\newcommand{\F}{$\mathsf{F}$}
+\newcommand{\Sr}{$\mathsf{Sr}$}
+\newcommand{\Sk}{$\mathsf{Sk}$}
+\newcommand{\G}{$\mathsf{G}$}
+\newcommand{\FW}{$\mathsf{FW}$}
+\newcommand{\smallG}{$\mathsf{GDB_A}$}
+\newcommand{\mediumG}{$\mathsf{GDB_B}$}
+
+\newcommand{\smallGThirty}{$\mathsf{GDB_A\text{-}30}$}
+\newcommand{\smallGSixty}{$\mathsf{GDB_A\text{-}60}$}
+\newcommand{\smallGOneTwoZero}{$\mathsf{GDB_A\text{-}120}$}
+\newcommand{\mediumGSeven}{$\mathsf{GDB_B\text{-}7}$}
+\newcommand{\mediumGFifteen}{$\mathsf{GDB_B\text{-}}15$}
+
+\newcommand{\MRT}{\texttt{MRT}}
+\newcommand{\dieft}{\texttt{dief@t}}
+\newcommand{\T}{\texttt{T}}
+\newcommand{\ET}{\texttt{ET}}
+\newcommand{\RT}{\texttt{RT}}
+
+
+\newcommand{\Go}{{\tt Go}}
+\newcommand{\Golang}{{\tt Golang}}
+
+\newcommand{\AD}[1]{{\color{red} AD: #1} \PackageWarning{teaching}{Comment from AD}}
+\newcommand{\DB}[1]{{\color{blue} DB: #1}\PackageWarning{teaching}{Comment from DB}}
+\newcommand{\EP}[1]{{\color{magenta} EP: #1}\PackageWarning{teaching}{Comment from EP}}
