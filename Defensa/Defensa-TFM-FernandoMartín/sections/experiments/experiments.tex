@@ -1,4 +1,5 @@
 
+\begin{comment}
 \begin{frame}{Experiments}
     \begin{itemize}
         \item Datasets
@@ -8,8 +9,37 @@
         \item Results
     \end{itemize}
 \end{frame}
+\end{comment}
 
+\begin{frame}{Experiments: Datasets}
+    \begin{itemize}
+    \item No public real bank dataset found.
+    \end{itemize}
+    \centering
+    \hspace*{-0.5cm}
+    \begin{tikzpicture}
+        \node  (0) at (0, 0) {\textbf{{Synthetic bank dataset generation tool}}};
+        \node [below left=0.5cm and -0.6cm of 0] (1) {\textcolor{blue}{Stable}};
+        \node [below right=0.5cm and -0.6cm of 0] (2) {\textcolor{blue}{Volatile}};
+        \node [below=1cm of 1] (3) {Central Bank Database};
+        \node [below=1cm of 2] (4) {ATM Transactions Stream};
+        \draw[style={tree_edge}]{} (0) to (1);
+        \draw[style={tree_edge}]{} (0) to (2);
+        \draw[style={tree_edge}]{} (1) to (3);
+        \draw[style={tree_edge}]{} (2) to (4);
+    \end{tikzpicture}
 
+    \begin{itemize}
+        \item Customisable data generation.
+        \vspace{0.3em}
+        \item Based on \emph{Wisabi Bank Dataset} (publicly available). Used as a reference for the \textbf{geographical} distribution of \textbf{ATM} locations and \textbf{card/client} transaction \textbf{\emph{behavior}}.
+        \vspace{0.2em}
+        \item Left as a public available tool.\footnote{\url{https://github.com/FCanfran/ATM-DP/tree/main/gdb}}
+    \end{itemize}    
+
+\end{frame}
+
+\begin{comment}
 \begin{frame}{Experiments: Datasets}
 \begin{itemize}
     \item \textbf{No public real bank dataset found}. Confidential and private nature of bank data.
@@ -30,17 +60,18 @@
     \end{itemize}    
 \end{itemize}
 \end{frame}
+\end{comment}
 
 \begin{frame}{Experiments: Datasets}
 \begin{itemize}
-    \item \textbf{(i) Bank database generator}. \texttt{bankDataGenerator.py}: creates a dataset of $n$ ATMs and $m$ Cards.
+    \item \textbf{Bank database generator}. \texttt{bankDataGenerator.py}: creates a dataset of $n$ ATMs and $m$ Cards.
     \vspace{0.4em}
-    \item \textbf{(ii) Transaction stream generator}. \texttt{txGenerator.py}: parametrizable, with $\texttt{ratio} \in [0,1]$ of anomalous tx..
+    \item \textbf{Transaction stream generator}. \texttt{txGenerator.py}: parametrizable, with $\texttt{ratio} \in [0,1]$ of anomalous tx..
     \vspace{0.2em}
     \begin{itemize}
-        \item 1. \emph{Regular} transactions: avoiding creation of fraud scenarios. Based on gathered customer \emph{behavior} from \emph{Wisabi DS}.
+        \item \emph{Regular} transactions: avoiding creation of fraud scenarios.
         \vspace{0.3em}
-        \item 2. Injection of transactions that create anomalous scenarios: tailored injection depending on the ATM fraud considered.
+        \item Injection of transactions that create anomalous scenarios.
     \end{itemize}
 \end{itemize}
 \begin{figure}
@@ -176,8 +207,8 @@ Set a minimum time distance $t_{min}$ between any two consecutive generated tran
     \begin{tabular}{|c|c|c|}
     \hline
     \textbf{Name} & \textbf{$|\text{Card}|$} & \textbf{$|\text{ATM}|$}  \\ \hline
-    \smallG\  & 2,000      & 50 \\ \hline
-    $\textbf{\textsf{GDB}}_{\textbf{\textsf{B}}}$ $\approx$ \textcolor{red}{Deutsche Bank Spain}  & 500,000      & 1,000     \\ \hline
+    \smallG\ $\approx$ \emph{Caixabank} small office & 2,000      & 50 \\ \hline
+    $\textbf{\textsf{GDB}}_{\textbf{\textsf{B}}}$ $\approx$ \textcolor{red}{\emph{Deutsche Bank Spain}}  & 500,000      & 1,000     \\ \hline
     \end{tabular}
     \end{table}
 \vspace{1em}
@@ -221,9 +252,10 @@ with these combinations on:
         \item $g = $ \mediumG\ $f=1,5,10,100,250,500,1000,2000,5000,10000$.
     \end{itemize} 
     \item Number of cores: $c = 1, 2, 4, 8, 16$.
+    \item[$\Rightarrow$] {\small E.g. $\Sigma(\mathsf{GDB_A}, s(30, 0.02), f, c)$\\}
 \end{itemize}
-\vspace{0.7em}
-$\Rightarrow$ {\small E.g. $\Sigma(\mathsf{GDB_A}, s(30, 0.02), f, c)$\\}
+\vspace{0.5em}
+\textbf{Results consideration}: All fraud pattern \textbf{\texttt{checks} as results} for experimental purposes. Only \texttt{alerts} as results in production.\\
 \vspace{0.5em}
 \textbf{Objectives}:
 \begin{itemize}
@@ -233,6 +265,8 @@ $\Rightarrow$ {\small E.g. $\Sigma(\mathsf{GDB_A}, s(30, 0.02), f, c)$\\}
 \end{itemize}
 \end{frame}
 
+
+\begin{comment}
 \begin{frame}{Experiments: E1 - Evaluation in a high-load stress scenario}
 \begin{itemize}
 \item \textbf{Metrics:\\}
@@ -256,6 +290,7 @@ $\Rightarrow$ {\small E.g. $\Sigma(\mathsf{GDB_A}, s(30, 0.02), f, c)$\\}
 \end{itemize}
 
 \end{frame}
+\end{comment}
 
 
 

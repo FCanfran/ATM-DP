@@ -5,7 +5,7 @@
     \begin{subfigure}{0.45\textwidth}
         \centering
         \stackinset{c}{}{t}{0.4cm}{
-            \texttt{MRT} (s)%
+            \shortstack{\texttt{MRT} (s) \\ Mean Response Time}
         }{
         \includegraphics[scale=0.25]{images/4-Experiments/NRT/small/120-0.02/combined/mrt-1.png}
         }
@@ -14,7 +14,7 @@
     \begin{subfigure}{0.45\textwidth}
         \centering
         \stackinset{c}{}{t}{0.4cm}{
-            \texttt{ET} (s)
+            \shortstack{\texttt{ET} (s) \\ Execution Time}
         }{
         \includegraphics[scale=0.25]{images/4-Experiments/NRT/small/120-0.02/combined/execTime-1.png}
         }
@@ -24,8 +24,8 @@
     \hspace{-1.7cm}
     \begin{subfigure}{0.45\textwidth}
         \centering
-        \stackinset{c}{}{t}{2.6cm}{
-            \texttt{dief@t}
+        \stackinset{c}{}{t}{2.3cm}{
+            \shortstack{\texttt{dief@t} \\ \emph{diefficiency}}
         }{
         \includegraphics[scale=0.25]{images/4-Experiments/NRT/small/120-0.02/combined/dieft-1.png}
         }
@@ -34,8 +34,8 @@
     \hspace{1.2cm}
     \begin{subfigure}{0.45\textwidth}
         \centering
-        \stackinset{c}{}{t}{2.6cm}{
-            \texttt{T} (checks/s)%
+        \stackinset{c}{}{t}{2.3cm}{
+            \shortstack{\texttt{T} (checks/s) \\ Throughput}
         }{
         \includegraphics[scale=0.25]{images/4-Experiments/NRT/small/120-0.02/combined/throughput-1.png}
         }
@@ -64,13 +64,13 @@
 
 \end{frame}
 
-\begin{comment}
+
 \begin{frame}{E1 - Num. Filters Configuration: \small{$\Sigma(\mathsf{GDB_B}, s(15, 0.03), f, 8)$}}
 \begin{itemize}
     \item Check results trace for $\Sigma(\mathsf{GDB_B}, s(15, 0.03), f, 8)$.
     \item \textbf{Higher} number of \textbf{filters} outperform in \textbf{continuous behavior}.
 \end{itemize}
-\vspace{-0.5cm}
+\vspace{-1cm}
 \begin{figure}
     \hspace{-0.70cm}
     \centering
@@ -78,7 +78,7 @@
     \label{img:exps-medium-15D-8c-trace}
 \end{figure}
 \end{frame}
-\end{comment}
+
 
 \begin{frame}{E1 - Num. Filters Configuration: \small{$\Sigma(\mathsf{GDB_B}, s(7, 0.03), f, c)$}}
 \begin{itemize}
@@ -103,7 +103,7 @@
 \begin{frame}{E1 - Achieved Performance (\texttt{RT} and \texttt{MRT})}
 
 \begin{itemize}
-    \item Achieved \textbf{low} and \textbf{constant} \texttt{RT} values.
+    \item Achieved \textbf{low} and \textbf{constant} \texttt{RT} (Response Time) values.
     \item For the \textbf{largest tested streams} for each $g$ the \texttt{MRT} achieved is around
     5-6 s for $\Sigma(\mathsf{GDB_A}, s(120, 0.02), f, c)$ and around 10s for $\Sigma(\mathsf{GDB_B}, s(15, 0.03), f, c)$.
 \end{itemize}
@@ -164,7 +164,7 @@
 \begin{frame}{E1 - Achieved Performance (\texttt{RT} and \texttt{MRT})}
 
 \begin{itemize}
-    \item Achieved \textbf{low} and \textbf{constant} \texttt{RT} values.
+    \item Achieved \textbf{low} and \textbf{constant} \texttt{RT} (Response Time) values.
     \item E.g. Check results trace for $\Sigma(\mathsf{GDB_A}, s(120, 0.02), f, 16)$.
 \end{itemize}
 \begin{figure}
@@ -173,14 +173,14 @@
 \end{figure}
 \end{frame}
 
-\begin{frame}{E1 - Achieved Performance (\texttt{interactions/s})}
+\begin{frame}{E1 - Achieved Performance (\texttt{transactions/s})}
 
 \begin{itemize}
     \item Achieved \textbf{large} transaction \textbf{processing rates}:
     \vspace{0.2em}
     \begin{itemize}
-        \item $\Sigma(\mathsf{GDB_A}, s(120, 0.02), f, c)$: 2,500 transactions/s. 216,000,000 per day.
-        \item $\Sigma(\mathsf{GDB_B}, s(15, 0.03), f, 16)$: 1,250 transactions/s. 108,000,000 per day.
+        \item $\Sigma(\mathsf{GDB_A}, s(120, 0.02), f, c)$: 2,500 transactions/s. 216,000,000 per day \textcolor{red}${\approx$ 200M}.
+        \item $\Sigma(\mathsf{GDB_B}, s(15, 0.03), f, 16)$: 1,250 transactions/s. 108,000,000 per day. \textcolor{red}{$\approx$ 100M}.
     \end{itemize}
 \end{itemize}
 \begin{figure}
