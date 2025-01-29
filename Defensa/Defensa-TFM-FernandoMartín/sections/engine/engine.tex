@@ -87,9 +87,9 @@
         \begin{column}{0.5\textwidth}
             \begin{itemize}
                 \item Stores the \textbf{induced card subgraph(s)} of the incoming belonging edges.
-                \item Evaluation of continuous query pattern(s).
+                \item Evaluation of continuous query pattern(s). Each has a \textbf{connection} session with the \textbf{stable gdb}.
                 \item Emission of \textbf{alerts} in case of matching a query pattern.
-                \item \emph{Decoupled event handling}: Filter \emph{worker} $\mathsf{FW}$ to avoid bottlenecks - \emph{in parallel}.
+                \item Filter \emph{worker} $\mathsf{FW}$ to avoid bottlenecks - \emph{in parallel}.
             \end{itemize}
         \end{column}
 

@@ -24,7 +24,7 @@
     \begin{itemize}
         \item[$\Rightarrow$] Customisable data generation.
         \vspace{0.5em}
-        \item[$\Rightarrow$] Based on a previously developed synthetic bank database \emph{Wisabi Bank Dataset} (publicly available). Used as a reference for the geographical distribution of ATM locations and card/client transaction \emph{behavior}.
+        \item[$\Rightarrow$] Based on a previously developed synthetic bank database \emph{Wisabi Bank Dataset} (publicly available). Used as a reference for the \textbf{geographical} distribution of \textbf{ATM} locations and \textbf{card/client} transaction \textbf{\emph{behavior}}.
         \vspace{0.5em}
         \item[$\Rightarrow$] Left as a public available tool.\footnote{\url{https://github.com/FCanfran/ATM-DP/tree/main/gdb}}
     \end{itemize}    
@@ -213,9 +213,9 @@ Set a minimum time distance $t_{min}$ between any two consecutive generated tran
 \begin{frame}{Experiments: E1 - Evaluation in a high-load stress scenario}
 \textbf{Objectives}:
 \begin{itemize}
-    \item Comparison to sequential baseline.
-    \item Analysis of the number of filters configuration.
-    \item Analysis of the behavior and suitability of the \DPATM\ as a real-time engine.
+    \item Comparison to \textbf{sequential} baseline.
+    \item Analysis of the \textbf{number of filters} configuration.
+    \item Analysis of the behavior and \textbf{suitability} of the \DPATM\ as a real-time engine.
 \end{itemize}
 \vspace{0.5em}
 \textbf{Experimental variations}. $\Sigma= (g, s(k, p), f, c)$\\
@@ -251,7 +251,7 @@ $\Rightarrow$ {\small E.g. $\Sigma(\mathsf{GDB_A}, s(30, 0.02), f, c)$}
         \item Number of \textbf{\texttt{checks}} and \textbf{\texttt{alerts}} (same number for each stream tested).
     \end{itemize}
 \vspace{0.5em}
-\item We consider all fraud pattern \textbf{\texttt{checks} as results} for experimental purposes. In a production version we will consider only \texttt{alerts} as results.
+\item \textcolor{red}{Remark}: We consider all fraud pattern \textbf{\texttt{checks} as results} for experimental purposes. In a production version we will consider only \texttt{alerts} as results.
 
 \end{itemize}
 
