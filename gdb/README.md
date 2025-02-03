@@ -22,7 +22,18 @@ customers of the wisabi dataset are gathered.
 ### 1. Creation process of the Bank (Graph) Database
 
 For simplicity and to do it in a more stepwise manner, first all the CSV data tables for the nodes and for the relations are created in the corresponding format and then with those CSV the Neo4j GDB is populated. 
-Do this running the `bankDataGenerator.py` script.
+
+- 1. Ensure to have a wisabi named directory with the csv files of the Wisabi Bank
+Dataset (publicly available on Kaggle [Wisabi Bank Dataset](https://www.kaggle.com/datasets/obinnaiheanachor/wisabi-bank-dataset?resource=download)).
+
+- 2. Ensure to have the `behavior.csv` file or run $> python3 behavior.py to create
+it. This creates a csv file with the gathered customer behavior properties from this
+dataset. Place it inside the `wisabi` directory.
+
+- 3. Run `$> python3 bankDataGenerator.py` and introduce:
+   - (a) Bank properties’ values.
+   - (b) n = |ATM|, internal and external.
+   - (c) m = |Cards|.
 
 ### 2. Population of the Neo4j Graph Database
 
