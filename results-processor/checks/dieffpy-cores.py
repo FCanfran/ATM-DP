@@ -1296,7 +1296,7 @@ traces_response_time["responseTime"] = (
 plot_response_time_trace(traces_response_time, test_name, COLORS)
 plt.savefig(outputPlotDir + "traces-response-time.png")
 # control reduction step - to take 1 point every reduction_step points
-reduction_step = 15000
+reduction_step = 500
 plot_response_time_trace_reduced(
     traces_response_time, test_name, reduction_step, COLORS
 )
