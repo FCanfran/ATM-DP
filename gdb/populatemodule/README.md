@@ -44,12 +44,12 @@ $> go run main.go
 
 Using a language library (of golang) to parse CSV data and run creation Cypher queries against a Neo4j database.
 
-*Needed to create the graph database from CSV files directly from them, accesing these files from the same machine as
+*Needed to create the graph database from the CSV files directly, accesing these files from the same machine as
 where we run the golang program. In our case to create the gdb on the cluster VM without having to place the CSVs on 
 that machine*.
 
 **Requirements**: 
-- Indicate the CSV folder path when as argument to the main program.
+- Indicate the CSV folder path as argument to the main program.
 - Place a `.env` file in the `cypherimport` directory indicating the `NEO4J_URI`, `NEO4J_USERNAME` and `NEO4J_PASSWORD`
 for example:
 ```
@@ -58,8 +58,7 @@ NEO4J_USERNAME="neo4j"
 NEO4J_PASSWORD="xxxxxxx"
 ```
 
-- In our case, since the VM is hosted in the cluster of the UPC, we need to connect to the VPN beforehand. Explain more / omit? 
-Separate in another subsection... also explaining where is hosted the gdb and the details of the VM of the UPC cluster...
+- In our case, since the VM is hosted in the cluster of the UPC, we need to connect to the VPN beforehand.
 
 - Run the golang program in the `cypherimport` subdirectory. It automatically runs the cypher commands needed for the populating process. **Note:** in this case we need to provide the path of the csv files *csvPath* argument on the local machine on which we are running this script.
 
