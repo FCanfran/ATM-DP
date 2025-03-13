@@ -12,4 +12,4 @@ auxiliary-tests/read-input-test/streams
 engine-E1-checks/cmd/8c-10f.csv
 engine-E1-checks/cmd/output/
 engine-E1-checks/input/medium/
-
+gdb/csv-big

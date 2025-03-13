@@ -77,4 +77,14 @@ MATCH (n) RETURN n
 
 This should return all the nodes and relations that were created with the `populatemodule` program.
 
+## Deletion
+
+If we want to delete all nodes and relationships of the database we need to do:
+
+```
+MATCH (n)
+DETACH DELETE n;
+```
+
+See the related documentation [here](https://neo4j.com/docs/cypher-manual/current/clauses/delete/).
 
