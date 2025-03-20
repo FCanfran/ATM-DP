@@ -1,0 +1,86 @@
+>>>>>>>>> card chunk 0
+number_id                 c-NIGER-0
+client_id                         0
+expiration               2050-01-17
+CVC                             999
+loc_latitude                8.92926
+loc_longitude              7.398833
+extract_limit              121590.9
+amount_avg_withdrawal      24318.18
+amount_std_withdrawal      28174.96
+withdrawal_day               0.2411
+amount_avg_deposit          11500.0
+amount_std_deposit          5889.33
+deposit_day                  0.0548
+inquiry_day                  0.0493
+amount_avg_transfer        21448.28
+amount_std_transfer        20500.15
+transfer_day                 0.0795
+Name: 0, dtype: object
+>>>>>>>>> card chunk 1
+number_id                c-NIGER-500
+client_id                        500
+expiration                2050-01-17
+CVC                              999
+loc_latitude                6.208633
+loc_longitude               7.450141
+extract_limit              105462.55
+amount_avg_withdrawal       21092.51
+amount_std_withdrawal       23332.44
+withdrawal_day                0.6219
+amount_avg_deposit          11521.74
+amount_std_deposit           6177.88
+deposit_day                    0.126
+inquiry_day                   0.1233
+amount_avg_transfer          20162.5
+amount_std_transfer         24973.12
+transfer_day                  0.2192
+Name: 500, dtype: object
+>>>>>>>>> card chunk 2
+number_id                c-NIGER-1000
+client_id                        1000
+expiration                 2050-01-17
+CVC                               999
+loc_latitude                 9.034161
+loc_longitude                7.354865
+extract_limit               101559.65
+amount_avg_withdrawal        20311.93
+amount_std_withdrawal        23075.04
+withdrawal_day                 0.2986
+amount_avg_deposit           14636.36
+amount_std_deposit            6137.67
+deposit_day                    0.0603
+inquiry_day                    0.0548
+amount_avg_transfer          25777.78
+amount_std_transfer          30040.14
+transfer_day                    0.074
+Name: 1000, dtype: object
+>>>>>>>>> card chunk 3
+number_id                c-NIGER-1500
+client_id                        1500
+expiration                 2050-01-17
+CVC                               999
+loc_latitude                12.070443
+loc_longitude                8.555745
+extract_limit               100491.05
+amount_avg_withdrawal        20098.21
+amount_std_withdrawal        19467.67
+withdrawal_day                 0.3068
+amount_avg_deposit           11629.63
+amount_std_deposit            5718.72
+deposit_day                     0.074
+inquiry_day                    0.0658
+amount_avg_transfer          26294.12
+amount_std_transfer           25181.2
+transfer_day                   0.0932
+Name: 1500, dtype: object
+No transactions generated
+
+
+
+~~~~~~~~~~~~~~~~~~~ Summary ~~~~~~~~~~~~~~~~~~~~~
+Total number of transactions created:                                 0
+Number of Regular | Anomalous transactions created:                   (0, 0)
+Number of Cards with success:                                         0
+Number of Cards with "failure" (no transactions could be generated):  0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

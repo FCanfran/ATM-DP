@@ -457,7 +457,7 @@ def split_tx(tx_df):
 def main():
 
     if len(sys.argv) < 2:
-        print("Usage: python transactionGenerator.go <outputFileName>")
+        print("Usage: python txGenerator.py <outputFileName>")
         sys.exit(1)
 
     output_file_name = sys.argv[1]
