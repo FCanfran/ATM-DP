@@ -460,6 +460,7 @@ def main():
         print("Usage: python txGenerator.py <outputFileName>")
         sys.exit(1)
 
+    os.makedirs("tx", exist_ok=True)
     output_file_name = sys.argv[1]
 
     # fix a constant seed so that experiments are reproducible

@@ -25,7 +25,7 @@ OP_TYPES = [0, 1, 2, 3]
 # Parameters
 #############################################################################################################
 START_DATE = "2018-04-01"  # start date, from which the first transaction is generated
-NUM_DAYS = 5  # num of days for which transactions are generated (init START_DATE)
+NUM_DAYS = 15  # num of days for which transactions are generated (init START_DATE)
 
 ANOMALOUS_RATIO_1 = (
     0.02  # ratio of anomalous tx (per card) over the total amount of generated transactions
@@ -431,6 +431,8 @@ def main():
         print("Usage: python txGeneratorOptimized.py <outputFileName>")
         sys.exit(1)
 
+    # Create the output dir if it does not exist
+    os.makedirs("tx", exist_ok=True)
     output_file_name = sys.argv[1]
 
     # fix a constant seed so that experiments are reproducible
@@ -470,7 +472,6 @@ def main():
         # - selecting a maximum of max_size_atm_subset of ATMs that are at a distance
         #   inferior or equal to max_distance to refloc
         card = card_chunk.iloc[0]
-        print(card)
         atm_df_regular, atm_df_non_regular = get_ordered_atms(
             card["loc_latitude"],
             card["loc_longitude"],
@@ -494,6 +495,7 @@ def main():
             )
             sys.exit(1)
 
+        print(f"t_min_subset: {t_min_subset}")
         # 3. Generation of the tx for the cards of the chunk using the ATM_subset and its corresponding
         # t_min_subset
         for card_index in card_chunk.index:
