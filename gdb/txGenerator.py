@@ -26,7 +26,7 @@ OP_TYPES = [0, 1, 2, 3]
 # Parameters
 #############################################################################################################
 START_DATE = "2018-04-01"  # start date, from which the first transaction is generated
-NUM_DAYS = 120  # num of days for which transactions are generated (init START_DATE)
+NUM_DAYS = 30  # num of days for which transactions are generated (init START_DATE)
 
 ANOMALOUS_RATIO_1 = (
     0.02  # ratio of anomalous tx (per card) over the total amount of generated transactions
@@ -161,25 +161,17 @@ def distribute_tx(n, t_min_subset):
         end_time = start_time + diff_end
         candidate_tx = (start_time, end_time)
 
-        def get_start(element):
-            return element[0]
-
-        def get_end(element):
-            return element[1]
-
         # Check with previous and next
         # Find the insertion index
-        index = bisect.bisect_left(
-            tx_ordered_times, get_start(candidate_tx), key=get_start
-        )
+        index = bisect.bisect_left(tx_ordered_times, candidate_tx)
         # Access the previous element if it exists
         prev = tx_ordered_times[index - 1] if index > 0 else None
         # Access the next element if it exists
         next = tx_ordered_times[index] if index < len(tx_ordered_times) else None
         # Check if insertion is possible with prev and next
-        if (
-            prev == None or get_end(prev) + t_min_subset < get_start(candidate_tx)
-        ) and (next == None or get_end(candidate_tx) + t_min_subset < get_start(next)):
+        if (prev == None or prev[1] + t_min_subset < candidate_tx[0]) and (
+            next == None or candidate_tx[1] + t_min_subset < next[0]
+        ):
             # Insert in this position
             bisect.insort(tx_ordered_times, candidate_tx)
 
