@@ -9,8 +9,8 @@ t_min_subset: 2160
 
 
 ~~~~~~~~~~~~~~~~~~~ Summary ~~~~~~~~~~~~~~~~~~~~~
-Total number of transactions created:                                 19543
-Number of Regular | Anomalous transactions created:                   (19510, 33)
-Number of Cards with success:                                         1998
-Number of Cards with "failure" (no transactions could be generated):  2
+Total number of transactions created:                                 39870
+Number of Regular | Anomalous transactions created:                   (39416, 454)
+Number of Cards with success:                                         2000
+Number of Cards with "failure" (no transactions could be generated):  0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

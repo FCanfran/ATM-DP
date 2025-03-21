@@ -9,6 +9,7 @@ import bisect
 import math
 import os
 from tqdm import tqdm
+import time
 
 # Transaction generator with anomalous transaction generation, given by parameter ratio [0,1], which defines
 # the number of anomalous tx introduced per card (# anomalous tx of card_i = ratio * # tx of card_i)
@@ -25,7 +26,7 @@ OP_TYPES = [0, 1, 2, 3]
 # Parameters
 #############################################################################################################
 START_DATE = "2018-04-01"  # start date, from which the first transaction is generated
-NUM_DAYS = 5  # num of days for which transactions are generated (init START_DATE)
+NUM_DAYS = 120  # num of days for which transactions are generated (init START_DATE)
 
 ANOMALOUS_RATIO_1 = (
     0.02  # ratio of anomalous tx (per card) over the total amount of generated transactions
@@ -222,8 +223,6 @@ def transaction_generator(card, atm_df, tx_id):
         t_min_subset = int(
             (max_distance_subset / REGULAR_SPEED) * 60 * 60
         )  # in seconds
-        # print(max_distance_subset)
-        # print(f"tx-generation ----- t_min_subset = {t_min_subset}")
 
         # Generation of transactions
         withdrawal_day = card["withdrawal_day"]
@@ -471,9 +470,6 @@ def main():
     atm_df = pd.read_csv("csv/atm.csv")
     card_df = pd.read_csv("csv/card.csv")
 
-    print(atm_df)
-    print(card_df)
-
     # create the transaction dataframe
     cols = [
         "transaction_id",
@@ -489,10 +485,11 @@ def main():
     tx_id = 0
 
     # added progress bar with tqdm
-    for card_index in tqdm(
-        card_df.index,
-        desc="Generating synthetic transaction stream for each of the cards",
-    ):
+    # for card_index in tqdm(
+    #    card_df.index,
+    #   desc="Generating synthetic transaction stream for each of the cards",
+    # ):
+    for card_index in card_df.index:
         # atm_non_regular: is the set of atms not selected for the generated tx of the card since distance <= max_distance
         tx_card, tx_id, atm_regular, atm_non_regular = transaction_generator(
             card_df.iloc[card_index], atm_df, tx_id
@@ -616,4 +613,7 @@ def main():
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     main()
+    end_time = time.time()
+    print(f"Execution time: {end_time - start_time:.4f} seconds")

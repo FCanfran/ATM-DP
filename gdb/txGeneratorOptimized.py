@@ -9,6 +9,7 @@ import bisect
 import math
 import os
 from tqdm import tqdm
+import time
 
 # Transaction generator with anomalous transaction generation, given by parameter ratio [0,1], which defines
 # the number of anomalous tx introduced per card (# anomalous tx of card_i = ratio * # tx of card_i)
@@ -25,7 +26,7 @@ OP_TYPES = [0, 1, 2, 3]
 # Parameters
 #############################################################################################################
 START_DATE = "2018-04-01"  # start date, from which the first transaction is generated
-NUM_DAYS = 15  # num of days for which transactions are generated (init START_DATE)
+NUM_DAYS = 120  # num of days for which transactions are generated (init START_DATE)
 
 ANOMALOUS_RATIO_1 = (
     0.02  # ratio of anomalous tx (per card) over the total amount of generated transactions
@@ -495,7 +496,6 @@ def main():
             )
             sys.exit(1)
 
-        print(f"t_min_subset: {t_min_subset}")
         # 3. Generation of the tx for the cards of the chunk using the ATM_subset and its corresponding
         # t_min_subset
         for card_index in card_chunk.index:
@@ -626,4 +626,7 @@ def main():
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     main()
+    end_time = time.time()
+    print(f"Execution time: {end_time - start_time:.4f} seconds")

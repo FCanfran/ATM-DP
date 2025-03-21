@@ -107,7 +107,7 @@ Optionally, afterwards:
 
 ### Optimized Version: `txGeneratorOptimized.py`
 
-Is a version of the original / base program so that the generation process is faster. The main idea is to avoid creating one different `ATM_subset` for each of the cards, and instead create only a certain limited number of `ATM_subset`'s that will be share among subsets of cards. 
+Is a version of the original / base program so that the generation process is faster. The main idea is to avoid creating one different `ATM_subset` for each of the cards, and instead create only a certain limited number of `ATM_subset`'s that will be shared among subsets of cards. 
 
 Adjust the parameter:
 
