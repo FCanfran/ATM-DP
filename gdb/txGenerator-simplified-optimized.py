@@ -5,6 +5,7 @@ from geopy.distance import geodesic, great_circle
 import sys
 from bitarray import bitarray
 import random
+import bisect
 import math
 import os
 import time
@@ -14,9 +15,6 @@ from tqdm import tqdm
 # the number of anomalous tx introduced per card (# anomalous tx of card_i = ratio * # tx of card_i)
 # Every transaction consists of 2 "edges"/"tx": the starting and the ending transaction.
 # NOTE: Have the same tx_id for the 2 edges (the start and the end one)
-
-# Writing to csv on batches of BATCH_SIZE
-BATCH_SIZE = 1000
 
 # Operation types:
 # 0: withdrawal
@@ -28,14 +26,14 @@ OP_TYPES = [0, 1, 2, 3]
 # Parameters
 #############################################################################################################
 START_DATE = "2018-04-01"  # start date, from which the first transaction is generated
-NUM_DAYS = 15  # num of days for which transactions are generated (init START_DATE)
+NUM_DAYS = 30  # num of days for which transactions are generated (init START_DATE)
 
 ANOMALOUS_RATIO_1 = (
-    0.03  # ratio of anomalous tx (per card) over the total amount of generated regular transactions
+    0.02  # ratio of anomalous tx (per card) over the total amount of generated regular transactions
     # argument must be a float in [0,1]
 )
 
-MAX_SIZE_ATM_SUBSET_RATIO = 0.01  # ratio [0,1] of the total size of the ATM global set - maximum size of the ATM subset: |ATM_subset| = ratio * |ATM|
+MAX_SIZE_ATM_SUBSET_RATIO = 0.2  # ratio [0,1] of the total size of the ATM global set - maximum size of the ATM subset: |ATM_subset| = ratio * |ATM|
 MAX_DISTANCE_SUBSET_THRESHOLD = (
     70  # maximum distance of the atms in the ATM subset to client residence
 )
@@ -48,6 +46,7 @@ REGULAR_SPEED = 50  # (km/h) REGULAR_SPEED: for the creation of the regular tx
 ANOMALOUS_SPEED = 500  # (km/h)  NOMALOUS_SPEED: Assumption on the maximum ANOMALOUS speed (km/h) at which the distance between two geographical points
 # can be traveled
 ANOMALOUS_TX_DURATION = 5  # (segs)
+BATCH_SIZE = 100  # Writing to csv on batches of BATCH_SIZE
 #############################################################################################################
 
 
@@ -104,6 +103,35 @@ def calculate_max_distance_subset(atm_df_regular):
     return math.ceil(max_distance)
 
 
+# Get ordered ascending list by distance of the atms wrt. card location coordinates
+# - Filter those that lie inside a specific distance threshold MAX_DISTANCE_SUBSET_THRESHOLD
+# - Filter a maximum of ATMs: max size of the subset -> |ATM_subset| = MAX_SIZE_ATM_SUBSET_RATIO * |ATM|
+def get_ordered_atms(card_loc_latitude, card_loc_longitude, atm_df):
+    # Create a copy of the original DataFrame to avoid modifying it - dataframes are mutable objects!
+    atm_df_ordered = atm_df.copy()
+    card_loc = (card_loc_latitude, card_loc_longitude)
+    # Calculate distances and add as a new column
+    atm_df_ordered["distance"] = atm_df_ordered.apply(
+        calculate_distance, point=card_loc, axis=1
+    )
+    # Sort DataFrame based on distance
+    atm_df_ordered = atm_df_ordered.sort_values(
+        by="distance", ascending=True
+    ).reset_index(drop=True)
+    # The "regular" subset: select those with distance <= MAX_DISTANCE_SUBSET_THRESHOLD
+    atm_df_regular = atm_df_ordered[
+        atm_df_ordered["distance"] <= MAX_DISTANCE_SUBSET_THRESHOLD
+    ]
+    # The "non-regular" subset: the rest
+    atm_df_non_regular = atm_df_ordered[
+        atm_df_ordered["distance"] > MAX_DISTANCE_SUBSET_THRESHOLD
+    ]
+
+    atm_df_regular = atm_df_regular.head(max_size_subset)
+
+    return atm_df_regular, atm_df_non_regular
+
+
 # Distribute n transactions over the interval of all the given days
 # Returns a ordered list of start moments in seconds, respecting that all of the moments
 # are at a minimum time distance of t_min_subset
@@ -115,68 +143,41 @@ def distribute_tx(n, t_min_subset):
     num_holes = upper_bound - lower_bound
     needed_holes = (MAX_DURATION + t_min_subset) * (n - 1) + MAX_DURATION
 
-    tx_ordered_times = []
     if num_holes < needed_holes:
-        return tx_ordered_times, False
+        raise ValueError(
+            f"Impossible to distribute {n} transactions over the given interval time with t_min_subset = {t_min_subset}"
+        )
 
-    if needed_holes > num_holes / 2:
-        # distribute in order one after the other
-        start_time = lower_bound
-        # Offset for tx_start_next = tx_end_prev + t_min_subset + offset
-        offset_start = t_min_subset * 0.01
+    tx_ordered_times = []
+    while len(tx_ordered_times) < n:
+        start_time = int(np.random.uniform(lower_bound, upper_bound))
+        diff_end = int(np.random.normal(MEAN_DURATION, STD_DURATION))
+        if diff_end <= 0:
+            diff_end = MEAN_DURATION  # if negative or 0 -> then it is = to the mean
+        if diff_end > MAX_DURATION:
+            diff_end = MAX_DURATION  # if above MAX_DURATION -> then MAX_DURATION
 
-        while len(tx_ordered_times) < n:
-            diff_end = int(np.random.normal(MEAN_DURATION, STD_DURATION))
-            if diff_end <= 0:
-                diff_end = MEAN_DURATION  # if negative or 0 -> then it is = to the mean
-            if diff_end > MAX_DURATION:
-                diff_end = MAX_DURATION  # if above MAX_DURATION -> then MAX_DURATION
-            end_time = start_time + diff_end
-            candidate_tx = (start_time, end_time)
-            tx_ordered_times.append(candidate_tx)
-            start_time = end_time + t_min_subset + offset_start
+        end_time = start_time + diff_end
+        candidate_tx = (start_time, end_time)
 
-    else:
-        # distribute randomly
-        while len(tx_ordered_times) < n:
-            start_time = int(np.random.uniform(lower_bound, upper_bound))
-            diff_end = int(np.random.normal(MEAN_DURATION, STD_DURATION))
-            if diff_end <= 0:
-                diff_end = MEAN_DURATION  # if negative or 0 -> then it is = to the mean
-            if diff_end > MAX_DURATION:
-                diff_end = MAX_DURATION  # if above MAX_DURATION -> then MAX_DURATION
+        # Check with previous and next
+        # Find the insertion index
+        index = bisect.bisect_left(tx_ordered_times, candidate_tx)
+        # Access the previous element if it exists
+        prev = tx_ordered_times[index - 1] if index > 0 else None
+        # Access the next element if it exists
+        next = tx_ordered_times[index] if index < len(tx_ordered_times) else None
+        # Check if insertion is possible with prev and next
+        if (prev == None or prev[1] + t_min_subset < candidate_tx[0]) and (
+            next == None or candidate_tx[1] + t_min_subset < next[0]
+        ):
+            # Insert in this position
+            bisect.insort(tx_ordered_times, candidate_tx)
 
-            end_time = start_time + diff_end
-            candidate_tx = (start_time, end_time)
-
-            # Manually find the correct insertion point
-            index = 0
-            found_insertion = False
-            while index <= len(tx_ordered_times) and not found_insertion:
-                prev = tx_ordered_times[index - 1] if index > 0 else None
-                next = (
-                    tx_ordered_times[index] if index < len(tx_ordered_times) else None
-                )
-
-                # Check if insertion is possible with previous and next
-                # - [0]: start_time, [1]: end_time
-                if (prev is None or prev[1] < candidate_tx[0]) and (
-                    next is None or candidate_tx[1] < next[0]
-                ):
-                    # Found the correct position
-                    found_insertion = True
-                    # Insert in this position only if constraints of t_min are satisfied
-                    if (prev is None or prev[1] + t_min_subset < candidate_tx[0]) and (
-                        next is None or candidate_tx[1] + t_min_subset < next[0]
-                    ):
-                        tx_ordered_times.insert(index, candidate_tx)
-
-                index += 1
-
-    return tx_ordered_times, True
+    return tx_ordered_times
 
 
-def transaction_generator(card, atm_df, tx_id):
+def transaction_generator(card, atm_df_regular, t_min_subset, tx_id):
 
     # print(f"------------- Generation for card: {card['number_id']} -------------")
     # create transaction dataframe
@@ -193,129 +194,92 @@ def transaction_generator(card, atm_df, tx_id):
 
     start_datetime = datetime.datetime.strptime(START_DATE, "%Y-%m-%d")
 
-    # NOTE: Optimize -> Ideas:
-    # - Tomar mismos sets atm_df_regular y atm_df_non_regular para todas las cards
-    # - Ya que ahora no se toman por distancia a la residence location del cliente...
-    # interesa seguir teniendo el atm_df_non_regular?
-    # 1. Random list of terminals of max_size_atm_subset of ATMs
-    atm_df_card = atm_df.copy()
-    atm_df_regular = atm_df_card.sample(n=max_size_subset)
-    atm_df_non_regular = atm_df_card.drop(atm_df_regular.index)
+    # Generation of transactions
+    withdrawal_day = card["withdrawal_day"]
+    deposit_day = card["deposit_day"]
+    inquiry_day = card["inquiry_day"]
+    transfer_day = card["transfer_day"]
 
-    # drop the original indexes
-    atm_df_regular = atm_df_regular.reset_index(drop=True)
-    atm_df_non_regular = atm_df_non_regular.reset_index(drop=True)
+    ops_day = withdrawal_day + deposit_day + inquiry_day + transfer_day
+    num_tx = np.random.poisson(ops_day * NUM_DAYS)
 
-    if len(atm_df_regular) > 0:
-        # Calculate max_distance_subset for each specific ATM_subset
-        max_distance_subset = calculate_max_distance_subset(atm_df_regular)
-        # t_min_subset: minimum threshold time in between 2 transactions of this client
-        # - based on the max distance between any pair of atms of the subset list
-        # Therefore we set the t_min_subset approx to be the time needed to traverse that max_distance at REGULAR_SPEED km/h
-        # if |ATM_subset| = 0 -> max_distance_subset = 0 -> t_min_subset = 0
-        # t_min_subset = int(((max_distance_subset * 2) / REGULAR_SPEED) * 60 * 60)  # in seconds
-        t_min_subset = int(
-            (max_distance_subset / REGULAR_SPEED) * 60 * 60
-        )  # in seconds
+    op_type_probabilities = [
+        withdrawal_day / ops_day,
+        deposit_day / ops_day,
+        inquiry_day / ops_day,
+        transfer_day / ops_day,
+    ]
 
-        # Generation of transactions
-        withdrawal_day = card["withdrawal_day"]
-        deposit_day = card["deposit_day"]
-        inquiry_day = card["inquiry_day"]
-        transfer_day = card["transfer_day"]
+    if num_tx > 0:
+        # distributed transaction start moments (in seconds)
+        tx_times = distribute_tx(num_tx, t_min_subset)
+        for tx_time in tx_times:
+            # 0. ATM id
+            # randomly among the subset of ATMs -> all of them satisfy the constraints
+            # of the min threshold time TMIN etc...
+            rand_index = np.random.choice(atm_df_regular.index)
+            ATM_id = atm_df_regular.loc[rand_index]["ATM_id"]
+            # 1. transaction_start
+            start_time_delta = datetime.timedelta(seconds=tx_time[0])
+            transaction_start = start_datetime + start_time_delta
+            # 2. transaction_end
+            end_time_delta = datetime.timedelta(seconds=tx_time[1])
+            transaction_end = start_datetime + end_time_delta
+            # 3. transaction_type
+            transaction_type = random.choices(OP_TYPES, weights=op_type_probabilities)[
+                0
+            ]
 
-        ops_day = withdrawal_day + deposit_day + inquiry_day + transfer_day
-        num_tx = np.random.poisson(ops_day * NUM_DAYS)
-
-        op_type_probabilities = [
-            withdrawal_day / ops_day,
-            deposit_day / ops_day,
-            inquiry_day / ops_day,
-            transfer_day / ops_day,
-        ]
-
-        if num_tx > 0:
-            # distributed transaction start moments (in seconds)
-            tx_times, possible_distribution = distribute_tx(num_tx, t_min_subset)
-            # Keep trying with half the tx to distribute... until it is possible
-            while not possible_distribution:
-                # print(f"Impossible to distribute {num_tx} transactions over the given interval time with t_min_subset = {t_min_subset}")
-                num_tx = num_tx / 2
-                # print(f"Try again with: {num_tx}")
-                tx_times, possible_distribution = distribute_tx(num_tx, t_min_subset)
-
-            if num_tx > 0:
-                for tx_time in tx_times:
-                    # 0. ATM id
-                    # randomly among the subset of ATMs -> all of them satisfy the constraints
-                    # of the min threshold time TMIN etc...
-                    rand_index = np.random.choice(atm_df_regular.index)
-                    ATM_id = atm_df_regular.loc[rand_index]["ATM_id"]
-                    # 1. transaction_start
-                    start_time_delta = datetime.timedelta(seconds=tx_time[0])
-                    transaction_start = start_datetime + start_time_delta
-                    # 2. transaction_end
-                    end_time_delta = datetime.timedelta(seconds=tx_time[1])
-                    transaction_end = start_datetime + end_time_delta
-                    # 3. transaction_type
-                    transaction_type = random.choices(
-                        OP_TYPES, weights=op_type_probabilities
-                    )[0]
-
-                    # transaction_amount - depending on the type of tx
-                    if transaction_type == 0:  # withdrawal
-                        transaction_amount = np.random.normal(
-                            card["amount_avg_withdrawal"], card["amount_std_withdrawal"]
-                        )
-                        # If negative amount, draw from a uniform distribution
-                        if transaction_amount < 0:
-                            transaction_amount = np.random.uniform(
-                                0, card["amount_avg_withdrawal"] * 2
-                            )
-                    elif transaction_type == 1:  # deposit
-                        transaction_amount = np.random.normal(
-                            card["amount_avg_deposit"], card["amount_std_deposit"]
-                        )
-                        if transaction_amount < 0:
-                            transaction_amount = np.random.uniform(
-                                0, card["amount_avg_deposit"] * 2
-                            )
-                    elif transaction_type == 2:  # balance inquiry
-                        transaction_amount = 0.0
-                    elif transaction_type == 3:  # transfer
-                        transaction_amount = np.random.normal(
-                            card["amount_avg_transfer"], card["amount_std_transfer"]
-                        )
-                        if transaction_amount < 0:
-                            transaction_amount = np.random.uniform(
-                                0, card["amount_avg_transfer"] * 2
-                            )
-
-                    transaction_amount = np.round(transaction_amount, decimals=2)
-
-                    new_tx = {
-                        "transaction_id": tx_id,
-                        "number_id": card["number_id"],  # card id
-                        "ATM_id": ATM_id,
-                        "transaction_type": transaction_type,
-                        "transaction_start": transaction_start,
-                        "transaction_end": transaction_end,
-                        "transaction_amount": transaction_amount,
-                    }
-
-                    new_tx_df = pd.DataFrame([new_tx])
-                    transaction_df = (
-                        new_tx_df.copy()
-                        if transaction_df.empty
-                        else pd.concat([transaction_df, new_tx_df], ignore_index=True)
+            # transaction_amount - depending on the type of tx
+            if transaction_type == 0:  # withdrawal
+                transaction_amount = np.random.normal(
+                    card["amount_avg_withdrawal"], card["amount_std_withdrawal"]
+                )
+                # If negative amount, draw from a uniform distribution
+                if transaction_amount < 0:
+                    transaction_amount = np.random.uniform(
+                        0, card["amount_avg_withdrawal"] * 2
                     )
-                    tx_id += 1
-                    global total_regular
-                    total_regular += 1
+            elif transaction_type == 1:  # deposit
+                transaction_amount = np.random.normal(
+                    card["amount_avg_deposit"], card["amount_std_deposit"]
+                )
+                if transaction_amount < 0:
+                    transaction_amount = np.random.uniform(
+                        0, card["amount_avg_deposit"] * 2
+                    )
+            elif transaction_type == 2:  # balance inquiry
+                transaction_amount = 0.0
+            elif transaction_type == 3:  # transfer
+                transaction_amount = np.random.normal(
+                    card["amount_avg_transfer"], card["amount_std_transfer"]
+                )
+                if transaction_amount < 0:
+                    transaction_amount = np.random.uniform(
+                        0, card["amount_avg_transfer"] * 2
+                    )
 
-    else:
-        # if ATM subset size = 0 -> then
-        print(f"Empty ATM subset for card: {card['number_id']}")
+            transaction_amount = np.round(transaction_amount, decimals=2)
+
+            new_tx = {
+                "transaction_id": tx_id,
+                "number_id": card["number_id"],  # card id
+                "ATM_id": ATM_id,
+                "transaction_type": transaction_type,
+                "transaction_start": transaction_start,
+                "transaction_end": transaction_end,
+                "transaction_amount": transaction_amount,
+            }
+
+            new_tx_df = pd.DataFrame([new_tx])
+            transaction_df = (
+                new_tx_df.copy()
+                if transaction_df.empty
+                else pd.concat([transaction_df, new_tx_df], ignore_index=True)
+            )
+            tx_id += 1
+            global total_regular
+            total_regular += 1
 
     if len(transaction_df) == 0:
         global fail_cards
@@ -324,7 +288,7 @@ def transaction_generator(card, atm_df, tx_id):
         global success_cards
         success_cards += 1
 
-    return transaction_df, tx_id, atm_df_regular, atm_df_non_regular
+    return transaction_df, tx_id
 
 
 # Generation of anomalous tx to cause the fraud pattern 1
@@ -458,8 +422,6 @@ def split_tx(tx_df):
 
 def main():
 
-    start_time = time.time()
-
     if len(sys.argv) < 4:
         print(
             "Usage: python transactionGenerator.py <outputFileName> <start-card-index> <num-cards>"
@@ -469,9 +431,13 @@ def main():
     # Create the output dir if it does not exist
     os.makedirs("tx", exist_ok=True)
     output_file_name = sys.argv[1]
+
+    # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    # parallelized / chunked generation version parameters
     start_card_index = int(sys.argv[2])
-    num_cards = int(sys.argv[3])
-    end_card_index = start_card_index + num_cards
+    CARD_CHUNK_SIZE = int(sys.argv[3])
+    end_card_index = start_card_index + CARD_CHUNK_SIZE
+    # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
     # fix a constant seed so that experiments are reproducible
     key = 37
@@ -482,15 +448,44 @@ def main():
     global max_size_subset
     max_size_subset = math.ceil(MAX_SIZE_ATM_SUBSET_RATIO * len(atm_df))
 
-    # NOTE: Optimize -> to avoid reading and putting all the cards in memory - only
-    # put the corresponding split (in the split/parallel version of the generator)
-    card_df = pd.read_csv("csv/card.csv")
+    print(f"Start card: {start_card_index}")
+    print(f"End card: {end_card_index}")
 
-    # slice the card_df
-    print(f"start card: {start_card_index}")
-    print(f"end card: {end_card_index}")
-    card_df = card_df.iloc[start_card_index:end_card_index]
-    print(card_df)
+    # Read only the required slice of rows
+    card_df = pd.read_csv(
+        "csv/card.csv", skiprows=range(1, start_card_index + 1), nrows=CARD_CHUNK_SIZE
+    )
+
+    # Create the ATM_subset for the card chunk - all the cards have the same ATM_subset
+    # 1. ATM_subset construction for the card chunk
+    # - take the first card location residence refloc as the reference for the ATM_subset
+    # - construct the ATM_subset based on this refloc
+    # - ordered list of terminals by ascending distance to refloc
+    # - selecting a maximum of max_size_atm_subset of ATMs that are at a distance
+    #   inferior or equal to max_distance to refloc
+    card = card_df.iloc[0]
+    atm_df_regular, atm_df_non_regular = get_ordered_atms(
+        card["loc_latitude"],
+        card["loc_longitude"],
+        atm_df,
+    )
+
+    # 2. t_min_subset calculation
+    if len(atm_df_regular) > 0:
+        # - calculate t_min_subset
+        max_distance_subset = calculate_max_distance_subset(atm_df_regular)
+        # t_min_subset: minimum threshold time in between 2 transactions of a client of this subset
+        # - based on the max distance between any pair of atms of the subset list
+        # Therefore we set the t_min_subset approx to be the time needed to traverse that max_distance at REGULAR_SPEED km/h
+        t_min_subset = int(
+            (max_distance_subset / REGULAR_SPEED) * 60 * 60
+        )  # in seconds
+    else:
+        # if ATM subset size = 0 -> then
+        print(
+            f"Error: Empty ATM subset, try again with a higher MAX_SIZE_ATM_SUBSET_RATIO"
+        )
+        sys.exit(1)
 
     # create the transaction csv
     cols = [
@@ -547,16 +542,16 @@ def main():
                 anomalous_df = pd.DataFrame(columns=cols)
 
             # atm_non_regular: is the set of atms not selected for the generated tx of the card since distance <= max_distance
-            tx_card, tx_id, atm_regular, atm_non_regular = transaction_generator(
-                card_row, atm_df, tx_id
+            tx_card, tx_id = transaction_generator(
+                card_row, atm_df_regular, t_min_subset, tx_id
             )
 
             # Introduction of anomalous
             if len(tx_card) > 0:
                 # Generation of anomalous tx for this card
-                #########################################################################################33
+                #########################################################################################
                 card_anomalous_df, tx_id = introduce_anomalous_fp_1(
-                    tx_card, atm_regular, atm_non_regular, tx_id
+                    tx_card, atm_df_regular, atm_df_non_regular, tx_id
                 )
                 #########################################################################################
 
@@ -619,10 +614,9 @@ def main():
     )
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-    end_time = time.time()
-    execution_time = end_time - start_time
-    print(f"Execution time: {execution_time:.6f} seconds")
-
 
 if __name__ == "__main__":
+    start_time = time.time()
     main()
+    end_time = time.time()
+    print(f"Execution time: {end_time - start_time:.4f} seconds")

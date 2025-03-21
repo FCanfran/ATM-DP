@@ -105,6 +105,13 @@ Optionally, afterwards:
 - Run `txGenerator-join-split.py` to join multiple different transaction files and to split them in interaction-start and interaction-end interactions.  
 
 
+UPDATES: 
+
+- Rename to "chunked" version
+- Idea is that it generates tx for a certain subset of cards and then we use the other scripts to join the tx and generate a single tx file.
+- 
+
+
 ### Optimized Version: `txGeneratorOptimized.py`
 
 Is a version of the original / base program so that the generation process is faster. The main idea is to avoid creating one different `ATM_subset` for each of the cards, and instead create only a certain limited number of `ATM_subset`'s that will be shared among subsets of cards. 
