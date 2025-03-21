@@ -9,6 +9,7 @@ import math
 import os
 import csv
 from tqdm import tqdm
+import time
 
 
 # Splits the tx of a dataframe, so that from each tx, 2 edges are generated: tx_start & tx_end
@@ -37,6 +38,10 @@ def main():
         print("Usage: python txGenerator-join-split.py <outFileName> <inputDir>")
         sys.exit(1)
 
+    # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx #
+    # Read the files
+    # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx #
+
     outFileName = sys.argv[1]
     inputDir = sys.argv[2]
 
@@ -63,10 +68,9 @@ def main():
     last_id = len(regular_df)
     anomalous_df["transaction_id"] = range(last_id, last_id + len(anomalous_df))
 
-    print(":::::::::::::: regular:")
-    print(regular_df)
-    print(":::::::::::::: anomalous:")
-    print(anomalous_df)
+    # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx #
+    # Splitting each tx in tx-open & tx-close
+    # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx #
 
     # Split the tx in two: tx_start and tx_end
     # Custom sorting logic:
@@ -115,7 +119,9 @@ def main():
     else:
         all_tx_ext = transaction_df_ext
 
-    # sort
+    # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx #
+    # Sort
+    # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx #
     all_tx_ext = all_tx_ext.sort_values(by=["sort_key"], ascending=True).reset_index(
         drop=True
     )
@@ -124,4 +130,7 @@ def main():
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     main()
+    end_time = time.time()
+    print(f"Execution time: {end_time - start_time:.4f} seconds")
