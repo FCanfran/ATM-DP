@@ -26,7 +26,7 @@ OP_TYPES = [0, 1, 2, 3]
 # Parameters
 #############################################################################################################
 START_DATE = "2018-04-01"  # start date, from which the first transaction is generated
-NUM_DAYS = 30  # num of days for which transactions are generated (init START_DATE)
+NUM_DAYS = 5  # num of days for which transactions are generated (init START_DATE)
 
 ANOMALOUS_RATIO_1 = (
     0.02  # ratio of anomalous tx (per card) over the total amount of generated transactions
